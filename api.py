@@ -83,6 +83,10 @@ def forgot_password(request: Request, body: ForgotPasswordBody, db: Session = De
     if not user:
         return {"ok": True, "message": "Si el email existe, recibirás un enlace"}
     token = create_reset_token(user.id)
+    from modules.email import send_password_reset
+    sent = send_password_reset(body.email, token)
+    if sent or not settings.SENDGRID_API_KEY:
+        return {"ok": True, "message": "Si el email existe, recibirás un enlace"}
     return {"ok": True, "message": "Enlace enviado (simulado)", "reset_token": token}
 
 
