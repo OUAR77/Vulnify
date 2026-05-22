@@ -34,7 +34,7 @@ def main():
     pro_monthly = stripe.Price.create(product=pro.id, unit_amount=14900, currency="eur", recurring={"interval": "month"})
     pro_yearly = stripe.Price.create(product=pro.id, unit_amount=149000, currency="eur", recurring={"interval": "year"})
 
-    print("✔ Productos creados. Copia estas variables en Railway:\n")
+    print("OK - Productos creados. Copia estas variables en Railway:\n")
     print(f"STRIPE_SECRET_KEY={sys.argv[1]}")
     print(f"STRIPE_PRICE_STARTER={starter_monthly.id}")
     print(f"STRIPE_PRICE_PRO={pro_monthly.id}")
