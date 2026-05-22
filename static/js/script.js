@@ -176,6 +176,7 @@ async function apiCall(method, path, body, auth) {
 async function loginUser(email, password) {
   const data = await apiCall('POST', '/auth/login', { email, password });
   localStorage.setItem('token', data.token);
+  if (data.refresh_token) localStorage.setItem('refresh_token', data.refresh_token);
   localStorage.setItem('user', JSON.stringify(data.user));
   return data;
 }
@@ -183,12 +184,43 @@ async function loginUser(email, password) {
 async function registerUser(name, email, password, role) {
   const data = await apiCall('POST', '/auth/register', { name, email, password, role: role || 'hunter' });
   localStorage.setItem('token', data.token);
+  if (data.refresh_token) localStorage.setItem('refresh_token', data.refresh_token);
   localStorage.setItem('user', JSON.stringify(data.user));
   return data;
 }
 
+function isTokenExpired(token) {
+  try {
+    var payload = JSON.parse(atob(token.split('.')[1]));
+    return Date.now() >= payload.exp * 1000;
+  } catch(e) { return true; }
+}
+
+async function getValidToken() {
+  var token = localStorage.getItem('token');
+  if (!token) return null;
+  if (!isTokenExpired(token)) return token;
+  var rt = localStorage.getItem('refresh_token');
+  if (!rt) { logout(); return null; }
+  try {
+    var res = await fetch('/api/auth/refresh', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh_token: rt })
+    });
+    if (!res.ok) throw new Error();
+    var data = await res.json();
+    localStorage.setItem('token', data.token);
+    return data.token;
+  } catch(e) {
+    logout();
+    return null;
+  }
+}
+
 function logout() {
   localStorage.removeItem('token');
+  localStorage.removeItem('refresh_token');
   localStorage.removeItem('user');
   closeMobileMenu();
   window.location.href = '/';

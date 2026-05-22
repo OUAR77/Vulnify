@@ -53,11 +53,11 @@
 <section class="section"><div class="container" id="reportContent"></div></section>
 
 <button class="back-top" id="backTop" aria-label="Volver arriba">&#8593;</button>
-<script src="/static/js/script.js?v=3"></script>
+<script src="/static/js/script.js?v=4"></script>
 <script>
 const rid = location.pathname.split('/').pop();
 (async()=>{
-  const token = localStorage.getItem('token');
+  var token = await getValidToken();
   if(!token){window.location.href='/';return}
   const headers = {Authorization:`Bearer ${token}`};
   try {
@@ -115,7 +115,8 @@ const rid = location.pathname.split('/').pop();
 })();
 
 async function aiCall(endpoint, body) {
-  const token = localStorage.getItem('token');
+  const token = await getValidToken();
+  if (!token) return null;
   const out = document.getElementById('aiToolsOutput');
   try {
     const res = await fetch(endpoint, {

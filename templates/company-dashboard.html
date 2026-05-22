@@ -55,14 +55,21 @@
 
 <div class="toast" id="toast"></div>
 <button class="back-top" id="backTop" aria-label="Volver arriba">&#8593;</button>
-<script src="/static/js/script.js?v=3"></script>
+<script src="/static/js/script.js?v=4"></script>
 <script>
 const API = '/api';
-const token = localStorage.getItem('token');
-if(!token){window.location.href='/';}
+var _token = null;
+
+async function getToken() {
+  if (_token) return _token;
+  _token = await getValidToken();
+  return _token;
+}
 
 async function api(method, path, body) {
-  const opts = {method, headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`}};
+  var tok = await getToken();
+  if (!tok) { window.location.href = '/'; return; }
+  const opts = {method, headers:{'Content-Type':'application/json',Authorization:`Bearer ${tok}`}};
   if(body) opts.body = JSON.stringify(body);
   const res = await fetch(`${API}${path}`, opts);
   const data = await res.json();
@@ -72,7 +79,7 @@ async function api(method, path, body) {
 
 (async()=>{
   let user;
-  try{user=await api('GET','/auth/me')}catch{localStorage.removeItem('token');window.location.href='/';return}
+  try{user=await api('GET','/auth/me')}catch{window.location.href='/';return}
   if(user.role==='admin'){window.location.href='/admin';return}
   if(user.role!=='company'){document.getElementById('companyDash').innerHTML='<div style="text-align:center;padding:60px">Esta página es solo para empresas.</div>';return}
   document.title=`${user.company||'Empresa'} — Vulnify`;

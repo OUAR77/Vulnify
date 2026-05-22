@@ -45,7 +45,7 @@
 <section class="section"><div class="container"><div class="section-header centered"><div class="section-label">Hall of Fame</div><h1 class="section-title">Top hunters</h1><p class="section-sub">Los mejores cazadores de bugs de la comunidad Vulnify.</p></div><div style="overflow-x:auto"><table class="hof-table"><thead><tr><th>#</th><th>Hunter</th><th>Bio</th><th>Válidos</th><th>Pagados</th><th>Desde</th></tr></thead><tbody id="hofBody"></tbody></table></div></div></section>
 
 <button class="back-top" id="backTop" aria-label="Volver arriba">&#8593;</button>
-<script src="/static/js/script.js?v=3"></script>
+<script src="/static/js/script.js?v=4"></script>
 <script>
 fetch('/api/hunters/leaderboard?per_page=50').then(r=>r.json()).then(d=>{const items=d.items||d;document.getElementById('hofBody').innerHTML=items.map((h,i)=>{const c=i===0?'top1':i===1?'top2':i===2?'top3':'';return `<tr><td class="hof-rank ${c}">${i+1}</td><td class="hof-name"><a href="/hunter/${h.id}">${h.name}</a></td><td style="color:var(--text-secondary);font-size:13px">${h.bio||'—'}</td><td><span class="hof-badge">${h.valid_reports}</span></td><td>${h.paid_reports}</td><td style="color:var(--text-tertiary);font-size:13px">${h.joined}</td></tr>`}).join('')});
 </script>

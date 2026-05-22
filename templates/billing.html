@@ -43,18 +43,22 @@
 
 <div class="toast" id="toast"></div>
 <button class="back-top" id="backTop" aria-label="Volver arriba">&uarr;</button>
-<script src="/static/js/script.js?v=3"></script>
+<script src="/static/js/script.js?v=4"></script>
 <div class="modal-overlay" id="modalOverlay"><div class="modal-body" id="modalBody"></div></div>
 <script>
 (function(){
-const token = localStorage.getItem('token');
-if(!token){window.location.href='/';return}
-
-const headers = {'Content-Type':'application/json',Authorization:'Bearer '+token};
 const API = '/api';
+var _billToken = null;
+async function billAuth(){
+  if(!_billToken) _billToken = await getValidToken();
+  if(!_billToken){window.location.href='/';return null}
+  return {'Content-Type':'application/json',Authorization:'Bearer '+_billToken};
+}
 
 async function loadBilling(){
   try{
+    var headers = await billAuth();
+    if(!headers) return;
     const me = await (await fetch(API+'/auth/me',{headers})).json();
     if(me.role!=='company'){document.getElementById('billingContent').innerHTML='<div style="text-align:center;padding:60px">Solo para empresas</div>';return}
     document.getElementById('headerUserName').textContent=me.name;
@@ -114,7 +118,9 @@ loadBilling();
 
 window.subscribe = async function(planId){
   try{
-    const res = await fetch(API+'/company/subscribe', {method:'POST', headers, body: JSON.stringify({plan_id: planId, interval:'month'})});
+    var hdrs = await billAuth();
+    if(!hdrs) return;
+    const res = await fetch(API+'/company/subscribe', {method:'POST', headers: hdrs, body: JSON.stringify({plan_id: planId, interval:'month'})});
     const data = await res.json();
     if(!res.ok){showToast(data.detail);return}
     if(data.checkout_url) window.location.href = data.checkout_url;
@@ -125,7 +131,9 @@ window.subscribe = async function(planId){
 window.cancelSub = async function(){
   if(!confirm('¿Cancelar suscripción?')) return;
   try{
-    const res = await fetch(API+'/company/subscription/cancel',{method:'POST',headers});
+    var hdrs = await billAuth();
+    if(!hdrs) return;
+    const res = await fetch(API+'/company/subscription/cancel',{method:'POST', headers: hdrs});
     const data = await res.json();
     if(res.ok){showToast('Suscripción cancelada');setTimeout(function(){location.reload()},1000)}
     else showToast(data.detail);

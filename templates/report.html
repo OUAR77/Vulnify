@@ -122,7 +122,7 @@
 <div class="toast" id="toast"></div>
 
 <button class="back-top" id="backTop" aria-label="Volver arriba">&#8593;</button>
-<script src="/static/js/script.js?v=3"></script>
+<script src="/static/js/script.js?v=4"></script>
 <script>
 async function loadPrograms() {
   try {
@@ -140,7 +140,7 @@ async function loadPrograms() {
 
 document.getElementById('reportForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const token = localStorage.getItem('token');
+  const token = await getValidToken();
   if (!token) { showToast('Debes iniciar sesión primero'); return; }
 
   const severity = document.querySelector('input[name="severity"]:checked');
@@ -172,7 +172,7 @@ async function aiSuggestSeverity() {
   const title = document.getElementById('rfTitle').value.trim();
   const desc = document.getElementById('rfDesc').value.trim();
   if (!title && !desc) { showToast('Escribe al menos un título o descripción'); return; }
-  const token = localStorage.getItem('token');
+  const token = await getValidToken();
   if (!token) { showToast('Debes iniciar sesión'); return; }
   const btn = document.getElementById('aiSuggestBtn');
   btn.disabled = true;

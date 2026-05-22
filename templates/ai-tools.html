@@ -140,10 +140,11 @@
 
 <div class="toast" id="toast"></div>
 <button class="back-top" id="backTop" aria-label="Volver arriba">&#8593;</button>
-<script src="/static/js/script.js?v=3"></script>
+<script src="/static/js/script.js?v=4"></script>
 <script>
-const token = localStorage.getItem('token');
-if (!token) { window.location.href = '/'; }
+(async function(){
+var token = await getValidToken();
+if (!token) { window.location.href = '/'; return; }
 
 async function apiCall(endpoint, body) {
   const btn = event?.target;
@@ -247,6 +248,7 @@ async function sendChat() {
   box.innerHTML += `<div class="chat-msg assistant">${result?.response || 'Error al procesar'}</div>`;
   box.scrollTop = box.scrollHeight;
 }
+})();
 </script>
 </body>
 </html>

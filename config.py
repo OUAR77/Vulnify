@@ -10,7 +10,7 @@ load_dotenv()
 class Settings:
     SECRET_KEY: str = os.getenv("SECRET_KEY", "dev-secret-change-in-production")
     DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./vulnify.db")
-    ACCESS_TOKEN_EXPIRE_DAYS: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_DAYS", "7"))
+    ACCESS_TOKEN_EXPIRE_DAYS: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_DAYS", "30"))
     CORS_ORIGINS: list = json.loads(os.getenv("CORS_ORIGINS", '["http://localhost:8000"]'))
     MAX_UPLOAD_SIZE_MB: int = int(os.getenv("MAX_UPLOAD_SIZE_MB", "10"))
     ALLOWED_EXTENSIONS: list = os.getenv("ALLOWED_EXTENSIONS", ".png,.jpg,.jpeg,.gif,.pdf,.txt,.zip,.md").split(",")

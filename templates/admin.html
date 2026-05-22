@@ -50,21 +50,26 @@
 <div class="modal-overlay" id="modalOverlay"><div class="modal-body" id="modalBody"></div></div>
 <div class="toast" id="toast"></div>
 <button class="back-top" id="backTop" aria-label="Volver arriba">&uarr;</button>
-<script src="/static/js/script.js?v=3"></script>
+<script src="/static/js/script.js?v=4"></script>
 <script>
 (function(){
-const token = localStorage.getItem('token');
-const headers = { 'Authorization': `Bearer ${token}` };
-const jsonHeaders = { ...headers, 'Content-Type': 'application/json' };
-const root = () => document.getElementById('adminContent');
-
-if (!token) {
-  root().innerHTML = '<div style="text-align:center;padding:60px"><h2>Inicia sesion como admin</h2><button class="btn btn-accent" onclick="openModal(\'login\')">Login</button></div>';
-  return;
+var _adminToken = null;
+async function ensureToken() {
+  if (_adminToken) return _adminToken;
+  _adminToken = await getValidToken();
+  return _adminToken;
 }
+const root = () => document.getElementById('adminContent');
 
 (async () => {
   try {
+    var token = await ensureToken();
+    if (!token) {
+      root().innerHTML = '<div style="text-align:center;padding:60px"><h2>Inicia sesion como admin</h2><button class="btn btn-accent" onclick="openModal(\'login\')">Login</button></div>';
+      return;
+    }
+    const headers = { 'Authorization': `Bearer ${token}` };
+    const jsonHeaders = { ...headers, 'Content-Type': 'application/json' };
     const me = await (await fetch('/api/auth/me', { headers })).json();
     if (me.role !== 'admin') {
       root().innerHTML = `<div style="text-align:center;padding:60px">
