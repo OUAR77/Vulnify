@@ -8,7 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/css/styles.css">
+<script>!function(){try{var t=localStorage.getItem('theme'),h=document.documentElement,d=t?t==='dark':window.matchMedia('(prefers-color-scheme:dark)').matches;h.setAttribute('data-theme',d?'dark':'light');var v=d?['#08080a','#111114','#0d0d10','#e8e5e0','#8a8780','#5c5a55','#1e1d1b','#2d2b28','#d4a853','rgba(212,168,83,0.06)','rgba(212,168,83,0.12)','rgba(212,168,83,0.08)','0 4px 24px rgba(0,0,0,0.5)','0 12px 48px rgba(0,0,0,0.6)']:['#f8f7f5','#ffffff','#ffffff','#1a1816','#6e6b67','#9e9b97','#d6d3d0','#b8b5b0','#b8943f','rgba(184,148,63,0.06)','rgba(184,148,63,0.12)','rgba(184,148,63,0.08)','0 2px 12px rgba(0,0,0,0.04)','0 8px 32px rgba(0,0,0,0.06)'];var n=['--bg','--bg-card','--bg-surface','--text','--text-secondary','--text-tertiary','--border','--border-hover','--accent','--accent-light','--accent-mid','--accent-glow','--shadow','--shadow-lg'];for(var i=0;i<n.length;i++)h.style.setProperty(n[i],v[i])}catch(e){}}()</script>
+<link rel="stylesheet" href="/static/css/styles.css?v=4">
 <style>
 .tab-bar{display:flex;gap:4px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:4px;width:fit-content;margin-bottom:24px}
 .tab-btn{padding:10px 20px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:inherit;border:none;cursor:pointer;background:transparent;color:var(--text-secondary);transition:all .15s}
@@ -26,14 +27,30 @@
 </style>
 </head>
 <body>
-<header class="header"><div class="container header-inner"><a href="/" class="logo"><svg viewBox="0 0 32 32" width="16" height="16" style="display:inline-block"><rect width="32" height="32" rx="8" fill="#d4a853"/><circle cx="16" cy="16" r="10" fill="none" stroke="#08080a" stroke-width="1.5"/><circle cx="16" cy="16" r="5" fill="none" stroke="#08080a" stroke-width="1" opacity="0.6"/><line x1="16" y1="4" x2="16" y2="7" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="16" y1="25" x2="16" y2="28" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="16" x2="7" y2="16" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="25" y1="16" x2="28" y2="16" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><path d="M13 19 L16 12 L19 19" fill="none" stroke="#08080a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Vuln</span>ify</a><nav class="nav"><a class="nav-link" href="/admin" style="color:var(--text);">Admin</a><a class="nav-link" href="/stats">Estadisticas</a><a class="nav-link" href="/programas">Programas</a></nav><div class="header-actions"><button class="theme-btn" id="themeToggle" onclick="toggleTheme()" title="Cambiar tema">&#127769;</button><div id="headerAuth"><button class="btn btn-ghost" onclick="openModal('login')">Iniciar sesion</button><button class="btn btn-primary" onclick="openModal('register')">Registrarse</button></div><div id="headerUser" style="display:none;align-items:center;gap:8px"><a href="/dashboard" class="btn btn-ghost" id="headerUserName" style="font-weight:600"></a><button class="btn btn-ghost" onclick="logout()" style="font-size:12px">Salir</button></div></div></div></header>
+<header class="header"><div class="container header-inner"><a href="/" class="logo"><svg viewBox="0 0 32 32" width="16" height="16" style="display:inline-block"><rect width="32" height="32" rx="8" fill="#d4a853"/><circle cx="16" cy="16" r="10" fill="none" stroke="#08080a" stroke-width="1.5"/><circle cx="16" cy="16" r="5" fill="none" stroke="#08080a" stroke-width="1" opacity="0.6"/><line x1="16" y1="4" x2="16" y2="7" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="16" y1="25" x2="16" y2="28" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="16" x2="7" y2="16" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="25" y1="16" x2="28" y2="16" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><path d="M13 19 L16 12 L19 19" fill="none" stroke="#08080a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Vuln</span>ify</a><button class="hamburger" onclick="toggleMobileMenu()" aria-label="Menú"><span></span><span></span><span></span></button><nav class="nav"><a class="nav-link" href="/admin" style="color:var(--text);">Admin</a><a class="nav-link" href="/stats">Estadisticas</a><a class="nav-link" href="/programas">Programas</a></nav><div class="header-actions"><button class="theme-btn" id="themeToggle" onclick="toggleTheme()" title="Cambiar tema">&#127769;</button><div id="headerAuth"><button class="btn btn-ghost" onclick="openModal('login')">Iniciar sesion</button><button class="btn btn-primary" onclick="openModal('register')">Registrarse</button></div><div id="headerUser" style="display:none;align-items:center;gap:8px"><a href="/dashboard" class="btn btn-ghost" id="headerUserName" style="font-weight:600"></a><button class="btn btn-ghost" onclick="logout()" style="font-size:12px">Salir</button></div></div></div>
+<div class="mobile-menu" id="mobileMenu">
+  <div id="mobileNavLinks">
+    <a class="nav-link" href="/admin">Admin</a>
+    <a class="nav-link" href="/stats">Estadisticas</a>
+    <a class="nav-link" href="/programas">Programas</a>
+  </div>
+  <div class="header-actions-mobile" id="mobileAuth">
+    <button class="btn btn-ghost" onclick="openModal('login')">Iniciar sesion</button>
+    <button class="btn btn-primary" onclick="openModal('register')">Registrarse</button>
+  </div>
+  <div class="header-actions-mobile" id="mobileUser" style="display:none">
+    <a href="/dashboard" class="btn btn-ghost" id="mobileUserName" style="font-weight:600"></a>
+    <button class="btn btn-ghost" onclick="logout()">Salir</button>
+  </div>
+</div>
+</header>
 
 <section class="section"><div class="container" id="adminContent"><p style="text-align:center;padding:40px">Cargando...</p></div></section>
 
 <div class="modal-overlay" id="modalOverlay"><div class="modal-body" id="modalBody"></div></div>
 <div class="toast" id="toast"></div>
 <button class="back-top" id="backTop" aria-label="Volver arriba">&uarr;</button>
-<script src="/static/js/script.js"></script>
+<script src="/static/js/script.js?v=3"></script>
 <script>
 (function(){
 const token = localStorage.getItem('token');

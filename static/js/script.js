@@ -1,46 +1,151 @@
-// AUTH STATE (runs on every page)
-(function checkAuth() {
-  const token = localStorage.getItem('token');
-  const user = localStorage.getItem('user');
-  const auth = document.getElementById('headerAuth');
-  const userDiv = document.getElementById('headerUser');
-  const userName = document.getElementById('headerUserName');
-  if (token && user && auth && userDiv && userName) {
-    auth.style.display = 'none';
-    userDiv.style.display = 'inline-flex';
-    userName.textContent = JSON.parse(user).name;
-    const role = JSON.parse(user).role;
-    const nav = document.querySelector('.nav');
-    if (role === 'admin' && nav && !nav.querySelector('.admin-link')) {
-      const link = document.createElement('a');
-      link.className = 'nav-link admin-link';
-      link.href = '/admin';
-      link.textContent = 'Admin';
-      nav.appendChild(link);
+// AUTH STATE
+function applyAuth() {
+  try {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+    const parsed = user ? JSON.parse(user) : null;
+    const userName = parsed ? parsed.name : null;
+    const role = parsed ? parsed.role : null;
+    const loggedIn = !!(token && userName);
+
+    // Desktop auth
+    const auth = document.getElementById('headerAuth');
+    const userDiv = document.getElementById('headerUser');
+    const userNameEl = document.getElementById('headerUserName');
+    if (auth) auth.style.display = loggedIn ? 'none' : '';
+    if (userDiv) userDiv.style.display = loggedIn ? 'inline-flex' : 'none';
+    if (userNameEl && userName) userNameEl.textContent = userName;
+
+    // Mobile auth
+    const mobileAuth = document.getElementById('mobileAuth');
+    const mobileUser = document.getElementById('mobileUser');
+    const mobileUserNameEl = document.getElementById('mobileUserName');
+    if (mobileAuth) mobileAuth.style.display = loggedIn ? 'none' : '';
+    if (mobileUser) mobileUser.style.display = loggedIn ? 'flex' : 'none';
+    if (mobileUserNameEl && userName) mobileUserNameEl.textContent = userName;
+
+    // Admin link in desktop nav
+    if (loggedIn && role === 'admin') {
+      const nav = document.querySelector('.nav');
+      if (nav && !nav.querySelector('.admin-link')) {
+        const link = document.createElement('a');
+        link.className = 'nav-link admin-link';
+        link.href = '/admin';
+        link.textContent = 'Admin';
+        nav.appendChild(link);
+      }
+      const mobileNav = document.getElementById('mobileNavLinks');
+      if (mobileNav && !mobileNav.querySelector('.admin-link')) {
+        const mlink = document.createElement('a');
+        mlink.className = 'nav-link admin-link';
+        mlink.href = '/admin';
+        mlink.textContent = 'Admin';
+        mobileNav.appendChild(mlink);
+      }
     }
+
+    // Dashboard page: show/hide dashUserName
+    const dashUser = document.getElementById('dashUserName');
+    if (dashUser && userName) {
+      dashUser.style.display = '';
+      dashUser.textContent = userName;
+    }
+  } catch(e) {
+    // Ignore auth errors on page load
   }
-})();
+}
+applyAuth();
+document.addEventListener('DOMContentLoaded', applyAuth);
 
 // DARK MODE
+var THEME_VARS = {
+  dark:  ['#08080a','#111114','#0d0d10','#e8e5e0','#8a8780','#5c5a55','#1e1d1b','#2d2b28','#d4a853','rgba(212,168,83,0.06)','rgba(212,168,83,0.12)','rgba(212,168,83,0.08)','0 4px 24px rgba(0,0,0,0.5)','0 12px 48px rgba(0,0,0,0.6)'],
+  light: ['#f8f7f5','#ffffff','#ffffff','#1a1816','#6e6b67','#9e9b97','#d6d3d0','#b8b5b0','#b8943f','rgba(184,148,63,0.06)','rgba(184,148,63,0.12)','rgba(184,148,63,0.08)','0 2px 12px rgba(0,0,0,0.04)','0 8px 32px rgba(0,0,0,0.06)']
+};
+var THEME_NAMES = ['--bg','--bg-card','--bg-surface','--text','--text-secondary','--text-tertiary','--border','--border-hover','--accent','--accent-light','--accent-mid','--accent-glow','--shadow','--shadow-lg'];
+
+function setThemeVars(isDark) {
+  var v = isDark ? THEME_VARS.dark : THEME_VARS.light;
+  var h = document.documentElement;
+  for (var i = 0; i < THEME_NAMES.length; i++) {
+    h.style.setProperty(THEME_NAMES[i], v[i]);
+  }
+}
+function updateThemeButtons(isDark) {
+  document.querySelectorAll('.theme-btn, .theme-btn-mobile').forEach(function(b) {
+    b.textContent = isDark ? '☀️' : '🌙';
+  });
+}
 function toggleTheme() {
-  const html = document.documentElement;
-  const btn = document.getElementById('themeToggle');
-  const isDark = html.getAttribute('data-theme') === 'dark';
+  var html = document.documentElement;
+  var isDark = html.getAttribute('data-theme') === 'dark';
   html.setAttribute('data-theme', isDark ? 'light' : 'dark');
-  btn.textContent = isDark ? '🌙' : '☀️';
+  setThemeVars(!isDark);
+  updateThemeButtons(!isDark);
   localStorage.setItem('theme', isDark ? 'light' : 'dark');
 }
+function applyTheme() {
+  try {
+    var saved = localStorage.getItem('theme');
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var useDark = saved ? saved === 'dark' : prefersDark;
+    document.documentElement.setAttribute('data-theme', useDark ? 'dark' : 'light');
+    setThemeVars(useDark);
+    updateThemeButtons(useDark);
+  } catch(e) { console.warn('applyTheme error:', e); }
+}
+applyTheme();
+document.addEventListener('DOMContentLoaded', applyTheme);
 
-(function initTheme() {
-  const saved = localStorage.getItem('theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const useDark = saved ? saved === 'dark' : prefersDark;
-  if (useDark) {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    const btn = document.getElementById('themeToggle');
-    if (btn) btn.textContent = '☀️';
+// MOBILE MENU
+function closeMobileMenu() {
+  const btn = document.querySelector('.hamburger');
+  const menu = document.getElementById('mobileMenu');
+  if (menu) menu.classList.remove('open');
+  if (btn) btn.classList.remove('open');
+  document.body.classList.remove('menu-open');
+}
+function toggleMobileMenu() {
+  const btn = document.querySelector('.hamburger');
+  const menu = document.getElementById('mobileMenu');
+  const header = document.querySelector('.header');
+  if (!btn || !menu) return;
+  const opening = !menu.classList.contains('open');
+  btn.classList.toggle('open');
+  menu.classList.toggle('open');
+  document.body.classList.toggle('menu-open');
+  if (opening && header) header.classList.add('scrolled');
+  if (!opening) document.body.classList.remove('menu-open');
+}
+// Init: mobile menu + theme toggle in menu
+document.addEventListener('DOMContentLoaded', function() {
+  // Close mobile menu on nav link click, or tap background
+  document.querySelectorAll('.mobile-menu .nav-link').forEach(function(link) {
+    link.addEventListener('click', closeMobileMenu);
+  });
+  const mm = document.getElementById('mobileMenu');
+  if (mm) {
+    mm.addEventListener('click', function(e) {
+      if (e.target === this) closeMobileMenu();
+    });
+    // Add theme toggle to mobile menu if not present
+    if (!mm.querySelector('.theme-btn-mobile')) {
+      var tb = document.createElement('button');
+      tb.className = 'theme-btn-mobile';
+      tb.onclick = toggleTheme;
+      tb.title = 'Cambiar tema';
+      var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      tb.textContent = isDark ? '☀️' : '🌙';
+      tb.style.cssText = 'background:transparent;border:1px solid var(--border);border-radius:6px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;margin:8px 0;flex-shrink:0';
+      var actions = mm.querySelector('.header-actions-mobile');
+      if (actions) {
+        actions.parentNode.insertBefore(tb, actions);
+      } else {
+        mm.appendChild(tb);
+      }
+    }
   }
-})();
+});
 
 // FAQ
 function toggleFaq(btn) {
@@ -85,6 +190,7 @@ async function registerUser(name, email, password, role) {
 function logout() {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
+  closeMobileMenu();
   window.location.href = '/';
 }
 
