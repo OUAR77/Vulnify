@@ -62,10 +62,10 @@
 <script>
 (async()=>{
   let user = null;
-  const tok = localStorage.getItem('token');
+  var tok = await getValidToken();
   if(tok){
     try{
-      const r = await fetch('/api/auth/me', {headers:{Authorization:`Bearer ${tok}`}});
+      const r = await fetch('/api/auth/me', {headers:{Authorization:'Bearer '+tok}});
       if(r.ok) user = await r.json();
     }catch{}
   }

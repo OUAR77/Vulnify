@@ -142,17 +142,16 @@
 <button class="back-top" id="backTop" aria-label="Volver arriba">&#8593;</button>
 <script src="/static/js/script.js?v=4"></script>
 <script>
-(async function(){
-var token = await getValidToken();
-if (!token) { window.location.href = '/'; return; }
-
 async function apiCall(endpoint, body) {
   const btn = event?.target;
   if (btn) btn.disabled = true;
   try {
+    var hdrs = { 'Content-Type': 'application/json' };
+    var tok = await getValidToken();
+    if (tok) hdrs['Authorization'] = 'Bearer ' + tok;
     const res = await fetch(endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      headers: hdrs,
       body: JSON.stringify(body),
     });
     if (!res.ok) {
@@ -248,7 +247,6 @@ async function sendChat() {
   box.innerHTML += `<div class="chat-msg assistant">${result?.response || 'Error al procesar'}</div>`;
   box.scrollTop = box.scrollHeight;
 }
-})();
 </script>
 </body>
 </html>
