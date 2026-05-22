@@ -175,6 +175,14 @@ async def programas(request: Request):
 async def precios(request: Request):
     return templates.TemplateResponse(request, "pricing.html")
 
+@app.get("/terminos", response_class=HTMLResponse, description="Terms and conditions")
+async def terminos(request: Request):
+    return templates.TemplateResponse(request, "terms.html")
+
+@app.get("/privacidad", response_class=HTMLResponse, description="Privacy policy")
+async def privacidad(request: Request):
+    return templates.TemplateResponse(request, "privacy.html")
+
 
 @app.get("/programa/{program_id}", response_class=HTMLResponse, description="Program detail page")
 async def program_detail(request: Request, program_id: int):
