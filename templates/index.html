@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
 <script>!function(){try{var t=localStorage.getItem('theme'),h=document.documentElement,d=t?t==='dark':window.matchMedia('(prefers-color-scheme:dark)').matches;h.setAttribute('data-theme',d?'dark':'light');var v=d?['#08080a','#111114','#0d0d10','#e8e5e0','#8a8780','#5c5a55','#1e1d1b','#2d2b28','#d4a853','rgba(212,168,83,0.06)','rgba(212,168,83,0.12)','rgba(212,168,83,0.08)','0 4px 24px rgba(0,0,0,0.5)','0 12px 48px rgba(0,0,0,0.6)']:['#f8f7f5','#ffffff','#ffffff','#1a1816','#6e6b67','#9e9b97','#d6d3d0','#b8b5b0','#b8943f','rgba(184,148,63,0.06)','rgba(184,148,63,0.12)','rgba(184,148,63,0.08)','0 2px 12px rgba(0,0,0,0.04)','0 8px 32px rgba(0,0,0,0.06)'];var n=['--bg','--bg-card','--bg-surface','--text','--text-secondary','--text-tertiary','--border','--border-hover','--accent','--accent-light','--accent-mid','--accent-glow','--shadow','--shadow-lg'];for(var i=0;i<n.length;i++)h.style.setProperty(n[i],v[i])}catch(e){}}()</script>
-<link rel="stylesheet" href="/static/css/styles.css?v=4">
+<link rel="stylesheet" href="/static/css/styles.css?v=5">
   <style>
     .hero-section {
       min-height: 100vh;
@@ -43,19 +43,17 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 24px;
+      align-items: start;
     }
     .feature-item {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
       padding: 32px;
-      transition: border-color .3s;
     }
-    .feature-item:hover { border-color: var(--border-hover); }
     .feature-icon {
-      font-size: 20px; margin-bottom: 16px;
-      color: var(--accent);
+      width:40px;height:40px;
+      display:flex;align-items:center;justify-content:center;
+      margin-bottom:16px;
     }
+    .feature-icon svg{width:22px;height:22px;stroke:var(--accent);stroke-width:1.5;fill:none}
     .feature-item h3 { font-size: 15px; margin-bottom: 8px; }
     .feature-item p { font-size: 13px; color: var(--text-secondary); line-height: 1.65; }
     .stats-grid {
@@ -86,14 +84,8 @@
       gap: 20px;
     }
     .testimonial-item {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
       padding: 32px;
-      transition: border-color .3s;
     }
-    .testimonial-item:hover { border-color: var(--border-hover); }
-    .testimonial-item .stars { color: var(--accent); font-size: 14px; letter-spacing: 2px; margin-bottom: 12px; }
     .cta-section {
       text-align: center;
       padding: 100px 0;
@@ -167,6 +159,17 @@
 </header>
 
 <section class="hero-section">
+  <div class="hero-target" aria-hidden="true">
+    <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="200" cy="200" r="190" stroke="var(--accent)" stroke-width="0.5" opacity="0.08"/>
+      <circle cx="200" cy="200" r="155" stroke="var(--accent)" stroke-width="0.4" opacity="0.06"/>
+      <circle cx="200" cy="200" r="120" stroke="var(--accent)" stroke-width="0.3" opacity="0.05"/>
+      <circle cx="200" cy="200" r="75" stroke="var(--accent)" stroke-width="0.3" opacity="0.04"/>
+      <line x1="200" y1="10" x2="200" y2="390" stroke="var(--accent)" stroke-width="0.3" opacity="0.04"/>
+      <line x1="10" y1="200" x2="390" y2="200" stroke="var(--accent)" stroke-width="0.3" opacity="0.04"/>
+      <circle cx="200" cy="200" r="3" fill="var(--accent)" opacity="0.08"/>
+    </svg>
+  </div>
   <div class="container">
     <h1>Bug bounty<br>para España.<br><span>Sin rodeos.</span></h1>
     <p>Conectamos hackers éticos con startups tech. Legal, seguro y con recompensas que se pagan.</p>
@@ -186,32 +189,32 @@
     </div>
     <div class="features-grid">
       <div class="feature-item">
-        <div class="feature-icon">🛡️</div>
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <h3>Verificación completa</h3>
         <p>Empresas y hunters verificados. Sin cuentas falsas, sin pérdidas de tiempo.</p>
       </div>
       <div class="feature-item">
-        <div class="feature-icon">📋</div>
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></div>
         <h3>Reportes CVSS</h3>
         <p>Sistema guiado con evidencias, pasos para reproducir y scoring automático.</p>
       </div>
       <div class="feature-item">
-        <div class="feature-icon">⚡</div>
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
         <h3>SLA 48 horas</h3>
         <p>Respuesta garantizada. Sin silencio, sin esperar semanas.</p>
       </div>
       <div class="feature-item">
-        <div class="feature-icon">🏆</div>
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M6 9H4a2 2 0 01-2-2V5a2 2 0 012-2h2"/><path d="M18 9h2a2 2 0 002-2V5a2 2 0 00-2-2h-2"/><path d="M6 3h12v6a6 6 0 11-12 0V3z"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></div>
         <h3>Hall of Fame</h3>
         <p>Construye reputación y accede a programas privados con mejores recompensas.</p>
       </div>
       <div class="feature-item">
-        <div class="feature-icon">💰</div>
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v12"/><path d="M16 9c0-2.21-1.79-4-4-4S8 6.79 8 9s1.79 4 4 4 4 1.79 4 4-1.79 4-4 4-4-1.79-4-4"/></svg></div>
         <h3>Pago garantizado</h3>
         <p>Bug válido = cobro en 24 horas. Recompensas en escrow.</p>
       </div>
       <div class="feature-item">
-        <div class="feature-icon">⚖️</div>
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 21h6"/><path d="M12 3v18"/><path d="M6 3l6 4 6-4"/><path d="M4 14l4-2"/><path d="M20 14l-4-2"/></svg></div>
         <h3>100% legal</h3>
         <p>Acuerdo de no procesamiento firmado digitalmente antes de empezar.</p>
       </div>
