@@ -107,7 +107,7 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 if settings.ENVIRONMENT == "production":
     app.add_middleware(
         TrustedHostMiddleware,
-        allowed_hosts=settings.CORS_ORIGINS,
+        allowed_hosts=["vulnify-production.up.railway.app", "vulnify.es", "www.vulnify.es"],
     )
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
