@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IA Tools — Vulnify</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <style>
+    .ai-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .ai-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
+    .ai-card h2 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .ai-card p { font-size: 13px; color: var(--text-tertiary); margin-bottom: 16px; }
+    .ai-card textarea, .ai-card input, .ai-card select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--text); font-size: 13px; font-family: inherit; margin-bottom: 12px; }
+    .ai-card textarea:focus, .ai-card input:focus { outline: none; border-color: var(--accent); }
+    .ai-card textarea { min-height: 80px; resize: vertical; }
+    .ai-output { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; font-size: 13px; line-height: 1.6; min-height: 60px; white-space: pre-wrap; margin-top: 12px; }
+    .ai-output.loading { opacity: 0.5; }
+    .btn-ai { background: var(--accent); color: #fff; border: none; padding: 8px 18px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; }
+    .btn-ai:hover { opacity: 0.9; }
+    .btn-ai:disabled { opacity: 0.5; cursor: not-allowed; }
+    .chat-box { height: 300px; overflow-y: auto; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 10px; }
+    .chat-msg { padding: 10px 14px; border-radius: var(--radius-sm); font-size: 13px; line-height: 1.5; max-width: 85%; }
+    .chat-msg.user { background: var(--accent); color: #fff; align-self: flex-end; }
+    .chat-msg.assistant { background: var(--bg-surface); color: var(--text); align-self: flex-start; border: 1px solid var(--border); }
+    .chat-input-row { display: flex; gap: 8px; }
+    .chat-input-row input { flex: 1; margin-bottom: 0; }
+    .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 100px; font-weight: 600; margin-right: 4px; }
+    .tag.critical { background: #dc262615; color: #dc2626; }
+    .tag.high { background: #ef444415; color: #ef4444; }
+    .tag.medium { background: #d9770615; color: #d97706; }
+    .tag.low { background: #16a34a15; color: #16a34a; }
+    .tag.info { background: var(--bg-surface); color: var(--text-tertiary); }
+    @media (max-width: 768px) { .ai-layout { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<header class="header">
+  <div class="container header-inner">
+    <a href="/" class="logo"><svg viewBox="0 0 32 32" width="16" height="16" style="display:inline-block"><rect width="32" height="32" rx="8" fill="#d4a853"/><circle cx="16" cy="16" r="10" fill="none" stroke="#08080a" stroke-width="1.5"/><circle cx="16" cy="16" r="5" fill="none" stroke="#08080a" stroke-width="1" opacity="0.6"/><line x1="16" y1="4" x2="16" y2="7" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="16" y1="25" x2="16" y2="28" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="16" x2="7" y2="16" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="25" y1="16" x2="28" y2="16" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><path d="M13 19 L16 12 L19 19" fill="none" stroke="#08080a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Vuln</span>ify</a>
+    <nav class="nav">
+      <a class="nav-link" href="/programas">Programas</a>
+      <a class="nav-link" href="/dashboard">Dashboard</a>
+      <a class="nav-link" href="/report/new">Reportar</a>
+      <a class="nav-link" href="/ai" style="color:var(--accent);font-weight:700;">IA Tools</a>
+    </nav>
+    <div class="header-actions">
+      <button class="theme-btn" id="themeToggle" onclick="toggleTheme()">🌙</button>
+      <div id="headerUser" style="display:none;align-items:center;gap:8px">
+        <a href="/dashboard" class="btn btn-ghost" id="headerUserName" style="font-weight:600"></a>
+        <button class="btn btn-ghost" onclick="logout()" style="font-size:12px">Salir</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container">
+    <div style="margin-bottom:36px;">
+      <div class="section-label" style="color:var(--accent);">🤖 IA</div>
+      <h1 class="section-title">Herramientas de IA</h1>
+      <p class="section-sub" style="font-size:14px;">Asistente inteligente para hunters. Analiza, mejora y optimiza tus reportes.</p>
+    </div>
+
+    <div class="ai-layout">
+      <div class="ai-card">
+        <h2>🔍 Analizar vulnerabilidad</h2>
+        <p>Detecta severidad, CWE, CVSS automáticamente</p>
+        <input id="anTitle" placeholder="Título del reporte">
+        <textarea id="anDesc" placeholder="Descripción de la vulnerabilidad..."></textarea>
+        <textarea id="anSteps" placeholder="Pasos para reproducir (opcional)"></textarea>
+        <textarea id="anImpact" placeholder="Impacto (opcional)"></textarea>
+        <button class="btn-ai" id="btnAnalyze" onclick="analyze()">Analizar con IA</button>
+        <div class="ai-output" id="anOutput"></div>
+      </div>
+
+      <div class="ai-card">
+        <h2>📝 Mejorar texto</h2>
+        <p>Corrige gramática, resume o traduce</p>
+        <select id="enhMode">
+          <option value="grammar">Corregir gramática</option>
+          <option value="summary">Resumir</option>
+          <option value="translate_en">Traducir a inglés</option>
+          <option value="translate_es">Traducir a español</option>
+        </select>
+        <textarea id="enhText" placeholder="Pega el texto a procesar..."></textarea>
+        <button class="btn-ai" id="btnEnhance" onclick="enhance()">Procesar</button>
+        <div class="ai-output" id="enhOutput"></div>
+      </div>
+
+      <div class="ai-card">
+        <h2>💡 Sugerir PoC</h2>
+        <p>Genera pasos para un Proof of Concept</p>
+        <input id="pocType" placeholder="Tipo de vulnerabilidad (ej: XSS, SQLi)">
+        <textarea id="pocDesc" placeholder="Describe la vulnerabilidad..."></textarea>
+        <button class="btn-ai" id="btnPoc" onclick="suggestPoc()">Generar PoC</button>
+        <div class="ai-output" id="pocOutput"></div>
+      </div>
+
+      <div class="ai-card">
+        <h2>🔁 Detectar duplicados</h2>
+        <p>Compara dos reportes para ver si describen lo mismo</p>
+        <textarea id="dupNew" placeholder="Reporte nuevo (título + descripción)..."></textarea>
+        <textarea id="dupExisting" placeholder="Reporte existente (título + descripción)..."></textarea>
+        <button class="btn-ai" id="btnDup" onclick="checkDuplicate()">Comparar</button>
+        <div class="ai-output" id="dupOutput"></div>
+      </div>
+    </div>
+
+    <div class="ai-card" style="margin-top:24px;">
+      <h2>💬 Chat asistente</h2>
+      <p>Pregunta cualquier duda sobre bug bounty, reportes o vulnerabilidades</p>
+      <div class="chat-box" id="chatBox">
+        <div class="chat-msg assistant">¡Hola! Soy tu asistente de bug bounty. Pregúntame lo que necesites.</div>
+      </div>
+      <div class="chat-input-row">
+        <input id="chatInput" placeholder="Escribe tu mensaje..." onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="btn-ai" onclick="sendChat()">Enviar</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="toast" id="toast"></div>
+<button class="back-top" id="backTop" aria-label="Volver arriba">&#8593;</button>
+<script src="/static/js/script.js"></script>
+<script>
+const token = localStorage.getItem('token');
+if (!token) { window.location.href = '/'; }
+
+async function apiCall(endpoint, body) {
+  const btn = event?.target;
+  if (btn) btn.disabled = true;
+  try {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const d = await res.json();
+      showToast(d.detail || 'Error');
+      return null;
+    }
+    return await res.json();
+  } catch {
+    showToast('Error de conexión');
+    return null;
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function analyze() {
+  const output = document.getElementById('anOutput');
+  output.textContent = 'Analizando...';
+  output.classList.add('loading');
+  const result = await apiCall('/api/ai/analyze', {
+    title: document.getElementById('anTitle').value,
+    description: document.getElementById('anDesc').value,
+    steps: document.getElementById('anSteps').value,
+    impact: document.getElementById('anImpact').value,
+  });
+  output.classList.remove('loading');
+  if (!result) { output.textContent = 'Error al analizar'; return; }
+  output.innerHTML = `
+    <div><span class="tag ${result.severity}">${result.severity?.toUpperCase()}</span>
+    <strong>CWE:</strong> ${result.cwe_id || 'N/A'} | 
+    <strong>CVSS:</strong> ${result.cvss_score || 'N/A'} (${result.cvss_vector || ''})</div>
+    <div style="margin-top:8px;color:var(--text-secondary)">${result.explanation || ''}</div>
+  `;
+}
+
+async function enhance() {
+  const output = document.getElementById('enhOutput');
+  output.textContent = 'Procesando...';
+  output.classList.add('loading');
+  const result = await apiCall('/api/ai/enhance', {
+    text: document.getElementById('enhText').value,
+    mode: document.getElementById('enhMode').value,
+  });
+  output.classList.remove('loading');
+  output.textContent = result?.result || 'Error';
+}
+
+async function suggestPoc() {
+  const output = document.getElementById('pocOutput');
+  output.textContent = 'Generando...';
+  output.classList.add('loading');
+  const result = await apiCall('/api/ai/suggest-poc', {
+    description: document.getElementById('pocDesc').value,
+    vulnerability_type: document.getElementById('pocType').value,
+  });
+  output.classList.remove('loading');
+  output.textContent = result?.result || 'Error';
+}
+
+async function checkDuplicate() {
+  const output = document.getElementById('dupOutput');
+  output.textContent = 'Analizando...';
+  output.classList.add('loading');
+  const dupNew = document.getElementById('dupNew').value;
+  const dupExisting = document.getElementById('dupExisting').value;
+  const result = await apiCall('/api/ai/check-duplicate', {
+    new_title: dupNew,
+    new_description: dupNew,
+    existing_title: dupExisting,
+    existing_description: dupExisting,
+  });
+  output.classList.remove('loading');
+  if (!result) { output.textContent = 'Error'; return; }
+  output.innerHTML = `
+    <div><strong>¿Duplicado?</strong> ${result.is_duplicate ? '⚠️ Sí' : '✅ No'}</div>
+    <div><strong>Similitud:</strong> ${(result.similarity * 100).toFixed(0)}%</div>
+    <div style="margin-top:4px;color:var(--text-secondary)">${result.reason || ''}</div>
+  `;
+}
+
+async function sendChat() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  const box = document.getElementById('chatBox');
+  box.innerHTML += `<div class="chat-msg user">${msg}</div>`;
+  box.scrollTop = box.scrollHeight;
+  const result = await apiCall('/api/ai/chat', {
+    messages: [{ role: 'user', content: msg }],
+  });
+  box.innerHTML += `<div class="chat-msg assistant">${result?.response || 'Error al procesar'}</div>`;
+  box.scrollTop = box.scrollHeight;
+}
+</script>
+</body>
+</html>

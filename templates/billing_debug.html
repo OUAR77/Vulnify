@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Facturación — Vulnify</title>
+<link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+<section class="section"><div class="container" id="billingContent"><p style="text-align:center;padding:40px">Probando...</p></div></section>
+<script>
+const token = localStorage.getItem('token');
+if(!token){
+  document.getElementById('billingContent').innerHTML = '<p style="text-align:center;padding:40px">No hay token</p>';
+} else {
+  document.getElementById('billingContent').innerHTML = '<p style="text-align:center;padding:40px">Token encontrado. Cargando API...</p>';
+  fetch('/api/auth/me', {headers:{'Authorization':'Bearer '+token}})
+    .then(r => r.json())
+    .then(user => {
+      document.getElementById('billingContent').innerHTML = '<p style="text-align:center;padding:40px">Usuario: '+user.email+' ('+user.role+')</p>';
+    })
+    .catch(e => {
+      document.getElementById('billingContent').innerHTML = '<p style="text-align:center;padding:40px">Error: '+e.message+'</p>';
+    });
+}
+</script>
+</body>
+</html>

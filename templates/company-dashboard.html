@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel empresa — Vulnify</title>
+<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/styles.css">
+<style>
+.action-btn{font-size:12px;font-weight:600;padding:6px 14px;border-radius:var(--radius-sm);border:none;cursor:pointer;font-family:inherit;transition:all .15s;background:var(--bg-surface);color:var(--text-secondary)}
+.action-btn.valid{color:#4ade80;background:rgba(74,222,128,0.1)}.action-btn.valid:hover{background:#4ade80;color:#fff}
+.action-btn.invalid{color:#f87171;background:rgba(248,113,113,0.1)}.action-btn.invalid:hover{background:#f87171;color:#fff}
+.action-btn.paid{color:#4ade80;background:rgba(74,222,128,0.1)}.action-btn.paid:hover{background:#4ade80;color:#fff}
+.action-btn.danger{color:#f87171;background:rgba(248,113,113,0.1)}.action-btn.danger:hover{background:#f87171;color:#fff}
+.prog-form label{font-size:13px;font-weight:600;display:block;margin-bottom:4px;color:var(--text-secondary)}
+.prog-form .field{margin-bottom:14px}
+.prog-form input,.prog-form textarea,.prog-form select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-surface);color:var(--text);font-size:13px;font-family:inherit;transition:border-color .15s}
+.prog-form input:focus,.prog-form textarea:focus,.prog-form select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.prog-form textarea{resize:vertical;min-height:60px;font-family:monospace}
+.two-col-form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.filter-bar input,.filter-bar select{padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-surface);color:var(--text);font-size:12px;font-family:inherit}
+.filter-bar input:focus,.filter-bar select:focus{outline:none;border-color:var(--accent)}
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-tertiary)}
+.empty-state-icon{font-size:40px;margin-bottom:12px;opacity:.5}
+.empty-state h3{font-size:16px;font-weight:600;color:var(--text-secondary);margin-bottom:6px}
+.empty-state p{font-size:13px;color:var(--text-tertiary)}
+.prog-card{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px;transition:border-color .15s}
+.prog-card:hover{border-color:var(--border-hover)}
+.prog-card-info{flex:1}
+.prog-card-actions{display:flex;gap:4px;flex-shrink:0}
+.notif-badge{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+</style>
+</head>
+<body>
+<header class="header"><div class="container header-inner"><a href="/" class="logo"><svg viewBox="0 0 32 32" width="16" height="16" style="display:inline-block"><rect width="32" height="32" rx="8" fill="#d4a853"/><circle cx="16" cy="16" r="10" fill="none" stroke="#08080a" stroke-width="1.5"/><circle cx="16" cy="16" r="5" fill="none" stroke="#08080a" stroke-width="1" opacity="0.6"/><line x1="16" y1="4" x2="16" y2="7" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="16" y1="25" x2="16" y2="28" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="16" x2="7" y2="16" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="25" y1="16" x2="28" y2="16" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><path d="M13 19 L16 12 L19 19" fill="none" stroke="#08080a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Vuln</span>ify</a><nav class="nav"><a class="nav-link" href="/programas">Programas</a><a class="nav-link" href="/dashboard">Dashboard</a><a class="nav-link" href="/stats">Estadísticas</a></nav><div class="header-actions"><button class="theme-btn" id="themeToggle" onclick="toggleTheme()" title="Cambiar tema">🌙</button><div id="headerUser" style="display:none;align-items:center;gap:8px"><a href="/dashboard" class="btn btn-ghost" id="headerUserName" style="font-weight:600"></a><button class="btn btn-ghost" onclick="logout()" style="font-size:12px">Salir</button></div></div></div></header>
+
+<section class="section"><div class="container" id="companyDash"></div></section>
+
+<div class="toast" id="toast"></div>
+<button class="back-top" id="backTop" aria-label="Volver arriba">&#8593;</button>
+<script src="/static/js/script.js"></script>
+<script>
+const API = '/api';
+const token = localStorage.getItem('token');
+if(!token){window.location.href='/';}
+
+async function api(method, path, body) {
+  const opts = {method, headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`}};
+  if(body) opts.body = JSON.stringify(body);
+  const res = await fetch(`${API}${path}`, opts);
+  const data = await res.json();
+  if(!res.ok) throw new Error(data.detail || 'Error');
+  return data;
+}
+
+(async()=>{
+  let user;
+  try{user=await api('GET','/auth/me')}catch{localStorage.removeItem('token');window.location.href='/';return}
+  if(user.role==='admin'){window.location.href='/admin';return}
+  if(user.role!=='company'){document.getElementById('companyDash').innerHTML='<div style="text-align:center;padding:60px">Esta página es solo para empresas.</div>';return}
+  document.title=`${user.company||'Empresa'} — Vulnify`;
+  document.getElementById('headerUserName').textContent=user.name;
+  document.getElementById('headerUser').style.display='inline-flex';
+
+  const [repData, progData, notifData] = await Promise.all([
+    api('GET','/company/reports'),
+    api('GET','/company/programs'),
+    api('GET','/notifications')
+  ]);
+  const reports=repData.items||[];
+  const programs=progData||[];
+  const notifications=notifData||[];
+  const total=reports.length;
+  const valid=reports.filter(r=>r.status==='valid'||r.status==='paid').length;
+  const paid=reports.filter(r=>r.status==='paid').length;
+  const pending=reports.filter(r=>r.status==='pending').length;
+  const unreadNotifs=notifications.filter(n=>!n.read).length;
+
+  document.getElementById('companyDash').innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:32px">
+      <div>
+        <h1 style="font-size:28px;font-weight:700;letter-spacing:-1px;">Panel empresa</h1>
+        <p style="color:var(--text-secondary);font-size:14px">${user.company||user.name}</p>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <a href="/company/billing" class="btn btn-outline" style="font-size:12px">Facturación</a>
+        <a href="/stats" class="btn btn-outline" style="font-size:12px">Estadísticas</a>
+        <a href="/api/reports/export/csv" class="btn btn-outline" style="font-size:12px" download>Exportar CSV</a>
+      </div>
+    </div>
+
+    <div class="stats-row" style="margin-bottom:40px">
+      <div class="stat-counter"><div class="stat-counter-num" style="font-size:32px">${total}</div><div class="stat-counter-label">Reportes recibidos</div></div>
+      <div class="stat-counter"><div class="stat-counter-num" style="font-size:32px;color:#16a34a">${valid}</div><div class="stat-counter-label">Válidos</div></div>
+      <div class="stat-counter"><div class="stat-counter-num" style="font-size:32px;color:var(--accent)">${paid}</div><div class="stat-counter-label">Pagados</div></div>
+      <div class="stat-counter" style="position:relative">
+        <div class="stat-counter-num" style="font-size:32px;color:var(--text-tertiary)">${pending}</div>
+        <div class="stat-counter-label">Pendientes</div>
+        ${unreadNotifs ? '<span style="position:absolute;top:8px;right:8px;width:10px;height:10px;border-radius:50%;background:var(--accent)"></span>' : ''}
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:40px">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:28px">
+        <h2 style="font-size:16px;font-weight:600;margin-bottom:16px">Crear programa</h2>
+        <form class="prog-form" id="progForm">
+          <div class="field"><label>Nombre empresa</label><input type="text" id="pfName" value="${user.company||''}" required></div>
+          <div class="two-col-form">
+            <div class="field"><label>Industria</label>
+              <select id="pfIndustry" required>
+                <option value="">Seleccionar</option>
+                <option value="Fintech">Fintech</option>
+                <option value="SaaS">SaaS</option>
+                <option value="IoT / Hardware">IoT / Hardware</option>
+                <option value="E-commerce">E-commerce</option>
+                <option value="Salud">Salud</option>
+                <option value="Educación">Educación</option>
+                <option value="Otros">Otros</option>
+              </select></div>
+            <div class="field"><label>Recompensa máxima (€)</label><input type="number" id="pfReward" min="0" required></div>
+          </div>
+          <div class="field"><label>Descripción</label><textarea id="pfDesc" placeholder="Describe tu programa..."></textarea></div>
+          <div class="two-col-form">
+            <div class="field"><label>Scope (uno por línea)</label><textarea id="pfScope" placeholder="*.dominio.com&#10;api.dominio.com/*"></textarea></div>
+            <div class="field"><label>Fuera de scope</label><textarea id="pfOOS" placeholder="DoS&#10;Spam"></textarea></div>
+          </div>
+          <div class="two-col-form">
+            <div class="field"><label>Tags (separados por coma)</label><input type="text" id="pfTags" placeholder="Web, API, Mobile"></div>
+            <div class="field"><label>Divulgación (fecha)</label><input type="date" id="pfDisclosure"></div>
+          </div>
+          <div class="field"><label>Reglas</label><textarea id="pfRules" placeholder="Reglas del programa..."></textarea></div>
+          <button type="submit" class="btn btn-accent" style="width:100%;justify-content:center" id="pfBtn">Publicar programa</button>
+        </form>
+      </div>
+
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:28px">
+        <h2 style="font-size:16px;font-weight:600;margin-bottom:16px">Mis programas (${programs.length})</h2>
+        <div id="companyProgs">${programs.length ? programs.map(p => \`
+          <div class="prog-card">
+            <div class="prog-card-info">
+              <div style="font-weight:600;font-size:14px">\${p.company_name}</div>
+              <div style="font-size:11px;color:var(--text-tertiary);margin:2px 0 4px">\${p.industry} · \${p.max_reward.toLocaleString()}€ · \${p.reports_count||0} reportes</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap">\${(p.tags||[]).map(t=>'<span style="font-size:10px;padding:2px 6px;border-radius:100px;background:var(--accent-light);color:var(--accent)">'+t+'</span>').join('')}</div>
+            </div>
+            <div class="prog-card-actions">
+              <div style="font-size:10px;color:var(--text-tertiary);margin-right:4px">\${p.status === 'active' ? '🟢' : '🔴'}</div>
+              <button class="action-btn" style="font-size:10px;padding:4px 10px" onclick="toggleProgramStatus(\${p.id},'\${p.status}')">\${p.status === 'active' ? 'Pausar' : 'Activar'}</button>
+              <button class="action-btn danger" style="font-size:10px;padding:4px 10px" onclick="deleteProgram(\${p.id})">Eliminar</button>
+            </div>
+          </div>\`).join('') : '<div class="empty-state"><div class="empty-state-icon">📋</div><h3>Aún no tienes programas</h3><p>Crea tu primer programa usando el formulario de la izquierda.</p></div>'}</div>
+      </div>
+    </div>
+
+    <h2 style="font-size:18px;font-weight:600;margin-bottom:16px">Reportes recibidos</h2>
+    <div class="filter-bar">
+      <input type="text" id="reportSearch" placeholder="Buscar reporte..." oninput="filterCompanyReports()">
+      <select id="reportSeverity" onchange="filterCompanyReports()">
+        <option value="">Todas</option>
+        <option value="critical">Crítico</option>
+        <option value="high">Alto</option>
+        <option value="medium">Medio</option>
+        <option value="low">Bajo</option>
+        <option value="info">Info</option>
+      </select>
+      <select id="reportStatus" onchange="filterCompanyReports()">
+        <option value="">Todos</option>
+        <option value="pending">Pendiente</option>
+        <option value="valid">Válido</option>
+        <option value="paid">Pagado</option>
+        <option value="invalid">Inválido</option>
+      </select>
+    </div>
+    <div id="companyReports" style="display:flex;flex-direction:column;gap:8px">\${renderReports(reports)}</div>`;
+
+  document.getElementById('progForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('pfBtn');
+    btn.textContent = 'Publicando...'; btn.style.opacity = '0.7';
+    try {
+      await api('POST', '/programs', {
+        company_name: document.getElementById('pfName').value,
+        industry: document.getElementById('pfIndustry').value,
+        max_reward: parseInt(document.getElementById('pfReward').value),
+        description: document.getElementById('pfDesc').value,
+        scope: document.getElementById('pfScope').value.split('\\n').filter(Boolean),
+        out_of_scope: document.getElementById('pfOOS').value.split('\\n').filter(Boolean),
+        tags: document.getElementById('pfTags').value.split(',').map(t=>t.trim()).filter(Boolean),
+        disclosure_date: document.getElementById('pfDisclosure').value,
+        rules: document.getElementById('pfRules').value,
+      });
+      showToast('Programa creado correctamente');
+      setTimeout(() => location.reload(), 1000);
+    } catch(e) {
+      showToast(e.message);
+      btn.textContent = 'Publicar programa'; btn.style.opacity = '1';
+    }
+  });
+})();
+
+function renderReports(reports){
+  if(!reports.length) return '<div class="empty-state"><div class="empty-state-icon">📭</div><h3>No hay reportes todavía</h3><p>Los reportes de hunters aparecerán aquí cuando lleguen.</p></div>';
+  return reports.map(r=>{
+    const sevColor={info:'#6b6b75',low:'#16a34a',medium:'#d97706',high:'#dc2626',critical:'#dc2626'}[r.severity]||'#6b6b75';
+    return \`<div style="display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md)">
+      <span class="mw-dot" style="background:\${sevColor}"></span>
+      <a href="/report/\${r.id}" style="flex:1;color:var(--text);text-decoration:none;font-size:14px;font-weight:500">\${r.title}</a>
+      <span style="font-size:12px;color:var(--text-tertiary);text-transform:capitalize">\${r.severity}</span>
+      <span class="status-badge \${r.status}" style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:100px;text-transform:capitalize">\${r.status}\${r.reward ? ' · '+r.reward+'€' : ''}</span>
+      \${r.status!=='paid'?\`
+      <div style="display:flex;gap:4px">
+        \${r.status!=='valid'?\`<button class="action-btn valid" onclick="updateStatus(\${r.id},'valid')">Validar</button>\`:''}
+        \${r.status==='valid'?\`<button class="action-btn paid" onclick="updateStatus(\${r.id},'paid')">Pagar</button>\`:''}
+        \${r.status!=='invalid'?\`<button class="action-btn invalid" onclick="updateStatus(\${r.id},'invalid')">Rechazar</button>\`:''}
+      </div>\`:\`<span style="font-size:12px;color:#16a34a;font-weight:600">✓ Pagado</span>\`}
+    </div>\`;
+  }).join('');
+}
+
+window.allCompanyReports = [];
+(async()=>{
+  try{
+    const data = await api('GET','/company/reports');
+    window.allCompanyReports = data.items||[];
+  }catch{}
+})();
+
+function filterCompanyReports(){
+  const search = document.getElementById('reportSearch').value.toLowerCase();
+  const severity = document.getElementById('reportSeverity').value;
+  const status = document.getElementById('reportStatus').value;
+  let filtered = window.allCompanyReports.filter(r=>{
+    if(search && !r.title.toLowerCase().includes(search)) return false;
+    if(severity && r.severity !== severity) return false;
+    if(status && r.status !== status) return false;
+    return true;
+  });
+  document.getElementById('companyReports').innerHTML = renderReports(filtered);
+}
+
+async function updateStatus(id,status){
+  try{
+    const reward = status==='paid' ? prompt('Recompensa (€):') : '0';
+    await api('PUT',\`/reports/\${id}/status\`,{status, reward: parseInt(reward) || 0});
+    location.reload()
+  } catch(e){showToast(e.message)}
+}
+
+async function toggleProgramStatus(id,current){
+  try{
+    await api('PUT',\`/programs/\${id}\`,{status: current==='active' ? 'paused' : 'active'});
+    location.reload()
+  } catch(e){showToast(e.message)}
+}
+
+async function deleteProgram(id){
+  if(!confirm('¿Eliminar programa y todos sus reportes?')) return;
+  try{
+    await api('DELETE',\`/programs/\${id}\`);
+    location.reload()
+  } catch(e){showToast(e.message)}
+}
+</script>
+</body>
+</html>
