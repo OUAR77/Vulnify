@@ -201,19 +201,18 @@ async function getValidToken() {
   if (!token) return null;
   if (!isTokenExpired(token)) return token;
   var rt = localStorage.getItem('refresh_token');
-  if (!rt) { logout(); return null; }
+  if (!rt) return null;
   try {
     var res = await fetch('/api/auth/refresh', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refresh_token: rt })
     });
-    if (!res.ok) throw new Error();
+    if (!res.ok) return null;
     var data = await res.json();
-    localStorage.setItem('token', data.token);
-    return data.token;
+    if (data.token) localStorage.setItem('token', data.token);
+    return data.token || null;
   } catch(e) {
-    logout();
     return null;
   }
 }

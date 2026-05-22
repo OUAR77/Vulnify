@@ -58,11 +58,11 @@
 <div class="modal-overlay" id="modalOverlay"><div class="modal-body" id="modalBody"></div></div>
 <div class="toast" id="toast"></div>
 <button class="back-top" id="backTop" aria-label="Volver arriba">&uarr;</button>
-<script src="/static/js/script.js?v=4"></script>
+<script src="/static/js/script.js?v=5"></script>
 <script>
 (async()=>{
   let user = null;
-  var tok = await getValidToken();
+  var tok = localStorage.getItem('token');
   if(tok){
     try{
       const r = await fetch('/api/auth/me', {headers:{Authorization:'Bearer '+tok}});
