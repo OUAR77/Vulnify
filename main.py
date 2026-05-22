@@ -60,11 +60,27 @@ manager = ConnectionManager()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     import models
+    from models.plan import Plan
     try:
         Base.metadata.create_all(bind=engine)
         logger.info("Tables created via metadata")
     except Exception as e:
         logger.warning("Could not create tables: %s", e)
+    try:
+        from database import SessionLocal
+        db = SessionLocal()
+        if not db.query(Plan).first():
+            plans = [
+                Plan(name="Gratis", description="Plan gratuito para empezar", price_monthly=0, max_reports=5, max_programs=1, features=["Reportes ilimitados", "Soporte por email", "Perfil público"], active=True),
+                Plan(name="Starter", description="Para empresas en crecimiento", price_monthly=49, max_reports=50, max_programs=3, features=["50 reportes/mes", "3 programas activos", "Soporte prioritario", "API básica"], active=True),
+                Plan(name="Profesional", description="Para equipos de seguridad", price_monthly=149, max_reports=-1, max_programs=-1, features=["Reportes ilimitados", "Programas ilimitados", "Soporte 24/7", "API completa", "Slack/Discord", "Analítica avanzada"], active=True),
+            ]
+            db.add_all(plans)
+            db.commit()
+            logger.info("Seed plans created")
+        db.close()
+    except Exception as e:
+        logger.warning("Could not seed plans: %s", e)
     logger.info("Vulnify started (environment=%s)", settings.ENVIRONMENT)
     yield
     logger.info("Vulnify shutting down")
