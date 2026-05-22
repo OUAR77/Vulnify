@@ -62,13 +62,21 @@
 <script>
 (async()=>{
   let user = null;
-  var tok = localStorage.getItem('token');
+  var tok = await getValidToken();
+  if(!tok) tok = localStorage.getItem('token');
   if(tok){
     try{
       const r = await fetch('/api/auth/me', {headers:{Authorization:'Bearer '+tok}});
       if(r.ok) user = await r.json();
     }catch{}
   }
+  var btn = user?.role==='company'
+    ? '<a href="/company/billing" class="btn btn-accent" style="width:100%;justify-content:center;text-decoration:none">Ir a facturación</a>'
+    : user?.role==='hunter'
+      ? '<button class="btn btn-outline" style="width:100%;justify-content:center" disabled>Solo para empresas</button>'
+      : localStorage.getItem('token')
+        ? '<button class="btn btn-accent" style="width:100%;justify-content:center" onclick="openModal(\'login\')">Iniciar sesión</button>'
+        : '<button class="btn btn-accent" style="width:100%;justify-content:center" onclick="openModal(\'register\')">Comenzar</button>';
 
   try{
     const res = await fetch('/api/plans');
@@ -85,12 +93,7 @@
           <li>${p.max_programs===-1?'Programas ilimitados':`Hasta ${p.max_programs} programas`}</li>
           ${(p.features||[]).map(f => '<li>'+f+'</li>').join('')}
         </ul>
-        ${user?.role==='company'
-          ? `<a href="/company/billing" class="btn btn-accent" style="width:100%;justify-content:center;text-decoration:none">Ir a facturación</a>`
-          : user?.role==='hunter'
-            ? `<button class="btn btn-outline" style="width:100%;justify-content:center" disabled style="opacity:.6">Solo para empresas</button>`
-            : `<button class="btn btn-accent" style="width:100%;justify-content:center" onclick="openModal('register')">Comenzar</button>`
-        }
+        ${btn}
       </div>
     `).join('');
   }catch{
