@@ -93,6 +93,9 @@ function openModal(type) {
   const overlay = document.getElementById('modalOverlay');
   if (!overlay) return;
   overlay.classList.add('open');
+  const params = new URLSearchParams(window.location.search);
+  const resetToken = params.get('token');
+  if (type === 'reset' || resetToken) type = 'reset';
   document.getElementById('modalBody').innerHTML =
     type === 'login'
       ? `<div class="modal-handle"></div>
@@ -103,8 +106,29 @@ function openModal(type) {
            <input type="password" placeholder="Contraseña" class="modal-input" id="loginPass" required>
            <p id="loginError" style="color:var(--accent);font-size:13px;display:none;"></p>
            <button type="submit" class="btn btn-accent" style="width:100%;justify-content:center;" id="loginBtn">Iniciar sesión</button>
+           <p style="text-align:center;margin-top:8px;"><a onclick="openModal('forgot')" style="font-size:13px;color:var(--text-tertiary);cursor:pointer">¿Olvidaste tu contraseña?</a></p>
          </form>
          <p class="modal-footer-text">¿No tienes cuenta? <a onclick="openModal('register')">Regístrate</a></p>`
+      : type === 'forgot'
+      ? `<div class="modal-handle"></div>
+         <h2 class="modal-title">Restablecer contraseña</h2>
+         <p class="modal-desc">Te enviaremos un enlace para restablecer tu contraseña.</p>
+         <form class="modal-form" id="forgotForm">
+           <input type="email" placeholder="Tu email" class="modal-input" id="forgotEmail" required>
+           <p id="forgotError" style="color:var(--accent);font-size:13px;display:none;"></p>
+           <button type="submit" class="btn btn-accent" style="width:100%;justify-content:center;" id="forgotBtn">Enviar enlace</button>
+         </form>
+         <p class="modal-footer-text"><a onclick="openModal('login')" style="cursor:pointer">Volver a iniciar sesión</a></p>`
+      : type === 'reset'
+      ? `<div class="modal-handle"></div>
+         <h2 class="modal-title">Nueva contraseña</h2>
+         <p class="modal-desc">Elige una contraseña segura para tu cuenta.</p>
+         <form class="modal-form" id="resetForm">
+           <input type="password" placeholder="Nueva contraseña" class="modal-input" id="resetPass" required minlength="8">
+           <input type="password" placeholder="Confirmar contraseña" class="modal-input" id="resetPass2" required>
+           <p id="resetError" style="color:var(--accent);font-size:13px;display:none;"></p>
+           <button type="submit" class="btn btn-accent" style="width:100%;justify-content:center;" id="resetBtn">Restablecer</button>
+         </form>`
       : `<div class="modal-handle"></div>
          <h2 class="modal-title">Crear cuenta</h2>
          <p class="modal-desc">Únete a la comunidad de bug bounty española.</p>
@@ -166,6 +190,52 @@ function openModal(type) {
         } catch (e) {
           err.textContent = e.message; err.style.display = 'block';
           btn.textContent = 'Crear cuenta'; btn.style.opacity = '1';
+        }
+      });
+    }
+    const forgotForm = document.getElementById('forgotForm');
+    if (forgotForm) {
+      forgotForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('forgotBtn');
+        const err = document.getElementById('forgotError');
+        btn.textContent = 'Enviando...'; btn.disabled = true; err.style.display = 'none';
+        try {
+          const data = await apiCall('POST', '/auth/forgot-password', { email: document.getElementById('forgotEmail').value });
+          closeModal();
+          if (data.reset_token) {
+            const link = `${window.location.origin}/reset-password?token=${data.reset_token}`;
+            showToast('Enlace generado: ' + link);
+          } else {
+            showToast('Revisa tu email para restablecer la contraseña');
+          }
+        } catch (e) {
+          err.textContent = e.message; err.style.display = 'block';
+          btn.textContent = 'Enviar enlace'; btn.disabled = false;
+        }
+      });
+    }
+    const resetForm = document.getElementById('resetForm');
+    if (resetForm) {
+      resetForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('resetBtn');
+        const err = document.getElementById('resetError');
+        const pass = document.getElementById('resetPass').value;
+        const pass2 = document.getElementById('resetPass2').value;
+        if (pass !== pass2) { err.textContent = 'Las contraseñas no coinciden'; err.style.display = 'block'; return; }
+        btn.textContent = 'Restableciendo...'; btn.disabled = true; err.style.display = 'none';
+        try {
+          const params = new URLSearchParams(window.location.search);
+          const token = params.get('token');
+          await apiCall('POST', '/auth/reset-password', { token, password: pass });
+          closeModal(); showToast('Contraseña restablecida correctamente');
+          const url = new URL(window.location.href);
+          url.searchParams.delete('token');
+          window.history.replaceState({}, '', url);
+        } catch (e) {
+          err.textContent = e.message; err.style.display = 'block';
+          btn.textContent = 'Restablecer'; btn.disabled = false;
         }
       });
     }
@@ -358,3 +428,11 @@ function switchHowTab(tab) {
     )
     .join('');
 }
+
+// AUTO-OPEN RESET MODAL IF TOKEN IN URL
+(function checkResetToken() {
+  const p = new URLSearchParams(window.location.search);
+  if (p.get('token')) {
+    setTimeout(() => openModal('reset'), 300);
+  }
+})();
