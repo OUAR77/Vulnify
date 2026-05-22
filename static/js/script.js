@@ -61,7 +61,10 @@ async function apiCall(method, path, body, auth) {
   if (auth) headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
   const res = await fetch(`${API}${path}`, { method, headers, body: body ? JSON.stringify(body) : undefined });
   const data = await res.json();
-  if (!res.ok) throw new Error(data.detail || 'Error');
+  if (!res.ok) {
+    const msg = Array.isArray(data.detail) ? data.detail.map(e => e.msg).join('; ') : (data.detail || 'Error');
+    throw new Error(msg);
+  }
   return data;
 }
 
