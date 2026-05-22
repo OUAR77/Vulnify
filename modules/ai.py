@@ -8,6 +8,9 @@ logger = logging.getLogger("vulnify.ai")
 if settings.AI_PROVIDER == "ollama":
     client = OpenAI(base_url=f"{settings.OLLAMA_BASE_URL}/v1", api_key="ollama")
     MODEL = settings.OLLAMA_MODEL
+elif settings.OPENAI_BASE_URL:
+    client = OpenAI(base_url=settings.OPENAI_BASE_URL, api_key=settings.OPENAI_API_KEY) if settings.OPENAI_API_KEY else None
+    MODEL = settings.OPENAI_MODEL
 else:
     client = OpenAI(api_key=settings.OPENAI_API_KEY) if settings.OPENAI_API_KEY else None
     MODEL = settings.OPENAI_MODEL
