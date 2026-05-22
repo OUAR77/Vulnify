@@ -20,7 +20,7 @@ def test_forgot_password(client):
     _register_hunter(client)
     res = client.post("/api/auth/forgot-password", json={"email": "hunter@test.com"})
     assert res.status_code == 200
-    assert "reset_token" in res.json()
+    assert res.json()["ok"] is True
 
 
 def test_forgot_password_nonexistent(client):
@@ -30,9 +30,10 @@ def test_forgot_password_nonexistent(client):
 
 
 def test_reset_password(client):
+    from jose import jwt
+    from config import settings
     hunter = _register_hunter(client)
-    fp = client.post("/api/auth/forgot-password", json={"email": "hunter@test.com"}).json()
-    token = fp["reset_token"]
+    token = jwt.encode({"sub": str(hunter["user"]["id"]), "type": "reset", "exp": 9999999999}, settings.SECRET_KEY, algorithm="HS256")
     res = client.post("/api/auth/reset-password", json={"token": token, "password": "NewPass123"})
     assert res.status_code == 200
     login = client.post("/api/auth/login", json={"email": "hunter@test.com", "password": "NewPass123"})

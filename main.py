@@ -244,16 +244,6 @@ async def ai_tools_page(request: Request):
     return templates.TemplateResponse(request, "ai-tools.html")
 
 
-@app.get("/ai-debug")
-async def ai_debug():
-    return {
-        "provider": settings.AI_PROVIDER,
-        "has_api_key": bool(settings.OPENAI_API_KEY),
-        "api_key_prefix": settings.OPENAI_API_KEY[:10] + "..." if settings.OPENAI_API_KEY else "",
-        "base_url": settings.OPENAI_BASE_URL,
-        "model": settings.OPENAI_MODEL,
-    }
-
 @app.get("/health")
 async def health():
     try:
