@@ -60,9 +60,8 @@ manager = ConnectionManager()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     import models
-    if settings.ENVIRONMENT == "development":
-        Base.metadata.create_all(bind=engine)
-        logger.info("Tables created via metadata (dev mode)")
+    Base.metadata.create_all(bind=engine)
+    logger.info("Tables created via metadata")
     logger.info("Vulnify started (environment=%s)", settings.ENVIRONMENT)
     yield
     logger.info("Vulnify shutting down")
