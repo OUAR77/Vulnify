@@ -61,6 +61,7 @@ manager = ConnectionManager()
 async def lifespan(app: FastAPI):
     import models
     from models.plan import Plan
+    from models.user import User
     try:
         Base.metadata.create_all(bind=engine)
         logger.info("Tables created via metadata")
@@ -68,19 +69,26 @@ async def lifespan(app: FastAPI):
         logger.warning("Could not create tables: %s", e)
     try:
         from database import SessionLocal
+        from modules.auth import hash_password
         db = SessionLocal()
         if not db.query(Plan).first():
             plans = [
-                Plan(name="Gratis", description="Plan gratuito para empezar", price_monthly=0, max_reports=5, max_programs=1, features=["Reportes ilimitados", "Soporte por email", "Perfil público"], active=True),
-                Plan(name="Starter", description="Para empresas en crecimiento", price_monthly=49, max_reports=50, max_programs=3, features=["50 reportes/mes", "3 programas activos", "Soporte prioritario", "API básica"], active=True),
-                Plan(name="Profesional", description="Para equipos de seguridad", price_monthly=149, max_reports=-1, max_programs=-1, features=["Reportes ilimitados", "Programas ilimitados", "Soporte 24/7", "API completa", "Slack/Discord", "Analítica avanzada"], active=True),
+                Plan(name="Gratis", description="Plan gratuito para empezar", price_monthly=0, max_reports=5, max_programs=1, features=["Reportes ilimitados", "Soporte por email", "Perfil público"], stripe_price_id_monthly=os.getenv("STRIPE_PRICE_GRATIS", ""), active=True),
+                Plan(name="Starter", description="Para empresas en crecimiento", price_monthly=49, max_reports=50, max_programs=3, features=["50 reportes/mes", "3 programas activos", "Soporte prioritario", "API básica"], stripe_price_id_monthly=os.getenv("STRIPE_PRICE_STARTER", ""), active=True),
+                Plan(name="Profesional", description="Para equipos de seguridad", price_monthly=149, max_reports=-1, max_programs=-1, features=["Reportes ilimitados", "Programas ilimitados", "Soporte 24/7", "API completa", "Slack/Discord", "Analítica avanzada"], stripe_price_id_monthly=os.getenv("STRIPE_PRICE_PRO", ""), active=True),
             ]
             db.add_all(plans)
             db.commit()
             logger.info("Seed plans created")
+        if not db.query(User).filter(User.role == "admin").first():
+            admin_pw = os.getenv("ADMIN_PASSWORD", "admin123456")
+            admin = User(name="Admin Vulnify", email=os.getenv("ADMIN_EMAIL", "admin@vulnify.com"), password=hash_password(admin_pw), role="admin", company="", is_verified=1)
+            db.add(admin)
+            db.commit()
+            logger.info("Admin user created")
         db.close()
     except Exception as e:
-        logger.warning("Could not seed plans: %s", e)
+        logger.warning("Could not seed data: %s", e)
     logger.info("Vulnify started (environment=%s)", settings.ENVIRONMENT)
     yield
     logger.info("Vulnify shutting down")
