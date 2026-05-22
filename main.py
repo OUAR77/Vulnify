@@ -73,13 +73,23 @@ async def lifespan(app: FastAPI):
         db = SessionLocal()
         if not db.query(Plan).first():
             plans = [
-                Plan(name="Gratis", description="Plan gratuito para empezar", price_monthly=0, max_reports=5, max_programs=1, features=["Reportes ilimitados", "Soporte por email", "Perfil público"], stripe_price_id_monthly=os.getenv("STRIPE_PRICE_GRATIS", ""), active=True),
-                Plan(name="Starter", description="Para empresas en crecimiento", price_monthly=49, max_reports=50, max_programs=3, features=["50 reportes/mes", "3 programas activos", "Soporte prioritario", "API básica"], stripe_price_id_monthly=os.getenv("STRIPE_PRICE_STARTER", ""), active=True),
-                Plan(name="Profesional", description="Para equipos de seguridad", price_monthly=149, max_reports=-1, max_programs=-1, features=["Reportes ilimitados", "Programas ilimitados", "Soporte 24/7", "API completa", "Slack/Discord", "Analítica avanzada"], stripe_price_id_monthly=os.getenv("STRIPE_PRICE_PRO", ""), active=True),
+                Plan(name="Gratis", description="Plan gratuito para empezar", price_monthly=0, max_reports=5, max_programs=1, features=["Reportes ilimitados", "Soporte por email", "Perfil público"], active=True),
+                Plan(name="Starter", description="Para empresas en crecimiento", price_monthly=49, max_reports=50, max_programs=3, features=["50 reportes/mes", "3 programas activos", "Soporte prioritario", "API básica"], active=True),
+                Plan(name="Profesional", description="Para equipos de seguridad", price_monthly=149, max_reports=-1, max_programs=-1, features=["Reportes ilimitados", "Programas ilimitados", "Soporte 24/7", "API completa", "Slack/Discord", "Analítica avanzada"], active=True),
             ]
             db.add_all(plans)
             db.commit()
             logger.info("Seed plans created")
+        stripe_updates = {"Gratis": "STRIPE_PRICE_GRATIS", "Starter": "STRIPE_PRICE_STARTER", "Profesional": "STRIPE_PRICE_PRO"}
+        for name, env in stripe_updates.items():
+            val = os.getenv(env)
+            if val:
+                p = db.query(Plan).filter(Plan.name == name).first()
+                if p and p.stripe_price_id_monthly != val:
+                    p.stripe_price_id_monthly = val
+                    logger.info("Updated %s stripe_price_id_monthly from env", name)
+        if any(os.getenv(v) for v in stripe_updates.values()):
+            db.commit()
         if not db.query(User).filter(User.role == "admin").first():
             admin_pw = os.getenv("ADMIN_PASSWORD", "admin123456")
             admin = User(name="Admin Vulnify", email=os.getenv("ADMIN_EMAIL", "admin@vulnify.com"), password=hash_password(admin_pw), role="admin", company="", is_verified=1)
