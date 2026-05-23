@@ -186,6 +186,10 @@ async def precios(request: Request):
 async def terminos(request: Request):
     return templates.TemplateResponse(request, "terms.html")
 
+@app.get("/sobre-nosotros", response_class=HTMLResponse, description="About us")
+async def sobre_nosotros(request: Request):
+    return templates.TemplateResponse(request, "about.html")
+
 @app.get("/privacidad", response_class=HTMLResponse, description="Privacy policy")
 async def privacidad(request: Request):
     return templates.TemplateResponse(request, "privacy.html")

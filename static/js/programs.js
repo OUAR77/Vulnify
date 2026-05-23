@@ -2,7 +2,7 @@ let programsData = [];
 
 async function loadPrograms() {
   const grid = document.getElementById('programsGrid');
-  grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-tertiary);grid-column:1/-1;">Cargando programas...</div>';
+  grid.innerHTML = '<div style="text-align:center;padding:40px;grid-column:1/-1;"><div class="spinner spinner-lg"></div></div>';
   try {
     const res = await fetch('/api/programs?per_page=50');
     const data = await res.json();

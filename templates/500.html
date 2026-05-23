@@ -3,21 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>500 — Vulnify</title>
+  <title>500 — Error interno · Vulnify</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/static/css/styles.css">
+  <style>
+    body{background:var(--bg);display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;font-family:var(--font-sans);color:var(--text)}
+    .error-wrap{text-align:center;padding:40px 20px;max-width:480px}
+    .error-code{font-size:100px;font-weight:900;letter-spacing:-6px;background:linear-gradient(135deg,var(--accent),#b8943f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:8px;font-family:var(--font-serif)}
+    .error-shield{margin-bottom:24px}
+    .error-wrap h1{font-size:22px;font-weight:700;margin-bottom:8px;font-family:var(--font-sans)}
+    .error-wrap p{font-size:14px;color:var(--text-secondary);margin-bottom:28px;line-height:1.6}
+    .error-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+    .error-actions .btn{text-decoration:none}
+  </style>
 </head>
 <body>
-<section style="min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;">
-  <div>
-    <div style="font-size:80px;font-weight:900;letter-spacing:-4px;background:linear-gradient(135deg,#d4a853,#b8943f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:12px;">500</div>
-    <h1 style="font-size:24px;font-weight:700;margin-bottom:8px;">Error interno</h1>
-    <p style="color:var(--text-secondary);margin-bottom:24px;">Algo salió mal. Estamos trabajando en ello.</p>
-    <a href="/" class="btn btn-accent" style="text-decoration:none;">Volver al inicio</a>
+<div class="error-wrap">
+  <div class="error-shield">
+    <svg viewBox="0 0 64 64" width="56" height="56" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5">
+      <path d="M32 4L8 16v12c0 14.5 10.3 28 24 32 13.7-4 24-17.5 24-32V16L32 4z"/>
+      <line x1="24" y1="22" x2="40" y2="38" stroke-width="2"/>
+      <line x1="40" y1="22" x2="24" y2="38" stroke-width="2"/>
+      <circle cx="32" cy="46" r="1.5" fill="var(--accent)"/>
+    </svg>
   </div>
-</section>
+  <div class="error-code">500</div>
+  <h1>Algo se rompió</h1>
+  <p>Error interno del servidor. Ya estamos revisando los logs para encontrar el bug. Vuelve a intentarlo en unos minutos.</p>
+  <div class="error-actions">
+    <a href="/" class="btn btn-accent">Volver al inicio</a>
+    <a href="/programas" class="btn btn-ghost">Ver programas</a>
+  </div>
+</div>
 </body>
 </html>
