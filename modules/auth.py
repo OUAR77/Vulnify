@@ -118,7 +118,7 @@ def get_user_by_api_key(
 # --- REFRESH TOKENS ---
 
 def create_refresh_token(user_id: int) -> str:
-    expires = datetime.now(timezone.utc) + timedelta(days=30)
+    expires = datetime.now(timezone.utc) + timedelta(days=90)
     return jwt.encode(
         {"sub": str(user_id), "type": "refresh", "exp": expires},
         settings.SECRET_KEY,

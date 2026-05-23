@@ -44,12 +44,12 @@ class VulnifyScene {
   }
 
   createAmbientLight() {
-    const ambient = new THREE.AmbientLight(0x444466, 0.6);
+    const ambient = new THREE.AmbientLight(0x443322, 0.6);
     this.scene.add(ambient);
-    const dir = new THREE.DirectionalLight(0x6C63FF, 0.7);
+    const dir = new THREE.DirectionalLight(0xD4A853, 0.7);
     dir.position.set(1, 2, 1);
     this.scene.add(dir);
-    const dir2 = new THREE.DirectionalLight(0x4ECDC4, 0.4);
+    const dir2 = new THREE.DirectionalLight(0xB8943F, 0.4);
     dir2.position.set(-1, -1, 2);
     this.scene.add(dir2);
   }
@@ -57,12 +57,12 @@ class VulnifyScene {
   createShapes() {
     const count = this.isMobile ? 6 : 14;
     const geometries = [
-      { geo: new THREE.IcosahedronGeometry(0.25, 0), color: 0x6C63FF },
-      { geo: new THREE.OctahedronGeometry(0.22, 0), color: 0x4ECDC4 },
-      { geo: new THREE.DodecahedronGeometry(0.2, 0), color: 0x8B7FFF },
-      { geo: new THREE.TetrahedronGeometry(0.28, 0), color: 0x6C63FF },
-      { geo: new THREE.BoxGeometry(0.18, 0.18, 0.18), color: 0x4ECDC4 },
-      { geo: new THREE.IcosahedronGeometry(0.15, 0), color: 0xAAAAFF },
+      { geo: new THREE.IcosahedronGeometry(0.25, 0), color: 0xD4A853 },
+      { geo: new THREE.OctahedronGeometry(0.22, 0), color: 0xC89B3C },
+      { geo: new THREE.DodecahedronGeometry(0.2, 0), color: 0xE8C45A },
+      { geo: new THREE.TetrahedronGeometry(0.28, 0), color: 0xD4A853 },
+      { geo: new THREE.BoxGeometry(0.18, 0.18, 0.18), color: 0xB8943F },
+      { geo: new THREE.IcosahedronGeometry(0.15, 0), color: 0xE8D5A0 },
     ];
 
     for (let i = 0; i < count; i++) {
@@ -106,9 +106,9 @@ class VulnifyScene {
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
 
-    const c1 = new THREE.Color(0x6C63FF);
-    const c2 = new THREE.Color(0x4ECDC4);
-    const c3 = new THREE.Color(0xAAAAFF);
+    const c1 = new THREE.Color(0xD4A853);
+    const c2 = new THREE.Color(0xB8943F);
+    const c3 = new THREE.Color(0xE8C45A);
 
     for (let i = 0; i < count; i++) {
       const r = 4 + Math.random() * 10;

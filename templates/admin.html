@@ -160,18 +160,20 @@ async function loadAdmin(user) {
         <h2 style="font-size:18px;font-weight:600">Planes de suscripción</h2>
         <button class="btn btn-accent" style="font-size:12px;padding:6px 14px" onclick="showPlanForm()">+ Nuevo plan</button>
       </div>
-      <table class="admin-table"><thead><tr><th>ID</th><th>Nombre</th><th>Precio/mes</th><th>Precio/año</th><th>Max reports</th><th>Max progs</th><th>Activo</th><th>Acciones</th></tr></thead><tbody>${
+      <table class="admin-table"><thead><tr><th>ID</th><th>Nombre</th><th>Precio/mes</th><th>Precio/año</th><th>Stripe ID/mes</th><th>Stripe ID/año</th><th>Max reports</th><th>Max progs</th><th>Activo</th><th>Acciones</th></tr></thead><tbody>${
         (plansData||[]).length ? plansData.map(p => `<tr>
           <td style="font-family:monospace;font-size:12px">${p.id}</td>
           <td style="font-weight:500">${esc(p.name)}</td>
           <td>${p.price_monthly}€</td>
           <td>${p.price_yearly ? p.price_yearly+'€' : '—'}</td>
+          <td style="font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis">${esc(p.stripe_price_id_monthly || '') || '—'}</td>
+          <td style="font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis">${esc(p.stripe_price_id_yearly || '') || '—'}</td>
           <td>${p.max_reports===-1?'∞':p.max_reports}</td>
           <td>${p.max_programs===-1?'∞':p.max_programs}</td>
-          <td>${p.active ? '🟢' : '🔴'}</td>
+          <td>${p.active ? '<svg viewBox="0 0 10 10" width="10" height="10"><circle cx="5" cy="5" r="4.5" fill="#22c55e"/></svg>' : '<svg viewBox="0 0 10 10" width="10" height="10"><circle cx="5" cy="5" r="4.5" fill="#ef4444"/></svg>'}</td>
           <td><button class="action-btn" style="font-size:10px" onclick="editPlan(${p.id})">Editar</button>
           <button class="action-btn" style="font-size:10px;color:#f87171" onclick="deletePlan(${p.id})">Eliminar</button></td></tr>`).join('')
-        : '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--text-tertiary)">No hay planes</td></tr>'
+        : '<tr><td colspan="10" style="text-align:center;padding:20px;color:var(--text-tertiary)">No hay planes</td></tr>'
       }</tbody></table>
       <div id="planForm" style="display:none;margin-top:20px;padding:20px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md)">
         <h3 style="font-size:16px;font-weight:600;margin-bottom:12px" id="planFormTitle">Nuevo plan</h3>
@@ -180,6 +182,8 @@ async function loadAdmin(user) {
           <div class="field"><label>Descripción</label><input id="pfDesc" class="prog-form" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-surface);color:var(--text);font-family:inherit;font-size:13px"></div>
           <div class="field"><label>Precio mensual (€)</label><input id="pfMonthly" type="number" min="0" step="0.01" class="prog-form" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-surface);color:var(--text);font-family:inherit;font-size:13px"></div>
           <div class="field"><label>Precio anual (€, opcional)</label><input id="pfYearly" type="number" min="0" step="0.01" class="prog-form" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-surface);color:var(--text);font-family:inherit;font-size:13px"></div>
+          <div class="field"><label>Stripe Price ID (mensual)</label><input id="pfStripeMonthly" placeholder="price_xxx" class="prog-form" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-surface);color:var(--text);font-family:inherit;font-size:13px"></div>
+          <div class="field"><label>Stripe Price ID (anual, opcional)</label><input id="pfStripeYearly" placeholder="price_xxx" class="prog-form" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-surface);color:var(--text);font-family:inherit;font-size:13px"></div>
           <div class="field"><label>Max reportes (-1 = ilimitado)</label><input id="pfReports" type="number" value="0" class="prog-form" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-surface);color:var(--text);font-family:inherit;font-size:13px"></div>
           <div class="field"><label>Max programas (-1 = ilimitado)</label><input id="pfPrograms" type="number" value="0" class="prog-form" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-surface);color:var(--text);font-family:inherit;font-size:13px"></div>
         </div>
@@ -238,6 +242,8 @@ window.editPlan = async function(id) {
   document.getElementById('pfDesc').value=p.description||'';
   document.getElementById('pfMonthly').value=p.price_monthly;
   document.getElementById('pfYearly').value=p.price_yearly||'';
+  document.getElementById('pfStripeMonthly').value=p.stripe_price_id_monthly||'';
+  document.getElementById('pfStripeYearly').value=p.stripe_price_id_yearly||'';
   document.getElementById('pfReports').value=p.max_reports;
   document.getElementById('pfPrograms').value=p.max_programs;
   window._editPlanId=id;
@@ -248,6 +254,8 @@ window.savePlan = async function() {
     description: document.getElementById('pfDesc').value,
     price_monthly: parseFloat(document.getElementById('pfMonthly').value)||0,
     price_yearly: parseFloat(document.getElementById('pfYearly').value)||null,
+    stripe_price_id_monthly: document.getElementById('pfStripeMonthly').value || null,
+    stripe_price_id_yearly: document.getElementById('pfStripeYearly').value || null,
     max_reports: parseInt(document.getElementById('pfReports').value)||0,
     max_programs: parseInt(document.getElementById('pfPrograms').value)||0,
     active: true,

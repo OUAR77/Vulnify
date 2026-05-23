@@ -74,14 +74,14 @@
 <section class="section">
   <div class="container">
     <div style="margin-bottom:36px;">
-      <div class="section-label" style="color:var(--accent);">🤖 IA</div>
+      <div class="section-label" style="color:var(--accent);"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="7" cy="17" r="1.5" fill="currentColor"/><circle cx="17" cy="17" r="1.5" fill="currentColor"/><path d="M9 11V7a3 3 0 0 1 6 0v4"/></svg> IA</div>
       <h1 class="section-title">Herramientas de IA</h1>
       <p class="section-sub" style="font-size:14px;">Asistente inteligente para hunters. Analiza, mejora y optimiza tus reportes.</p>
     </div>
 
     <div class="ai-layout">
       <div class="ai-card">
-        <h2>🔍 Analizar vulnerabilidad</h2>
+        <h2><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Analizar vulnerabilidad</h2>
         <p>Detecta severidad, CWE, CVSS automáticamente</p>
         <input id="anTitle" placeholder="Título del reporte">
         <textarea id="anDesc" placeholder="Descripción de la vulnerabilidad..."></textarea>
@@ -92,7 +92,7 @@
       </div>
 
       <div class="ai-card">
-        <h2>📝 Mejorar texto</h2>
+        <h2><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Mejorar texto</h2>
         <p>Corrige gramática, resume o traduce</p>
         <select id="enhMode">
           <option value="grammar">Corregir gramática</option>
@@ -106,7 +106,7 @@
       </div>
 
       <div class="ai-card">
-        <h2>💡 Sugerir PoC</h2>
+        <h2><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px"><path d="M9 18l-6-6 6-6"/><path d="M15 6l6 6-6 6"/></svg> Sugerir PoC</h2>
         <p>Genera pasos para un Proof of Concept</p>
         <input id="pocType" placeholder="Tipo de vulnerabilidad (ej: XSS, SQLi)">
         <textarea id="pocDesc" placeholder="Describe la vulnerabilidad..."></textarea>
@@ -115,7 +115,7 @@
       </div>
 
       <div class="ai-card">
-        <h2>🔁 Detectar duplicados</h2>
+        <h2><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Detectar duplicados</h2>
         <p>Compara dos reportes para ver si describen lo mismo</p>
         <textarea id="dupNew" placeholder="Reporte nuevo (título + descripción)..."></textarea>
         <textarea id="dupExisting" placeholder="Reporte existente (título + descripción)..."></textarea>
@@ -125,7 +125,7 @@
     </div>
 
     <div class="ai-card" style="margin-top:24px;">
-      <h2>💬 Chat asistente</h2>
+      <h2><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Chat asistente</h2>
       <p>Pregunta cualquier duda sobre bug bounty, reportes o vulnerabilidades</p>
       <div class="chat-box" id="chatBox">
         <div class="chat-msg assistant">¡Hola! Soy tu asistente de bug bounty. Pregúntame lo que necesites.</div>
@@ -227,7 +227,7 @@ async function checkDuplicate() {
   output.classList.remove('loading');
   if (!result) { output.textContent = 'Error'; return; }
   output.innerHTML = `
-    <div><strong>¿Duplicado?</strong> ${result.is_duplicate ? '⚠️ Sí' : '✅ No'}</div>
+    <div><strong>¿Duplicado?</strong> ${result.is_duplicate ? '<span style="color:#d97706"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Sí</span>' : '<span style="color:#22c55e"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px"><polyline points="20 6 9 17 4 12"/></svg> No</span>'}</div>
     <div><strong>Similitud:</strong> ${(result.similarity * 100).toFixed(0)}%</div>
     <div style="margin-top:4px;color:var(--text-secondary)">${result.reason || ''}</div>
   `;

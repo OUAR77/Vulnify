@@ -81,14 +81,17 @@ async def lifespan(app: FastAPI):
             db.commit()
             logger.info("Seed plans created")
         stripe_updates = {"Gratis": "STRIPE_PRICE_GRATIS", "Starter": "STRIPE_PRICE_STARTER", "Profesional": "STRIPE_PRICE_PRO"}
-        for name, env in stripe_updates.items():
-            val = os.getenv(env)
+        stripe_fallbacks = {"Gratis": "STRIPE_PRICE_FREE", "Starter": "STRIPE_PRICE_MONTHLY", "Profesional": "STRIPE_PRICE_YEARLY"}
+        any_update = False
+        for name in stripe_updates:
+            val = os.getenv(stripe_updates[name]) or os.getenv(stripe_fallbacks[name])
             if val:
                 p = db.query(Plan).filter(Plan.name == name).first()
                 if p and p.stripe_price_id_monthly != val:
                     p.stripe_price_id_monthly = val
                     logger.info("Updated %s stripe_price_id_monthly from env", name)
-        if any(os.getenv(v) for v in stripe_updates.values()):
+                    any_update = True
+        if any_update:
             db.commit()
         if not db.query(User).filter(User.role == "admin").first():
             admin_pw = os.getenv("ADMIN_PASSWORD", "admin123456")

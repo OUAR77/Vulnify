@@ -73,7 +73,10 @@ function setThemeVars(isDark) {
 }
 function updateThemeButtons(isDark) {
   document.querySelectorAll('.theme-btn, .theme-btn-mobile').forEach(function(b) {
-    b.textContent = isDark ? '☀️' : '🌙';
+    b.innerHTML = isDark
+      ? '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'
+      : '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+    b.style.fontSize = '';
   });
 }
 function toggleTheme() {
@@ -135,8 +138,11 @@ document.addEventListener('DOMContentLoaded', function() {
       tb.onclick = toggleTheme;
       tb.title = 'Cambiar tema';
       var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      tb.textContent = isDark ? '☀️' : '🌙';
-      tb.style.cssText = 'background:transparent;border:1px solid var(--border);border-radius:6px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;margin:8px 0;flex-shrink:0';
+      var tbIsDark = isDark;
+      tb.innerHTML = tbIsDark
+        ? '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'
+        : '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+      tb.style.cssText = 'background:transparent;border:1px solid var(--border);border-radius:6px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin:8px 0;flex-shrink:0';
       var actions = mm.querySelector('.header-actions-mobile');
       if (actions) {
         actions.parentNode.insertBefore(tb, actions);
@@ -210,8 +216,11 @@ async function getValidToken() {
     });
     if (!res.ok) return null;
     var data = await res.json();
-    if (data.token) localStorage.setItem('token', data.token);
-    return data.token || null;
+    if (data.token) {
+      localStorage.setItem('token', data.token);
+      return data.token;
+    }
+    return null;
   } catch(e) {
     return null;
   }
@@ -275,7 +284,7 @@ function openModal(type) {
            <input type="password" placeholder="Contraseña" class="modal-input" id="regPass" required minlength="6">
            <input type="password" placeholder="Confirmar contraseña" class="modal-input" id="regPass2" required>
            <select class="modal-input" id="regRole" style="padding:12px 14px;">
-             <option value="hunter">🔍 Hunter (cazador de bugs)</option>
+             <option value="hunter">Hunter (cazador de bugs)</option>
              <option value="company">🏢 Empresa</option>
            </select>
            <p id="regError" style="color:var(--accent);font-size:13px;display:none;"></p>
@@ -392,13 +401,16 @@ if (modalOverlay) {
 }
 
 // TOAST
-function showToast(msg) {
-  const t = document.getElementById('toast');
+function showToast(msg, type) {
+  var t = document.getElementById('toast');
   if (!t) return;
-  t.textContent = msg;
-  t.classList.add('open');
+  var icon = '';
+  if (type === 'success') icon = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="20 6 9 17 4 12"/></svg>';
+  else if (type === 'error') icon = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+  t.innerHTML = icon + '<span>' + msg + '</span>';
+  t.className = 'toast open' + (type ? ' toast-' + type : '');
   clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove('open'), 2500);
+  t._timer = setTimeout(function(){ t.classList.remove('open'); }, 3500);
 }
 
 // SCROLL REVEAL

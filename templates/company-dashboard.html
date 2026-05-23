@@ -167,11 +167,11 @@ async function api(method, path, body) {
               <div style="display:flex;gap:4px;flex-wrap:wrap">\${(p.tags||[]).map(t=>'<span style="font-size:10px;padding:2px 6px;border-radius:100px;background:var(--accent-light);color:var(--accent)">'+t+'</span>').join('')}</div>
             </div>
             <div class="prog-card-actions">
-              <div style="font-size:10px;color:var(--text-tertiary);margin-right:4px">\${p.status === 'active' ? '🟢' : '🔴'}</div>
+              <div style="font-size:10px;color:var(--text-tertiary);margin-right:4px">\${p.status === 'active' ? '<svg viewBox="0 0 10 10" width="10" height="10" style="vertical-align:middle"><circle cx="5" cy="5" r="4.5" fill="#22c55e"/></svg>' : '<svg viewBox="0 0 10 10" width="10" height="10" style="vertical-align:middle"><circle cx="5" cy="5" r="4.5" fill="#ef4444"/></svg>'}</div>
               <button class="action-btn" style="font-size:10px;padding:4px 10px" onclick="toggleProgramStatus(\${p.id},'\${p.status}')">\${p.status === 'active' ? 'Pausar' : 'Activar'}</button>
               <button class="action-btn danger" style="font-size:10px;padding:4px 10px" onclick="deleteProgram(\${p.id})">Eliminar</button>
             </div>
-          </div>\`).join('') : '<div class="empty-state"><div class="empty-state-icon">📋</div><h3>Aún no tienes programas</h3><p>Crea tu primer programa usando el formulario de la izquierda.</p></div>'}</div>
+          </div>\`).join('') : '<div class="empty-state"><div class="empty-state-icon"><svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="var(--text-tertiary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8H8v6"/><path d="M34 8h6v6"/><path d="M14 40H8v-6"/><path d="M34 40h6v-6"/><rect x="14" y="14" width="20" height="20" rx="2"/></svg></div><h3>Aún no tienes programas</h3><p>Crea tu primer programa usando el formulario de la izquierda.</p></div>'}</div>
       </div>
     </div>
 
@@ -222,7 +222,7 @@ async function api(method, path, body) {
 })();
 
 function renderReports(reports){
-  if(!reports.length) return '<div class="empty-state"><div class="empty-state-icon">📭</div><h3>No hay reportes todavía</h3><p>Los reportes de hunters aparecerán aquí cuando lleguen.</p></div>';
+  if(!reports.length) return '<div class="empty-state"><div class="empty-state-icon"><svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="var(--text-tertiary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8H8v6"/><path d="M34 8h6v6"/><path d="M14 40H8v-6"/><path d="M34 40h6v-6"/><rect x="14" y="14" width="20" height="20" rx="2"/><path d="M24 22v4"/><circle cx="24" cy="30" r="1" fill="currentColor"/></svg></div><h3>No hay reportes todavía</h3><p>Los reportes de hunters aparecerán aquí cuando lleguen.</p></div>';
   return reports.map(r=>{
     const sevColor={info:'#6b6b75',low:'#16a34a',medium:'#d97706',high:'#dc2626',critical:'#dc2626'}[r.severity]||'#6b6b75';
     return \`<div style="display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md)">
@@ -235,7 +235,7 @@ function renderReports(reports){
         \${r.status!=='valid'?\`<button class="action-btn valid" onclick="updateStatus(\${r.id},'valid')">Validar</button>\`:''}
         \${r.status==='valid'?\`<button class="action-btn paid" onclick="updateStatus(\${r.id},'paid')">Pagar</button>\`:''}
         \${r.status!=='invalid'?\`<button class="action-btn invalid" onclick="updateStatus(\${r.id},'invalid')">Rechazar</button>\`:''}
-      </div>\`:\`<span style="font-size:12px;color:#16a34a;font-weight:600">✓ Pagado</span>\`}
+      </div>\`:\`<span style="font-size:12px;color:#16a34a;font-weight:600"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#16a34a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:2px"><polyline points="20 6 9 17 4 12"/></svg> Pagado</span>\`}
     </div>\`;
   }).join('');
 }

@@ -51,7 +51,7 @@ function renderPrograms() {
   if (filtered.length === 0) {
     grid.innerHTML = `
       <div class="programs-empty">
-        <div class="programs-empty-icon">🔍</div>
+        <div class="programs-empty-icon"><svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="var(--text-tertiary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="22" cy="22" r="10"/><line x1="29" y1="29" x2="38" y2="38"/><line x1="18" y1="22" x2="26" y2="22" opacity="0.5"/></svg></div>
         <h3>No se encontraron programas</h3>
         <p style="font-size:14px;color:var(--text-tertiary);">Prueba con otros filtros o términos de búsqueda.</p>
       </div>`;

@@ -19,7 +19,7 @@
 .plan-price small{font-size:14px;font-weight:400;color:var(--text-tertiary)}
 .plan-features{list-style:none;padding:0;margin:16px 0;flex:1}
 .plan-features li{padding:6px 0;font-size:13px;color:var(--text-secondary)}
-.plan-features li::before{content:"✓ ";color:#16a34a;font-weight:700}
+.plan-features li::before{content:'';width:14px;height:14px;flex-shrink:0;background:var(--accent);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/contain no-repeat;display:inline-block;margin-right:6px}
 .sub-status{padding:16px 20px;border-radius:var(--radius-md);border:1px solid var(--border);margin-bottom:24px}
 .sub-status.active{border-color:#16a34a;background:rgba(22,163,74,0.05)}
 .sub-status.canceled{border-color:#f87171;background:rgba(248,113,113,0.05)}
@@ -51,7 +51,10 @@ const API = '/api';
 var _billToken = null;
 async function billAuth(){
   if(!_billToken) _billToken = await getValidToken();
-  if(!_billToken){window.location.href='/';return null}
+  if(!_billToken){
+    document.getElementById('billingContent').innerHTML='<div style="text-align:center;padding:60px"><p style="font-size:18px;margin-bottom:16px">Sesión expirada</p><p style="color:var(--text-secondary);margin-bottom:24px">Inicia sesión de nuevo para continuar.</p><button class="btn btn-accent" onclick="openModal(\'login\')">Iniciar sesión</button></div>';
+    return null;
+  }
   return {'Content-Type':'application/json',Authorization:'Bearer '+_billToken};
 }
 
@@ -77,7 +80,7 @@ async function loadBilling(){
     if(success) html += '<div class="sub-status active" style="padding:16px;margin-bottom:20px">Suscripción activada correctamente</div>';
     if(canceled) html += '<div class="sub-status" style="padding:16px;margin-bottom:20px;border-color:var(--text-tertiary)">Proceso cancelado</div>';
 
-    if(sub.subscribed){
+    if(sub.subscribed && sub.status==='active'){
       html += '<div class="sub-status '+sub.status+'">';
       html += '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">';
       html += '<div><strong style="font-size:16px">'+(sub.plan?.name||'Suscripción')+'</strong>';
@@ -85,9 +88,18 @@ async function loadBilling(){
       html += '<div style="font-size:13px;color:var(--text-tertiary);margin-top:4px">';
       if(sub.current_period_end) html += 'Válido hasta '+sub.current_period_end.slice(0,10);
       html += '</div></div>';
-      if(sub.status==='active') html += '<button class="btn btn-ghost" onclick="cancelSub()" style="color:#f87171;font-size:12px">Cancelar suscripción</button>';
+      html += '<button class="btn btn-ghost" onclick="cancelSub()" style="color:#f87171;font-size:12px">Cancelar suscripción</button>';
       html += '</div></div>';
-    } else {
+    } else if(sub.subscribed && sub.status==='canceled'){
+      html += '<div class="sub-status canceled">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">';
+      html += '<div><strong style="font-size:16px">'+(sub.plan?.name||'Suscripción')+'</strong>';
+      html += '<span class="status-badge canceled" style="margin-left:8px;text-transform:capitalize;color:#f87171">Cancelada</span>';
+      html += '</div></div></div>';
+    }
+
+    var showPlans = !sub.subscribed || sub.status==='canceled';
+    if(showPlans){
       html += '<p style="color:var(--text-secondary);font-size:14px;margin-bottom:24px">Elige un plan para empezar a usar Vulnify. Comisión por bounty: <strong>10%</strong>.</p>';
       html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">';
       for(const p of plans){
