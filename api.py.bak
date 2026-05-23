@@ -47,19 +47,6 @@ def validate_file(file: UploadFile) -> str | None:
     ext = os.path.splitext(file.filename or "")[1].lower()
     if not ext or ext not in ALLOWED_EXTENSIONS:
         return f"Tipo de archivo no permitido: {ext}. Permitidos: {', '.join(settings.ALLOWED_EXTENSIONS)}"
-
-    # Validate file content type (MIME type) when available
-    content_type = file.content_type or ""
-    ALLOWED_MIME_TYPES = {
-        ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
-        ".gif": "image/gif", ".pdf": "application/pdf",
-        ".txt": "text/plain", ".zip": "application/zip",
-        ".md": "text/markdown", ".json": "application/json",
-    }
-    expected_mime = ALLOWED_MIME_TYPES.get(ext)
-    if expected_mime and content_type and content_type != expected_mime and not content_type.startswith("image/"):
-        return f"Tipo de contenido no coincide con la extensión del archivo. Se esperaba {expected_mime}, se recibió {content_type}"
-
     file.file.seek(0, 2)
     size = file.file.tell()
     file.file.seek(0)
@@ -97,15 +84,10 @@ def forgot_password(request: Request, body: ForgotPasswordBody, db: Session = De
         return {"ok": True, "message": "Si el email existe, recibirás un enlace"}
     token = create_reset_token(user.id)
     from modules.email import send_password_reset
-    import logging
-    logger = logging.getLogger("vulnify.api")
-    try:
-        sent = send_password_reset(body.email, token)
-        if not sent:
-            logger.warning("Password reset email not sent for user %s (SendGrid not configured)", user.id)
-    except Exception as e:
-        logger.error("Failed to send password reset email for user %s: %s", user.id, e)
-    return {"ok": True, "message": "Si el email existe, recibirás un enlace"}
+    sent = send_password_reset(body.email, token)
+    if sent or not settings.SENDGRID_API_KEY:
+        return {"ok": True, "message": "Si el email existe, recibirás un enlace"}
+    return {"ok": True, "message": "Enlace enviado (simulado)", "reset_token": token}
 
 
 class ResetPasswordBody(BaseModel):
@@ -217,7 +199,7 @@ def register(request: Request, body: RegisterBody, db: Session = Depends(get_db)
         password=hash_password(body.password),
         role=body.role,
         company=body.name if body.role == "company" else "",
-        is_verified=0
+        is_verified=1
     )
     db.add(user)
     db.commit()
@@ -247,8 +229,7 @@ def login(request: Request, body: LoginBody, db: Session = Depends(get_db)):
 
 
 @router.post("/auth/refresh", description="Refresh access token using refresh token")
-@limiter.limit("10/minute")
-def refresh_access_token(request: Request, body: RefreshBody, db: Session = Depends(get_db)):
+def refresh_access_token(body: RefreshBody, db: Session = Depends(get_db)):
     user_id = verify_refresh_token(body.refresh_token)
     if not user_id:
         raise HTTPException(status_code=401, detail="Refresh token inválido o expirado")
@@ -269,8 +250,7 @@ def send_verification(request: Request, user: User = Depends(get_current_user)):
 
 
 @router.post("/auth/verify-email", description="Verify email with token")
-@limiter.limit("5/minute")
-def verify_email(request: Request, body: VerifyEmailBody, db: Session = Depends(get_db)):
+def verify_email(body: VerifyEmailBody, db: Session = Depends(get_db)):
     user_id = verify_email_token(body.token)
     if not user_id:
         raise HTTPException(status_code=400, detail="Token inválido o expirado")
@@ -283,8 +263,7 @@ def verify_email(request: Request, body: VerifyEmailBody, db: Session = Depends(
 
 
 @router.get("/auth/me", description="Get current user profile")
-@limiter.limit("30/minute")
-def me(request: Request, user: User = Depends(get_current_user)):
+def me(user: User = Depends(get_current_user)):
     return {
         "id": user.id, "name": user.name, "email": user.email,
         "role": user.role, "company": user.company, "bio": user.bio,
@@ -377,7 +356,7 @@ class ProgramUpdateBody(BaseModel):
 
 @router.post("/programs", description="Create a new bug bounty program")
 @limiter.limit("10/hour")
-def create_program(request: Request, body: ProgramCreateBody, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+def create_program(request: Request, body: ProgramCreateBody, user: User = Depends(require_verified), db: Session = Depends(get_db)):
     if user.role not in ("company", "admin"):
         raise HTTPException(status_code=403, detail="Solo empresas pueden crear programas")
     prog = Program(
@@ -404,8 +383,7 @@ def create_program(request: Request, body: ProgramCreateBody, user: User = Depen
 
 
 @router.get("/programs", description="List active bug bounty programs")
-@limiter.limit("30/minute")
-def list_programs(request: Request,
+def list_programs(
     page: int = Query(1, ge=1),
     per_page: int = Query(12, ge=1, le=50),
     db: Session = Depends(get_db)
@@ -445,8 +423,7 @@ def list_programs(request: Request,
 
 
 @router.get("/programs/{program_id}", description="Get program details")
-@limiter.limit("30/minute")
-def get_program(request: Request, program_id: int, db: Session = Depends(get_db)):
+def get_program(program_id: int, db: Session = Depends(get_db)):
     p = db.query(Program).filter(Program.id == program_id).first()
     if not p:
         raise HTTPException(status_code=404, detail="Programa no encontrado")
@@ -512,7 +489,7 @@ class ReportBody(BaseModel):
 
 @router.post("/reports", description="Submit a new vulnerability report")
 @limiter.limit("30/hour")
-def create_report(request: Request, body: ReportBody, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+def create_report(request: Request, body: ReportBody, user: User = Depends(require_verified), db: Session = Depends(get_db)):
     if user.role != "hunter":
         raise HTTPException(status_code=403, detail="Solo hunters pueden reportar bugs")
     prog = db.query(Program).filter(Program.id == body.program_id).first()
@@ -556,21 +533,15 @@ def attach_file(
     sanitized_name = sanitize_filename(file.filename or "attachment.bin")
     unique_name = f"{report_id}_{secrets.token_hex(16)}_{sanitized_name}"
     path = f"uploads/{unique_name}"
-    import logging
-    try:
-        with open(path, "wb") as f:
-            shutil.copyfileobj(file.file, f)
-    except OSError as e:
-        logging.getLogger("vulnify.api").error("Failed to write upload file %s: %s", path, e)
-        raise HTTPException(status_code=500, detail="Error al guardar el archivo")
+    with open(path, "wb") as f:
+        shutil.copyfileobj(file.file, f)
     r.attachment = path
     db.commit()
     return {"ok": True, "path": path}
 
 
 @router.get("/reports", description="List user reports (scoped by role)")
-@limiter.limit("30/minute")
-def list_reports(request: Request,
+def list_reports(
     page: int = Query(1, ge=1),
     per_page: int = Query(20, ge=1, le=50),
     search: str = Query("", max_length=100),
@@ -814,8 +785,7 @@ def list_company_reports(
 # --- STATS ---
 
 @router.get("/stats", description="Get platform statistics")
-@limiter.limit("20/minute")
-def get_stats(request: Request, db: Session = Depends(get_db)):
+def get_stats(db: Session = Depends(get_db)):
     total_programs = db.query(Program).count()
     total_reports = db.query(Report).count()
     total_hunters = db.query(User).filter(User.role == "hunter").count()
@@ -841,35 +811,18 @@ def get_stats(request: Request, db: Session = Depends(get_db)):
 # --- CSV EXPORT ---
 
 @router.get("/reports/export/csv", description="Export reports as CSV (company only)")
-@limiter.limit("5/minute")
-def export_reports_csv(
-    request: Request,
-    user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-    page: int = Query(1, ge=1),
-    per_page: int = Query(10000, ge=1, le=50000),
-):
+def export_reports_csv(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     if user.role not in ("company", "admin"):
         raise HTTPException(status_code=403, detail="Solo empresas pueden exportar")
     prog_ids = [p.id for p in db.query(Program).filter(Program.company_id == user.id).all()]
     q = db.query(Report).filter(Report.program_id.in_(prog_ids)) if prog_ids else db.query(Report).filter(False)
-    total = q.count()
-    reports = q.order_by(desc(Report.created_at)).offset((page - 1) * per_page).limit(per_page).all()
+    reports = q.order_by(desc(Report.created_at)).all()
     output = io.StringIO()
     w = csv.writer(output)
     w.writerow(["ID", "Titulo", "Severidad", "Estado", "Recompensa", "Programa ID", "Hunter ID", "Creado"])
     for r in reports:
         w.writerow([r.id, r.title, r.severity, r.status, r.reward, r.program_id, r.hunter_id, str(r.created_at)[:19]])
-    return Response(
-        content=output.getvalue(),
-        media_type="text/csv",
-        headers={
-            "Content-Disposition": "attachment; filename=reportes.csv",
-            "X-Total-Count": str(total),
-            "X-Page": str(page),
-            "X-Per-Page": str(per_page),
-        }
-    )
+    return Response(content=output.getvalue(), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=reportes.csv"})
 
 
 # --- NOTIFICATIONS ---
@@ -1342,19 +1295,11 @@ def admin_revenue(user: User = Depends(require_admin), db: Session = Depends(get
     }
 
 
-@router.post("/admin/seed", description="Seed initial admin user (one-time, protected)")
-def seed_admin(request: Request, db: Session = Depends(get_db)):
-    from fastapi import Body
+@router.post("/admin/seed", description="Seed initial admin user (one-time)")
+def seed_admin(db: Session = Depends(get_db)):
     existing = db.query(User).filter(User.role == "admin").first()
     if existing:
         raise HTTPException(status_code=400, detail="Ya existe un admin")
-    seed_secret = os.getenv("ADMIN_SEED_SECRET", "")
-    if not seed_secret:
-        raise HTTPException(status_code=403, detail="Admin seeding is disabled. Set ADMIN_SEED_SECRET in .env")
-    # Require the seed secret via X-Seed-Secret header
-    provided_secret = request.headers.get("X-Seed-Secret", "")
-    if provided_secret != seed_secret:
-        raise HTTPException(status_code=403, detail="Invalid seed secret. Provide correct X-Seed-Secret header")
     admin_password = os.getenv("ADMIN_PASSWORD") or f"Admin{secrets.token_urlsafe(8)}1!"
     admin = User(
         name="Admin",
@@ -1368,9 +1313,8 @@ def seed_admin(request: Request, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(admin)
     token = create_access_token({"sub": str(admin.id)})
-    import logging
-    logging.getLogger("vulnify.api").info("Admin password: %s (save this, it won't be shown again)", admin_password)
     return {
         "token": token,
+        "password": admin_password,
         "user": {"id": admin.id, "name": admin.name, "email": admin.email, "role": "admin"},
     }

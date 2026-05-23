@@ -48,7 +48,8 @@ class ConnectionManager:
         for ws in conns:
             try:
                 await ws.send_json(message)
-            except Exception:
+            except Exception as e:
+                logger.warning("WebSocket send error to user %s: %s", user_id, e)
                 dead.append(ws)
         for ws in dead:
             conns.remove(ws)

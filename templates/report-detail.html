@@ -4,12 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Reporte — Vulnify</title>
+<meta name="description" content="Detalle del reporte de vulnerabilidad. Información sobre el bug, severidad y estado actual.">
+<meta property="og:title" content="Reporte — Vulnify">
+<meta property="og:description" content="Detalle del reporte de vulnerabilidad. Información sobre el bug, severidad y estado actual.">
+<meta property="og:image" content="/static/og-image.svg">
+<meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
 <script>!function(){try{var t=localStorage.getItem('theme'),h=document.documentElement,d=t?t==='dark':window.matchMedia('(prefers-color-scheme:dark)').matches;h.setAttribute('data-theme',d?'dark':'light');var v=d?['#08080a','#111114','#0d0d10','#e8e5e0','#8a8780','#5c5a55','#1e1d1b','#2d2b28','#d4a853','rgba(212,168,83,0.06)','rgba(212,168,83,0.12)','rgba(212,168,83,0.08)','0 4px 24px rgba(0,0,0,0.5)','0 12px 48px rgba(0,0,0,0.6)']:['#f8f7f5','#ffffff','#ffffff','#1a1816','#6e6b67','#9e9b97','#d6d3d0','#b8b5b0','#b8943f','rgba(184,148,63,0.06)','rgba(184,148,63,0.12)','rgba(184,148,63,0.08)','0 2px 12px rgba(0,0,0,0.04)','0 8px 32px rgba(0,0,0,0.06)'];var n=['--bg','--bg-card','--bg-surface','--text','--text-secondary','--text-tertiary','--border','--border-hover','--accent','--accent-light','--accent-mid','--accent-glow','--shadow','--shadow-lg'];for(var i=0;i<n.length;i++)h.style.setProperty(n[i],v[i])}catch(e){}}()</script>
-<link rel="stylesheet" href="/static/css/styles.css?v=4">
+<link rel="stylesheet" href="/static/css/styles.css?v=5">
 <style>
 .sev-badge{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px}
 .sev-badge.critical{color:#dc2626;background:#dc262615}
@@ -96,7 +101,7 @@ const rid = location.pathname.split('/').pop();
         <a href="/${r.attachment}" target="_blank" style="color:var(--accent);font-size:13px;font-weight:500">Archivo adjunto</a>
       </div>` : ''}
       <div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap;color:var(--text-tertiary);font-size:13px">
-        <span>Programa: <a href="/programa/${r.program_id}" style="color:var(--accent)">${prog.company_name}</a></span>
+        <span>Programa: <a href="/programas/${r.program_id}" style="color:var(--accent)">${prog.company_name}</a></span>
         <span>·</span><span>Hunter ID: ${r.hunter_id}</span>
         <span>·</span><span>${r.created_at?.slice(0,10)}</span>
       </div>

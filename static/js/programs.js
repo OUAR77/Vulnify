@@ -90,7 +90,7 @@ function renderPrograms() {
           <div class="program-card-stat-label">Activo</div>
         </div>
       </div>
-      <button class="program-card-btn" onclick="window.location.href='/programa/${p.id}'">Ver programa →</button>
+      <button class="program-card-btn" onclick="window.location.href='/programas/${p.id}'">Ver programa →</button>
     </div>`
     )
     .join('');

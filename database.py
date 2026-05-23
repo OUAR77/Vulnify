@@ -10,7 +10,7 @@ class JSONColumn(TypeDecorator):
     def process_bind_param(self, value, dialect):
         if value is not None:
             return json.dumps(value)
-        return "[]"
+        return None
 
     def process_result_value(self, value, dialect):
         if value is not None:

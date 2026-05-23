@@ -95,7 +95,7 @@ function applyTheme() {
     document.documentElement.setAttribute('data-theme', useDark ? 'dark' : 'light');
     setThemeVars(useDark);
     updateThemeButtons(useDark);
-  } catch(e) { console.warn('applyTheme error:', e); }
+  } catch(e) { /* ignore */ }
 }
 applyTheme();
 document.addEventListener('DOMContentLoaded', applyTheme);
@@ -493,48 +493,6 @@ if (barsContainer) {
     bar.style.height = h + '%';
     barsContainer.appendChild(bar);
   });
-}
-
-// LIVE REPORTS
-const reports = [
-  { name: 'SQL Injection — /api/users', sev: 'critical', label: 'Crítico' },
-  { name: 'IDOR — /api/orders', sev: 'high', label: 'Alto' },
-  { name: 'XSS — /search?q=', sev: 'medium', label: 'Medio' },
-  { name: 'SSRF — /api/fetch', sev: 'critical', label: 'Crítico' },
-  { name: 'Auth Bypass — /admin', sev: 'high', label: 'Alto' },
-  { name: 'RCE — /api/exec', sev: 'critical', label: 'Crítico' },
-  { name: 'Open Redirect — /login', sev: 'low', label: 'Bajo' },
-];
-
-const reportList = document.getElementById('reportList');
-const reportCount = document.getElementById('reportCount');
-
-let ri = 0;
-if (reportList && reportCount) {
-  setInterval(() => {
-    const r = reports[ri++ % reports.length];
-    const el = document.createElement('div');
-    el.className = 'mw-report';
-    el.style.animation = 'fadeUp 0.3s ease';
-    const color = r.sev === 'critical' ? '#dc2626' : r.sev === 'high' ? '#ef4444' : r.sev === 'medium' ? '#f59e0b' : '#22c55e';
-    el.innerHTML = `
-      <span class="mw-dot" style="background:${color}"></span>
-      <span class="mw-name">${r.name}</span>
-      <span class="mw-badge" style="color:${color};background:${color}15">${r.label}</span>`;
-    reportList.insertBefore(el, reportList.firstChild);
-    if (reportList.children.length > 4) reportList.removeChild(reportList.lastChild);
-    reportCount.textContent = parseInt(reportCount.textContent) + 1;
-  }, 4000);
-}
-
-// HUNTER COUNT
-const hunterCount = document.getElementById('hunterCount');
-if (hunterCount) {
-  setInterval(() => {
-    const cur = parseInt(hunterCount.textContent);
-    const delta = Math.random() > 0.5 ? 1 : -1;
-    hunterCount.textContent = Math.max(40, Math.min(60, cur + delta));
-  }, 3000);
 }
 
 // BACK TO TOP

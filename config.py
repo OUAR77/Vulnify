@@ -30,6 +30,7 @@ class Settings:
     STRIPE_PRICE_MONTHLY: str = os.getenv("STRIPE_PRICE_MONTHLY", "")
     STRIPE_PRICE_YEARLY: str = os.getenv("STRIPE_PRICE_YEARLY", "")
     SENDGRID_API_KEY: str = os.getenv("SENDGRID_API_KEY", "")
+    ADMIN_SEED_SECRET: str = os.getenv("ADMIN_SEED_SECRET", "")
     SITE_URL: str = os.getenv("SITE_URL", "https://vulnify.es")
     PLATFORM_COMMISSION_PERCENT: float = float(os.getenv("PLATFORM_COMMISSION_PERCENT", "10.0"))
 

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#08080a"/>
+  <rect x="540" y="215" width="120" height="120" rx="24" fill="#d4a853"/>
+  <circle cx="600" cy="275" r="40" fill="none" stroke="#08080a" stroke-width="4"/>
+  <circle cx="600" cy="275" r="20" fill="none" stroke="#08080a" stroke-width="2" opacity="0.6"/>
+  <line x1="600" y1="225" x2="600" y2="240" stroke="#08080a" stroke-width="4" stroke-linecap="round"/>
+  <line x1="600" y1="310" x2="600" y2="325" stroke="#08080a" stroke-width="4" stroke-linecap="round"/>
+  <line x1="550" y1="275" x2="560" y2="275" stroke="#08080a" stroke-width="4" stroke-linecap="round"/>
+  <line x1="640" y1="275" x2="650" y2="275" stroke="#08080a" stroke-width="4" stroke-linecap="round"/>
+  <path d="M580 295 L600 260 L620 295" fill="none" stroke="#08080a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="600" y="420" font-family="Inter, sans-serif" font-size="48" font-weight="800" fill="#e8e5e0" text-anchor="middle" letter-spacing="-1">Vulnify</text>
+  <text x="600" y="460" font-family="Inter, sans-serif" font-size="20" fill="#8a8780" text-anchor="middle">Bug Bounty Platform</text>
+</svg>

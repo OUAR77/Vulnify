@@ -15,7 +15,7 @@ def _register_company(client, name="Corp", email="corp@test.com"):
 
 
 def test_admin_seed(client):
-    res = client.post("/api/admin/seed")
+    res = client.post("/api/admin/seed", headers={"X-Seed-Secret": "test-seed-secret-123"})
     assert res.status_code == 200
     data = res.json()
     assert "token" in data
@@ -23,8 +23,8 @@ def test_admin_seed(client):
 
 
 def test_admin_seed_already_exists(client):
-    client.post("/api/admin/seed")
-    res = client.post("/api/admin/seed")
+    client.post("/api/admin/seed", headers={"X-Seed-Secret": "test-seed-secret-123"})
+    res = client.post("/api/admin/seed", headers={"X-Seed-Secret": "test-seed-secret-123"})
     assert res.status_code == 400
     assert "Ya existe" in res.json()["detail"]
 
@@ -32,7 +32,7 @@ def test_admin_seed_already_exists(client):
 def test_admin_list_users(client):
     _register_hunter(client)
     _register_company(client, "C2", "c2@test.com")
-    admin = client.post("/api/admin/seed").json()
+    admin = client.post("/api/admin/seed", headers={"X-Seed-Secret": "test-seed-secret-123"}).json()
     res = client.get("/api/admin/users",
                      headers={"Authorization": f"Bearer {admin['token']}"})
     assert res.status_code == 200
@@ -48,7 +48,7 @@ def test_admin_list_users(client):
 
 def test_admin_update_user_role(client):
     hunter = _register_hunter(client)
-    admin = client.post("/api/admin/seed").json()
+    admin = client.post("/api/admin/seed", headers={"X-Seed-Secret": "test-seed-secret-123"}).json()
     res = client.put(f"/api/admin/users/{hunter['user']['id']}", json={"role": "company"},
                      headers={"Authorization": f"Bearer {admin['token']}"})
     assert res.status_code == 200
@@ -59,14 +59,14 @@ def test_admin_update_user_role(client):
 
 def test_admin_delete_user(client):
     hunter = _register_hunter(client)
-    admin = client.post("/api/admin/seed").json()
+    admin = client.post("/api/admin/seed", headers={"X-Seed-Secret": "test-seed-secret-123"}).json()
     res = client.delete(f"/api/admin/users/{hunter['user']['id']}",
                         headers={"Authorization": f"Bearer {admin['token']}"})
     assert res.status_code == 200
 
 
 def test_admin_cannot_delete_self(client):
-    admin = client.post("/api/admin/seed").json()
+    admin = client.post("/api/admin/seed", headers={"X-Seed-Secret": "test-seed-secret-123"}).json()
     me = client.get("/api/auth/me",
                     headers={"Authorization": f"Bearer {admin['token']}"}).json()
     res = client.delete(f"/api/admin/users/{me['id']}",
@@ -76,7 +76,7 @@ def test_admin_cannot_delete_self(client):
 
 def test_admin_list_programs(client):
     company = _register_company(client)
-    admin = client.post("/api/admin/seed").json()
+    admin = client.post("/api/admin/seed", headers={"X-Seed-Secret": "test-seed-secret-123"}).json()
     client.post("/api/programs", json={
         "company_name": "Corp", "industry": "tech", "max_reward": 5000,
     }, headers={"Authorization": f"Bearer {company['token']}"})
@@ -91,7 +91,7 @@ def test_admin_list_programs(client):
 def test_admin_list_reports(client):
     hunter = _register_hunter(client)
     company = _register_company(client, "C2", "c2@test.com")
-    admin = client.post("/api/admin/seed").json()
+    admin = client.post("/api/admin/seed", headers={"X-Seed-Secret": "test-seed-secret-123"}).json()
     prog = client.post("/api/programs", json={
         "company_name": "C2", "industry": "tech", "max_reward": 5000,
     }, headers={"Authorization": f"Bearer {company['token']}"}).json()

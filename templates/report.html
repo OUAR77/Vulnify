@@ -4,12 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reportar bug — Vulnify</title>
+  <meta name="description" content="Reporta una vulnerabilidad en uno de los programas de bug bounty de Vulnify y consigue una recompensa.">
+  <meta property="og:title" content="Nuevo reporte — Vulnify">
+  <meta property="og:description" content="Reporta una vulnerabilidad en uno de los programas de bug bounty de Vulnify y consigue una recompensa.">
+  <meta property="og:image" content="/static/og-image.svg">
+  <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
 <script>!function(){try{var t=localStorage.getItem('theme'),h=document.documentElement,d=t?t==='dark':window.matchMedia('(prefers-color-scheme:dark)').matches;h.setAttribute('data-theme',d?'dark':'light');var v=d?['#08080a','#111114','#0d0d10','#e8e5e0','#8a8780','#5c5a55','#1e1d1b','#2d2b28','#d4a853','rgba(212,168,83,0.06)','rgba(212,168,83,0.12)','rgba(212,168,83,0.08)','0 4px 24px rgba(0,0,0,0.5)','0 12px 48px rgba(0,0,0,0.6)']:['#f8f7f5','#ffffff','#ffffff','#1a1816','#6e6b67','#9e9b97','#d6d3d0','#b8b5b0','#b8943f','rgba(184,148,63,0.06)','rgba(184,148,63,0.12)','rgba(184,148,63,0.08)','0 2px 12px rgba(0,0,0,0.04)','0 8px 32px rgba(0,0,0,0.06)'];var n=['--bg','--bg-card','--bg-surface','--text','--text-secondary','--text-tertiary','--border','--border-hover','--accent','--accent-light','--accent-mid','--accent-glow','--shadow','--shadow-lg'];for(var i=0;i<n.length;i++)h.style.setProperty(n[i],v[i])}catch(e){}}()</script>
-<link rel="stylesheet" href="/static/css/styles.css?v=4">
+<link rel="stylesheet" href="/static/css/styles.css?v=5">
   <style>
     .report-form { max-width: 640px; margin: 0 auto; }
     .report-form label { font-size: 14px; font-weight: 600; display: block; margin-bottom: 4px; }
@@ -122,6 +127,42 @@
 <div class="toast" id="toast"></div>
 
 <button class="back-top" id="backTop" aria-label="Volver arriba">&#8593;</button>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo" style="display:flex;align-items:center;gap:6px;"><svg viewBox="0 0 32 32" width="16" height="16" style="display:inline-block"><rect width="32" height="32" rx="8" fill="#d4a853"/><circle cx="16" cy="16" r="10" fill="none" stroke="#08080a" stroke-width="1.5"/><circle cx="16" cy="16" r="5" fill="none" stroke="#08080a" stroke-width="1" opacity="0.6"/><line x1="16" y1="4" x2="16" y2="7" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="16" y1="25" x2="16" y2="28" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="16" x2="7" y2="16" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="25" y1="16" x2="28" y2="16" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><path d="M13 19 L16 12 L19 19" fill="none" stroke="#08080a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Vuln</span>ify</div>
+        <p class="footer-desc">La plataforma de bug bounty española. Conectamos hackers éticos con startups tech.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Plataforma</h4>
+        <a href="/programas">Programas activos</a>
+        <a href="/hall-of-fame">Ranking hunters</a>
+        <a href="/hall-of-fame">Hall of Fame</a>
+        <a href="/#features">Cómo funciona</a>
+      </div>
+      <div class="footer-col">
+        <h4>Hunters</h4>
+        <a href="/#precios">Registrarse</a>
+        <a href="/#features">Guía de inicio</a>
+        <a href="/terminos">Reglas</a>
+        <a href="/terminos">Disclosure policy</a>
+      </div>
+      <div class="footer-col">
+        <h4>Empresa</h4>
+        <a href="/sobre-nosotros">Sobre nosotros</a>
+        <a href="mailto:hola@vulnify.es">Contacto</a>
+        <a href="/privacidad">Privacidad</a>
+        <a href="/terminos">Términos</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 <span class="accent">Vulnify</span> · vulnify.es</span>
+      <span>Bug Bounty Platform</span>
+    </div>
+  </div>
+</footer>
+
 <script src="/static/js/script.js?v=5"></script>
 <script>
 async function loadPrograms() {
