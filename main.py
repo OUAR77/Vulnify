@@ -2,7 +2,7 @@ import os
 import json
 import logging
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -195,6 +195,10 @@ async def precios(request: Request):
 async def terminos(request: Request):
     return templates.TemplateResponse(request, "terms.html")
 
+@app.get("/contacto", response_class=HTMLResponse, description="Contact page")
+async def contacto(request: Request):
+    return templates.TemplateResponse(request, "contact.html")
+
 @app.get("/sobre-nosotros", response_class=HTMLResponse, description="About us")
 async def sobre_nosotros(request: Request):
     return templates.TemplateResponse(request, "about.html")
@@ -234,8 +238,10 @@ async def company_billing(request: Request):
     return templates.TemplateResponse(request, "billing.html")
 
 
-@app.get("/company/billing-debug", response_class=HTMLResponse, description="Billing debug page")
+@app.get("/company/billing-debug", response_class=HTMLResponse, description="Billing debug page (dev only)")
 async def billing_debug(request: Request):
+    if settings.ENVIRONMENT == "production":
+        raise HTTPException(status_code=404)
     return templates.TemplateResponse(request, "billing_debug.html")
 
 

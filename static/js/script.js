@@ -281,7 +281,7 @@ function openModal(type) {
          <form class="modal-form" id="registerForm">
            <input type="text" placeholder="Nombre completo" class="modal-input" id="regName" required>
            <input type="email" placeholder="Email" class="modal-input" id="regEmail" required>
-           <input type="password" placeholder="Contraseña" class="modal-input" id="regPass" required minlength="6">
+           <input type="password" placeholder="Contraseña" class="modal-input" id="regPass" required minlength="8">
            <input type="password" placeholder="Confirmar contraseña" class="modal-input" id="regPass2" required>
            <select class="modal-input" id="regRole" style="padding:12px 14px;">
              <option value="hunter">Hunter (cazador de bugs)</option>

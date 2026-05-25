@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file: .env
+    volumes:
+      - uploads:/app/uploads
+      - vulnify.db:/app/vulnify.db
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: vulnify
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-vulnify_secret}
+      POSTGRES_DB: vulnify
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vulnify"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  uploads:
+  pgdata:
