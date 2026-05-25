@@ -272,17 +272,7 @@ async def ai_tools_page(request: Request):
 
 @app.get("/health")
 async def health():
-    try:
-        with engine.connect() as conn:
-            conn.execute(text("SELECT 1"))
-        db_status = "ok"
-    except Exception:
-        db_status = "error"
-    return {
-        "status": "ok" if db_status == "ok" else "degraded",
-        "environment": settings.ENVIRONMENT,
-        "database": db_status,
-    }
+    return {"status": "ok", "environment": settings.ENVIRONMENT}
 
 
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
