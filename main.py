@@ -3,7 +3,7 @@ import json
 import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
@@ -168,6 +168,14 @@ async def server_error(request: Request, exc):
     logger.exception("Internal server error")
     return templates.TemplateResponse(request, "500.html", status_code=500)
 
+
+@app.get("/robots.txt", response_class=FileResponse)
+async def robots():
+    return FileResponse("static/robots.txt", media_type="text/plain")
+
+@app.get("/sitemap.xml", response_class=FileResponse)
+async def sitemap():
+    return FileResponse("static/sitemap.xml", media_type="application/xml")
 
 @app.get("/", response_class=HTMLResponse, description="Home page")
 async def index(request: Request):
