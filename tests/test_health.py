@@ -3,8 +3,7 @@ def test_health_endpoint(client):
     assert res.status_code == 200
     data = res.json()
     assert data["status"] == "ok"
-    assert "database" in data
-    assert data["database"] == "ok"
+    assert data["environment"] == "testing"
 
 
 def test_security_headers(client):
