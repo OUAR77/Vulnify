@@ -1,5 +1,6 @@
 from models.user import User
 from models.plan import Plan
-from models.scan import Scan
+from models.asset import MonitoredAsset
+from models.alert import BreachAlert
 from models.subscription import UserSubscription
 from models.apikey import ApiKey

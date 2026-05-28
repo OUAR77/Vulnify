@@ -73,9 +73,9 @@ async def lifespan(app: FastAPI):
         db = SessionLocal()
         if not db.query(Plan).first():
             plans = [
-                Plan(name="Gratis", description="Escaneos ilimitados, informes básicos", price_monthly=0, max_reports=-1, max_programs=0, features=["Escaneos ilimitados", "Informe PDF básico", "Problemas críticos"], active=True),
-                Plan(name="Pro", description="Para autónomos y pequeñas empresas", price_monthly=9, max_reports=-1, max_programs=0, features=["Escaneos ilimitados", "Informe PDF detallado", "Alertas por email", "Monitorización semanal", "3 dominios"], active=True),
-                Plan(name="Business", description="Para equipos y agencias", price_monthly=29, max_reports=-1, max_programs=0, features=["Dominios ilimitados", "Escaneo diario", "API de escaneo", "Informes personalizados", "Soporte prioritario"], active=True),
+                Plan(name="Gratis", description="Monitorización básica de brechas", price_monthly=0, max_reports=-1, max_programs=0, features=["1 dominio o email", "Alertas por email", "Informe básico de brechas"], active=True),
+                Plan(name="Pro", description="Para autónomos y pequeñas empresas", price_monthly=29, max_reports=-1, max_programs=0, features=["Hasta 5 dominios o emails", "Alertas por email y dashboard", "Monitorización semanal", "Informe detallado de brechas", "Historial de alertas"], active=True),
+                Plan(name="Business", description="Para equipos y agencias", price_monthly=99, max_reports=-1, max_programs=0, features=["Dominios y emails ilimitados", "Monitorización diaria", "API de consulta", "Alertas en tiempo real", "Soporte prioritario 24/7"], active=True),
             ]
             db.add_all(plans)
             db.commit()
@@ -122,8 +122,8 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 app = FastAPI(
     title="Vulnify API",
-    description="Security scanner platform — scan domains, find vulnerabilities, and get reports",
-    version="2.0.0",
+    description="Reputation monitoring & dark web breach detection platform",
+    version="3.0.0",
     lifespan=lifespan,
 )
 
@@ -182,9 +182,13 @@ async def register_page(request: Request):
     return templates.TemplateResponse(request, "register.html")
 
 
-@app.get("/scanner", response_class=HTMLResponse, description="Security scanner")
-async def scanner_page(request: Request):
-    return templates.TemplateResponse(request, "scan.html")
+@app.get("/monitor", response_class=HTMLResponse, description="Reputation monitor")
+async def monitor_page(request: Request):
+    return templates.TemplateResponse(request, "monitor.html")
+
+@app.get("/scanner", response_class=HTMLResponse, description="Redirect to monitor")
+async def scanner_redirect(request: Request):
+    return templates.TemplateResponse(request, "monitor.html")
 
 
 @app.get("/precios", response_class=HTMLResponse, description="Pricing plans")
