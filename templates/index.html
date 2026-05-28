@@ -27,8 +27,14 @@
         <button class="hamburger" id="hamburger" aria-label="Menú">
           <span></span><span></span><span></span>
         </button>
-        <a href="/login" class="btn btn-ghost btn-sm">Iniciar sesión</a>
-        <a href="/register" class="btn btn-primary btn-sm">Registrarse</a>
+        <div id="headerAuth">
+          <a href="/login" class="btn btn-ghost btn-sm">Iniciar sesión</a>
+          <a href="/register" class="btn btn-primary btn-sm">Registrarse</a>
+        </div>
+        <div id="headerUser" style="display:none;align-items:center;gap:8px">
+          <span class="user-name" id="headerUserName" style="font-size:0.85rem;color:var(--text-secondary);font-weight:600"></span>
+          <button class="btn btn-ghost btn-sm" onclick="logout()">Salir</button>
+        </div>
       </div>
     </div>
   </div>
@@ -37,9 +43,13 @@
     <a href="/precios" class="nav-link">Precios</a>
     <a href="/sobre-nosotros" class="nav-link">Sobre nosotros</a>
     <a href="/contacto" class="nav-link">Contacto</a>
-    <div class="header-actions-mobile">
+    <div id="mobileAuth" class="header-actions-mobile">
       <a href="/login" class="btn btn-ghost">Iniciar sesión</a>
       <a href="/register" class="btn btn-primary">Registrarse</a>
+    </div>
+    <div id="mobileUser" class="header-actions-mobile" style="display:none">
+      <a href="/dashboard" class="btn btn-ghost" id="mobileUserName" style="font-weight:600">Dashboard</a>
+      <button class="btn btn-ghost" onclick="logout()">Salir</button>
     </div>
   </div>
 </header>
@@ -259,6 +269,7 @@
   </div>
 </footer>
 
+<script src="/static/js/script.js"></script>
 <script>
   const header = document.getElementById('header');
   window.addEventListener('scroll', () => {

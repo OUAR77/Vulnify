@@ -1,7 +1,13 @@
 // AUTH STATE
+const AUTH_KEY = 'vulnify_token';
+
+function getAuthToken() {
+  return localStorage.getItem(AUTH_KEY) || localStorage.getItem('token');
+}
+
 function applyAuth() {
   try {
-    const token = localStorage.getItem('token');
+    const token = getAuthToken();
     const user = localStorage.getItem('user');
     const parsed = user ? JSON.parse(user) : null;
     const userName = parsed ? parsed.name : null;
@@ -169,7 +175,7 @@ const API = '/api';
 
 async function apiCall(method, path, body, auth) {
   const headers = { 'Content-Type': 'application/json' };
-  if (auth) headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+  if (auth) headers['Authorization'] = `Bearer ${getAuthToken()}`;
   const res = await fetch(`${API}${path}`, { method, headers, body: body ? JSON.stringify(body) : undefined });
   const data = await res.json();
   if (!res.ok) {
@@ -181,6 +187,7 @@ async function apiCall(method, path, body, auth) {
 
 async function loginUser(email, password) {
   const data = await apiCall('POST', '/auth/login', { email, password });
+  localStorage.setItem(AUTH_KEY, data.token);
   localStorage.setItem('token', data.token);
   if (data.refresh_token) localStorage.setItem('refresh_token', data.refresh_token);
   localStorage.setItem('user', JSON.stringify(data.user));
@@ -189,6 +196,7 @@ async function loginUser(email, password) {
 
 async function registerUser(name, email, password, role) {
   const data = await apiCall('POST', '/auth/register', { name, email, password, role: role || 'hunter' });
+  localStorage.setItem(AUTH_KEY, data.token);
   localStorage.setItem('token', data.token);
   if (data.refresh_token) localStorage.setItem('refresh_token', data.refresh_token);
   localStorage.setItem('user', JSON.stringify(data.user));
@@ -203,7 +211,7 @@ function isTokenExpired(token) {
 }
 
 async function getValidToken() {
-  var token = localStorage.getItem('token');
+  var token = getAuthToken();
   if (!token) return null;
   if (!isTokenExpired(token)) return token;
   var rt = localStorage.getItem('refresh_token');
@@ -217,6 +225,7 @@ async function getValidToken() {
     if (!res.ok) return null;
     var data = await res.json();
     if (data.token) {
+      localStorage.setItem(AUTH_KEY, data.token);
       localStorage.setItem('token', data.token);
       return data.token;
     }
@@ -227,6 +236,7 @@ async function getValidToken() {
 }
 
 function logout() {
+  localStorage.removeItem(AUTH_KEY);
   localStorage.removeItem('token');
   localStorage.removeItem('refresh_token');
   localStorage.removeItem('user');
