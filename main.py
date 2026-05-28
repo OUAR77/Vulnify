@@ -201,6 +201,11 @@ async def dashboard(request: Request):
     return templates.TemplateResponse(request, "dashboard.html")
 
 
+@app.get("/admin", response_class=HTMLResponse, description="Admin panel")
+async def admin_panel(request: Request):
+    return templates.TemplateResponse(request, "admin.html")
+
+
 @app.get("/terminos", response_class=HTMLResponse, description="Terms and conditions")
 async def terminos(request: Request):
     return templates.TemplateResponse(request, "terms.html")
