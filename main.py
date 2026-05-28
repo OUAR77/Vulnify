@@ -244,6 +244,28 @@ async def health():
         db_status = str(e)[:100]
     return {"status": "ok", "environment": settings.ENVIRONMENT, "database": db_status, "db_type": db_type}
 
+@app.get("/db-tables")
+async def db_tables():
+    from database import SessionLocal
+    try:
+        db = SessionLocal()
+        if "postgres" in settings.DATABASE_URL:
+            rows = db.execute(text("SELECT table_name FROM information_schema.tables WHERE table_schema='public'")).fetchall()
+        else:
+            rows = db.execute(text("SELECT name FROM sqlite_master WHERE type='table'")).fetchall()
+        tables = [r[0] for r in rows]
+        counts = {}
+        for t in tables:
+            try:
+                c = db.execute(text(f"SELECT count(*) FROM \"{t}\"")).scalar()
+                counts[t] = c
+            except:
+                pass
+        db.close()
+        return {"tables": tables, "counts": counts}
+    except Exception as e:
+        return {"error": str(e)}
+
 
 # --- WebSocket ---
 
