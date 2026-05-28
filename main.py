@@ -63,10 +63,11 @@ async def lifespan(app: FastAPI):
     from models.plan import Plan
     from models.user import User
     try:
+        logger.info("Creating tables with engine: %s", settings.DATABASE_URL[:30] + "...")
         Base.metadata.create_all(bind=engine)
         logger.info("Tables created via metadata")
     except Exception as e:
-        logger.warning("Could not create tables: %s", e)
+        logger.warning("Could not create tables: %s", str(e)[:200])
     try:
         from database import SessionLocal
         from modules.auth import hash_password
@@ -230,7 +231,18 @@ async def privacidad(request: Request):
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "environment": settings.ENVIRONMENT}
+    from database import SessionLocal
+    db_status = "error"
+    db_type = "unknown"
+    try:
+        db = SessionLocal()
+        db.execute(text("SELECT 1"))
+        db.close()
+        db_status = "ok"
+        db_type = "postgresql" if "postgres" in settings.DATABASE_URL else "sqlite"
+    except Exception as e:
+        db_status = str(e)[:100]
+    return {"status": "ok", "environment": settings.ENVIRONMENT, "database": db_status, "db_type": db_type}
 
 
 # --- WebSocket ---
