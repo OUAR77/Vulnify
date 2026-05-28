@@ -194,10 +194,13 @@
 
     document.getElementById('result-summary').innerHTML = `
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-        <span style="font-size:2rem">⚠️</span>
-        <div>
+        <span style="font-size:2rem">${data.severity === 'critical' ? '🚨' : data.severity === 'high' ? '⚠️' : '🔶'}</span>
+        <div style="flex:1">
           <strong style="font-size:1.1rem">${data.breaches_found} filtración(es) encontrada(s)</strong>
-          <p style="color:var(--text-secondary);font-size:0.85rem">${value} aparece en las siguientes brechas de datos.</p>
+          <div style="margin-top:4px">
+            <span class="sev-badge ${data.severity}" style="font-size:11px">Severidad: ${data.severity}</span>
+          </div>
+          <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:6px">${value} aparece en las siguientes brechas. Datos expuestos: ${(data.data_classes_exposed || []).join(', ') || 'N/A'}.</p>
         </div>
       </div>
     `;
@@ -205,7 +208,8 @@
     document.getElementById('result-breaches').innerHTML = data.breaches.map(b => `
       <div class="breach-item">
         <div class="breach-name">${b.breach_name}</div>
-        <div class="breach-date">${b.breach_date || 'Fecha desconocida'} · <span class="sev-badge ${b.severity}">${b.severity}</span></div>
+        <div class="breach-date">${b.breach_date || 'Fecha desconocida'} · <span class="sev-badge ${b.severity}">${b.severity}</span> · <span style="color:var(--text-tertiary);font-size:0.75rem">confianza: ${b.confidence || 'media'}</span></div>
+        <div style="font-size:0.8rem;color:var(--text-secondary);margin:6px 0">${b.description || ''}</div>
         <div class="breach-classes">${(b.data_classes || []).map(c => `<span class="breach-class">${c}</span>`).join('')}</div>
       </div>
     `).join('');
