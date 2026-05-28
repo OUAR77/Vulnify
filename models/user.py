@@ -1,5 +1,4 @@
 from sqlalchemy import Column, Integer, String, DateTime, func
-from sqlalchemy.orm import relationship
 from database import Base
 
 
@@ -17,5 +16,3 @@ class User(Base):
     is_verified = Column(Integer, default=0)
     stripe_customer_id = Column(String, nullable=True)
     created_at = Column(DateTime, server_default=func.now())
-
-    scans = relationship("Scan", backref="user", cascade="all, delete-orphan")

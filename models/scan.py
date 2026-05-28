@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Float, Text, func
+from sqlalchemy import Column, Integer, String, DateTime, Float, Text, ForeignKey, func
 from database import Base, JSONColumn
 
 
@@ -6,7 +6,7 @@ class Scan(Base):
     __tablename__ = "scans"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, nullable=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     domain = Column(String, nullable=False)
     score = Column(Float, nullable=False)
     issues_count = Column(Integer, default=0)
