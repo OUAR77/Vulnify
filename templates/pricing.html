@@ -59,7 +59,7 @@
       <h2 class="section-title">Protege tu reputación digital</h2>
       <p class="section-sub">Todos los planes incluyen monitorización de brechas. Escala según tus necesidades.</p>
     </div>
-    <div class="pricing-grid">
+    <div class="pricing-grid" id="pricing-grid">
       <div class="plan-card">
         <div class="plan-name">Gratis</div>
         <div class="plan-price">0€</div>
@@ -86,7 +86,7 @@
           <li>Informe detallado de brechas</li>
           <li>Historial de alertas</li>
         </ul>
-        <a href="/register" class="plan-btn fill-accent">Elegir Pro</a>
+        <button class="plan-btn fill-accent subscribe-btn" data-plan-id="2">Elegir Pro</button>
       </div>
       <div class="plan-card">
         <div class="plan-name">Business</div>
@@ -101,7 +101,7 @@
           <li>Alertas en tiempo real</li>
           <li>Soporte prioritario 24/7</li>
         </ul>
-        <a href="/register" class="plan-btn outline">Elegir Business</a>
+        <button class="plan-btn outline subscribe-btn" data-plan-id="3">Elegir Business</button>
       </div>
     </div>
 
@@ -124,6 +124,7 @@
   </div>
 </section>
 
+<script src="/static/js/script.js"></script>
 <script>
   document.querySelectorAll('.faq-question').forEach(q => {
     q.addEventListener('click', () => {
@@ -140,7 +141,40 @@
       document.body.classList.toggle('menu-open');
     });
   }
+
+  function getToken() { return localStorage.getItem('vulnify_token'); }
+
+  async function subscribe(planId) {
+    const token = getToken();
+    if (!token) {
+      window.location.href = '/register?plan=' + planId;
+      return;
+    }
+    const btn = document.querySelector(`.subscribe-btn[data-plan-id="${planId}"]`);
+    const orig = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Procesando...';
+    try {
+      const resp = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan_id: planId, interval: 'month' })
+      });
+      const data = await resp.json();
+      if (!resp.ok) { alert(data.detail || 'Error al procesar'); btn.disabled = false; btn.textContent = orig; return; }
+      if (data.free) { window.location.href = '/dashboard'; return; }
+      if (data.checkout_url) { window.location.href = data.checkout_url; return; }
+      alert('Error: no se pudo iniciar el proceso de pago');
+    } catch {
+      alert('Error de conexión');
+    }
+    btn.disabled = false;
+    btn.textContent = orig;
+  }
+
+  document.querySelectorAll('.subscribe-btn').forEach(btn => {
+    btn.addEventListener('click', () => subscribe(btn.dataset.planId));
+  });
 </script>
-<script src="/static/js/script.js"></script>
 </body>
 </html>

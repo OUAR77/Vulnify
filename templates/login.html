@@ -30,8 +30,27 @@
     </div>
   </div>
   <script>
+    const planId = new URLSearchParams(window.location.search).get('plan');
     const token = localStorage.getItem('vulnify_token');
-    if (token) { window.location.href = '/dashboard'; }
+    if (token) {
+      if (planId) { window.location.href = '/pricing'; }
+      else { window.location.href = '/dashboard'; }
+    }
+
+    async function subscribeAfterRegister(token) {
+      if (!planId) return '/dashboard';
+      try {
+        const resp = await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plan_id: parseInt(planId), interval: 'month' })
+        });
+        const data = await resp.json();
+        if (data.checkout_url) return data.checkout_url;
+        if (data.free) return '/dashboard';
+      } catch {}
+      return '/dashboard';
+    }
 
     document.getElementById('submit').addEventListener('click', async () => {
       const email = document.getElementById('email').value.trim();
@@ -47,7 +66,7 @@
         localStorage.setItem('vulnify_token', data.token);
         if (data.refresh_token) localStorage.setItem('refresh_token', data.refresh_token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        window.location.href = '/dashboard';
+        window.location.href = await subscribeAfterRegister(data.token);
       } catch { showError('Error de conexión'); }
     });
     document.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('submit').click(); });
