@@ -20,14 +20,28 @@ BREACH_DATABASE = [
 ]
 
 
-def fetch_hibp_breaches():
+def fetch_all_breaches() -> list[dict]:
+    hibp = []
     try:
         resp = requests.get(f"{HIBP_API}/breaches", timeout=10, headers={"hibp-api-key": ""})
         if resp.status_code == 200:
-            return resp.json()
+            hibp = resp.json()
     except:
         pass
-    return BREACH_DATABASE
+    merged = list(BREACH_DATABASE)
+    seen = {b["name"].lower() for b in BREACH_DATABASE}
+    for b in hibp:
+        name = b.get("Name", "")
+        if name.lower() not in seen:
+            merged.append({
+                "name": name,
+                "date": b.get("BreachDate", "2024-01-01"),
+                "domain": b.get("Domain", "").lower(),
+                "data_classes": b.get("DataClasses", []),
+                "severity": "high",
+            })
+            seen.add(name.lower())
+    return merged
 
 
 def check_domain_in_breaches(domain: str) -> list[dict]:
@@ -53,33 +67,22 @@ def check_email_in_breaches(email: str) -> list[dict]:
     email_lower = email.lower().strip()
     domain_part = email_lower.split("@")[-1] if "@" in email_lower else ""
 
-    breaches = fetch_hibp_breaches()
-    if isinstance(breaches, list):
-        for breach in breaches:
-            breach_name = breach.get("Name", breach.get("name", ""))
-            breach_domain = breach.get("Domain", "").lower()
-            breach_date = breach.get("BreachDate", breach.get("date", "2024-01-01"))
-            data_classes = breach.get("DataClasses", breach.get("data_classes", []))
-            severity = "high"
+    domain_part = domain_part.replace("www.", "")
+    for breach in fetch_all_breaches():
+        breach_name = breach.get("Name", breach.get("name", ""))
+        breach_domain = (breach.get("Domain", "") or breach.get("domain", "")).lower().replace("www.", "")
+        breach_date = breach.get("BreachDate", breach.get("date", "2024-01-01"))
+        data_classes = breach.get("DataClasses", breach.get("data_classes", []))
+        severity = breach.get("severity", "high")
 
-            if breach_domain and domain_part == breach_domain:
-                results.append({
-                    "breach_name": breach_name,
-                    "breach_date": breach_date,
-                    "data_classes": data_classes,
-                    "severity": severity,
-                    "confidence": "medium",
-                })
-    else:
-        for breach in BREACH_DATABASE:
-            if breach["domain"] and domain_part == breach["domain"]:
-                results.append({
-                    "breach_name": breach["name"],
-                    "breach_date": breach["date"],
-                    "data_classes": breach["data_classes"],
-                    "severity": breach["severity"],
-                    "confidence": "medium",
-                })
+        if breach_domain and domain_part == breach_domain:
+            results.append({
+                "breach_name": breach_name,
+                "breach_date": breach_date,
+                "data_classes": data_classes,
+                "severity": severity,
+                "confidence": "medium",
+            })
 
     return results
 
