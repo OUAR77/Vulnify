@@ -22,6 +22,7 @@ from modules.auth import (
     hash_api_key,
 )
 from config import limiter, settings
+from modules.activity_logger import log_activity, get_client_ip
 
 router = APIRouter(prefix="/api")
 logger = logging.getLogger("vulnify.api")
@@ -124,6 +125,8 @@ def register(request: Request, body: RegisterBody, db: Session = Depends(get_db)
     db.refresh(user)
     token = create_access_token({"sub": str(user.id)})
     refresh_token = create_refresh_token(user.id)
+    ip = get_client_ip(request)
+    log_activity("user.register", user.id, user.email, {"name": user.name}, ip)
     return {
         "token": token, "refresh_token": refresh_token,
         "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role},
@@ -137,6 +140,8 @@ def login(request: Request, body: LoginBody, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Email o contraseña incorrectos")
     token = create_access_token({"sub": str(user.id)})
     refresh_token = create_refresh_token(user.id)
+    ip = get_client_ip(request)
+    log_activity("user.login", user.id, user.email, {}, ip)
     return {
         "token": token, "refresh_token": refresh_token,
         "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role, "verified": bool(user.is_verified)},
@@ -152,6 +157,8 @@ def refresh_access_token(request: Request, body: RefreshBody, db: Session = Depe
     if not user:
         raise HTTPException(status_code=401, detail="Usuario no encontrado")
     token = create_access_token({"sub": str(user.id)})
+    ip = get_client_ip(request)
+    log_activity("token.refresh", user.id, user.email, {}, ip)
     return {"token": token}
 
 @router.post("/auth/send-verification", description="Send email verification token")
@@ -160,6 +167,8 @@ def send_verification(request: Request, user: User = Depends(get_current_user)):
     if user.is_verified:
         return {"ok": True, "message": "Email ya verificado"}
     token = create_verification_token(user.id)
+    ip = get_client_ip(request)
+    log_activity("user.send_verification", user.id, user.email, {}, ip)
     return {"ok": True, "message": "Token de verificación generado", "token": token}
 
 class VerifyEmailBody(BaseModel):
@@ -176,6 +185,8 @@ def verify_email(request: Request, body: VerifyEmailBody, db: Session = Depends(
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     user.is_verified = 1
     db.commit()
+    ip = get_client_ip(request)
+    log_activity("user.verify_email", user.id, user.email, {}, ip)
     return {"ok": True, "message": "Email verificado correctamente"}
 
 @router.get("/auth/me", description="Get current user profile")
@@ -195,10 +206,14 @@ class ProfileBody(BaseModel):
 @router.put("/auth/profile", description="Update user profile")
 @limiter.limit("10/minute")
 def update_profile(request: Request, body: ProfileBody, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    if body.name is not None: user.name = body.name
-    if body.company is not None: user.company = body.company
-    if body.bio is not None: user.bio = body.bio
+    changed = {}
+    if body.name is not None: user.name = body.name; changed["name"] = body.name
+    if body.company is not None: user.company = body.company; changed["company"] = body.company
+    if body.bio is not None: user.bio = body.bio; changed["bio"] = True
     db.commit()
+    if changed:
+        ip = get_client_ip(request)
+        log_activity("user.update_profile", user.id, user.email, changed, ip)
     return {"ok": True}
 
 class ChangePasswordBody(BaseModel):
@@ -220,6 +235,8 @@ def change_password(request: Request, body: ChangePasswordBody, user: User = Dep
         raise HTTPException(status_code=400, detail="Contraseña actual incorrecta")
     user.password = hash_password(body.new_password)
     db.commit()
+    ip = get_client_ip(request)
+    log_activity("user.change_password", user.id, user.email, {}, ip)
     return {"ok": True, "message": "Contraseña actualizada"}
 
 
@@ -235,6 +252,7 @@ def create_api_key(body: ApiKeyCreateBody, user: User = Depends(get_current_user
     api_key = ApiKey(user_id=user.id, name=body.name, key=hash_api_key(key_value))
     db.add(api_key)
     db.commit()
+    log_activity("api_key.create", user.id, user.email, {"name": body.name})
     return {"ok": True, "key": key_value, "name": body.name, "id": api_key.id}
 
 @router.get("/auth/api-keys", description="List user API keys")
@@ -251,6 +269,7 @@ def delete_api_key(key_id: int, user: User = Depends(get_current_user), db: Sess
         raise HTTPException(status_code=404, detail="API key no encontrada")
     db.delete(k)
     db.commit()
+    log_activity("api_key.delete", user.id, user.email, {"name": k.name})
     return {"ok": True}
 
 
@@ -278,6 +297,7 @@ def add_asset(request: Request, body: AddAssetBody, user: User = Depends(get_cur
     db.add(asset)
     db.commit()
     db.refresh(asset)
+    log_activity("asset.add", user.id, user.email, {"type": body.type, "value": value})
     return {"id": asset.id, "type": asset.type, "value": asset.value, "status": asset.status}
 
 @router.get("/assets", description="List monitored assets")
@@ -298,6 +318,7 @@ def delete_asset(asset_id: int, user: User = Depends(get_current_user), db: Sess
     db.query(BreachAlert).filter(BreachAlert.asset_id == asset_id).delete()
     db.delete(a)
     db.commit()
+    log_activity("asset.remove", user.id, user.email, {"type": a.type, "value": a.value})
     return {"ok": True}
 
 
@@ -336,6 +357,7 @@ async def check_asset_endpoint(request: Request, asset_id: int, user: User = Dep
             db.add(alert)
             db.commit()
 
+    log_activity("asset.check", user.id, user.email, {"type": a.type, "value": a.value, "breaches": result["breaches_found"]})
     return result
 
 
@@ -460,6 +482,7 @@ def subscribe(
             cancel_url=request.base_url._url.rstrip("/") + "/pricing?canceled=1",
             metadata={"plan_id": str(plan.id), "user_id": str(user.id)},
         )
+        log_activity("subscription.checkout", user.id, user.email, {"plan": plan.name, "interval": interval, "session_id": session.id})
         return {"checkout_url": session.url, "session_id": session.id}
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error: {str(e)}")
@@ -500,6 +523,8 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
         else:
             db.add(UserSubscription(user_id=user_id, plan_id=plan_id, status="active", stripe_subscription_id=session.get("subscription")))
         db.commit()
+        plan_name = db.query(Plan.name).filter(Plan.id == plan_id).scalar()
+        log_activity("subscription.completed", user_id, None, {"plan": plan_name, "stripe_session": session.get("id")})
     elif event["type"] == "customer.subscription.updated":
         sub_data = event["data"]["object"]
         from models.subscription import UserSubscription
@@ -507,6 +532,7 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
         if sub:
             sub.status = sub_data["status"]
             db.commit()
+            log_activity("subscription.updated", sub.user_id, None, {"status": sub_data["status"]})
     elif event["type"] == "customer.subscription.deleted":
         sub_data = event["data"]["object"]
         from models.subscription import UserSubscription
@@ -514,6 +540,7 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
         if sub:
             sub.status = "canceled"
             db.commit()
+            log_activity("subscription.canceled", sub.user_id, None, {})
     return {"ok": True}
 
 
@@ -524,6 +551,7 @@ def admin_list_users(page: int = Query(1, ge=1), per_page: int = Query(50, ge=1,
     q = db.query(User).order_by(User.created_at.desc())
     total = q.count()
     users = q.offset((page - 1) * per_page).limit(per_page).all()
+    log_activity("admin.list_users", admin.id, admin.email, {"page": page})
     return {"total": total, "page": page, "per_page": per_page, "items": [{"id": u.id, "name": u.name, "email": u.email, "role": u.role, "created_at": str(u.created_at)[:19]} for u in users]}
 
 @router.delete("/admin/users/{user_id}", description="Delete a user (admin only)")
@@ -531,6 +559,7 @@ def admin_delete_user(user_id: int, admin: User = Depends(require_admin), db: Se
     u = db.query(User).filter(User.id == user_id).first()
     if not u: raise HTTPException(status_code=404, detail="Usuario no encontrado")
     if u.id == admin.id: raise HTTPException(status_code=400, detail="No puedes eliminarte a ti mismo")
+    log_activity("admin.delete_user", admin.id, admin.email, {"deleted_user_id": user_id, "deleted_email": u.email, "deleted_name": u.name})
     db.delete(u)
     db.commit()
     return {"ok": True}
@@ -541,8 +570,36 @@ def admin_stats(admin: User = Depends(require_admin), db: Session = Depends(get_
         "total_users": db.query(User).count(),
         "total_assets": db.query(MonitoredAsset).count(),
         "total_alerts": db.query(BreachAlert).count(),
+        "total_logs": db.query(ActivityLog).count(),
         "assets_by_type": {
             "domain": db.query(MonitoredAsset).filter(MonitoredAsset.type == "domain").count(),
             "email": db.query(MonitoredAsset).filter(MonitoredAsset.type == "email").count(),
         }
+    }
+
+
+@router.get("/admin/activity-actions", description="List unique activity action types (admin only)")
+def admin_activity_actions(admin: User = Depends(require_admin), db: Session = Depends(get_db)):
+    rows = db.query(ActivityLog.action).distinct().order_by(ActivityLog.action).all()
+    return [r[0] for r in rows]
+
+@router.get("/admin/activity-logs", description="List activity logs (admin only)")
+def admin_activity_logs(
+    page: int = Query(1, ge=1), per_page: int = Query(50, ge=1, le=200),
+    action: str | None = Query(None),
+    admin: User = Depends(require_admin), db: Session = Depends(get_db),
+):
+    q = db.query(ActivityLog).order_by(ActivityLog.created_at.desc())
+    if action:
+        q = q.filter(ActivityLog.action == action)
+    total = q.count()
+    logs = q.offset((page - 1) * per_page).limit(per_page).all()
+    return {
+        "total": total, "page": page, "per_page": per_page,
+        "items": [{
+            "id": l.id, "user_id": l.user_id, "email": l.email,
+            "action": l.action, "details": l.details,
+            "ip_address": l.ip_address,
+            "created_at": str(l.created_at)[:19],
+        } for l in logs],
     }

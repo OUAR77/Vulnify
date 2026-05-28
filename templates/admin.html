@@ -12,14 +12,19 @@
   <style>
     .admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
     .admin-header h1 { font-size: 1.5rem; font-family: var(--font-sans); }
-    .stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 32px; }
+    .admin-tabs { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
+    .admin-tabs button { padding: 10px 20px; border: none; background: none; font-family: var(--font-sans); font-size: 0.85rem; font-weight: 600; color: var(--text-tertiary); cursor: pointer; border-bottom: 2px solid transparent; transition: all .15s; }
+    .admin-tabs button.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .admin-tabs button:hover { color: var(--text); }
+    .stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 32px; }
     .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 20px; text-align: center; }
     .stat-card .num { font-size: 2rem; font-weight: 700; color: var(--accent); }
     .stat-card .label { font-size: 0.8rem; color: var(--text-tertiary); margin-top: 4px; }
-    .user-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    .user-table th { text-align: left; padding: 10px 12px; color: var(--text-tertiary); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.3px; border-bottom: 1px solid var(--border); }
-    .user-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
-    .user-table tr:hover td { background: var(--bg-surface); }
+    .user-table, .log-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .user-table th, .log-table th { text-align: left; padding: 10px 12px; color: var(--text-tertiary); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.3px; border-bottom: 1px solid var(--border); }
+    .user-table td, .log-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+    .user-table tr:hover td, .log-table tr:hover td { background: var(--bg-surface); }
+    .log-table .action-badge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 100px; background: var(--accent-mid); color: var(--accent); white-space: nowrap; }
     .user-table .role-badge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 100px; }
     .role-badge.admin { background: rgba(212,168,83,0.12); color: var(--accent); }
     .role-badge.user { background: rgba(59,130,246,0.08); color: #3b82f6; }
@@ -27,6 +32,9 @@
     .pagination button { padding: 6px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-card); color: var(--text); cursor: pointer; font-size: 0.8rem; }
     .pagination button:hover { border-color: var(--accent); }
     .pagination button:disabled { opacity: 0.4; cursor: default; }
+    .log-filter { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
+    .log-filter select, .log-filter input { padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-card); color: var(--text); font-family: var(--font-sans); font-size: 0.8rem; }
+    .log-filter select:focus, .log-filter input:focus { outline: none; border-color: var(--accent); }
   </style>
 </head>
 <body>
@@ -87,22 +95,52 @@
     <div id="admin-content" style="display:none">
       <div class="stat-cards" id="stats-cards"></div>
 
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:20px">
-        <h2 style="font-family:var(--font-sans);font-size:1rem;margin-bottom:16px">Usuarios registrados</h2>
-        <table class="user-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Email</th>
-              <th>Rol</th>
-              <th>Registro</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody id="users-tbody"></tbody>
-        </table>
-        <div class="pagination" id="pagination"></div>
+      <div class="admin-tabs">
+        <button class="active" data-tab="users">Usuarios</button>
+        <button data-tab="logs">Activity Log</button>
+      </div>
+
+      <div id="tab-users">
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:20px">
+          <table class="user-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Registro</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody"></tbody>
+          </table>
+          <div class="pagination" id="pagination"></div>
+        </div>
+      </div>
+
+      <div id="tab-logs" style="display:none">
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:20px">
+          <div class="log-filter">
+            <select id="log-action-filter">
+              <option value="">Todas las acciones</option>
+            </select>
+            <button class="btn btn-primary btn-sm" onclick="loadLogs(1)">Filtrar</button>
+          </div>
+          <table class="log-table">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Acción</th>
+                <th>Email</th>
+                <th>Detalles</th>
+                <th>IP</th>
+              </tr>
+            </thead>
+            <tbody id="logs-tbody"></tbody>
+          </table>
+          <div class="pagination" id="log-pagination"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -140,6 +178,21 @@
   }
 
   let currentPage = 1;
+  let logCurrentPage = 1;
+
+  document.querySelectorAll('.admin-tabs button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.admin-tabs button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-users').style.display = 'none';
+      document.getElementById('tab-logs').style.display = 'none';
+      document.getElementById('tab-' + btn.dataset.tab).style.display = 'block';
+      if (btn.dataset.tab === 'logs') {
+        loadLogActions();
+        loadLogs(1);
+      }
+    });
+  });
 
   async function loadAdmin() {
     const token = getToken();
@@ -169,8 +222,9 @@
     const data = await resp.json();
     document.getElementById('stats-cards').innerHTML = `
       <div class="stat-card"><div class="num">${data.total_users}</div><div class="label">Usuarios</div></div>
-      <div class="stat-card"><div class="num">${data.total_assets}</div><div class="label">Activos monitorizados</div></div>
-      <div class="stat-card"><div class="num">${data.total_alerts}</div><div class="label">Alertas generadas</div></div>
+      <div class="stat-card"><div class="num">${data.total_assets}</div><div class="label">Activos</div></div>
+      <div class="stat-card"><div class="num">${data.total_alerts}</div><div class="label">Alertas</div></div>
+      <div class="stat-card"><div class="num">${data.total_logs || 0}</div><div class="label">Eventos</div></div>
       <div class="stat-card"><div class="num">${data.assets_by_type.domain}</div><div class="label">Dominios</div></div>
       <div class="stat-card"><div class="num">${data.assets_by_type.email}</div><div class="label">Emails</div></div>
     `;
@@ -212,6 +266,47 @@
     if (resp && resp.ok) {
       loadUsers(currentPage);
       loadStats();
+    }
+  }
+
+  async function loadLogActions() {
+    const resp = await adminFetch('/api/admin/activity-actions');
+    if (!resp) return;
+    const actions = await resp.json();
+    const sel = document.getElementById('log-action-filter');
+    const current = sel.value;
+    sel.innerHTML = '<option value="">Todas las acciones</option>' + actions.map(a => `<option value="${a}">${a}</option>`).join('');
+    sel.value = current;
+  }
+
+  async function loadLogs(page = 1) {
+    logCurrentPage = page;
+    const action = document.getElementById('log-action-filter').value;
+    let url = `/api/admin/activity-logs?page=${page}&per_page=50`;
+    if (action) url += '&action=' + encodeURIComponent(action);
+    const resp = await adminFetch(url);
+    if (!resp) return;
+    const data = await resp.json();
+    const tbody = document.getElementById('logs-tbody');
+
+    tbody.innerHTML = data.items.map(l => {
+      const details = l.details ? Object.entries(l.details).map(([k, v]) => `${k}: ${v}`).join(', ') : '';
+      return `<tr>
+        <td style="color:var(--text-tertiary);font-size:0.8rem;white-space:nowrap">${l.created_at || ''}</td>
+        <td><span class="action-badge">${l.action}</span></td>
+        <td>${l.email || ''}</td>
+        <td style="font-size:0.8rem;color:var(--text-secondary);max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${details}">${details}</td>
+        <td style="color:var(--text-tertiary);font-size:0.75rem">${l.ip_address || ''}</td>
+      </tr>`;
+    }).join('');
+
+    const totalPages = Math.ceil(data.total / 50);
+    const pag = document.getElementById('log-pagination');
+    pag.innerHTML = '';
+    if (totalPages > 1) {
+      pag.innerHTML += `<button onclick="loadLogs(${page - 1})" ${page <= 1 ? 'disabled' : ''}>← Anterior</button>`;
+      pag.innerHTML += `<span style="font-size:0.8rem;color:var(--text-tertiary);padding:6px">${page} / ${totalPages}</span>`;
+      pag.innerHTML += `<button onclick="loadLogs(${page + 1})" ${page >= totalPages ? 'disabled' : ''}>Siguiente →</button>`;
     }
   }
 
