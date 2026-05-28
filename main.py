@@ -75,16 +75,16 @@ async def lifespan(app: FastAPI):
         if not db.query(Plan).first():
             plans = [
                 Plan(name="Gratis", description="Monitorización básica de brechas", price_monthly=0, price_yearly=0, max_reports=-1, max_programs=0, features=["1 dominio o email", "Alertas por email", "Informe básico de brechas"], active=True),
-                Plan(name="Pro", description="Para autónomos y pequeñas empresas", price_monthly=29, price_yearly=290, max_reports=-1, max_programs=0, features=["Hasta 5 dominios o emails", "Alertas por email y dashboard", "Monitorización semanal", "Informe detallado de brechas", "Historial de alertas"], active=True),
-                Plan(name="Business", description="Para equipos y agencias", price_monthly=99, price_yearly=990, max_reports=-1, max_programs=0, features=["Dominios y emails ilimitados", "Monitorización diaria", "API de consulta", "Alertas en tiempo real", "Soporte prioritario 24/7"], active=True),
+                Plan(name="Starter", description="Para autónomos y pequeñas empresas", price_monthly=49, price_yearly=490, max_reports=-1, max_programs=0, features=["Hasta 5 dominios o emails", "Alertas por email y dashboard", "Monitorización semanal", "Informe detallado de brechas", "Historial de alertas"], active=True),
+                Plan(name="Profesional", description="Para equipos y agencias", price_monthly=149, price_yearly=1490, max_reports=-1, max_programs=0, features=["Dominios y emails ilimitados", "Monitorización diaria", "API de consulta", "Alertas en tiempo real", "Soporte prioritario 24/7"], active=True),
             ]
             db.add_all(plans)
             db.commit()
             logger.info("Seed plans created")
         stripe_price_map = {
             "Gratis": {"monthly": os.getenv("STRIPE_PRICE_GRATIS_MONTHLY", ""), "yearly": ""},
-            "Pro": {"monthly": settings.STRIPE_PRICE_PRO_MONTHLY or settings.STRIPE_PRICE_MONTHLY, "yearly": settings.STRIPE_PRICE_PRO_YEARLY},
-            "Business": {"monthly": settings.STRIPE_PRICE_BUSINESS_MONTHLY or settings.STRIPE_PRICE_YEARLY, "yearly": settings.STRIPE_PRICE_BUSINESS_YEARLY},
+            "Starter": {"monthly": settings.STRIPE_PRICE_STARTER_MONTHLY, "yearly": settings.STRIPE_PRICE_STARTER_YEARLY},
+            "Profesional": {"monthly": settings.STRIPE_PRICE_PROFESIONAL_MONTHLY, "yearly": settings.STRIPE_PRICE_PROFESIONAL_YEARLY},
         }
         for name, prices in stripe_price_map.items():
             p = db.query(Plan).filter(Plan.name == name).first()
