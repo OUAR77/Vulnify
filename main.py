@@ -73,22 +73,27 @@ async def lifespan(app: FastAPI):
         db = SessionLocal()
         if not db.query(Plan).first():
             plans = [
-                Plan(name="Gratis", description="Monitorización básica de brechas", price_monthly=0, max_reports=-1, max_programs=0, features=["1 dominio o email", "Alertas por email", "Informe básico de brechas"], active=True),
-                Plan(name="Pro", description="Para autónomos y pequeñas empresas", price_monthly=29, max_reports=-1, max_programs=0, features=["Hasta 5 dominios o emails", "Alertas por email y dashboard", "Monitorización semanal", "Informe detallado de brechas", "Historial de alertas"], active=True),
-                Plan(name="Business", description="Para equipos y agencias", price_monthly=99, max_reports=-1, max_programs=0, features=["Dominios y emails ilimitados", "Monitorización diaria", "API de consulta", "Alertas en tiempo real", "Soporte prioritario 24/7"], active=True),
+                Plan(name="Gratis", description="Monitorización básica de brechas", price_monthly=0, price_yearly=0, max_reports=-1, max_programs=0, features=["1 dominio o email", "Alertas por email", "Informe básico de brechas"], active=True),
+                Plan(name="Pro", description="Para autónomos y pequeñas empresas", price_monthly=29, price_yearly=290, max_reports=-1, max_programs=0, features=["Hasta 5 dominios o emails", "Alertas por email y dashboard", "Monitorización semanal", "Informe detallado de brechas", "Historial de alertas"], active=True),
+                Plan(name="Business", description="Para equipos y agencias", price_monthly=99, price_yearly=990, max_reports=-1, max_programs=0, features=["Dominios y emails ilimitados", "Monitorización diaria", "API de consulta", "Alertas en tiempo real", "Soporte prioritario 24/7"], active=True),
             ]
             db.add_all(plans)
             db.commit()
             logger.info("Seed plans created")
-        stripe_updates = {"Gratis": "STRIPE_PRICE_GRATIS", "Pro": "STRIPE_PRICE_STARTER", "Business": "STRIPE_PRICE_PRO"}
-        stripe_fallbacks = {"Gratis": "STRIPE_PRICE_FREE", "Pro": "STRIPE_PRICE_MONTHLY", "Business": "STRIPE_PRICE_YEARLY"}
-        for name in stripe_updates:
-            val = os.getenv(stripe_updates[name]) or os.getenv(stripe_fallbacks[name])
-            if val:
-                p = db.query(Plan).filter(Plan.name == name).first()
-                if p and p.stripe_price_id_monthly != val:
-                    p.stripe_price_id_monthly = val
-                    logger.info("Updated %s stripe_price_id_monthly from env", name)
+        stripe_price_map = {
+            "Gratis": {"monthly": os.getenv("STRIPE_PRICE_GRATIS_MONTHLY", ""), "yearly": ""},
+            "Pro": {"monthly": settings.STRIPE_PRICE_PRO_MONTHLY or settings.STRIPE_PRICE_MONTHLY, "yearly": settings.STRIPE_PRICE_PRO_YEARLY},
+            "Business": {"monthly": settings.STRIPE_PRICE_BUSINESS_MONTHLY or settings.STRIPE_PRICE_YEARLY, "yearly": settings.STRIPE_PRICE_BUSINESS_YEARLY},
+        }
+        for name, prices in stripe_price_map.items():
+            p = db.query(Plan).filter(Plan.name == name).first()
+            if p:
+                if prices["monthly"] and p.stripe_price_id_monthly != prices["monthly"]:
+                    p.stripe_price_id_monthly = prices["monthly"]
+                    logger.info("Updated %s stripe_price_id_monthly", name)
+                if prices["yearly"] and p.stripe_price_id_yearly != prices["yearly"]:
+                    p.stripe_price_id_yearly = prices["yearly"]
+                    logger.info("Updated %s stripe_price_id_yearly", name)
         db.commit()
         if not db.query(User).filter(User.role == "admin").first():
             admin_pw = os.getenv("ADMIN_PASSWORD", "admin123456")

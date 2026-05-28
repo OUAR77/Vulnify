@@ -59,51 +59,11 @@
       <h2 class="section-title">Protege tu reputación digital</h2>
       <p class="section-sub">Todos los planes incluyen monitorización de brechas. Escala según tus necesidades.</p>
     </div>
-    <div class="pricing-grid" id="pricing-grid">
-      <div class="plan-card">
-        <div class="plan-name">Gratis</div>
-        <div class="plan-price">0€</div>
-        <div class="plan-period">siempre gratis</div>
-        <div class="plan-desc">Para empezar a conocer tu exposición digital.</div>
-        <div class="plan-divider"></div>
-        <ul class="plan-features">
-          <li>1 dominio o email</li>
-          <li>Alertas por email</li>
-          <li>Informe básico de brechas</li>
-        </ul>
-        <a href="/monitor" class="plan-btn outline">Probar ahora</a>
-      </div>
-      <div class="plan-card featured">
-        <div class="plan-name">Pro</div>
-        <div class="plan-price">29€</div>
-        <div class="plan-period">al mes</div>
-        <div class="plan-desc">Para autónomos y pequeñas empresas.</div>
-        <div class="plan-divider"></div>
-        <ul class="plan-features">
-          <li>Hasta 5 dominios o emails</li>
-          <li>Alertas por email y dashboard</li>
-          <li>Monitorización semanal</li>
-          <li>Informe detallado de brechas</li>
-          <li>Historial de alertas</li>
-        </ul>
-        <button class="plan-btn fill-accent subscribe-btn" data-plan-id="2">Elegir Pro</button>
-      </div>
-      <div class="plan-card">
-        <div class="plan-name">Business</div>
-        <div class="plan-price">99€</div>
-        <div class="plan-period">al mes</div>
-        <div class="plan-desc">Para equipos y agencias que gestionan múltiples clientes.</div>
-        <div class="plan-divider"></div>
-        <ul class="plan-features">
-          <li>Dominios y emails ilimitados</li>
-          <li>Monitorización diaria</li>
-          <li>API de consulta</li>
-          <li>Alertas en tiempo real</li>
-          <li>Soporte prioritario 24/7</li>
-        </ul>
-        <button class="plan-btn outline subscribe-btn" data-plan-id="3">Elegir Business</button>
-      </div>
+    <div class="billing-toggle">
+      <button class="toggle-btn active" data-interval="month">Mensual</button>
+      <button class="toggle-btn" data-interval="year">Anual</button>
     </div>
+    <div class="pricing-grid" id="pricing-grid"></div>
 
     <div class="section" style="padding-bottom:0">
       <div class="faq-list">
@@ -126,6 +86,9 @@
 
 <script src="/static/js/script.js"></script>
 <script>
+  let plans = [];
+  let currentInterval = 'month';
+
   document.querySelectorAll('.faq-question').forEach(q => {
     q.addEventListener('click', () => {
       q.closest('.faq-item').classList.toggle('open');
@@ -142,7 +105,59 @@
     });
   }
 
+  document.querySelectorAll('.toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentInterval = btn.dataset.interval;
+      renderPlans();
+    });
+  });
+
   function getToken() { return localStorage.getItem('vulnify_token'); }
+
+  function renderPlans() {
+    const grid = document.getElementById('pricing-grid');
+    grid.innerHTML = '';
+    plans.forEach((plan, i) => {
+      const price = currentInterval === 'month' ? plan.price_monthly : (plan.price_yearly || plan.price_monthly);
+      const period = currentInterval === 'month' ? 'al mes' : 'al año';
+      const priceText = price === 0 ? '0€' : price + '€';
+      const featured = i === 1 ? ' featured' : '';
+      const btnClass = i === 1 ? 'fill-accent' : 'outline';
+      const btnText = plan.name === 'Gratis' ? 'Probar ahora' : `Elegir ${plan.name}`;
+      const isFree = plan.name === 'Gratis';
+      const href = isFree ? 'href="/monitor"' : '';
+
+      grid.innerHTML += `
+        <div class="plan-card${featured}">
+          <div class="plan-name">${plan.name}</div>
+          <div class="plan-price">${priceText}</div>
+          <div class="plan-period">${price === 0 ? 'siempre gratis' : period}</div>
+          <div class="plan-desc">${plan.description}.</div>
+          <div class="plan-divider"></div>
+          <ul class="plan-features">
+            ${plan.features.map(f => `<li>${f}</li>`).join('')}
+          </ul>
+          ${isFree
+            ? `<a href="/monitor" class="plan-btn outline">${btnText}</a>`
+            : `<button class="plan-btn ${btnClass} subscribe-btn" data-plan-id="${plan.id}">${btnText}</button>`
+          }
+        </div>
+      `;
+    });
+    document.querySelectorAll('.subscribe-btn').forEach(btn => {
+      btn.addEventListener('click', () => subscribe(parseInt(btn.dataset.planId)));
+    });
+  }
+
+  async function loadPlans() {
+    try {
+      const resp = await fetch('/api/plans');
+      plans = await resp.json();
+      renderPlans();
+    } catch { /* keep static fallback */ }
+  }
 
   async function subscribe(planId) {
     const token = getToken();
@@ -158,7 +173,7 @@
       const resp = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan_id: planId, interval: 'month' })
+        body: JSON.stringify({ plan_id: planId, interval: currentInterval })
       });
       const data = await resp.json();
       if (!resp.ok) { alert(data.detail || 'Error al procesar'); btn.disabled = false; btn.textContent = orig; return; }
@@ -172,9 +187,7 @@
     btn.textContent = orig;
   }
 
-  document.querySelectorAll('.subscribe-btn').forEach(btn => {
-    btn.addEventListener('click', () => subscribe(btn.dataset.planId));
-  });
+  loadPlans();
 </script>
 </body>
 </html>

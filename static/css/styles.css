@@ -396,6 +396,10 @@ label{display:block;font-size:12px;font-weight:500;color:var(--text-secondary);m
 .reward-range{font-size:11px;color:var(--text-tertiary);font-family:'SF Mono',monospace}
 
 /* ===== Pricing ===== */
+.billing-toggle{display:flex;justify-content:center;gap:4px;margin-bottom:40px;background:var(--bg-card);border:1px solid var(--border);border-radius:100px;padding:4px;width:-moz-fit-content;width:fit-content;margin-left:auto;margin-right:auto}
+.billing-toggle .toggle-btn{padding:10px 24px;border:none;border-radius:100px;font-size:13px;font-weight:600;font-family:var(--font-sans);cursor:pointer;background:transparent;color:var(--text-secondary);transition:all .2s}
+.billing-toggle .toggle-btn.active{background:var(--accent);color:#08080a;box-shadow:0 1px 4px rgba(0,0,0,0.1)}
+.billing-toggle .toggle-btn:not(.active):hover{color:var(--text)}
 .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .plan-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:36px;transition:all .3s;display:flex;flex-direction:column;}
 .plan-card:hover{border-color:var(--border-hover)}

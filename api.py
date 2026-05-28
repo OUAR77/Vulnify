@@ -447,7 +447,7 @@ def subscribe(
         raise HTTPException(status_code=400, detail="Stripe no configurado")
     import stripe
     stripe.api_key = settings.STRIPE_SECRET_KEY
-    price_id = plan.stripe_price_id_monthly if interval == "month" else plan.stripe_price_id_yearly
+    price_id = plan.stripe_price_id_monthly if interval == "month" else (plan.stripe_price_id_yearly or plan.stripe_price_id_monthly)
     if not price_id:
         raise HTTPException(status_code=400, detail="Plan sin precio en Stripe")
     from models.subscription import UserSubscription

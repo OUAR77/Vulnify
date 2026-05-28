@@ -23,6 +23,10 @@ class Settings:
     STRIPE_WEBHOOK_SECRET: str = os.getenv("STRIPE_WEBHOOK_SECRET", "")
     STRIPE_PRICE_MONTHLY: str = os.getenv("STRIPE_PRICE_MONTHLY", "")
     STRIPE_PRICE_YEARLY: str = os.getenv("STRIPE_PRICE_YEARLY", "")
+    STRIPE_PRICE_PRO_MONTHLY: str = os.getenv("STRIPE_PRICE_PRO_MONTHLY", "")
+    STRIPE_PRICE_PRO_YEARLY: str = os.getenv("STRIPE_PRICE_PRO_YEARLY", "")
+    STRIPE_PRICE_BUSINESS_MONTHLY: str = os.getenv("STRIPE_PRICE_BUSINESS_MONTHLY", "")
+    STRIPE_PRICE_BUSINESS_YEARLY: str = os.getenv("STRIPE_PRICE_BUSINESS_YEARLY", "")
     SENDGRID_API_KEY: str = os.getenv("SENDGRID_API_KEY", "")
     SITE_URL: str = os.getenv("SITE_URL", "https://vulnify.es")
 
