@@ -18,7 +18,4 @@ class User(Base):
     stripe_customer_id = Column(String, nullable=True)
     created_at = Column(DateTime, server_default=func.now())
 
-    reports = relationship("Report", back_populates="hunter", cascade="all, delete-orphan")
-    programs = relationship("Program", back_populates="company", cascade="all, delete-orphan")
-    notifications = relationship("Notification", back_populates="user", cascade="all, delete-orphan")
-    subscription = relationship("CompanySubscription", back_populates="company", uselist=False, cascade="all, delete-orphan")
+    scans = relationship("Scan", backref="user", cascade="all, delete-orphan")

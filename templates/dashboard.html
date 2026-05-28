@@ -1,149 +1,161 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard — Vulnify</title>
-  <meta name="description" content="Panel de control de Vulnify. Gestiona tus reportes, programas y perfil.">
-  <meta property="og:title" content="Dashboard — Vulnify">
-  <meta property="og:description" content="Panel de control de Vulnify. Gestiona tus reportes, programas y perfil.">
-  <meta property="og:image" content="/static/og-image.svg">
-  <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
-<script>!function(){try{var t=localStorage.getItem('theme'),h=document.documentElement,d=t?t==='dark':window.matchMedia('(prefers-color-scheme:dark)').matches;h.setAttribute('data-theme',d?'dark':'light');var v=d?['#08080a','#111114','#0d0d10','#e8e5e0','#8a8780','#5c5a55','#1e1d1b','#2d2b28','#d4a853','rgba(212,168,83,0.06)','rgba(212,168,83,0.12)','rgba(212,168,83,0.08)','0 4px 24px rgba(0,0,0,0.5)','0 12px 48px rgba(0,0,0,0.6)']:['#f8f7f5','#ffffff','#ffffff','#1a1816','#6e6b67','#9e9b97','#d6d3d0','#b8b5b0','#b8943f','rgba(184,148,63,0.06)','rgba(184,148,63,0.12)','rgba(184,148,63,0.08)','0 2px 12px rgba(0,0,0,0.04)','0 8px 32px rgba(0,0,0,0.06)'];var n=['--bg','--bg-card','--bg-surface','--text','--text-secondary','--text-tertiary','--border','--border-hover','--accent','--accent-light','--accent-mid','--accent-glow','--shadow','--shadow-lg'];for(var i=0;i<n.length;i++)h.style.setProperty(n[i],v[i])}catch(e){}}()</script>
-<link rel="stylesheet" href="/static/css/styles.css?v=5">
+  <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
-<header class="header">
-  <div class="container header-inner">
-    <a href="/" class="logo"><svg viewBox="0 0 32 32" width="16" height="16" style="display:inline-block"><rect width="32" height="32" rx="8" fill="#d4a853"/><circle cx="16" cy="16" r="10" fill="none" stroke="#08080a" stroke-width="1.5"/><circle cx="16" cy="16" r="5" fill="none" stroke="#08080a" stroke-width="1" opacity="0.6"/><line x1="16" y1="4" x2="16" y2="7" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="16" y1="25" x2="16" y2="28" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="16" x2="7" y2="16" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="25" y1="16" x2="28" y2="16" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><path d="M13 19 L16 12 L19 19" fill="none" stroke="#08080a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Vuln</span>ify</a>
-    <button class="hamburger" onclick="toggleMobileMenu()" aria-label="Menú"><span></span><span></span><span></span></button>
-    <nav class="nav">
-      <a class="nav-link" href="/programas">Programas</a>
-      <a class="nav-link" href="/dashboard" style="color:var(--text);">Dashboard</a>
-      <a class="nav-link" href="/report/new">Reportar bug</a>
-      <a class="nav-link" href="/ai">IA Tools</a>
-    </nav>
-    <div class="header-actions">
-      <button class="theme-btn" id="themeToggle" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
-      <button class="btn btn-ghost" id="dashUserName" onclick="logout()" style="display:none;"></button>
-    </div>
-  </div>
-  <div class="mobile-menu" id="mobileMenu">
-    <div id="mobileNavLinks">
-      <a class="nav-link" href="/programas">Programas</a>
-      <a class="nav-link" href="/dashboard">Dashboard</a>
-      <a class="nav-link" href="/report/new">Reportar bug</a>
-      <a class="nav-link" href="/ai">IA Tools</a>
-    </div>
-    <div class="header-actions-mobile" id="mobileUser" style="display:none">
-      <button class="btn btn-ghost" onclick="logout()">Cerrar sesión</button>
+
+<header class="header" id="header">
+  <div class="container">
+    <div class="header-inner">
+      <a href="/" class="logo">Vulnify<span>.</span></a>
+      <nav class="nav">
+        <a href="/scanner" class="nav-link">Escáner</a>
+        <a href="/precios" class="nav-link">Precios</a>
+        <a href="/dashboard" class="nav-link active">Dashboard</a>
+      </nav>
+      <div class="header-actions">
+        <span id="user-name" style="font-size:0.85rem;color:var(--text-secondary)"></span>
+        <button class="btn btn-ghost btn-sm" id="logout-btn" style="display:none">Salir</button>
+      </div>
     </div>
   </div>
 </header>
 
-<section class="section">
+<section class="section" style="padding-top:100px">
   <div class="container">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:40px;">
-      <div>
-        <h1 style="font-size:28px;font-weight:800;letter-spacing:-1px;">Dashboard</h1>
-        <p style="color:var(--text-secondary);font-size:14px;" id="dashSubtitle">Bienvenido de nuevo</p>
-      </div>
-      <a href="/report/new" class="btn btn-accent">Nuevo reporte</a>
+    <div class="section-header">
+      <div class="section-label">Dashboard</div>
+      <h2 class="section-title">Mis escaneos</h2>
+      <p class="section-sub">Historial de todos los dominios que has analizado.</p>
     </div>
 
-    <div class="stats-row" style="margin-bottom:40px;" id="dashStats">
-      <div class="stat-counter">
-        <div class="stat-counter-num" style="font-size:32px;" id="statReports">0</div>
-        <div class="stat-counter-label">Reportes enviados</div>
-      </div>
-      <div class="stat-counter">
-        <div class="stat-counter-num" style="font-size:32px;color:#16a34a;" id="statValid">0</div>
-        <div class="stat-counter-label">Válidos</div>
-      </div>
-      <div class="stat-counter">
-        <div class="stat-counter-num" style="font-size:32px;color:var(--accent);" id="statPaid">0</div>
-        <div class="stat-counter-label">Pagados</div>
-      </div>
-      <div class="stat-counter">
-        <div class="stat-counter-num" style="font-size:32px;color:var(--text-tertiary);" id="statPending">0</div>
-        <div class="stat-counter-label">Pendientes</div>
-      </div>
+    <div id="login-prompt" style="display:none;text-align:center;padding:60px 0">
+      <p style="color:var(--text-secondary);margin-bottom:16px">Inicia sesión para ver tu historial de escaneos.</p>
+      <a href="/login" class="btn btn-accent">Iniciar sesión</a>
     </div>
 
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-      <h2 style="font-size:18px;font-weight:700;">Tus reportes</h2>
-    </div>
+    <div id="dashboard-content" style="display:none">
+      <div class="stats-grid" style="margin-bottom:32px">
+        <div class="stat-item"><div class="stat-value" id="total-scans">0</div><div class="stat-label">Escaneos</div></div>
+        <div class="stat-item"><div class="stat-value" id="total-domains">0</div><div class="stat-label">Dominios</div></div>
+        <div class="stat-item"><div class="stat-value" id="avg-score">—</div><div class="stat-label">Media</div></div>
+        <div class="stat-item"><div class="stat-value" id="total-issues">0</div><div class="stat-label">Problemas</div></div>
+      </div>
 
-    <div id="reportsList" style="display:flex;flex-direction:column;gap:8px;">
-      <div style="text-align:center;padding:40px;color:var(--text-tertiary);font-size:14px;" id="reportsEmpty">
-        Aún no has enviado ningún reporte.
+      <div class="card">
+        <table>
+          <thead>
+            <tr>
+              <th>Dominio</th>
+              <th>Puntuación</th>
+              <th>Problemas</th>
+              <th>SSL</th>
+              <th>Fecha</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="scans-table-body">
+            <tr><td colspan="6" class="text-center" style="color:var(--text-tertiary);padding:32px">Cargando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:24px;text-align:center">
+        <a href="/scanner" class="btn btn-accent">Nuevo escaneo</a>
       </div>
     </div>
   </div>
 </section>
 
-<footer class="footer" style="border-top:1px solid var(--border);">
-  <div class="container footer-bottom" style="border:none;padding-top:0;">
-    <span>© 2026 <span class="accent">Vulnify</span></span>
-    <span><a href="/" style="color:var(--text-tertiary);text-decoration:none;font-size:12px;">Volver al inicio</a></span>
-  </div>
-</footer>
-
-<div class="toast" id="toast"></div>
-
-<button class="back-top" id="backTop" aria-label="Volver arriba">&#8593;</button>
-<script src="/static/js/script.js?v=5"></script>
 <script>
-async function loadDashboard() {
-  const token = await getValidToken();
-  if (!token) { window.location.href = '/'; return; }
+  const TOKEN_KEY = 'vulnify_token';
 
-  try {
-    const me = await (await fetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } })).json();
-    if (me.role === 'company') { window.location.href = '/company'; return; }
-    if (me.role === 'admin') { window.location.href = '/admin'; return; }
-    document.getElementById('dashUserName').textContent = me.name;
-    document.getElementById('dashUserName').style.display = 'inline-flex';
-    document.getElementById('dashSubtitle').textContent = `Bienvenido de nuevo, ${me.name}`;
-
-    const res = await fetch('/api/reports?per_page=50', { headers: { Authorization: `Bearer ${token}` } });
-    const reportsData = await res.json();
-    const reports = reportsData.items || [];
-    const stats = { total: reports.length, valid: 0, paid: 0, pending: 0 };
-    reports.forEach(r => {
-      if (r.status === 'valid') stats.valid++;
-      else if (r.status === 'paid') { stats.valid++; stats.paid++; }
-      else stats.pending++;
-    });
-    document.getElementById('statReports').textContent = stats.total;
-    document.getElementById('statValid').textContent = stats.valid;
-    document.getElementById('statPaid').textContent = stats.paid;
-    document.getElementById('statPending').textContent = stats.pending;
-
-    const container = document.getElementById('reportsList');
-    if (reports.length === 0) return;
-
-    document.getElementById('reportsEmpty').style.display = 'none';
-    container.innerHTML = reports.map(r => {
-      const sevColors = { info: '#6b6b75', low: '#16a34a', medium: '#d97706', high: '#dc2626', critical: '#dc2626' };
-      const sv = ['info','low','medium','high','critical'].includes(r.severity) ? r.severity : 'info';
-      return `<a href="/report/${r.id}" class="mw-report" style="padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);text-decoration:none;">
-        <span class="mw-dot" style="background:${sevColors[sv]}"></span>
-        <span class="mw-name">${r.title}</span>
-        <span class="mw-badge" style="color:${sevColors[sv]};background:${sevColors[sv]}15;
-          text-transform:capitalize;">${sv} · ${r.status}</span>
-      </a>`;
-    }).join('');
-  } catch {
-    window.location.href = '/';
+  function getToken() {
+    return localStorage.getItem(TOKEN_KEY);
   }
-}
 
-loadDashboard();
+  async function fetchWithAuth(url, opts = {}) {
+    const token = getToken();
+    if (!token) return null;
+    const resp = await fetch(url, {
+      ...opts,
+      headers: { ...opts.headers, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+    });
+    if (resp.status === 401) {
+      localStorage.removeItem(TOKEN_KEY);
+      window.location.reload();
+      return null;
+    }
+    return resp;
+  }
+
+  async function loadDashboard() {
+    const token = getToken();
+    if (!token) {
+      document.getElementById('login-prompt').style.display = 'block';
+      return;
+    }
+
+    const meResp = await fetchWithAuth('/api/auth/me');
+    if (!meResp) return;
+    const me = await meResp.json();
+    document.getElementById('user-name').textContent = me.name;
+    document.getElementById('logout-btn').style.display = 'inline-flex';
+
+    document.getElementById('dashboard-content').style.display = 'block';
+
+    const scansResp = await fetchWithAuth('/api/scans?per_page=50');
+    if (!scansResp) return;
+    const scans = await scansResp.json();
+
+    const tbody = document.getElementById('scans-table-body');
+    if (!scans.items.length) {
+      tbody.innerHTML = '<tr><td colspan="6" class="text-center" style="color:var(--text-tertiary);padding:32px">Aún no has realizado ningún escaneo</td></tr>';
+      document.getElementById('total-scans').textContent = '0';
+      document.getElementById('total-domains').textContent = '0';
+      document.getElementById('avg-score').textContent = '—';
+      document.getElementById('total-issues').textContent = '0';
+      return;
+    }
+
+    const domains = new Set();
+    let totalScore = 0;
+    let totalIssues = 0;
+
+    tbody.innerHTML = scans.items.map(s => {
+      domains.add(s.domain);
+      totalScore += s.score;
+      totalIssues += s.issues_count;
+      return `<tr>
+        <td><a href="/scanner?domain=${s.domain}" style="color:var(--accent);text-decoration:none;font-weight:500">${s.domain}</a></td>
+        <td><span style="font-weight:700;color:${s.score >= 80 ? '#22c55e' : s.score >= 50 ? '#eab308' : '#ef4444'}">${s.score}</span></td>
+        <td>${s.issues_count}</td>
+        <td>${s.ssl_valid ? '<span style="color:#22c55e">✓</span>' : '<span style="color:#ef4444">✗</span>'}</td>
+        <td class="text-tertiary" style="font-size:0.85rem">${s.created_at}</td>
+        <td><a href="/scanner?domain=${s.domain}" class="btn btn-ghost btn-sm">Reescanear</a></td>
+      </tr>`;
+    }).join('');
+
+    document.getElementById('total-scans').textContent = scans.total;
+    document.getElementById('total-domains').textContent = domains.size;
+    document.getElementById('avg-score').textContent = Math.round(totalScore / scans.items.length);
+    document.getElementById('total-issues').textContent = totalIssues;
+  }
+
+  document.getElementById('logout-btn').addEventListener('click', () => {
+    localStorage.removeItem(TOKEN_KEY);
+    window.location.href = '/';
+  });
+
+  loadDashboard();
 </script>
 </body>
 </html>

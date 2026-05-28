@@ -1,318 +1,146 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Vulnify es la plataforma de bug bounty española. Conectamos hackers éticos con startups. Encuentra bugs, cobra recompensas, sin rodeos.">
-  <meta property="og:title" content="Vulnify — Bug Bounty Español">
-  <meta property="og:description" content="La plataforma de bug bounty española. Conectamos hackers éticos con startups.">
-  <meta property="og:url" content="https://vulnify.com">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="/static/og-image.svg">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Vulnify — Bug Bounty Español">
-  <meta name="twitter:description" content="La plataforma de bug bounty española. Conectamos hackers éticos con startups.">
-  <title>Vulnify — Bug Bounty Español</title>
+  <meta name="description" content="Vulnify — Escáner de seguridad web automatizado. Analiza cualquier dominio y recibe informes profesionales con los problemas detectados.">
+  <title>Vulnify — Seguridad web automatizada</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
-<script>!function(){try{var t=localStorage.getItem('theme'),h=document.documentElement,d=t?t==='dark':window.matchMedia('(prefers-color-scheme:dark)').matches;h.setAttribute('data-theme',d?'dark':'light');var v=d?['#08080a','#111114','#0d0d10','#e8e5e0','#8a8780','#5c5a55','#1e1d1b','#2d2b28','#d4a853','rgba(212,168,83,0.06)','rgba(212,168,83,0.12)','rgba(212,168,83,0.08)','0 4px 24px rgba(0,0,0,0.5)','0 12px 48px rgba(0,0,0,0.6)']:['#f8f7f5','#ffffff','#ffffff','#1a1816','#6e6b67','#9e9b97','#d6d3d0','#b8b5b0','#b8943f','rgba(184,148,63,0.06)','rgba(184,148,63,0.12)','rgba(184,148,63,0.08)','0 2px 12px rgba(0,0,0,0.04)','0 8px 32px rgba(0,0,0,0.06)'];var n=['--bg','--bg-card','--bg-surface','--text','--text-secondary','--text-tertiary','--border','--border-hover','--accent','--accent-light','--accent-mid','--accent-glow','--shadow','--shadow-lg'];for(var i=0;i<n.length;i++)h.style.setProperty(n[i],v[i])}catch(e){}}()</script>
-<link rel="stylesheet" href="/static/css/styles.css?v=5">
-  <style>
-    .hero-section {
-      min-height: 100vh;
-      display: flex; align-items: center;
-      padding: 120px 0 80px;
-      position: relative; overflow: hidden;
-    }
-    .hero-section::before {
-      content: ''; position: absolute;
-      top: -30%; left: 50%; transform: translateX(-50%);
-      width: 700px; height: 700px;
-      background: radial-gradient(ellipse at center, rgba(212,168,83,0.06) 0%, transparent 60%);
-      pointer-events: none;
-    }
-    .hero-section h1 {
-      font-size: clamp(2.5rem, 5vw, 4.5rem);
-      letter-spacing: -0.02em;
-      line-height: 1.06;
-      margin-bottom: 20px;
-    }
-    .hero-section h1 span { color: var(--accent); }
-    .hero-section p {
-      font-size: 17px;
-      color: var(--text-secondary);
-      max-width: 500px;
-      line-height: 1.7;
-      margin-bottom: 36px;
-    }
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      align-items: start;
-    }
-    .feature-item {
-      padding: 32px;
-    }
-    .feature-icon {
-      width:40px;height:40px;
-      display:flex;align-items:center;justify-content:center;
-      margin-bottom:16px;
-    }
-    .feature-icon svg{width:22px;height:22px;stroke:var(--accent);stroke-width:1.5;fill:none}
-    .feature-item h3 { font-size: 15px; margin-bottom: 8px; }
-    .feature-item p { font-size: 13px; color: var(--text-secondary); line-height: 1.65; }
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-    }
-    .stat-item {
-      text-align: center;
-      padding: 36px 16px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      transition: border-color .3s;
-    }
-    .stat-item:hover { border-color: var(--border-hover); }
-    .stat-num {
-      font-size: 40px; font-weight: 700;
-      letter-spacing: -0.03em;
-      color: var(--accent);
-      line-height: 1; margin-bottom: 8px;
-      font-family: var(--font-serif);
-    }
-    .stat-label { font-size: 13px; color: var(--text-secondary); }
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-    .testimonial-item {
-      padding: 32px;
-    }
-    .cta-section {
-      text-align: center;
-      padding: 100px 0;
-      position: relative;
-    }
-    .cta-section::before {
-      content: ''; position: absolute;
-      bottom: 0; left: 50%; transform: translateX(-50%);
-      width: 500px; height: 250px;
-      background: radial-gradient(ellipse at center, rgba(212,168,83,0.06) 0%, transparent 65%);
-      pointer-events: none;
-    }
-    .cta-section h2 { font-size: clamp(1.5rem, 3.5vw, 2.75rem); margin-bottom: 16px; }
-    .cta-section h2 span { color: var(--accent); }
-    .cta-section p { font-size: 15px; color: var(--text-secondary); max-width: 480px; margin: 0 auto 32px; }
-    @media (max-width: 768px) {
-      .features-grid, .testimonials-grid { grid-template-columns: 1fr; }
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
-      .stat-num { font-size: 32px; }
-    }
-    @media (max-width: 480px) {
-      .hero-section { padding: 100px 0 60px; }
-      .hero-section p { font-size: 15px; }
-    }
-  </style>
+  <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
 
-<header class="header">
-  <div class="container header-inner">
-    <a href="/" class="logo"><svg viewBox="0 0 32 32" width="14" height="14" style="display:inline-block"><rect width="32" height="32" rx="8" fill="#d4a853"/><circle cx="16" cy="16" r="10" fill="none" stroke="#fff" stroke-width="1.5"/><circle cx="16" cy="16" r="5" fill="none" stroke="#fff" stroke-width="1" opacity="0.6"/><line x1="16" y1="4" x2="16" y2="7" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><line x1="16" y1="25" x2="16" y2="28" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="16" x2="7" y2="16" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><line x1="25" y1="16" x2="28" y2="16" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><path d="M13 19 L16 12 L19 19" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Vuln</span>ify</a>
-    <button class="hamburger" onclick="toggleMobileMenu()" aria-label="Menú"><span></span><span></span><span></span></button>
-    <nav class="nav">
-      <a class="nav-link" href="#features">Plataforma</a>
-      <a class="nav-link" href="/programas">Programas</a>
-      <a class="nav-link" href="/precios">Planes</a>
-      <a class="nav-link" href="#stats">Estadísticas</a>
-      <a class="nav-link" href="#testimonios">Testimonios</a>
-      <a class="nav-link" href="/ai">IA Tools</a>
-    </nav>
-    <div class="header-actions">
-      <button class="theme-btn" id="themeToggle" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
-      <div id="headerAuth">
-        <button class="btn btn-ghost" onclick="openModal('login')">Iniciar sesión</button>
-        <button class="btn btn-accent" onclick="openModal('register')">Registrarse →</button>
+<header class="header" id="header">
+  <div class="container">
+    <div class="header-inner">
+      <a href="/" class="logo">Vulnify<span>.</span></a>
+      <nav class="nav">
+        <a href="/scanner" class="nav-link">Escáner</a>
+        <a href="/precios" class="nav-link">Precios</a>
+        <a href="/sobre-nosotros" class="nav-link">Sobre nosotros</a>
+        <a href="/contacto" class="nav-link">Contacto</a>
+      </nav>
+      <div class="header-actions">
+        <a href="/login" class="btn btn-ghost btn-sm">Iniciar sesión</a>
+        <a href="/register" class="btn btn-primary btn-sm">Registrarse</a>
       </div>
-      <div id="headerUser" style="display:none;align-items:center;gap:8px;">
-        <a href="/dashboard" class="btn btn-ghost" id="headerUserName" style="font-weight:600;"></a>
-        <button class="btn btn-ghost" onclick="logout()" style="font-size:12px;">Salir</button>
-      </div>
-    </div>
-  </div>
-  <div class="mobile-menu" id="mobileMenu">
-    <div id="mobileNavLinks">
-      <a class="nav-link" href="#features">Plataforma</a>
-      <a class="nav-link" href="/programas">Programas</a>
-      <a class="nav-link" href="/precios">Planes</a>
-      <a class="nav-link" href="#stats">Estadísticas</a>
-      <a class="nav-link" href="#testimonios">Testimonios</a>
-      <a class="nav-link" href="/ai">IA Tools</a>
-    </div>
-    <div class="header-actions-mobile" id="mobileAuth">
-      <button class="btn btn-ghost" onclick="openModal('login')">Iniciar sesión</button>
-      <button class="btn btn-accent" onclick="openModal('register')">Registrarse →</button>
-    </div>
-    <div class="header-actions-mobile" id="mobileUser" style="display:none">
-      <a href="/dashboard" class="btn btn-ghost" id="mobileUserName" style="font-weight:600"></a>
-      <button class="btn btn-ghost" onclick="logout()">Salir</button>
     </div>
   </div>
 </header>
 
-<section class="hero-section">
-  <div class="hero-target" aria-hidden="true">
-    <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M200 30 Q 300 100 370 200 Q 300 300 200 370 Q 100 300 30 200 Q 100 100 200 30Z" stroke="var(--accent)" stroke-width="0.4" opacity="0.06"/>
-      <path d="M200 70 Q 260 120 310 200 Q 260 280 200 330 Q 140 280 90 200 Q 140 120 200 70Z" stroke="var(--accent)" stroke-width="0.3" opacity="0.05"/>
-      <path d="M200 120 Q 230 155 260 200 Q 230 245 200 280 Q 170 245 140 200 Q 170 155 200 120Z" stroke="var(--accent)" stroke-width="0.3" opacity="0.04"/>
-      <line x1="40" y1="40" x2="170" y2="170" stroke="var(--accent)" stroke-width="0.3" opacity="0.035"/>
-      <line x1="360" y1="40" x2="230" y2="170" stroke="var(--accent)" stroke-width="0.3" opacity="0.035"/>
-      <line x1="40" y1="360" x2="170" y2="230" stroke="var(--accent)" stroke-width="0.3" opacity="0.035"/>
-      <line x1="360" y1="360" x2="230" y2="230" stroke="var(--accent)" stroke-width="0.3" opacity="0.035"/>
-      <circle cx="170" cy="170" r="2.5" fill="var(--accent)" opacity="0.07"/>
-      <circle cx="230" cy="170" r="2.5" fill="var(--accent)" opacity="0.07"/>
-      <circle cx="170" cy="230" r="2.5" fill="var(--accent)" opacity="0.07"/>
-      <circle cx="230" cy="230" r="2.5" fill="var(--accent)" opacity="0.07"/>
-      <circle cx="200" cy="200" r="2" fill="var(--accent)" opacity="0.09"/>
-    </svg>
-  </div>
+<section class="hero">
   <div class="container">
-    <h1>Bug bounty<br>para España.<br><span>Sin rodeos.</span></h1>
-    <p>Conectamos hackers éticos con startups tech. Legal, seguro y con recompensas que se pagan.</p>
-    <div class="hero-actions">
-      <button class="btn btn-accent btn-lg" onclick="openModal('register')">Empezar a cazar →</button>
-      <a class="btn btn-ghost btn-lg" href="#features" style="text-decoration:none">Conoce la plataforma</a>
-    </div>
-  </div>
-</section>
-
-<section id="features" class="section">
-  <div class="container">
-    <div class="section-header centered">
-      <div class="section-label">Plataforma</div>
-      <h2 class="section-title">Hecha para cazar<br>vulnerabilidades</h2>
-      <p class="section-sub">Cada detalle está pensado para que encuentres bugs y cobres sin fricción.</p>
-    </div>
-    <div class="features-grid">
-      <div class="feature-item">
-        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <h3>Verificación completa</h3>
-        <p>Empresas y hunters verificados. Sin cuentas falsas, sin pérdidas de tiempo.</p>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></div>
-        <h3>Reportes CVSS</h3>
-        <p>Sistema guiado con evidencias, pasos para reproducir y scoring automático.</p>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-        <h3>SLA 48 horas</h3>
-        <p>Respuesta garantizada. Sin silencio, sin esperar semanas.</p>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M6 9H4a2 2 0 01-2-2V5a2 2 0 012-2h2"/><path d="M18 9h2a2 2 0 002-2V5a2 2 0 00-2-2h-2"/><path d="M6 3h12v6a6 6 0 11-12 0V3z"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></div>
-        <h3>Hall of Fame</h3>
-        <p>Construye reputación y accede a programas privados con mejores recompensas.</p>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v12"/><path d="M16 9c0-2.21-1.79-4-4-4S8 6.79 8 9s1.79 4 4 4 4 1.79 4 4-1.79 4-4 4-4-1.79-4-4"/></svg></div>
-        <h3>Pago garantizado</h3>
-        <p>Bug válido = cobro en 24 horas. Recompensas en escrow.</p>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 21h6"/><path d="M12 3v18"/><path d="M6 3l6 4 6-4"/><path d="M4 14l4-2"/><path d="M20 14l-4-2"/></svg></div>
-        <h3>100% legal</h3>
-        <p>Acuerdo de no procesamiento firmado digitalmente antes de empezar.</p>
+    <div class="hero-content">
+      <h1>Seguridad web <span>simple y automatizada</span></h1>
+      <p>Analiza cualquier dominio en segundos. Detecta SSL caducado, cabeceras de seguridad ausentes, problemas de DNS y más. Obtén informes PDF profesionales al instante.</p>
+      <div class="hero-actions">
+        <a href="/scanner" class="btn btn-accent btn-lg">Analizar dominio gratis →</a>
+        <a href="#como-funciona" class="btn btn-outline btn-lg">Cómo funciona</a>
       </div>
     </div>
   </div>
 </section>
 
-<section id="how-it-works" class="section" style="padding-bottom:0">
+<section class="section" id="como-funciona">
   <div class="container">
     <div class="section-header centered">
       <div class="section-label">Cómo funciona</div>
-      <h2 class="section-title">En cuatro pasos</h2>
+      <h2 class="section-title">Tres pasos para conocer la seguridad de tu web</h2>
+      <p class="section-sub">Sin registros, sin complicaciones. Introduce un dominio y obtén un análisis completo.</p>
     </div>
-    <div class="how-tabs">
-      <button class="how-tab active" id="tabHunters" onclick="switchHowTab('hunters')">Para hunters</button>
-      <button class="how-tab" id="tabEmpresas" onclick="switchHowTab('empresas')">Para empresas</button>
+    <div class="how-grid">
+      <div class="how-step">
+        <div class="how-step-num">1</div>
+        <h3>Introduce el dominio</h3>
+        <p>Escribe la URL de tu sitio web. Escaneamos SSL, cabeceras de seguridad y registros DNS.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">2</div>
+        <h3>Analizamos en segundos</h3>
+        <p>Comprobamos más de 15 factores de seguridad y te damos una puntuación general.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">3</div>
+        <h3>Recibe el informe</h3>
+        <p>Descarga un PDF profesional con los problemas detectados y cómo solucionarlos.</p>
+      </div>
     </div>
-    <div class="how-grid" id="howSteps"></div>
   </div>
 </section>
 
-<section id="stats" class="section" style="padding-top:0;">
+<section class="section" id="features">
   <div class="container">
     <div class="section-header centered">
-      <div class="section-label">Estadísticas</div>
-      <h2 class="section-title">Vulnify en cifras</h2>
+      <div class="section-label">Qué detectamos</div>
+      <h2 class="section-title">Tu web, bajo lupa</h2>
+      <p class="section-sub">Escaneamos los aspectos más críticos para que sepas exactamente dónde están tus riesgos.</p>
     </div>
-    <div class="stats-grid">
-      <div class="stat-item">
-        <div class="stat-num" data-target="500">0</div>
-        <div class="stat-label">Hunters registrados</div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h3>SSL / TLS</h3>
+        <p>Certificado caducado, mal configurado o a punto de expirar. Esto ahuyenta visitas y daña tu SEO.</p>
       </div>
-      <div class="stat-item">
-        <div class="stat-num" data-target="60">0</div>
-        <div class="stat-label">Programas activos</div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Cabeceras de seguridad</h3>
+        <p>HSTS, CSP, X-Frame-Options, X-Content-Type-Options. Sin ellas tu web es vulnerable a ataques básicos.</p>
       </div>
-      <div class="stat-item">
-        <div class="stat-num" data-target="250">0</div>
-        <div class="stat-label">Bugs reportados</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num" data-target="100">0</div>
-        <div class="stat-label">Miles € pagados</div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <h3>DNS</h3>
+        <p>SPF, DKIM y MX mal configurados. Tus emails pueden caer en spam o pueden suplantar tu dominio.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section id="testimonios" class="section" style="padding-top:0;">
+<section class="section" id="testimonios">
   <div class="container">
     <div class="section-header centered">
       <div class="section-label">Testimonios</div>
-      <h2 class="section-title">Lo que dicen<br>de Vulnify</h2>
+      <h2 class="section-title">Lo que dicen de Vulnify</h2>
     </div>
     <div class="testimonials-grid">
       <div class="testimonial-item">
-        <div class="stars"><svg viewBox="0 0 24 24" width="16" height="16" fill="var(--accent)" stroke="var(--accent)" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" width="16" height="16" fill="var(--accent)" stroke="var(--accent)" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" width="16" height="16" fill="var(--accent)" stroke="var(--accent)" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" width="16" height="16" fill="var(--accent)" stroke="var(--accent)" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" width="16" height="16" fill="var(--accent)" stroke="var(--accent)" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-        <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:16px;">"Encontré un SQL injection crítico en mi segunda semana. En 48h tenía el pago."</p>
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div style="width:36px;height:36px;border-radius:50%;background:var(--accent);color:#08080a;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">AM</div>
+        <div class="testimonial-stars">★★★★★</div>
+        <div class="testimonial-text">"Escaneamos todos nuestros dominios cada semana. Nos ha salvado de varios SSL caducados que podrían habernos costado clientes."</div>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">M</div>
           <div>
-            <div style="font-size:13px;font-weight:600;">Alejandro Martínez</div>
-            <div style="font-size:11px;color:var(--text-tertiary);">Hunter</div>
+            <div class="testimonial-name">Miguel Ángel</div>
+            <div class="testimonial-role">CTO, DigitalWeb</div>
           </div>
         </div>
       </div>
       <div class="testimonial-item">
-        <div class="stars"><svg viewBox="0 0 24 24" width="16" height="16" fill="var(--accent)" stroke="var(--accent)" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" width="16" height="16" fill="var(--accent)" stroke="var(--accent)" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" width="16" height="16" fill="var(--accent)" stroke="var(--accent)" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" width="16" height="16" fill="var(--accent)" stroke="var(--accent)" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" width="16" height="16" fill="var(--accent)" stroke="var(--accent)" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-        <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:16px;">"Publicamos nuestro programa y en una semana ya teníamos 12 reportes válidos."</p>
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div style="width:36px;height:36px;border-radius:50%;background:var(--accent);color:#08080a;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">LG</div>
+        <div class="testimonial-stars">★★★★★</div>
+        <div class="testimonial-text">"Usamos Vulnify para auditar a nuestros clientes antes de lanzar sus proyectos. Rápido, fiable y el PDF es muy profesional."</div>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">L</div>
           <div>
-            <div style="font-size:13px;font-weight:600;">Laura García</div>
-            <div style="font-size:11px;color:var(--text-tertiary);">CTO Payflow</div>
+            <div class="testimonial-name">Laura García</div>
+            <div class="testimonial-role">Agencia Crece</div>
           </div>
         </div>
       </div>
       <div class="testimonial-item">
-        <div class="stars"><svg viewBox="0 0 24 24" width="16" height="16" fill="var(--accent)" stroke="var(--accent)" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" width="16" height="16" fill="var(--accent)" stroke="var(--accent)" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" width="16" height="16" fill="var(--accent)" stroke="var(--accent)" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" width="16" height="16" fill="var(--accent)" stroke="var(--accent)" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" width="16" height="16" fill="var(--accent)" stroke="var(--accent)" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-        <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:16px;">"Llevo años en plataformas internacionales, pero Vulnify me ha dado programas locales únicos."</p>
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div style="width:36px;height:36px;border-radius:50%;background:var(--accent);color:#08080a;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">CR</div>
+        <div class="testimonial-stars">★★★★★</div>
+        <div class="testimonial-text">"Gratuito y completísimo. Me sorprendió la calidad del informe PDF. Lo recomiendo a todos mis clientes."</div>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">C</div>
           <div>
-            <div style="font-size:13px;font-weight:600;">Carlos Ruiz</div>
-            <div style="font-size:11px;color:var(--text-tertiary);">Security Researcher</div>
+            <div class="testimonial-name">Carlos Ruiz</div>
+            <div class="testimonial-role">Consultor independiente</div>
           </div>
         </div>
       </div>
@@ -320,100 +148,109 @@
   </div>
 </section>
 
-<section class="cta-section">
+<section class="section" id="precios">
   <div class="container">
-    <h2>¿Listo para <span>cazar bugs</span>?</h2>
-    <p>Únete a la comunidad de hackers éticos más grande de España.</p>
-    <div class="hero-actions" style="justify-content:center;">
-      <button class="btn btn-accent btn-lg" onclick="openModal('register')">Registrarse gratis →</button>
-      <a href="/programas" class="btn btn-ghost btn-lg">Ver programas activos</a>
+    <div class="section-header centered">
+      <div class="section-label">Planes</div>
+      <h2 class="section-title">Empieza gratis, escala cuando crezcas</h2>
+      <p class="section-sub">Sin sorpresas. Sin compromisos. Escanea dominios ilimitados desde el plan gratuito.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="plan-card">
+        <div class="plan-name">Gratis</div>
+        <div class="plan-price">0€</div>
+        <div class="plan-period">siempre gratis</div>
+        <div class="plan-desc">Para empezar a conocer la seguridad de tus webs.</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li>Escaneos ilimitados</li>
+          <li>Informe PDF básico</li>
+          <li>Problemas críticos</li>
+        </ul>
+        <a href="/scanner" class="plan-btn outline">Probar ahora</a>
+      </div>
+      <div class="plan-card featured">
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">9€</div>
+        <div class="plan-period">al mes</div>
+        <div class="plan-desc">Para autónomos y pequeñas empresas que necesitan más control.</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li>Escaneos ilimitados</li>
+          <li>Informe PDF detallado</li>
+          <li>Alertas por email</li>
+          <li>Monitorización semanal</li>
+          <li>Hasta 3 dominios</li>
+        </ul>
+        <a href="/register" class="plan-btn fill-accent">Elegir Pro</a>
+      </div>
+      <div class="plan-card">
+        <div class="plan-name">Business</div>
+        <div class="plan-price">29€</div>
+        <div class="plan-period">al mes</div>
+        <div class="plan-desc">Para equipos y agencias que gestionan múltiples proyectos.</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li>Dominios ilimitados</li>
+          <li>Escaneo diario automático</li>
+          <li>API de escaneo</li>
+          <li>Informes personalizados</li>
+          <li>Soporte prioritario 24/7</li>
+        </ul>
+        <a href="/register" class="plan-btn outline">Elegir Business</a>
+      </div>
     </div>
   </div>
 </section>
 
-<footer class="footer" style="border-top:1px solid var(--border);">
+<section class="cta">
+  <div class="container">
+    <h2>¿Listo para saber <span>si tu web es segura</span>?</h2>
+    <p>Analiza tu primer dominio gratis. No necesitas tarjeta de crédito.</p>
+    <div class="cta-actions">
+      <a href="/scanner" class="btn btn-accent btn-lg">Escanea tu web ahora →</a>
+      <a href="/sobre-nosotros" class="btn btn-outline btn-lg">Saber más</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <div class="logo"><svg viewBox="0 0 32 32" width="16" height="16" style="display:inline-block"><rect width="32" height="32" rx="8" fill="#d4a853"/><circle cx="16" cy="16" r="10" fill="none" stroke="#fff" stroke-width="1.5"/><circle cx="16" cy="16" r="5" fill="none" stroke="#fff" stroke-width="1" opacity="0.6"/><line x1="16" y1="4" x2="16" y2="7" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><line x1="16" y1="25" x2="16" y2="28" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="16" x2="7" y2="16" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><line x1="25" y1="16" x2="28" y2="16" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><path d="M13 19 L16 12 L19 19" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Vuln</span>ify</div>
-        <p class="footer-desc">La plataforma de bug bounty española. Conectamos hackers éticos con startups tech.</p>
+        <a href="/" class="logo">Vulnify<span>.</span></a>
+        <p class="footer-desc">Seguridad web automatizada para pymes y autónomos. Conoce y mejora la seguridad de tus dominios en segundos.</p>
       </div>
       <div class="footer-col">
         <h4>Plataforma</h4>
-        <a href="/programas">Programas activos</a>
-        <a href="/hall-of-fame">Hall of Fame</a>
-      </div>
-      <div class="footer-col">
-        <h4>Hunters</h4>
-        <a onclick="openModal('register')">Registrarse</a>
-        <a href="/programas">Explorar programas</a>
+        <a href="/scanner">Escáner</a>
+        <a href="/precios">Precios</a>
+        <a href="/sobre-nosotros">Sobre nosotros</a>
       </div>
       <div class="footer-col">
         <h4>Legal</h4>
         <a href="/terminos">Términos</a>
         <a href="/privacidad">Privacidad</a>
+        <a href="/contacto">Contacto</a>
       </div>
       <div class="footer-col">
-        <h4>Empresa</h4>
-        <a href="/sobre-nosotros">Sobre nosotros</a>
-        <a href="mailto:hola@vulnify.com">Contacto</a>
+        <h4>Cuenta</h4>
+        <a href="/login">Iniciar sesión</a>
+        <a href="/register">Registrarse</a>
+        <a href="/dashboard">Dashboard</a>
       </div>
     </div>
-    <div class="footer-bottom" style="border:none;padding-top:0;">
-      <span>© 2026 <span class="accent">Vulnify</span></span>
-      <span>Bug Bounty Platform</span>
+    <div class="footer-bottom">
+      <span>© 2026 <span class="accent">Vulnify</span>. Todos los derechos reservados.</span>
     </div>
   </div>
 </footer>
 
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal-body" id="modalBody"></div>
-</div>
-<div class="toast" id="toast"></div>
-<button class="back-top" id="backTop" aria-label="Volver arriba"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></button>
-
-<script src="/static/js/script.js?v=5"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function(){ if(typeof switchHowTab === 'function') switchHowTab('hunters'); });
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      entry.target.style.opacity = '1';
-      entry.target.style.transform = 'translateY(0)';
-    }
+  const header = document.getElementById('header');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 10);
   });
-}, { threshold: 0.1 });
-
-document.querySelectorAll('.feature-item, .testimonial-item, .stat-item, .how-step').forEach((el, i) => {
-  el.style.opacity = '0';
-  el.style.transform = 'translateY(20px)';
-  el.style.transition = `opacity 0.6s ${i * 0.08}s, transform 0.6s ${i * 0.08}s`;
-  observer.observe(el);
-});
-
-function animateCounter(el, target) {
-  let current = 0;
-  const step = Math.ceil(target / 60);
-  const interval = setInterval(() => {
-    current += step;
-    if (current >= target) { current = target; clearInterval(interval); }
-    el.textContent = current;
-  }, 16);
-}
-
-const counterObserver = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      const el = entry.target;
-      const target = parseInt(el.dataset.target);
-      animateCounter(el, target);
-      counterObserver.unobserve(el);
-    }
-  });
-}, { threshold: 0.5 });
-
-document.querySelectorAll('.stat-num').forEach((el) => counterObserver.observe(el));
-
 </script>
 </body>
 </html>

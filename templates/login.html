@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar sesión — Vulnify</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <style>
+    body { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 24px; }
+    .back { position: fixed; top: 20px; left: 24px; z-index: 10; }
+  </style>
+</head>
+<body>
+  <a href="/" class="back nav-link">← Volver</a>
+  <div class="card" style="width:380px">
+    <h1 style="font-family:var(--font-sans);font-size:1.4rem;margin-bottom:4px">Iniciar sesión</h1>
+    <p class="text-tertiary" style="font-size:0.85rem;margin-bottom:24px">Accede a tu panel de Vulnify</p>
+    <div id="error" style="color:#ef4444;font-size:0.85rem;margin-bottom:12px;display:none"></div>
+    <div class="modal-form">
+      <input type="email" id="email" placeholder="Email" autocomplete="email">
+      <input type="password" id="password" placeholder="Contraseña" autocomplete="current-password">
+      <button class="btn btn-accent" id="submit" style="width:100%;padding:12px">Entrar</button>
+    </div>
+    <div class="link text-center" style="font-size:0.85rem;color:var(--text-tertiary);margin-top:16px">
+      ¿No tienes cuenta? <a href="/register" style="color:var(--accent)">Regístrate</a>
+    </div>
+  </div>
+  <script>
+    const token = localStorage.getItem('vulnify_token');
+    if (token) { window.location.href = '/dashboard'; }
+
+    document.getElementById('submit').addEventListener('click', async () => {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      if (!email || !password) { showError('Completa todos los campos'); return; }
+      try {
+        const resp = await fetch('/api/auth/login', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await resp.json();
+        if (!resp.ok) { showError(data.detail || 'Error'); return; }
+        localStorage.setItem('vulnify_token', data.token);
+        window.location.href = '/dashboard';
+      } catch { showError('Error de conexión'); }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('submit').click(); });
+    function showError(msg) { const el = document.getElementById('error'); el.textContent = msg; el.style.display = 'block'; }
+  </script>
+</body>
+</html>

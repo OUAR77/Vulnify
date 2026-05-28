@@ -73,16 +73,15 @@ async def lifespan(app: FastAPI):
         db = SessionLocal()
         if not db.query(Plan).first():
             plans = [
-                Plan(name="Gratis", description="Plan gratuito para empezar", price_monthly=0, max_reports=5, max_programs=1, features=["Reportes ilimitados", "Soporte por email", "Perfil público"], active=True),
-                Plan(name="Starter", description="Para empresas en crecimiento", price_monthly=49, max_reports=50, max_programs=3, features=["50 reportes/mes", "3 programas activos", "Soporte prioritario", "API básica"], active=True),
-                Plan(name="Profesional", description="Para equipos de seguridad", price_monthly=149, max_reports=-1, max_programs=-1, features=["Reportes ilimitados", "Programas ilimitados", "Soporte 24/7", "API completa", "Slack/Discord", "Analítica avanzada"], active=True),
+                Plan(name="Gratis", description="Escaneos ilimitados, informes básicos", price_monthly=0, max_reports=-1, max_programs=0, features=["Escaneos ilimitados", "Informe PDF básico", "Problemas críticos"], active=True),
+                Plan(name="Pro", description="Para autónomos y pequeñas empresas", price_monthly=9, max_reports=-1, max_programs=0, features=["Escaneos ilimitados", "Informe PDF detallado", "Alertas por email", "Monitorización semanal", "3 dominios"], active=True),
+                Plan(name="Business", description="Para equipos y agencias", price_monthly=29, max_reports=-1, max_programs=0, features=["Dominios ilimitados", "Escaneo diario", "API de escaneo", "Informes personalizados", "Soporte prioritario"], active=True),
             ]
             db.add_all(plans)
             db.commit()
             logger.info("Seed plans created")
-        stripe_updates = {"Gratis": "STRIPE_PRICE_GRATIS", "Starter": "STRIPE_PRICE_STARTER", "Profesional": "STRIPE_PRICE_PRO"}
-        stripe_fallbacks = {"Gratis": "STRIPE_PRICE_FREE", "Starter": "STRIPE_PRICE_MONTHLY", "Profesional": "STRIPE_PRICE_YEARLY"}
-        any_update = False
+        stripe_updates = {"Gratis": "STRIPE_PRICE_GRATIS", "Pro": "STRIPE_PRICE_STARTER", "Business": "STRIPE_PRICE_PRO"}
+        stripe_fallbacks = {"Gratis": "STRIPE_PRICE_FREE", "Pro": "STRIPE_PRICE_MONTHLY", "Business": "STRIPE_PRICE_YEARLY"}
         for name in stripe_updates:
             val = os.getenv(stripe_updates[name]) or os.getenv(stripe_fallbacks[name])
             if val:
@@ -90,9 +89,7 @@ async def lifespan(app: FastAPI):
                 if p and p.stripe_price_id_monthly != val:
                     p.stripe_price_id_monthly = val
                     logger.info("Updated %s stripe_price_id_monthly from env", name)
-                    any_update = True
-        if any_update:
-            db.commit()
+        db.commit()
         if not db.query(User).filter(User.role == "admin").first():
             admin_pw = os.getenv("ADMIN_PASSWORD", "admin123456")
             admin = User(name="Admin Vulnify", email=os.getenv("ADMIN_EMAIL", "admin@vulnify.com"), password=hash_password(admin_pw), role="admin", company="", is_verified=1)
@@ -125,8 +122,8 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 app = FastAPI(
     title="Vulnify API",
-    description="Bug bounty platform — report vulnerabilities, manage programs, and track rewards",
-    version="1.3.0",
+    description="Security scanner platform — scan domains, find vulnerabilities, and get reports",
+    version="2.0.0",
     lifespan=lifespan,
 )
 
@@ -175,14 +172,30 @@ async def index(request: Request):
     return templates.TemplateResponse(request, "index.html")
 
 
-@app.get("/programas", response_class=HTMLResponse, description="Browse bug bounty programs")
-async def programas(request: Request):
-    return templates.TemplateResponse(request, "programs.html")
+@app.get("/login", response_class=HTMLResponse, description="Login")
+async def login_page(request: Request):
+    return templates.TemplateResponse(request, "login.html")
+
+
+@app.get("/register", response_class=HTMLResponse, description="Register")
+async def register_page(request: Request):
+    return templates.TemplateResponse(request, "register.html")
+
+
+@app.get("/scanner", response_class=HTMLResponse, description="Security scanner")
+async def scanner_page(request: Request):
+    return templates.TemplateResponse(request, "scan.html")
 
 
 @app.get("/precios", response_class=HTMLResponse, description="Pricing plans")
 async def precios(request: Request):
     return templates.TemplateResponse(request, "pricing.html")
+
+
+@app.get("/dashboard", response_class=HTMLResponse, description="User dashboard")
+async def dashboard(request: Request):
+    return templates.TemplateResponse(request, "dashboard.html")
+
 
 @app.get("/terminos", response_class=HTMLResponse, description="Terms and conditions")
 async def terminos(request: Request):
@@ -201,74 +214,9 @@ async def privacidad(request: Request):
     return templates.TemplateResponse(request, "privacy.html")
 
 
-@app.get("/programa/{program_id}", response_class=HTMLResponse, description="Program detail page")
-async def program_detail(request: Request, program_id: int):
-    return templates.TemplateResponse(request, "program-detail.html")
-
-
-@app.get("/hall-of-fame", response_class=HTMLResponse, description="Hall of fame — top hunters")
-async def hall_of_fame(request: Request):
-    return templates.TemplateResponse(request, "hall-of-fame.html")
-
-
-@app.get("/hunter/{hunter_id}", response_class=HTMLResponse, description="Hunter profile page")
-async def hunter_profile(request: Request, hunter_id: int):
-    return templates.TemplateResponse(request, "hunter.html")
-
-
-@app.get("/dashboard", response_class=HTMLResponse, description="Hunter dashboard")
-async def dashboard(request: Request):
-    return templates.TemplateResponse(request, "dashboard.html")
-
-
-@app.get("/company", response_class=HTMLResponse, description="Company dashboard")
-async def company_dashboard(request: Request):
-    return templates.TemplateResponse(request, "company-dashboard.html")
-
-
-@app.get("/company/billing", response_class=HTMLResponse, description="Company billing & subscription")
-async def company_billing(request: Request):
-    return templates.TemplateResponse(request, "billing.html")
-
-
-@app.get("/company/billing-debug", response_class=HTMLResponse, description="Billing debug page (dev only)")
-async def billing_debug(request: Request):
-    if settings.ENVIRONMENT == "production":
-        raise HTTPException(status_code=404)
-    return templates.TemplateResponse(request, "billing_debug.html")
-
-
-@app.get("/report/new", response_class=HTMLResponse, description="Submit a new vulnerability report")
-async def new_report(request: Request):
-    return templates.TemplateResponse(request, "report.html")
-
-
-@app.get("/report/{report_id}", response_class=HTMLResponse, description="Report detail page")
-async def report_detail(request: Request, report_id: int):
-    return templates.TemplateResponse(request, "report-detail.html")
-
-
-@app.get("/stats", response_class=HTMLResponse, description="Platform statistics")
-async def stats_page(request: Request):
-    return templates.TemplateResponse(request, "stats.html")
-
-
-@app.get("/admin", response_class=HTMLResponse, description="Admin panel")
-async def admin_page(request: Request):
-    return templates.TemplateResponse(request, "admin.html")
-
-
-@app.get("/ai", response_class=HTMLResponse, description="AI-powered tools")
-async def ai_tools_page(request: Request):
-    return templates.TemplateResponse(request, "ai-tools.html")
-
-
 @app.get("/health")
 async def health():
     return {"status": "ok", "environment": settings.ENVIRONMENT}
-
-
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 
 # --- WebSocket ---

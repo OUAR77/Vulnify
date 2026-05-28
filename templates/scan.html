@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Escáner de seguridad web gratuito de Vulnify. Analiza SSL, cabeceras y DNS de cualquier dominio.">
+  <title>Escáner de seguridad — Vulnify</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <style>
+    .score-ring {
+      text-align: center; padding: 60px 0 32px;
+    }
+    .score-ring .num {
+      font-size: 4rem; font-weight: 700; font-family: var(--font-serif);
+      color: var(--accent);
+    }
+    .score-ring .label {
+      font-size: 0.9rem; color: var(--text-tertiary); margin-top: 4px;
+    }
+    .recent-scans {
+      margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border);
+    }
+    .recent-scans h3 {
+      font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 12px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .recent-item {
+      display: inline-block; padding: 6px 14px; border: 1px solid var(--border);
+      border-radius: 20px; font-size: 0.85rem; color: var(--text-secondary);
+      cursor: pointer; margin: 4px; background: var(--bg-surface);
+    }
+    .recent-item:hover {
+      border-color: var(--accent); color: var(--accent);
+    }
+    .check-item {
+      display: flex; align-items: start; gap: 10px; padding: 8px 0;
+      border-bottom: 1px solid var(--border); font-size: 0.9rem;
+    }
+    .check-item:last-child { border-bottom: none; }
+    .check-item .icon { font-weight: 600; flex-shrink: 0; font-size: 1rem; }
+    .check-item .name { font-weight: 600; color: var(--text); }
+    .check-item .desc { color: var(--text-secondary); font-size: 0.85rem; margin-top: 2px; }
+
+    .issue {
+      padding: 12px 16px; border-radius: var(--radius-md); margin-bottom: 8px;
+      font-size: 0.85rem; border-left: 3px solid;
+    }
+    .issue.critical { background: rgba(239,68,68,0.06); border-color: #ef4444; }
+    .issue.high { background: rgba(234,179,8,0.06); border-color: #eab308; }
+    .issue.medium { background: rgba(59,130,246,0.06); border-color: #3b82f6; }
+    .issue.low { background: rgba(99,102,241,0.06); border-color: #6366f1; }
+    .issue .sev { font-weight: 600; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.05em; }
+    .issue.critical .sev { color: #ef4444; }
+    .issue.high .sev { color: #eab308; }
+    .issue.medium .sev { color: #3b82f6; }
+    .issue.low .sev { color: #6366f1; }
+
+    .inline-alert {
+      padding: 12px 16px; border-radius: var(--radius-md); margin-bottom: 16px;
+      font-size: 0.85rem; display: none;
+    }
+    .inline-alert.error { display: block; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.15); color: #fca5a5; }
+
+    .search-section {
+      max-width: 580px; margin: 0 auto 40px;
+    }
+  </style>
+</head>
+<body>
+
+<header class="header" id="header">
+  <div class="container">
+    <div class="header-inner">
+      <a href="/" class="logo">Vulnify<span>.</span></a>
+      <nav class="nav">
+        <a href="/scanner" class="nav-link active">Escáner</a>
+        <a href="/precios" class="nav-link">Precios</a>
+        <a href="/dashboard" class="nav-link">Dashboard</a>
+      </nav>
+      <div class="header-actions">
+        <a href="/login" class="btn btn-ghost btn-sm">Iniciar sesión</a>
+        <a href="/register" class="btn btn-primary btn-sm">Registrarse</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="section" style="padding-top:100px">
+  <div class="container">
+    <div class="section-header centered">
+      <div class="section-label">Escáner</div>
+      <h2 class="section-title">Analiza cualquier dominio</h2>
+      <p class="section-sub">Introduce la URL y en segundos sabrás el estado de su seguridad.</p>
+    </div>
+
+    <div class="search-section">
+      <div class="two-col" style="grid-template-columns:1fr auto;gap:8px">
+        <input type="text" id="domain-input" placeholder="ejemplo.com" autocomplete="off" spellcheck="false" style="padding:14px 18px;font-size:1rem">
+        <button id="scan-btn" class="btn btn-accent btn-lg" style="padding:14px 28px">Analizar</button>
+      </div>
+    </div>
+
+    <div id="error-box" class="inline-alert error"></div>
+
+    <div id="status" style="text-align:center;padding:40px 0;display:none">
+      <div class="spinner spinner-lg" style="margin:0 auto 16px"></div>
+      <p style="color:var(--text-secondary)">Analizando dominio...</p>
+    </div>
+
+    <div id="results" class="card" style="display:none">
+      <div class="score-ring">
+        <div class="num" id="score-general">0</div>
+        <div class="label">/ 100 — Puntuación general</div>
+      </div>
+
+      <div class="grid-3" style="margin-bottom:32px">
+        <div class="stat-item"><div class="stat-value" id="score-ssl" style="font-size:2rem">—</div><div class="stat-label">SSL</div></div>
+        <div class="stat-item"><div class="stat-value" id="score-headers" style="font-size:2rem">—</div><div class="stat-label">Cabeceras</div></div>
+        <div class="stat-item"><div class="stat-value" id="issues-count" style="font-size:2rem">0</div><div class="stat-label">Problemas</div></div>
+      </div>
+
+      <div class="section" id="issues-section" style="display:none">
+        <h2 class="section-label" style="margin-bottom:12px">Problemas detectados</h2>
+        <div id="issues-list"></div>
+      </div>
+
+      <div class="section" style="margin-top:24px">
+        <h2 class="section-label" style="margin-bottom:12px">SSL / TLS</h2>
+        <div id="ssl-result" class="card" style="padding:16px"></div>
+      </div>
+
+      <div class="section" style="margin-top:24px">
+        <h2 class="section-label" style="margin-bottom:12px">Cabeceras de seguridad</h2>
+        <div id="headers-result" class="card" style="padding:16px"></div>
+      </div>
+
+      <div class="section" style="margin-top:24px">
+        <h2 class="section-label" style="margin-bottom:12px">DNS</h2>
+        <div id="dns-result" class="card" style="padding:16px"></div>
+      </div>
+
+      <div style="text-align:center;margin-top:24px">
+        <button class="btn btn-accent" id="btn-pdf">Descargar informe PDF</button>
+      </div>
+    </div>
+
+    <div class="recent-scans">
+      <h3>Escaneos recientes</h3>
+      <div id="recent-list"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const RECENT_KEY = 'vulnifyRecentScans';
+  let lastResult = null;
+  let lastDomain = '';
+
+  function loadRecent() {
+    try { return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); }
+    catch { return []; }
+  }
+
+  function saveRecent(domain) {
+    let list = loadRecent().filter(d => d !== domain);
+    list.unshift(domain);
+    if (list.length > 6) list = list.slice(0, 6);
+    localStorage.setItem(RECENT_KEY, JSON.stringify(list));
+    renderRecent();
+  }
+
+  function renderRecent() {
+    const list = loadRecent();
+    const el = document.getElementById('recent-list');
+    if (!list.length) { el.innerHTML = '<span style="color:var(--text-tertiary);font-size:0.85rem">Ninguno aún</span>'; return; }
+    el.innerHTML = list.map(d => `<span class="recent-item" onclick="document.getElementById('domain-input').value='${d}';scan()">${d}</span>`).join('');
+  }
+
+  async function scan() {
+    const domain = document.getElementById('domain-input').value.trim();
+    if (!domain) { showError('Introduce un dominio'); return; }
+
+    hideError();
+    document.getElementById('status').style.display = 'block';
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('scan-btn').disabled = true;
+
+    try {
+      const resp = await fetch('/api/scan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ domain })
+      });
+      if (!resp.ok) { const e = await resp.json(); throw new Error(e.detail || 'Error'); }
+      const data = await resp.json();
+      lastResult = data;
+      lastDomain = domain;
+      showResults(data);
+      saveRecent(domain);
+    } catch (err) {
+      showError(err.message);
+    }
+    document.getElementById('status').style.display = 'none';
+    document.getElementById('scan-btn').disabled = false;
+  }
+
+  function showResults(data) {
+    document.getElementById('results').style.display = 'block';
+
+    document.getElementById('score-general').textContent = data.scores.general;
+    document.getElementById('score-ssl').textContent = data.scores.ssl;
+    document.getElementById('score-headers').textContent = data.scores.headers;
+    document.getElementById('issues-count').textContent = data.issues.length;
+
+    if (data.issues.length) {
+      document.getElementById('issues-section').style.display = 'block';
+      document.getElementById('issues-list').innerHTML = data.issues.map(i =>
+        `<div class="issue ${i.severity}"><span class="sev">${i.severity}</span> ${i.text}</div>`
+      ).join('');
+    } else {
+      document.getElementById('issues-section').style.display = 'none';
+    }
+
+    const ssl = data.ssl;
+    document.getElementById('ssl-result').innerHTML = ssl.valid
+      ? `<div class="check-item"><span class="icon" style="color:#22c55e">✓</span><div><span class="name">Válido</span><div class="desc">${ssl.daysLeft} días restantes · Emisor: ${ssl.issuer}</div></div></div>`
+      : `<div class="check-item"><span class="icon" style="color:#ef4444">✗</span><div><span class="name">Error</span><div class="desc">${ssl.error || 'No válido'}</div></div></div>`;
+
+    document.getElementById('headers-result').innerHTML = data.headers.map(h =>
+      `<div class="check-item"><span class="icon" style="color:${h.status === 'ok' ? '#22c55e' : h.status === 'warn' ? '#eab308' : '#ef4444'}">${h.status === 'ok' ? '✓' : h.status === 'warn' ? '⚠' : '✗'}</span><div><span class="name">${h.name}</span><div class="desc">${h.desc}</div></div></div>`
+    ).join('');
+
+    document.getElementById('dns-result').innerHTML = data.dns.map(d =>
+      `<div class="check-item"><span class="icon" style="color:${d.status === 'ok' ? '#22c55e' : '#eab308'}">${d.status === 'ok' ? '✓' : '⚠'}</span><div><span class="name">${d.type}</span><div class="desc">${d.value}</div></div></div>`
+    ).join('');
+
+    window.scrollTo({ top: document.getElementById('results').offsetTop - 80, behavior: 'smooth' });
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('error-box');
+    el.textContent = msg;
+    el.classList.add('error');
+  }
+  function hideError() { document.getElementById('error-box').classList.remove('error'); }
+
+  document.getElementById('scan-btn').addEventListener('click', scan);
+  document.getElementById('domain-input').addEventListener('keydown', e => { if (e.key === 'Enter') scan(); });
+
+  document.getElementById('btn-pdf').addEventListener('click', async () => {
+    if (!lastDomain) return;
+    const btn = document.getElementById('btn-pdf');
+    btn.textContent = 'Descargando...';
+    btn.disabled = true;
+    try {
+      const resp = await fetch('/api/scan/pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ domain: lastDomain })
+      });
+      if (!resp.ok) throw new Error();
+      const blob = await resp.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `vulnify-${lastDomain}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {}
+    btn.textContent = 'Descargar informe PDF';
+    btn.disabled = false;
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const domain = params.get('domain');
+    if (domain) {
+      document.getElementById('domain-input').value = domain;
+      scan();
+    }
+  });
+
+  renderRecent();
+</script>
+</body>
+</html>
