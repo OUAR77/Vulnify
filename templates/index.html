@@ -24,9 +24,22 @@
         <a href="/contacto" class="nav-link">Contacto</a>
       </nav>
       <div class="header-actions">
+        <button class="hamburger" id="hamburger" aria-label="Menú">
+          <span></span><span></span><span></span>
+        </button>
         <a href="/login" class="btn btn-ghost btn-sm">Iniciar sesión</a>
         <a href="/register" class="btn btn-primary btn-sm">Registrarse</a>
       </div>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="/scanner" class="nav-link">Escáner</a>
+    <a href="/precios" class="nav-link">Precios</a>
+    <a href="/sobre-nosotros" class="nav-link">Sobre nosotros</a>
+    <a href="/contacto" class="nav-link">Contacto</a>
+    <div class="header-actions-mobile">
+      <a href="/login" class="btn btn-ghost">Iniciar sesión</a>
+      <a href="/register" class="btn btn-primary">Registrarse</a>
     </div>
   </div>
 </header>
@@ -251,6 +264,15 @@
   window.addEventListener('scroll', () => {
     header.classList.toggle('scrolled', window.scrollY > 10);
   });
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (hamburger) {
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+      document.body.classList.toggle('menu-open');
+    });
+  }
 </script>
 </body>
 </html>

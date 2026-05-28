@@ -22,9 +22,21 @@
         <a href="/dashboard" class="nav-link active">Dashboard</a>
       </nav>
       <div class="header-actions">
+        <button class="hamburger" id="hamburger" aria-label="Menú">
+          <span></span><span></span><span></span>
+        </button>
         <span id="user-name" style="font-size:0.85rem;color:var(--text-secondary)"></span>
         <button class="btn btn-ghost btn-sm" id="logout-btn" style="display:none">Salir</button>
       </div>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="/scanner" class="nav-link">Escáner</a>
+    <a href="/precios" class="nav-link">Precios</a>
+    <a href="/dashboard" class="nav-link">Dashboard</a>
+    <div class="header-actions-mobile">
+      <a href="/login" class="btn btn-ghost">Iniciar sesión</a>
+      <a href="/register" class="btn btn-primary">Registrarse</a>
     </div>
   </div>
 </header>
@@ -154,6 +166,16 @@
     localStorage.removeItem(TOKEN_KEY);
     window.location.href = '/';
   });
+
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (hamburger) {
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+      document.body.classList.toggle('menu-open');
+    });
+  }
 
   loadDashboard();
 </script>
