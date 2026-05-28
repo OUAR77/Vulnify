@@ -81,6 +81,24 @@ async def lifespan(app: FastAPI):
             db.add_all(plans)
             db.commit()
             logger.info("Seed plans created")
+        if db.query(Plan).filter(Plan.name == "Pro").first():
+            logger.info("Migrating old plan names (Pro→Starter, Business→Profesional)...")
+            old_mapping = [
+                ("Pro", "Starter", 49, 490, settings.STRIPE_PRICE_STARTER_MONTHLY, settings.STRIPE_PRICE_STARTER_YEARLY),
+                ("Business", "Profesional", 149, 1490, settings.STRIPE_PRICE_PROFESIONAL_MONTHLY, settings.STRIPE_PRICE_PROFESIONAL_YEARLY),
+            ]
+            for old_name, new_name, price_m, price_y, stripe_m, stripe_y in old_mapping:
+                plan = db.query(Plan).filter(Plan.name == old_name).first()
+                if plan:
+                    plan.name = new_name
+                    plan.price_monthly = price_m
+                    plan.price_yearly = price_y
+                    if stripe_m:
+                        plan.stripe_price_id_monthly = stripe_m
+                    if stripe_y:
+                        plan.stripe_price_id_yearly = stripe_y
+                    logger.info("Migrated %s → %s (%d€/%d€)", old_name, new_name, price_m, price_y)
+            db.commit()
         stripe_price_map = {
             "Gratis": {"monthly": os.getenv("STRIPE_PRICE_GRATIS_MONTHLY", ""), "yearly": ""},
             "Starter": {"monthly": settings.STRIPE_PRICE_STARTER_MONTHLY, "yearly": settings.STRIPE_PRICE_STARTER_YEARLY},
