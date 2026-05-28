@@ -59,9 +59,10 @@
       <h2 class="section-title">Protege tu reputación digital</h2>
       <p class="section-sub">Todos los planes incluyen monitorización de brechas. Escala según tus necesidades.</p>
     </div>
-    <div class="billing-toggle">
+    <div class="billing-toggle" id="billing-toggle">
+      <div class="toggle-slider" id="toggle-slider"></div>
       <button class="toggle-btn active" data-interval="month">Mensual</button>
-      <button class="toggle-btn" data-interval="year">Anual</button>
+      <button class="toggle-btn" data-interval="year">Anual <span class="savings-badge">Ahorra</span></button>
     </div>
     <div class="pricing-grid" id="pricing-grid"></div>
 
@@ -110,6 +111,9 @@
       document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       currentInterval = btn.dataset.interval;
+      const slider = document.getElementById('toggle-slider');
+      if (currentInterval === 'year') slider.classList.add('right');
+      else slider.classList.remove('right');
       renderPlans();
     });
   });
@@ -127,13 +131,20 @@
       const btnClass = i === 1 ? 'fill-accent' : 'outline';
       const btnText = plan.name === 'Gratis' ? 'Probar ahora' : `Elegir ${plan.name}`;
       const isFree = plan.name === 'Gratis';
-      const href = isFree ? 'href="/monitor"' : '';
+
+      let savings = '';
+      if (currentInterval === 'year' && plan.price_monthly > 0 && plan.price_yearly) {
+        const monthlyTotal = plan.price_monthly * 12;
+        const saved = monthlyTotal - plan.price_yearly;
+        if (saved > 0) savings = `<div style="font-size:10px;color:var(--accent);font-weight:600;margin-bottom:4px">Ahorras ${saved}€/año</div>`;
+      }
 
       grid.innerHTML += `
         <div class="plan-card${featured}">
           <div class="plan-name">${plan.name}</div>
           <div class="plan-price">${priceText}</div>
           <div class="plan-period">${price === 0 ? 'siempre gratis' : period}</div>
+          ${savings}
           <div class="plan-desc">${plan.description}.</div>
           <div class="plan-divider"></div>
           <ul class="plan-features">
