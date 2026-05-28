@@ -74,31 +74,43 @@ async def lifespan(app: FastAPI):
         db = SessionLocal()
         if not db.query(Plan).first():
             plans = [
-                Plan(name="Gratis", description="Monitorización básica de brechas", price_monthly=0, price_yearly=0, max_reports=-1, max_programs=0, features=["1 dominio o email", "Alertas por email", "Informe básico de brechas"], active=True),
-                Plan(name="Starter", description="Para autónomos y pequeñas empresas", price_monthly=49, price_yearly=490, max_reports=-1, max_programs=0, features=["Hasta 5 dominios o emails", "Alertas por email y dashboard", "Monitorización semanal", "Informe detallado de brechas", "Historial de alertas"], active=True),
-                Plan(name="Profesional", description="Para equipos y agencias", price_monthly=149, price_yearly=1490, max_reports=-1, max_programs=0, features=["Dominios y emails ilimitados", "Monitorización diaria", "API de consulta", "Alertas en tiempo real", "Soporte prioritario 24/7"], active=True),
+                Plan(name="Gratis", description="Monitorización básica de brechas", price_monthly=0, price_yearly=0, max_assets=1, max_reports=-1, max_programs=0, features=["1 dominio o email", "Alertas por email", "Informe básico de brechas"], active=True),
+                Plan(name="Starter", description="Para autónomos y pequeñas empresas", price_monthly=49, price_yearly=490, max_assets=5, max_reports=-1, max_programs=0, features=["Hasta 5 dominios o emails", "Alertas por email y dashboard", "Monitorización semanal", "Informe detallado de brechas", "Historial de alertas"], active=True),
+                Plan(name="Profesional", description="Para equipos y agencias", price_monthly=149, price_yearly=1490, max_assets=-1, max_reports=-1, max_programs=0, features=["Dominios y emails ilimitados", "Monitorización diaria", "API de consulta", "Alertas en tiempo real", "Soporte prioritario 24/7"], active=True),
             ]
             db.add_all(plans)
             db.commit()
             logger.info("Seed plans created")
+        try:
+            db.execute(text("ALTER TABLE plans ADD COLUMN max_assets INTEGER DEFAULT 0"))
+            db.commit()
+            logger.info("Added max_assets column to plans table")
+        except Exception:
+            db.rollback()
         if db.query(Plan).filter(Plan.name == "Pro").first():
             logger.info("Migrating old plan names (Pro→Starter, Business→Profesional)...")
             old_mapping = [
-                ("Pro", "Starter", 49, 490, settings.STRIPE_PRICE_STARTER_MONTHLY, settings.STRIPE_PRICE_STARTER_YEARLY),
-                ("Business", "Profesional", 149, 1490, settings.STRIPE_PRICE_PROFESIONAL_MONTHLY, settings.STRIPE_PRICE_PROFESIONAL_YEARLY),
+                ("Pro", "Starter", 49, 490, 5, settings.STRIPE_PRICE_STARTER_MONTHLY, settings.STRIPE_PRICE_STARTER_YEARLY),
+                ("Business", "Profesional", 149, 1490, -1, settings.STRIPE_PRICE_PROFESIONAL_MONTHLY, settings.STRIPE_PRICE_PROFESIONAL_YEARLY),
             ]
-            for old_name, new_name, price_m, price_y, stripe_m, stripe_y in old_mapping:
+            for old_name, new_name, price_m, price_y, max_a, stripe_m, stripe_y in old_mapping:
                 plan = db.query(Plan).filter(Plan.name == old_name).first()
                 if plan:
                     plan.name = new_name
                     plan.price_monthly = price_m
                     plan.price_yearly = price_y
+                    plan.max_assets = max_a
                     if stripe_m:
                         plan.stripe_price_id_monthly = stripe_m
                     if stripe_y:
                         plan.stripe_price_id_yearly = stripe_y
                     logger.info("Migrated %s → %s (%d€/%d€)", old_name, new_name, price_m, price_y)
             db.commit()
+        gratis = db.query(Plan).filter(Plan.name == "Gratis").first()
+        if gratis and gratis.max_assets == 0:
+            gratis.max_assets = 1
+            logger.info("Set Gratis max_assets=1")
+        db.commit()
         stripe_price_map = {
             "Gratis": {"monthly": os.getenv("STRIPE_PRICE_GRATIS_MONTHLY", ""), "yearly": ""},
             "Starter": {"monthly": settings.STRIPE_PRICE_STARTER_MONTHLY, "yearly": settings.STRIPE_PRICE_STARTER_YEARLY},

@@ -12,6 +12,7 @@ class Plan(Base):
     price_yearly = Column(Float, nullable=True)
     stripe_price_id_monthly = Column(String, nullable=True)
     stripe_price_id_yearly = Column(String, nullable=True)
+    max_assets = Column(Integer, default=0)
     max_reports = Column(Integer, default=0)
     max_programs = Column(Integer, default=0)
     features = Column(JSONColumn, default=[])

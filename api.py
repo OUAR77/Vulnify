@@ -293,6 +293,19 @@ def add_asset(request: Request, body: AddAssetBody, user: User = Depends(get_cur
     ).first()
     if existing:
         raise HTTPException(status_code=409, detail="Ya estás monitorizando este activo")
+    from models.subscription import UserSubscription
+    sub = db.query(UserSubscription).filter(
+        UserSubscription.user_id == user.id,
+        UserSubscription.status == "active"
+    ).first()
+    if sub:
+        plan = db.query(Plan).filter(Plan.id == sub.plan_id).first()
+    else:
+        plan = db.query(Plan).filter(Plan.name == "Gratis").first()
+    if plan and plan.max_assets != -1:
+        current_count = db.query(MonitoredAsset).filter(MonitoredAsset.user_id == user.id).count()
+        if current_count >= plan.max_assets:
+            raise HTTPException(status_code=403, detail=f"Límite de {plan.max_assets} activos alcanzado. Actualiza tu plan para añadir más.")
     asset = MonitoredAsset(user_id=user.id, type=body.type, value=value)
     db.add(asset)
     db.commit()
@@ -449,7 +462,7 @@ def list_plans(db: Session = Depends(get_db)):
     return [{
         "id": p.id, "name": p.name, "description": p.description,
         "price_monthly": p.price_monthly, "price_yearly": p.price_yearly,
-        "features": p.features,
+        "max_assets": p.max_assets, "features": p.features,
     } for p in plans]
 
 @router.post("/subscribe", description="Create Stripe Checkout Session for subscription")
