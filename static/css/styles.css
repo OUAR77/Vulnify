@@ -634,6 +634,7 @@ body{animation:fadeIn .3s ease}
   .footer-grid{grid-template-columns:1fr 1fr;gap:32px}
   .nav{display:none}
   .hamburger{display:flex}
+  #headerAuth .btn-ghost{display:none}
   .stats-grid,.stats-row{grid-template-columns:repeat(2,1fr)}
   .how-steps{grid-template-columns:repeat(2,1fr)}
   .how-step:not(:last-child)::after{display:none}
@@ -644,11 +645,13 @@ body{animation:fadeIn .3s ease}
   .programs-hero h1{font-size:28px}
   .section{padding:80px 0}
   .section-header{margin-bottom:40px}
+  .billing-toggle .savings-badge{display:none}
+  .search-section .two-col{grid-template-columns:1fr!important}
+  .search-section .two-col .btn{width:100%}
 }
 
 @media(max-width:480px){
   .header-inner{height:56px}
-  .header-actions .btn-ghost{display:none}
   .hero-actions,.cta-actions{flex-direction:column}
   .hero-actions .btn,.cta-actions .btn{width:100%;justify-content:center}
   .rewards-row,.stats-row,.how-steps,.grid-4{grid-template-columns:1fr}
@@ -671,9 +674,29 @@ body{animation:fadeIn .3s ease}
   .pricing-grid{max-width:100%}
   .testimonials-grid{grid-template-columns:1fr}
   .features-grid{grid-template-columns:1fr}
-  table{font-size:0.8rem}
-  table th,table td{padding:8px 6px}
+  table{font-size:0.8rem;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table th,table td{padding:8px 6px;white-space:nowrap}
   .header-actions-mobile .btn{padding:14px!important}
+  .plan-card{padding:24px}
+  .plan-price{font-size:32px}
+  .plan-name{font-size:10px}
+  .plan-period{font-size:12px}
+  .plan-desc{font-size:12px}
+  .plan-features li{font-size:12px;padding:6px 0}
+  .billing-toggle .toggle-btn{padding:6px 16px;font-size:12px}
+  .billing-toggle .savings-badge{display:none}
+  .section-header .section-sub{font-size:13px}
+  .add-asset-bar{flex-direction:column}
+  .add-asset-bar select,.add-asset-bar input{width:100%}
+  .tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:0}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{padding:10px 14px;font-size:11px;white-space:nowrap}
+  .container{padding:0 16px}
+  .hero p{font-size:15px}
+  .asset-card{flex-direction:column;align-items:stretch;gap:8px}
+  .asset-card .info{flex-wrap:wrap;gap:6px}
+  .asset-card .actions{justify-content:flex-end}
+  .stat-value{font-size:20px}
 }
 
 /* ===== Scrollbar ===== */
