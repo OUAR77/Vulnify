@@ -72,6 +72,12 @@ async def lifespan(app: FastAPI):
         from database import SessionLocal
         from modules.auth import hash_password
         db = SessionLocal()
+        try:
+            db.execute(text("ALTER TABLE plans ADD COLUMN max_assets INTEGER DEFAULT 0"))
+            db.commit()
+            logger.info("Added max_assets column to plans table")
+        except Exception:
+            db.rollback()
         if not db.query(Plan).first():
             plans = [
                 Plan(name="Gratis", description="Monitorización básica de brechas", price_monthly=0, price_yearly=0, max_assets=1, max_reports=-1, max_programs=0, features=["1 dominio o email", "Alertas por email", "Informe básico de brechas"], active=True),
@@ -81,12 +87,6 @@ async def lifespan(app: FastAPI):
             db.add_all(plans)
             db.commit()
             logger.info("Seed plans created")
-        try:
-            db.execute(text("ALTER TABLE plans ADD COLUMN max_assets INTEGER DEFAULT 0"))
-            db.commit()
-            logger.info("Added max_assets column to plans table")
-        except Exception:
-            db.rollback()
         if db.query(Plan).filter(Plan.name == "Pro").first():
             logger.info("Migrating old plan names (Pro→Starter, Business→Profesional)...")
             old_mapping = [
