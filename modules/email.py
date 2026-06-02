@@ -31,3 +31,25 @@ def send_password_reset(email: str, token: str) -> bool:
     except Exception as e:
         logger.error("Failed to send email to %s: %s", email, e)
         return False
+
+
+def send_breach_alert(email: str, name: str, asset: str, breach_count: int, severity: str) -> bool:
+    if not SG:
+        logger.warning("SendGrid no configurado, breach alert for %s", asset)
+        return False
+    severity_labels = {"critical": "Crítica", "high": "Alta", "medium": "Media", "low": "Baja"}
+    sev_label = severity_labels.get(severity, severity)
+    try:
+        mail = Mail(
+            from_email=Email("noreply@vulnify.es"),
+            to_emails=To(email),
+            subject=f"[Vulnify] Alerta {sev_label} - {asset} comprometido",
+            plain_text_content=f"Hola {name},\n\nSe han detectado {breach_count} brecha(s) de datos en {asset} con severidad {sev_label}.\n\nRevisa tu dashboard para más detalles:\n{settings.SITE_URL}/dashboard\n\nVulnify - Monitorización de Reputación Digital",
+            html_content=f"<h2>Alerta de seguridad</h2><p>Hola {name},</p><p>Se han detectado <strong>{breach_count}</strong> brecha(s) de datos en <strong>{asset}</strong> con severidad <strong>{sev_label}</strong>.</p><p><a href='{settings.SITE_URL}/dashboard'>Revisa tu dashboard</a> para más detalles.</p><hr><p style='color: #6c757d;'>Vulnify - Monitorización de Reputación Digital</p>",
+        )
+        response = SG.send(mail)
+        logger.info("Breach alert email sent to %s (status %s)", email, response.status_code)
+        return True
+    except Exception as e:
+        logger.error("Failed to send breach alert to %s: %s", email, e)
+        return False

@@ -1,6 +1,7 @@
 import requests
 import hashlib
 from datetime import datetime
+from config import settings
 
 HIBP_API = "https://haveibeenpwned.com/api/v3"
 HIBP_PW_RANGE = "https://api.pwnedpasswords.com/range"
@@ -59,12 +60,15 @@ def classify_severity(data_classes: list) -> str:
 
 def fetch_all_breaches() -> list[dict]:
     hibp = []
-    try:
-        resp = requests.get(f"{HIBP_API}/breaches", timeout=10, headers={"hibp-api-key": ""})
-        if resp.status_code == 200:
-            hibp = resp.json()
-    except:
-        pass
+    hibp_key = settings.HIBP_API_KEY
+    if hibp_key:
+        try:
+            headers = {"hibp-api-key": hibp_key}
+            resp = requests.get(f"{HIBP_API}/breaches", timeout=10, headers=headers)
+            if resp.status_code == 200:
+                hibp = resp.json()
+        except Exception:
+            pass
     merged = list(BREACH_DATABASE)
     seen = {b["name"].lower() for b in BREACH_DATABASE}
     for b in hibp:
@@ -123,11 +127,15 @@ def match_domain(input_domain: str, breach_domain: str) -> bool:
 
 def check_email_via_hibp(email: str) -> list[dict]:
     results = []
+    hibp_key = settings.HIBP_API_KEY
+    if not hibp_key:
+        return results
     try:
+        headers = {"hibp-api-key": hibp_key}
         resp = requests.get(
             f"{HIBP_API}/breachedaccount/{email}?truncateResponse=true",
             timeout=10,
-            headers={"hibp-api-key": ""},
+            headers=headers,
         )
         if resp.status_code == 200:
             for breach_ref in resp.json():
@@ -139,7 +147,7 @@ def check_email_via_hibp(email: str) -> list[dict]:
                     "confidence": "high",
                     "description": f"Email {email} comprometido en {breach_ref.get('Name', 'brecha')}.",
                 })
-    except:
+    except Exception:
         pass
     return results
 
@@ -153,7 +161,7 @@ def check_email_in_breaches(email: str) -> list[dict]:
     try:
         hibp_results = check_email_via_hibp(email)
         results.extend(hibp_results)
-    except:
+    except Exception:
         pass
 
     for breach in get_breaches():

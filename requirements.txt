@@ -18,3 +18,7 @@ sendgrid>=6.0
 dnspython>=2.6
 requests>=2.31
 weasyprint>=62
+pyotp>=2.9
+qrcode[pil]>=7.4
+sentry-sdk>=2.0
+ruff>=0.4

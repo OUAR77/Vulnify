@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración - Vulnify</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div id="app">
+        <nav class="navbar">
+            <div class="nav-container">
+                <a href="/" class="nav-logo">Vulnify</a>
+                <div class="nav-links">
+                    <a href="/dashboard">Dashboard</a>
+                    <a href="/monitor">Monitor</a>
+                    <a href="/settings" class="active">Configuración</a>
+                </div>
+            </div>
+        </nav>
+        <main class="container">
+            <h1>Configuración</h1>
+            <div class="settings-grid">
+                <section class="card">
+                    <h2>Autenticación</h2>
+                    <div id="2fa-section">
+                        <h3>Autenticación en dos pasos (2FA)</h3>
+                        <p id="2fa-status">Cargando...</p>
+                        <div id="2fa-setup" style="display:none;">
+                            <p>Escanea el código QR con tu app de autenticación (Google Authenticator, Authy, etc.)</p>
+                            <div id="qr-container"></div>
+                            <p>O introduce manualmente esta clave: <code id="totp-secret"></code></p>
+                            <div>
+                                <label for="totp-code">Código de verificación:</label>
+                                <input type="text" id="totp-code" maxlength="6" placeholder="000000">
+                                <button onclick="enable2FA()" class="btn btn-primary">Activar 2FA</button>
+                            </div>
+                        </div>
+                        <div id="2fa-enabled" style="display:none;">
+                            <p>2FA está activado. <button onclick="disable2FA()" class="btn btn-danger">Desactivar 2FA</button></p>
+                        </div>
+                        <button id="setup-2fa-btn" onclick="setup2FA()" class="btn btn-secondary" style="display:none;">Configurar 2FA</button>
+                    </div>
+                </section>
+                <section class="card">
+                    <h2>Notificaciones</h2>
+                    <div class="form-group">
+                        <label><input type="checkbox" id="notify-critical" checked> Severidad Crítica</label>
+                    </div>
+                    <div class="form-group">
+                        <label><input type="checkbox" id="notify-high" checked> Severidad Alta</label>
+                    </div>
+                    <div class="form-group">
+                        <label><input type="checkbox" id="notify-medium" checked> Severidad Media</label>
+                    </div>
+                    <div class="form-group">
+                        <label><input type="checkbox" id="notify-low"> Severidad Baja</label>
+                    </div>
+                    <div class="form-group">
+                        <label><input type="checkbox" id="notify-email" checked> Notificaciones por email</label>
+                    </div>
+                    <button onclick="saveNotificationPrefs()" class="btn btn-primary">Guardar preferencias</button>
+                </section>
+                <section class="card">
+                    <h2>Apariencia</h2>
+                    <div class="form-group">
+                        <label><input type="checkbox" id="dark-mode"> Modo oscuro</label>
+                    </div>
+                    <button onclick="saveAppearance()" class="btn btn-primary">Guardar</button>
+                </section>
+                <section class="card">
+                    <h2>API Keys</h2>
+                    <p>Gestiona tus claves de API para integraciones.</p>
+                    <div id="api-keys-list"></div>
+                    <div class="form-group">
+                        <input type="text" id="new-api-key-name" placeholder="Nombre de la API key">
+                        <button onclick="createApiKey()" class="btn btn-primary">Crear API Key</button>
+                    </div>
+                </section>
+                <section class="card">
+                    <h2>Informes</h2>
+                    <p>Descarga un informe PDF con el resumen de seguridad.</p>
+                    <a href="/api/reports/pdf" class="btn btn-secondary" target="_blank">Descargar PDF</a>
+                </section>
+            </div>
+        </main>
+    </div>
+    <script>
+        const API = "/api";
+        const token = localStorage.getItem("token");
+        if (!token) { window.location.href = "/login"; }
+
+        async function apiFetch(path, opts = {}) {
+            const res = await fetch(API + path, {
+                ...opts,
+                headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json", ...opts.headers },
+            });
+            if (!res.ok) { const e = await res.json(); throw new Error(e.detail || "Error"); }
+            return res.json();
+        }
+
+        async function loadSettings() {
+            const me = await apiFetch("/auth/me");
+            if (me.totp_enabled) {
+                document.getElementById("2fa-status").textContent = "2FA activado";
+                document.getElementById("2fa-enabled").style.display = "block";
+            } else {
+                document.getElementById("2fa-status").textContent = "2FA desactivado";
+                document.getElementById("setup-2fa-btn").style.display = "block";
+            }
+            const notif = await apiFetch("/auth/notifications");
+            document.getElementById("notify-critical").checked = notif.notify_critical;
+            document.getElementById("notify-high").checked = notif.notify_high;
+            document.getElementById("notify-medium").checked = notif.notify_medium;
+            document.getElementById("notify-low").checked = notif.notify_low;
+            document.getElementById("notify-email").checked = notif.notify_email;
+            document.getElementById("dark-mode").checked = notif.dark_mode;
+            if (notif.dark_mode) document.body.classList.add("dark-mode");
+            loadApiKeys();
+        }
+
+        async function setup2FA() {
+            const data = await apiFetch("/auth/totp/setup", { method: "POST" });
+            document.getElementById("setup-2fa-btn").style.display = "none";
+            document.getElementById("2fa-setup").style.display = "block";
+            document.getElementById("totp-secret").textContent = data.secret;
+            document.getElementById("qr-container").innerHTML = `<img src="data:image/png;base64,${data.qr_b64}" alt="QR Code">`;
+        }
+
+        async function enable2FA() {
+            const code = document.getElementById("totp-code").value;
+            if (code.length !== 6) { alert("Introduce un código de 6 dígitos"); return; }
+            await apiFetch("/auth/totp/enable?code=" + code, { method: "POST" });
+            alert("2FA activado correctamente");
+            location.reload();
+        }
+
+        async function disable2FA() {
+            const code = prompt("Introduce tu código 2FA para desactivarlo:");
+            if (!code) return;
+            await apiFetch("/auth/totp/disable?code=" + code, { method: "POST" });
+            alert("2FA desactivado");
+            location.reload();
+        }
+
+        async function saveNotificationPrefs() {
+            await apiFetch("/auth/notifications", {
+                method: "PUT",
+                body: JSON.stringify({
+                    notify_critical: document.getElementById("notify-critical").checked,
+                    notify_high: document.getElementById("notify-high").checked,
+                    notify_medium: document.getElementById("notify-medium").checked,
+                    notify_low: document.getElementById("notify-low").checked,
+                    notify_email: document.getElementById("notify-email").checked,
+                }),
+            });
+            alert("Preferencias guardadas");
+        }
+
+        async function saveAppearance() {
+            const dark = document.getElementById("dark-mode").checked;
+            await apiFetch("/auth/notifications", {
+                method: "PUT",
+                body: JSON.stringify({ dark_mode: dark }),
+            });
+            document.body.classList.toggle("dark-mode", dark);
+        }
+
+        async function loadApiKeys() {
+            const keys = await apiFetch("/auth/api-keys");
+            const list = document.getElementById("api-keys-list");
+            if (keys.length === 0) { list.innerHTML = "<p>No tienes API keys.</p>"; return; }
+            list.innerHTML = "<ul>" + keys.map(k => `<li>${k.name} (creada: ${k.created_at}) <button onclick="deleteApiKey(${k.id})">Eliminar</button></li>`).join("") + "</ul>";
+        }
+
+        async function createApiKey() {
+            const name = document.getElementById("new-api-key-name").value;
+            if (!name) { alert("Introduce un nombre"); return; }
+            const data = await apiFetch("/auth/api-keys", { method: "POST", body: JSON.stringify({ name }) });
+            alert(`API Key creada: ${data.key}\nGuárdala, no se mostrará de nuevo.`);
+            loadApiKeys();
+        }
+
+        async function deleteApiKey(id) {
+            if (!confirm("¿Eliminar esta API key?")) return;
+            await apiFetch(`/auth/api-keys/${id}`, { method: "DELETE" });
+            loadApiKeys();
+        }
+
+        loadSettings();
+    </script>
+</body>
+</html>

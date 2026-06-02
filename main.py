@@ -15,9 +15,8 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from jose import JWTError, jwt
 from config import limiter, settings
 from database import Base, engine
-from api import router as api_router
+from modules.routers import auth_router, assets_router, alerts_router, plans_router, admin_router, search_router, reports_router
 from models.user import User
-
 
 os.makedirs("uploads", exist_ok=True)
 
@@ -26,6 +25,15 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger("vulnify")
+
+# Sentry
+if settings.SENTRY_DSN and settings.ENVIRONMENT == "production":
+    try:
+        import sentry_sdk
+        sentry_sdk.init(dsn=settings.SENTRY_DSN, environment=settings.ENVIRONMENT)
+        logger.info("Sentry initialized")
+    except Exception as e:
+        logger.warning("Sentry init failed: %s", e)
 
 
 class ConnectionManager:
@@ -75,7 +83,46 @@ async def lifespan(app: FastAPI):
         try:
             db.execute(text("ALTER TABLE plans ADD COLUMN max_assets INTEGER DEFAULT 0"))
             db.commit()
-            logger.info("Added max_assets column to plans table")
+        except Exception:
+            db.rollback()
+        try:
+            db.execute(text("ALTER TABLE users ADD COLUMN totp_secret VARCHAR"))
+            db.commit()
+        except Exception:
+            db.rollback()
+        try:
+            db.execute(text("ALTER TABLE users ADD COLUMN totp_enabled BOOLEAN DEFAULT 0"))
+            db.commit()
+        except Exception:
+            db.rollback()
+        try:
+            db.execute(text("ALTER TABLE users ADD COLUMN notify_critical BOOLEAN DEFAULT 1"))
+            db.commit()
+        except Exception:
+            db.rollback()
+        try:
+            db.execute(text("ALTER TABLE users ADD COLUMN notify_high BOOLEAN DEFAULT 1"))
+            db.commit()
+        except Exception:
+            db.rollback()
+        try:
+            db.execute(text("ALTER TABLE users ADD COLUMN notify_medium BOOLEAN DEFAULT 1"))
+            db.commit()
+        except Exception:
+            db.rollback()
+        try:
+            db.execute(text("ALTER TABLE users ADD COLUMN notify_low BOOLEAN DEFAULT 0"))
+            db.commit()
+        except Exception:
+            db.rollback()
+        try:
+            db.execute(text("ALTER TABLE users ADD COLUMN notify_email BOOLEAN DEFAULT 1"))
+            db.commit()
+        except Exception:
+            db.rollback()
+        try:
+            db.execute(text("ALTER TABLE users ADD COLUMN dark_mode BOOLEAN DEFAULT 0"))
+            db.commit()
         except Exception:
             db.rollback()
         if not db.query(Plan).first():
@@ -88,7 +135,7 @@ async def lifespan(app: FastAPI):
             db.commit()
             logger.info("Seed plans created")
         if db.query(Plan).filter(Plan.name == "Pro").first():
-            logger.info("Migrating old plan names (Pro→Starter, Business→Profesional)...")
+            logger.info("Migrating old plan names (Pro->Starter, Business->Profesional)...")
             old_mapping = [
                 ("Pro", "Starter", 49, 490, 5, settings.STRIPE_PRICE_STARTER_MONTHLY, settings.STRIPE_PRICE_STARTER_YEARLY),
                 ("Business", "Profesional", 149, 1490, -1, settings.STRIPE_PRICE_PROFESIONAL_MONTHLY, settings.STRIPE_PRICE_PROFESIONAL_YEARLY),
@@ -104,7 +151,7 @@ async def lifespan(app: FastAPI):
                         plan.stripe_price_id_monthly = stripe_m
                     if stripe_y:
                         plan.stripe_price_id_yearly = stripe_y
-                    logger.info("Migrated %s → %s (%d€/%d€)", old_name, new_name, price_m, price_y)
+                    logger.info("Migrated %s -> %s (%d€/%d€)", old_name, new_name, price_m, price_y)
             db.commit()
         gratis = db.query(Plan).filter(Plan.name == "Gratis").first()
         if gratis and gratis.max_assets == 0:
@@ -121,10 +168,8 @@ async def lifespan(app: FastAPI):
             if p:
                 if prices["monthly"] and p.stripe_price_id_monthly != prices["monthly"]:
                     p.stripe_price_id_monthly = prices["monthly"]
-                    logger.info("Updated %s stripe_price_id_monthly", name)
                 if prices["yearly"] and p.stripe_price_id_yearly != prices["yearly"]:
                     p.stripe_price_id_yearly = prices["yearly"]
-                    logger.info("Updated %s stripe_price_id_yearly", name)
         db.commit()
         if not db.query(User).filter(User.role == "admin").first():
             admin_pw = os.getenv("ADMIN_PASSWORD", "admin123456")
@@ -147,6 +192,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["X-XSS-Protection"] = "0"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; frame-src https://js.stripe.com; connect-src 'self' ws: https://api.stripe.com"
         if "text/html" in response.headers.get("content-type", ""):
             response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
             response.headers["Pragma"] = "no-cache"
@@ -159,7 +205,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 app = FastAPI(
     title="Vulnify API",
     description="Reputation monitoring & dark web breach detection platform",
-    version="3.0.0",
+    version="3.1.0",
     lifespan=lifespan,
 )
 
@@ -179,7 +225,13 @@ app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
-app.include_router(api_router)
+app.include_router(auth_router)
+app.include_router(assets_router)
+app.include_router(alerts_router)
+app.include_router(plans_router)
+app.include_router(admin_router)
+app.include_router(search_router)
+app.include_router(reports_router)
 
 templates = Jinja2Templates(directory="templates")
 
@@ -199,9 +251,11 @@ async def server_error(request: Request, exc):
 async def robots():
     return FileResponse("static/robots.txt", media_type="text/plain")
 
+
 @app.get("/sitemap.xml", response_class=FileResponse)
 async def sitemap():
     return FileResponse("static/sitemap.xml", media_type="application/xml")
+
 
 @app.get("/", response_class=HTMLResponse, description="Home page")
 async def index(request: Request):
@@ -221,6 +275,7 @@ async def register_page(request: Request):
 @app.get("/monitor", response_class=HTMLResponse, description="Reputation monitor")
 async def monitor_page(request: Request):
     return templates.TemplateResponse(request, "monitor.html")
+
 
 @app.get("/scanner", response_class=HTMLResponse, description="Redirect to monitor")
 async def scanner_redirect(request: Request):
@@ -246,17 +301,25 @@ async def admin_panel(request: Request):
 async def terminos(request: Request):
     return templates.TemplateResponse(request, "terms.html")
 
+
 @app.get("/contacto", response_class=HTMLResponse, description="Contact page")
 async def contacto(request: Request):
     return templates.TemplateResponse(request, "contact.html")
+
 
 @app.get("/sobre-nosotros", response_class=HTMLResponse, description="About us")
 async def sobre_nosotros(request: Request):
     return templates.TemplateResponse(request, "about.html")
 
+
 @app.get("/privacidad", response_class=HTMLResponse, description="Privacy policy")
 async def privacidad(request: Request):
     return templates.TemplateResponse(request, "privacy.html")
+
+
+@app.get("/settings", response_class=HTMLResponse, description="User settings")
+async def settings_page(request: Request):
+    return templates.TemplateResponse(request, "settings.html")
 
 
 @app.get("/health")
@@ -272,7 +335,8 @@ async def health():
         db_type = "postgresql" if "postgres" in settings.DATABASE_URL else "sqlite"
     except Exception as e:
         db_status = str(e)[:100]
-    return {"status": "ok", "environment": settings.ENVIRONMENT, "database": db_status, "db_type": db_type}
+    return {"status": "ok", "environment": settings.ENVIRONMENT, "database": db_status, "db_type": db_type, "version": "3.1.0"}
+
 
 @app.get("/db-tables")
 async def db_tables():

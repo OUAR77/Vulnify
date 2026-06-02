@@ -27,6 +27,16 @@ class Settings:
     STRIPE_PRICE_PROFESIONAL_YEARLY: str = os.getenv("STRIPE_PRICE_PROFESIONAL_YEARLY", "")
     SENDGRID_API_KEY: str = os.getenv("SENDGRID_API_KEY", "")
     SITE_URL: str = os.getenv("SITE_URL", "https://vulnify.es")
+    HIBP_API_KEY: str = os.getenv("HIBP_API_KEY", "")
+    SENTRY_DSN: str = os.getenv("SENTRY_DSN", "")
+    OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
+    OPENAI_BASE_URL: str = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
+    OPENAI_MODEL: str = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+    AI_PROVIDER: str = os.getenv("AI_PROVIDER", "openai")
+    OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+    OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "qwen2.5-coder:14b")
+    NOTIFY_SEVERITIES: list = os.getenv("NOTIFY_SEVERITIES", "critical,high,medium").split(",")
+    ASSET_CHECK_INTERVAL_HOURS: int = int(os.getenv("ASSET_CHECK_INTERVAL_HOURS", "24"))
 
 
 settings = Settings()
@@ -34,4 +44,16 @@ settings = Settings()
 if settings.ENVIRONMENT == "production" and settings.SECRET_KEY in ("dev-secret-change-in-production", ""):
     raise RuntimeError("SECRET_KEY must be set in production")
 
-limiter = Limiter(key_func=get_remote_address)
+
+def _user_key_func(request):
+    if hasattr(request.state, "user_id") and request.state.user_id:
+        return f"user_{request.state.user_id}"
+    forwarded = request.headers.get("x-forwarded-for")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    if request.client:
+        return request.client.host
+    return "unknown"
+
+
+limiter = Limiter(key_func=_user_key_func)
