@@ -576,6 +576,70 @@ def check_domain_in_breaches(domain: str) -> list[dict]:
     return results
 
 
+SECURITY_TIPS = {
+    "email": [
+        "Usa una contraseña única y fuerte para cada servicio (gestor de contraseñas recomendado)",
+        "Activa la autenticación en dos pasos (2FA) en todos tus servicios compatibles",
+        "Nunca uses la misma contraseña para tu email que para otras cuentas",
+        "Revisa periódicamente los dispositivos con sesión activa en tu cuenta de email",
+        "Desconfía de emails sospechosos aunque parezcan de remitentes conocidos (phishing)",
+        "Mantén actualizado tu software antivirus y sistema operativo",
+        "Usa direcciones de email desechables para registros en sitios no críticos",
+        "Configura alertas de inicio de sesión en tu proveedor de email",
+        "No hagas clic en enlaces de emails no solicitados",
+        "Revisa la configuración de reenvío de tu email periódicamente",
+    ],
+    "domain": [
+        "Mantén todos tus sistemas y aplicaciones web actualizados con los últimos parches de seguridad",
+        "Implementa un firewall de aplicaciones web (WAF) como Cloudflare o AWS WAF",
+        "Usa certificados SSL/TLS válidos y renueva antes de su expiración",
+        "Configura cabeceras de seguridad HTTP: CSP, HSTS, X-Frame-Options, X-Content-Type-Options",
+        "Realiza copias de seguridad periódicas y almacénalas fuera del servidor",
+        "Implementa autenticación multifactor (MFA) en todos los accesos administrativos",
+        "Monitoriza los logs de acceso en busca de patrones sospechosos",
+        "Limita los intentos de inicio de sesión para prevenir ataques de fuerza bruta",
+        "Deshabilita servicios y puertos innecesarios en tu servidor",
+        "Realiza auditorías de seguridad y pentesting periódicamente",
+    ],
+    "ip": [
+        "Mantén todos los servicios expuestos actualizados con los últimos parches de seguridad",
+        "Configura un firewall para restringir el tráfico entrante y saliente",
+        "Implementa detección de intrusiones (IDS/IPS) para monitorizar tráfico sospechoso",
+        "Deshabilita protocolos y servicios innecesarios (Telnet, FTP, etc.)",
+        "Usa SSH con autenticación por clave pública en lugar de contraseñas",
+        "Configura fail2ban o similar para bloquear intentos de acceso maliciosos",
+        "Segmenta tu red para aislar sistemas críticos de los expuestos",
+        "Monitoriza el tráfico de red en busca de patrones anómalos",
+        "Mantén registros detallados de acceso y eventos del sistema",
+        "Realiza escaneos de vulnerabilidades regularmente",
+    ],
+    "phone": [
+        "Nunca compartas tu número de teléfono en sitios públicos o redes sociales",
+        "Activa la autenticación en dos pasos (2FA) en todas tus cuentas",
+        "Usa una aplicación de autenticador (Google Authenticator, Authy) en lugar de SMS para 2FA",
+        "Desconfía de llamadas o SMS de números desconocidos que pidan información personal",
+        "Regístrate en la lista Robinson para reducir llamadas comerciales no deseadas",
+        "No respondas a SMS de remitentes desconocidos (smishing)",
+        "Revisa los permisos de las aplicaciones que tienen acceso a tu teléfono",
+        "Mantén actualizado el sistema operativo de tu teléfono",
+        "Usa aplicaciones de bloqueo de llamadas spam",
+        "Considera usar un número virtual para registros y servicios secundarios",
+    ],
+    "username": [
+        "Usa un nombre de usuario diferente para cada servicio importante",
+        "No uses tu email como nombre de usuario si es posible",
+        "Combina tu usuario con contraseñas fuertes y únicas",
+        "Activa la autenticación en dos pasos siempre que esté disponible",
+        "Revisa periódicamente si tu usuario aparece en filtraciones conocidas",
+        "Evita usar información personal fácil de adivinar en tu nombre de usuario",
+        "Cambia tus credenciales inmediatamente si sospechas de una filtración",
+        "Usa un gestor de contraseñas para generar y almacenar credenciales seguras",
+        "Configura alertas de seguridad en los servicios que lo permitan",
+        "Cierra sesiones activas en dispositivos que no reconozcas",
+    ],
+}
+
+
 # --- Main Check ---
 
 async def check_asset(asset_type: str, asset_value: str) -> dict:
@@ -621,6 +685,7 @@ async def check_asset(asset_type: str, asset_value: str) -> dict:
         "data_classes_exposed": sorted(data_classes_seen),
         "breaches": breaches,
         "safe": len(breaches) == 0,
+        "security_tips": SECURITY_TIPS.get(asset_type, SECURITY_TIPS["domain"]),
         "intel": {
             "dns": dns_info or None,
             "typosquatting": typos if typos["count"] > 0 else None,
