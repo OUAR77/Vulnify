@@ -14,4 +14,6 @@ class BreachAlert(Base):
     severity = Column(String, default="medium")
     description = Column(Text, default="")
     read = Column(Boolean, default=False)
+    resolved = Column(Boolean, default=False)
+    resolved_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, server_default=func.now())

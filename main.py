@@ -1,7 +1,9 @@
 import os
 import json
 import logging
+import threading
 from contextlib import asynccontextmanager
+from datetime import datetime
 from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -15,7 +17,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from jose import JWTError, jwt
 from config import limiter, settings
 from database import Base, engine
-from modules.routers import auth_router, assets_router, alerts_router, plans_router, admin_router, search_router, reports_router
+from modules.routers import auth_router, assets_router, alerts_router, plans_router, admin_router, search_router, reports_router, scan_router, batch_router
 from models.user import User
 
 os.makedirs("uploads", exist_ok=True)
@@ -90,6 +92,8 @@ async def lifespan(app: FastAPI):
         ("users", "notify_low", "BOOLEAN DEFAULT false"),
         ("users", "notify_email", "BOOLEAN DEFAULT true"),
         ("users", "dark_mode", "BOOLEAN DEFAULT false"),
+        ("breach_alerts", "resolved", "BOOLEAN DEFAULT false"),
+        ("breach_alerts", "resolved_at", "TIMESTAMP"),
     ]
     if is_sqlite:
         type_map = {"BOOLEAN DEFAULT true": "INTEGER DEFAULT 1", "BOOLEAN DEFAULT false": "INTEGER DEFAULT 0"}
@@ -172,6 +176,20 @@ async def lifespan(app: FastAPI):
         db.close()
     except Exception as e:
         logger.warning("Could not seed data: %s", e)
+    # Start scheduler
+    scheduler_thread = None
+    try:
+        if settings.ENVIRONMENT == "production":
+            from apscheduler.schedulers.background import BackgroundScheduler
+            from modules.scheduler import run_scheduled_scan
+            sched = BackgroundScheduler()
+            interval = max(1, settings.ASSET_CHECK_INTERVAL_HOURS)
+            sched.add_job(run_scheduled_scan, 'interval', hours=interval, id='asset_scan', replace_existing=True)
+            sched.start()
+            logger.info("Scheduler started (interval=%dh)", interval)
+    except Exception as e:
+        logger.warning("Scheduler init error: %s", e)
+
     logger.info("Vulnify started (environment=%s)", settings.ENVIRONMENT)
     yield
     logger.info("Vulnify shutting down")
@@ -224,6 +242,8 @@ app.include_router(plans_router)
 app.include_router(admin_router)
 app.include_router(search_router)
 app.include_router(reports_router)
+app.include_router(scan_router)
+app.include_router(batch_router)
 
 templates = Jinja2Templates(directory="templates")
 

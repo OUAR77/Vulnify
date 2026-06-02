@@ -1,4 +1,6 @@
 import io
+import csv
+import json as json_lib
 import logging
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
@@ -108,4 +110,55 @@ th {{ background: #f4f4f4; }}
         content=pdf_bytes,
         media_type="application/pdf",
         headers={"Content-Disposition": f"attachment; filename=vulnify_report_{user.id}_{datetime.now().strftime('%Y%m%d')}.pdf"}
+    )
+
+
+@router.get("/reports/csv", description="Download alerts as CSV")
+def csv_report(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    alerts = db.query(BreachAlert).filter(
+        BreachAlert.user_id == user.id
+    ).order_by(desc(BreachAlert.created_at)).all()
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["ID", "Brecha", "Fecha Brecha", "Severidad", "Descripción", "Leída", "Resuelta", "Fecha Creación"])
+    for a in alerts:
+        writer.writerow([
+            a.id, a.breach_name, a.breach_date or "", a.severity,
+            a.description or "", "Sí" if a.read else "No",
+            "Sí" if a.resolved else "No",
+            str(a.created_at)[:19] if a.created_at else "",
+        ])
+
+    csv_bytes = output.getvalue().encode("utf-8-sig")
+    return Response(
+        content=csv_bytes,
+        media_type="text/csv; charset=utf-8",
+        headers={"Content-Disposition": f"attachment; filename=vulnify_alerts_{user.id}_{datetime.now().strftime('%Y%m%d')}.csv"}
+    )
+
+
+@router.get("/reports/json", description="Download alerts as JSON")
+def json_report(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    alerts = db.query(BreachAlert).filter(
+        BreachAlert.user_id == user.id
+    ).order_by(desc(BreachAlert.created_at)).all()
+
+    data = {
+        "generated_at": datetime.now().isoformat(),
+        "user": user.name,
+        "email": user.email,
+        "total_alerts": len(alerts),
+        "alerts": [{
+            "id": a.id, "breach_name": a.breach_name, "breach_date": a.breach_date,
+            "data_classes": a.data_classes, "severity": a.severity,
+            "description": a.description, "read": a.read, "resolved": a.resolved,
+            "created_at": str(a.created_at)[:19] if a.created_at else "",
+        } for a in alerts],
+    }
+
+    return Response(
+        content=json_lib.dumps(data, indent=2, ensure_ascii=False),
+        media_type="application/json",
+        headers={"Content-Disposition": f"attachment; filename=vulnify_alerts_{user.id}_{datetime.now().strftime('%Y%m%d')}.json"}
     )

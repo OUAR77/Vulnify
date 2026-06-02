@@ -5,3 +5,5 @@ from modules.routers.plans import router as plans_router
 from modules.routers.admin import router as admin_router
 from modules.routers.search import router as search_router
 from modules.routers.reports import router as reports_router
+from modules.routers.scan import router as scan_router
+from modules.routers.batch import router as batch_router

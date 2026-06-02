@@ -1,5 +1,6 @@
 import logging
-from fastapi import APIRouter, Depends, Query, Request
+from datetime import datetime
+from fastapi import APIRouter, Depends, Query, HTTPException, Request
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
 from database import get_db
@@ -44,7 +45,8 @@ def list_alerts(
         "items": [{
             "id": a.id, "breach_name": a.breach_name, "breach_date": a.breach_date,
             "data_classes": a.data_classes, "severity": a.severity,
-            "description": a.description, "read": a.read,
+            "description": a.description, "read": a.read, "resolved": a.resolved,
+            "resolved_at": str(a.resolved_at)[:19] if a.resolved_at else None,
             "asset_id": a.asset_id,
             "created_at": str(a.created_at)[:19]
         } for a in alerts]
@@ -66,6 +68,17 @@ def mark_all_read(user: User = Depends(get_current_user), db: Session = Depends(
     db.query(BreachAlert).filter(BreachAlert.user_id == user.id, BreachAlert.read == False).update({"read": True})
     db.commit()
     return {"ok": True}
+
+
+@router.put("/alerts/{alert_id}/resolve", description="Toggle alert resolved status")
+def toggle_resolve_alert(alert_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    a = db.query(BreachAlert).filter(BreachAlert.id == alert_id, BreachAlert.user_id == user.id).first()
+    if not a:
+        raise HTTPException(status_code=404, detail="Alerta no encontrada")
+    a.resolved = not a.resolved
+    a.resolved_at = datetime.now() if a.resolved else None
+    db.commit()
+    return {"ok": True, "resolved": a.resolved}
 
 
 @router.delete("/alerts/{alert_id}", description="Delete a single alert")
