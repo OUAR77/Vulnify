@@ -183,6 +183,35 @@
     try { return await resp.json(); } catch { return null; }
   }
 
+  function showTipsModal(asset, tips) {
+    const existing = document.getElementById('tips-modal');
+    if (existing) existing.remove();
+    const overlay = document.createElement('div');
+    overlay.id = 'tips-modal';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px';
+    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+    overlay.innerHTML = `
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;max-width:520px;width:100%;max-height:80vh;overflow-y:auto">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:1.3rem">💡</span>
+            <strong style="font-size:1rem">Consejos para ${asset}</strong>
+          </div>
+          <button onclick="this.closest('#tips-modal').remove()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--text-tertiary)">×</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          ${tips.map((t, i) => `
+            <div class="check-item" style="display:flex;align-items:start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.85rem">
+              <span style="color:var(--accent);font-weight:600;flex-shrink:0;font-size:0.8rem">${i + 1}.</span>
+              <span style="color:var(--text-secondary);font-size:0.8rem">${t}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+  }
+
   async function loadDashboard() {
     const token = getToken();
     if (!token) {
@@ -245,6 +274,9 @@
                 toast(`Se encontraron ${result.breaches_found} filtración(es)`, '');
               } else {
                 toast('Sin filtraciones detectadas', 'success');
+              }
+              if (result.security_tips && result.security_tips.length) {
+                showTipsModal(result.asset, result.security_tips);
               }
             }
             loadAssets();

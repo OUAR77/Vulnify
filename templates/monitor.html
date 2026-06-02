@@ -92,8 +92,11 @@
 
     <div class="search-section">
       <div class="type-toggle">
-        <button class="type-btn active" data-type="domain">Dominio</button>
-        <button class="type-btn" data-type="email">Email</button>
+        <button class="type-btn active" data-type="domain">🌐 Dominio</button>
+        <button class="type-btn" data-type="email">📧 Email</button>
+        <button class="type-btn" data-type="ip">📡 IP</button>
+        <button class="type-btn" data-type="phone">📱 Teléfono</button>
+        <button class="type-btn" data-type="username">👤 Usuario</button>
       </div>
       <div class="two-col" style="grid-template-columns:1fr auto;gap:8px">
         <input type="text" id="asset-input" placeholder="ejemplo.com" autocomplete="off" spellcheck="false" style="padding:14px 18px;font-size:1rem">
@@ -128,7 +131,8 @@
       document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       assetType = btn.dataset.type;
-      document.getElementById('asset-input').placeholder = assetType === 'domain' ? 'ejemplo.com' : 'email@ejemplo.com';
+      const placeholders = { domain: 'ejemplo.com', email: 'email@ejemplo.com', ip: '192.168.1.1', phone: '+34600123456', username: 'usuario' };
+      document.getElementById('asset-input').placeholder = placeholders[assetType] || 'valor';
     });
   });
 
@@ -187,6 +191,26 @@
     document.getElementById('check-btn').disabled = false;
   }
 
+  function renderTips(tips) {
+    if (!tips || !tips.length) return '';
+    return `
+      <div class="card" style="margin-bottom:16px;padding:20px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <span style="font-size:1.2rem">💡</span>
+          <strong style="font-size:0.9rem">Consejos de seguridad</strong>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          ${tips.map((t, i) => `
+            <div class="check-item">
+              <span class="icon" style="color:var(--accent);font-size:0.8rem">${i + 1}.</span>
+              <span class="desc">${t}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
   function showResults(data, value) {
     document.getElementById('results').style.display = 'block';
 
@@ -197,6 +221,7 @@
           <h3>No se encontraron filtraciones</h3>
           <p>${value} no aparece en ninguna brecha de datos conocida. Sigue monitorizándolo para mantenerte protegido.</p>
         </div>
+        ${renderTips(data.security_tips)}
       `;
       document.getElementById('result-breaches').innerHTML = '';
       return;
@@ -215,7 +240,7 @@
       </div>
     `;
 
-    document.getElementById('result-breaches').innerHTML = data.breaches.map(b => `
+    document.getElementById('result-breaches').innerHTML = renderTips(data.security_tips) + data.breaches.map(b => `
       <div class="breach-item">
         <div class="breach-name">${b.breach_name}</div>
         <div class="breach-date">${b.breach_date || 'Fecha desconocida'} · <span class="sev-badge ${b.severity}">${b.severity}</span> · <span style="color:var(--text-tertiary);font-size:0.75rem">confianza: ${b.confidence || 'media'}</span></div>
