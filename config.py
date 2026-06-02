@@ -28,6 +28,7 @@ class Settings:
     SENDGRID_API_KEY: str = os.getenv("SENDGRID_API_KEY", "")
     SITE_URL: str = os.getenv("SITE_URL", "https://vulnify.es")
     HIBP_API_KEY: str = os.getenv("HIBP_API_KEY", "")
+    GITHUB_TOKEN: str = os.getenv("GITHUB_TOKEN", "")
     SENTRY_DSN: str = os.getenv("SENTRY_DSN", "")
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
     OPENAI_BASE_URL: str = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
