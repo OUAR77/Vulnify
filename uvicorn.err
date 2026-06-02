@@ -1,0 +1,11 @@
+INFO:     Started server process [30508]
+INFO:     Waiting for application startup.
+2026-06-02 23:05:51,519 - vulnify - INFO - Creating tables with engine: sqlite:///./vulnify.db...
+2026-06-02 23:05:51,521 - vulnify - INFO - Tables created via metadata
+2026-06-02 23:05:51,531 - vulnify - INFO - Vulnify started (environment=development)
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2026-06-02 23:28:58,622 - stripe - INFO - message='Request to Stripe api' method=post url=https://api.stripe.com/v1/checkout/sessions
+2026-06-02 23:28:59,274 - stripe - INFO - message='Stripe API response' path=https://api.stripe.com/v1/checkout/sessions response_code=200
+2026-06-02 23:30:37,140 - stripe - INFO - message='Request to Stripe api' method=post url=https://api.stripe.com/v1/checkout/sessions
+2026-06-02 23:30:37,749 - stripe - INFO - message='Stripe API response' path=https://api.stripe.com/v1/checkout/sessions response_code=200

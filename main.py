@@ -70,61 +70,53 @@ async def lifespan(app: FastAPI):
     import models
     from models.plan import Plan
     from models.user import User
+    from database import SessionLocal
+    db = SessionLocal()
+    is_postgres = "postgres" in settings.DATABASE_URL
+    is_sqlite = "sqlite" in settings.DATABASE_URL
     try:
         logger.info("Creating tables with engine: %s", settings.DATABASE_URL[:30] + "...")
         Base.metadata.create_all(bind=engine)
         logger.info("Tables created via metadata")
     except Exception as e:
         logger.warning("Could not create tables: %s", str(e)[:200])
+    migrations = [
+        ("plans", "max_assets", "INTEGER DEFAULT 0"),
+        ("users", "totp_secret", "VARCHAR"),
+        ("users", "totp_enabled", "BOOLEAN DEFAULT false"),
+        ("users", "notify_critical", "BOOLEAN DEFAULT true"),
+        ("users", "notify_high", "BOOLEAN DEFAULT true"),
+        ("users", "notify_medium", "BOOLEAN DEFAULT true"),
+        ("users", "notify_low", "BOOLEAN DEFAULT false"),
+        ("users", "notify_email", "BOOLEAN DEFAULT true"),
+        ("users", "dark_mode", "BOOLEAN DEFAULT false"),
+    ]
+    if is_sqlite:
+        type_map = {"BOOLEAN DEFAULT true": "INTEGER DEFAULT 1", "BOOLEAN DEFAULT false": "INTEGER DEFAULT 0"}
+        mappings = []
+        for table, col, col_type in migrations:
+            col_type = type_map.get(col_type, col_type)
+            mappings.append((table, col, col_type))
+        for table, col, col_type in mappings:
+            try:
+                db.execute(text(f"ALTER TABLE {table} ADD COLUMN {col} {col_type}"))
+                db.commit()
+            except Exception:
+                db.rollback()
+    else:
+        for table, col, col_type in migrations:
+            try:
+                db.execute(text(f"ALTER TABLE {table} ADD COLUMN IF NOT EXISTS {col} {col_type}"))
+                db.commit()
+            except Exception:
+                try:
+                    db.rollback()
+                    db.execute(text(f"ALTER TABLE {table} ADD COLUMN {col} {col_type}"))
+                    db.commit()
+                except Exception:
+                    db.rollback()
     try:
-        from database import SessionLocal
         from modules.auth import hash_password
-        db = SessionLocal()
-        try:
-            db.execute(text("ALTER TABLE plans ADD COLUMN max_assets INTEGER DEFAULT 0"))
-            db.commit()
-        except Exception:
-            db.rollback()
-        try:
-            db.execute(text("ALTER TABLE users ADD COLUMN totp_secret VARCHAR"))
-            db.commit()
-        except Exception:
-            db.rollback()
-        try:
-            db.execute(text("ALTER TABLE users ADD COLUMN totp_enabled BOOLEAN DEFAULT 0"))
-            db.commit()
-        except Exception:
-            db.rollback()
-        try:
-            db.execute(text("ALTER TABLE users ADD COLUMN notify_critical BOOLEAN DEFAULT 1"))
-            db.commit()
-        except Exception:
-            db.rollback()
-        try:
-            db.execute(text("ALTER TABLE users ADD COLUMN notify_high BOOLEAN DEFAULT 1"))
-            db.commit()
-        except Exception:
-            db.rollback()
-        try:
-            db.execute(text("ALTER TABLE users ADD COLUMN notify_medium BOOLEAN DEFAULT 1"))
-            db.commit()
-        except Exception:
-            db.rollback()
-        try:
-            db.execute(text("ALTER TABLE users ADD COLUMN notify_low BOOLEAN DEFAULT 0"))
-            db.commit()
-        except Exception:
-            db.rollback()
-        try:
-            db.execute(text("ALTER TABLE users ADD COLUMN notify_email BOOLEAN DEFAULT 1"))
-            db.commit()
-        except Exception:
-            db.rollback()
-        try:
-            db.execute(text("ALTER TABLE users ADD COLUMN dark_mode BOOLEAN DEFAULT 0"))
-            db.commit()
-        except Exception:
-            db.rollback()
         if not db.query(Plan).first():
             plans = [
                 Plan(name="Gratis", description="Monitorización básica de brechas", price_monthly=0, price_yearly=0, max_assets=1, max_reports=-1, max_programs=0, features=["1 dominio o email", "Alertas por email", "Informe básico de brechas"], active=True),
