@@ -634,12 +634,58 @@ def correlate_email(email: str, breaches: list[dict]) -> dict:
     }
 
 
-# --- Simulated Dark Web / Paste Search ---
+# --- Dark Web / Paste Search ---
 
 PASTE_SITES = [
     "pastebin.com", "paste.ee", "rentry.co", "controlc.com",
     "pastie.org", "telegra.ph", "ghostbin.com", "dpaste.org",
 ]
+
+
+def search_ahmia(query: str) -> list[dict]:
+    results = []
+    try:
+        import re
+        sess = requests.Session()
+        sess.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101 Firefox/102.0"})
+
+        init = sess.get("https://ahmia.fi/search/", params={"q": ""}, timeout=10)
+        hidden_fields = re.findall(
+            r'<input[^>]*type="hidden"[^>]*name="([^"]*)"[^>]*value="([^"]*)"[^>]*>',
+            init.text,
+        )
+        params = {"q": query}
+        for name, value in hidden_fields:
+            params[name] = value
+
+        resp = sess.get("https://ahmia.fi/search/", params=params, timeout=10)
+        if resp.status_code == 200:
+            seen = set()
+            for match in re.finditer(
+                r'href="/search/redirect\?search_term=[^&]+&redirect_url=(http[^"]+)"[^>]*>.*?<cite>([^<]+)</cite>',
+                resp.text,
+                re.DOTALL,
+            ):
+                url = match.group(1)
+                cite = match.group(2).strip()
+                if cite in seen:
+                    continue
+                seen.add(cite)
+                results.append({
+                    "source": "ahmia",
+                    "title": cite,
+                    "url": url,
+                    "snippet": "",
+                    "found": True,
+                    "confidence": "medium",
+                    "checked_at": datetime.now().isoformat(),
+                })
+                if len(results) >= 10:
+                    break
+    except Exception as e:
+        logger.debug("Ahmia search error: %s", e)
+    return results
+
 
 def search_paste_sites(query: str) -> list[dict]:
     results = []
@@ -882,9 +928,11 @@ async def check_asset(asset_type: str, asset_value: str) -> dict:
     password_risk = None
     correlation = None
     paste_results = []
-    if asset_type == "email":
-        correlation = correlate_email(asset_value, breaches)
+    darkweb_results = []
+    if asset_type in ("email", "domain", "username"):
+        correlation = correlate_email(asset_value, breaches) if asset_type == "email" else None
         paste_results = search_paste_sites(asset_value)
+        darkweb_results = search_ahmia(asset_value)
 
     return {
         "asset": asset_value,
@@ -903,6 +951,7 @@ async def check_asset(asset_type: str, asset_value: str) -> dict:
             "typosquatting": typos if typos["count"] > 0 else None,
             "github_leaks": {"found": len(github), "results": github} if github else None,
             "paste_sites": {"found": len(paste_results), "results": paste_results} if paste_results else None,
+            "darkweb": {"found": len(darkweb_results), "results": darkweb_results} if darkweb_results else None,
             "password_compromised": password_risk,
             "correlation": correlation,
         }
