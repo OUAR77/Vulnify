@@ -7,6 +7,7 @@ import logging
 from datetime import datetime
 from urllib.parse import urlparse
 from config import settings
+from modules.port_scanner import scan_host
 
 logger = logging.getLogger("vulnify.intel")
 
@@ -906,11 +907,16 @@ async def check_asset(asset_type: str, asset_value: str) -> dict:
         dns_info = check_dns(asset_value)
         typos = check_typosquat_domain(asset_value)
         github = search_github_leaks(asset_value)
+        try:
+            port_scan = await scan_host(asset_value, timeout=1.0)
+        except Exception as e:
+            port_scan = {"host": asset_value, "open_ports": 0, "error": str(e)[:60]}
     else:
         breaches = check_email_in_breaches(asset_value)
         dns_info = {}
         typos = {"active_typosquats": [], "count": 0}
         github = search_github_leaks(asset_value.split("@")[0] if "@" in asset_value else asset_value)
+        port_scan = None
 
     severity = "low"
     data_classes_seen = set()
@@ -952,6 +958,7 @@ async def check_asset(asset_type: str, asset_value: str) -> dict:
             "github_leaks": {"found": len(github), "results": github} if github else None,
             "paste_sites": {"found": len(paste_results), "results": paste_results} if paste_results else None,
             "darkweb": {"found": len(darkweb_results), "results": darkweb_results} if darkweb_results else None,
+            "port_scan": port_scan,
             "password_compromised": password_risk,
             "correlation": correlation,
         }
