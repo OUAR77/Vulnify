@@ -256,6 +256,9 @@
         ${intel.github_leaks ? `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px"><strong style="font-size:0.8rem">🔍 GitHub Leaks:</strong> ${intel.github_leaks.found} resultado(s) encontrados</div>` : ''}
         ${intel.typosquatting ? `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px"><strong style="font-size:0.8rem">🌐 Typosquatting:</strong> ${intel.typosquatting.count} dominio(s) activos</div>` : ''}
         ${intel.dns && intel.dns.has_mx !== undefined ? `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px"><strong style="font-size:0.8rem">📡 DNS:</strong> MX: ${intel.dns.has_mx ? '✅' : '❌'} · SPF: ${intel.dns.has_spf ? '✅' : '❌'} · DMARC: ${intel.dns.has_dmarc ? '✅' : '❌'}</div>` : ''}
+        ${intel.paste_sites ? `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px"><strong style="font-size:0.8rem">📋 Paste Sites:</strong> ${intel.paste_sites.found} resultado(s) en paste sites</div>` : ''}
+        ${intel.darkweb ? `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px"><strong style="font-size:0.8rem">🌑 Dark Web:</strong> ${intel.darkweb.found} resultado(s) en .onion${intel.darkweb.found > 0 ? `<div style="margin-top:6px;font-size:0.78rem;color:var(--text-tertiary)">${intel.darkweb.results.slice(0,5).map(r => r.title).join(', ')}</div>` : ''}</div>` : ''}
+        ${!intel.github_leaks && !intel.typosquatting && !(intel.dns && intel.dns.has_mx !== undefined) && !intel.paste_sites && !intel.darkweb ? '<div style="text-align:center;padding:12px;color:var(--text-tertiary);font-size:0.85rem">No se encontró inteligencia adicional</div>' : ''}
       </div>
     `;
     document.body.appendChild(overlay);

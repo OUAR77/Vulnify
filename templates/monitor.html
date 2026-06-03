@@ -215,12 +215,19 @@
     document.getElementById('results').style.display = 'block';
 
     if (data.safe) {
+      const intel = data.intel || {};
+      let intelSafe = '';
+      if (intel.github_leaks) intelSafe += `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin:8px 0"><strong style="font-size:0.8rem">🔍 GitHub Leaks:</strong> ${intel.github_leaks.found} resultado(s)</div>`;
+      if (intel.typosquatting) intelSafe += `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin:8px 0"><strong style="font-size:0.8rem">🌐 Typosquatting:</strong> ${intel.typosquatting.count} dominio(s) activos</div>`;
+      if (intel.paste_sites) intelSafe += `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin:8px 0"><strong style="font-size:0.8rem">📋 Paste Sites:</strong> ${intel.paste_sites.found} resultado(s)</div>`;
+      if (intel.darkweb) intelSafe += `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin:8px 0"><strong style="font-size:0.8rem">🌑 Dark Web:</strong> ${intel.darkweb.found} resultado(s) en .onion${intel.darkweb.found > 0 ? `<div style="margin-top:6px;font-size:0.78rem;color:var(--text-tertiary)">${intel.darkweb.results.slice(0,5).map(r => r.title).join(', ')}</div>` : ''}</div>`;
       document.getElementById('result-summary').innerHTML = `
         <div class="clean-result">
           <div class="icon">🛡️</div>
           <h3>No se encontraron filtraciones</h3>
           <p>${value} no aparece en ninguna brecha de datos conocida. Sigue monitorizándolo para mantenerte protegido.</p>
         </div>
+        ${intelSafe ? `<div style="margin-top:16px;border-top:1px solid var(--border);padding-top:12px"><strong style="font-size:0.8rem;color:var(--text-secondary)">🧠 Inteligencia adicional</strong>${intelSafe}</div>` : ''}
         ${renderTips(data.security_tips)}
       `;
       document.getElementById('result-breaches').innerHTML = '';
@@ -240,7 +247,14 @@
       </div>
     `;
 
-    document.getElementById('result-breaches').innerHTML = renderTips(data.security_tips) + data.breaches.map(b => `
+    const intel = data.intel || {};
+    let intelHtml = '';
+    if (intel.github_leaks) intelHtml += `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin:8px 0"><strong style="font-size:0.8rem">🔍 GitHub Leaks:</strong> ${intel.github_leaks.found} resultado(s)</div>`;
+    if (intel.typosquatting) intelHtml += `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin:8px 0"><strong style="font-size:0.8rem">🌐 Typosquatting:</strong> ${intel.typosquatting.count} dominio(s) activos</div>`;
+    if (intel.paste_sites) intelHtml += `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin:8px 0"><strong style="font-size:0.8rem">📋 Paste Sites:</strong> ${intel.paste_sites.found} resultado(s)</div>`;
+    if (intel.darkweb) intelHtml += `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin:8px 0"><strong style="font-size:0.8rem">🌑 Dark Web:</strong> ${intel.darkweb.found} resultado(s) en .onion${intel.darkweb.found > 0 ? `<div style="margin-top:6px;font-size:0.78rem;color:var(--text-tertiary)">${intel.darkweb.results.slice(0,5).map(r => r.title).join(', ')}</div>` : ''}</div>`;
+
+    document.getElementById('result-breaches').innerHTML = renderTips(data.security_tips) + (intelHtml ? `<div style="margin-top:16px;border-top:1px solid var(--border);padding-top:12px"><strong style="font-size:0.8rem;color:var(--text-secondary)">🧠 Inteligencia adicional</strong>${intelHtml}</div>` : '') + data.breaches.map(b => `
       <div class="breach-item">
         <div class="breach-name">${b.breach_name}</div>
         <div class="breach-date">${b.breach_date || 'Fecha desconocida'} · <span class="sev-badge ${b.severity}">${b.severity}</span> · <span style="color:var(--text-tertiary);font-size:0.75rem">confianza: ${b.confidence || 'media'}</span></div>
