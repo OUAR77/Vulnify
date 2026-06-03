@@ -165,6 +165,11 @@
         <div id="dns-result" class="card" style="padding:16px"></div>
       </div>
 
+      <div class="section" style="margin-top:24px">
+        <h2 class="section-label" style="margin-bottom:12px">Puertos abiertos</h2>
+        <div id="ports-result" class="card" style="padding:16px"></div>
+      </div>
+
       <div style="text-align:center;margin-top:24px">
         <button class="btn btn-accent" id="btn-pdf">Descargar informe PDF</button>
       </div>
@@ -233,32 +238,72 @@
   function showResults(data) {
     document.getElementById('results').style.display = 'block';
 
-    document.getElementById('score-general').textContent = data.scores.general;
-    document.getElementById('score-ssl').textContent = data.scores.ssl;
-    document.getElementById('score-headers').textContent = data.scores.headers;
+    document.getElementById('score-general').textContent = data.score;
+    document.getElementById('score-ssl').textContent = data.ssl?.valid ? '✓' : '✗';
+    document.getElementById('score-headers').textContent = data.headers?.error ? '✗' : '✓';
     document.getElementById('issues-count').textContent = data.issues.length;
 
     if (data.issues.length) {
       document.getElementById('issues-section').style.display = 'block';
       document.getElementById('issues-list').innerHTML = data.issues.map(i =>
-        `<div class="issue ${i.severity}"><span class="sev">${i.severity}</span> ${i.text}</div>`
+        `<div class="issue high"><span class="sev">⚠</span> ${i}</div>`
       ).join('');
     } else {
       document.getElementById('issues-section').style.display = 'none';
     }
 
     const ssl = data.ssl;
-    document.getElementById('ssl-result').innerHTML = ssl.valid
-      ? `<div class="check-item"><span class="icon" style="color:#22c55e">✓</span><div><span class="name">Válido</span><div class="desc">${ssl.daysLeft} días restantes · Emisor: ${ssl.issuer}</div></div></div>`
-      : `<div class="check-item"><span class="icon" style="color:#ef4444">✗</span><div><span class="name">Error</span><div class="desc">${ssl.error || 'No válido'}</div></div></div>`;
+    if (ssl) {
+      if (ssl.valid) {
+        const issuer = ssl.issuer || 'Desconocido';
+        const version = ssl.version || '';
+        document.getElementById('ssl-result').innerHTML = `<div class="check-item"><span class="icon" style="color:#22c55e">✓</span><div><span class="name">Válido (${version})</span><div class="desc">Emisor: ${issuer} · Vence: ${ssl.expiry || 'N/A'}</div></div></div>`;
+      } else {
+        document.getElementById('ssl-result').innerHTML = `<div class="check-item"><span class="icon" style="color:#ef4444">✗</span><div><span class="name">Error</span><div class="desc">${ssl.error || 'No válido'}</div></div></div>`;
+      }
+    }
 
-    document.getElementById('headers-result').innerHTML = data.headers.map(h =>
-      `<div class="check-item"><span class="icon" style="color:${h.status === 'ok' ? '#22c55e' : h.status === 'warn' ? '#eab308' : '#ef4444'}">${h.status === 'ok' ? '✓' : h.status === 'warn' ? '⚠' : '✗'}</span><div><span class="name">${h.name}</span><div class="desc">${h.desc}</div></div></div>`
-    ).join('');
+    const h = data.headers;
+    if (h && !h.error) {
+      const checks = [
+        { name: 'Content-Security-Policy', value: h.csp, ok: h.csp !== 'No configurado' },
+        { name: 'Strict-Transport-Security', value: h.hsts, ok: h.hsts !== 'No configurado' },
+        { name: 'X-Frame-Options', value: h.xframe, ok: h.xframe !== 'No configurado' },
+        { name: 'X-Content-Type-Options', value: h.xcontent, ok: h.xcontent !== 'No configurado' },
+        { name: 'Referrer-Policy', value: h.referrer, ok: h.referrer !== 'No configurado' },
+      ];
+      document.getElementById('headers-result').innerHTML = checks.map(c =>
+        `<div class="check-item"><span class="icon" style="color:${c.ok ? '#22c55e' : '#eab308'}">${c.ok ? '✓' : '⚠'}</span><div><span class="name">${c.name}</span><div class="desc">${c.value || 'No configurado'}</div></div></div>`
+      ).join('');
+    } else if (h) {
+      document.getElementById('headers-result').innerHTML = `<div class="check-item"><span class="icon" style="color:#ef4444">✗</span><div><span class="name">Error</span><div class="desc">${h.error}</div></div></div>`;
+    }
 
-    document.getElementById('dns-result').innerHTML = data.dns.map(d =>
-      `<div class="check-item"><span class="icon" style="color:${d.status === 'ok' ? '#22c55e' : '#eab308'}">${d.status === 'ok' ? '✓' : '⚠'}</span><div><span class="name">${d.type}</span><div class="desc">${d.value}</div></div></div>`
-    ).join('');
+    const dns = data.dns;
+    if (dns && !dns.error) {
+      const rows = [];
+      if (dns.a?.length) rows.push({ type: 'A', value: dns.a.join(', '), ok: true });
+      if (dns.mx?.length) rows.push({ type: 'MX', value: dns.mx.join(', '), ok: true });
+      if (dns.ns?.length) rows.push({ type: 'NS', value: dns.ns.join(', '), ok: true });
+      if (dns.txt?.length) rows.push({ type: 'TXT', value: dns.txt.slice(0, 3).join(', '), ok: true });
+      document.getElementById('dns-result').innerHTML = rows.length
+        ? rows.map(r => `<div class="check-item"><span class="icon" style="color:#22c55e">✓</span><div><span class="name">${r.type}</span><div class="desc">${r.value}</div></div></div>`).join('')
+        : '<div class="check-item"><span class="icon" style="color:#eab308">⚠</span><div><span class="name">Sin registros</span></div></div>';
+    } else if (dns) {
+      document.getElementById('dns-result').innerHTML = `<div class="check-item"><span class="icon" style="color:#eab308">⚠</span><div><span class="name">Error</span><div class="desc">${dns.error}</div></div></div>`;
+    }
+
+    const ports = data.ports;
+    if (ports) {
+      if (ports.open_ports > 0) {
+        const rows = ports.ports.map(p =>
+          `<div class="check-item"><span class="icon" style="color:${p.dangerous ? '#ef4444' : '#22c55e'}">${p.dangerous ? '⚠' : '✓'}</span><div><span class="name">Puerto ${p.port}</span><div class="desc">${p.service} ${p.dangerous ? '(peligroso)' : ''}</div></div></div>`
+        ).join('');
+        document.getElementById('ports-result').innerHTML = `<div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:8px">${ports.open_ports} puertos abiertos · ${ports.dangerous_open} peligrosos</div>${rows}`;
+      } else {
+        document.getElementById('ports-result').innerHTML = '<div class="check-item"><span class="icon" style="color:#22c55e">✓</span><div><span class="name">Ningún puerto crítico abierto</span></div></div>';
+      }
+    }
 
     window.scrollTo({ top: document.getElementById('results').offsetTop - 80, behavior: 'smooth' });
   }
