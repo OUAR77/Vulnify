@@ -116,16 +116,18 @@ async def scan_domain(request: Request):
         results["dns"] = dns_info
 
     # Port scan
+    port_result = {"host": domain, "open_ports": 0, "dangerous_open": 0, "ports": [], "issues": [], "error": None}
     try:
         port_result = await scan_host(domain)
-        results["ports"] = port_result
-        if port_result["dangerous_open"] > 0:
-            results["issues"].append(f"Puertos peligrosos abiertos: {port_result['dangerous_open']}")
-            results["score"] -= port_result["dangerous_open"] * 5
-        if port_result["open_ports"] > 10:
-            results["score"] -= 5
     except Exception as e:
+        port_result["error"] = str(e)[:80]
         logger.debug("Port scan error for %s: %s", domain, e)
+    results["ports"] = port_result
+    if port_result.get("dangerous_open", 0) > 0:
+        results["issues"].append(f"Puertos peligrosos abiertos: {port_result['dangerous_open']}")
+        results["score"] -= port_result["dangerous_open"] * 5
+    if port_result.get("open_ports", 0) > 10:
+        results["score"] -= 5
 
     results["score"] = max(0, results["score"])
     results["grade"] = "A" if results["score"] >= 90 else "B" if results["score"] >= 70 else "C" if results["score"] >= 50 else "D" if results["score"] >= 30 else "F"

@@ -293,16 +293,16 @@
       document.getElementById('dns-result').innerHTML = `<div class="check-item"><span class="icon" style="color:#eab308">⚠</span><div><span class="name">Error</span><div class="desc">${dns.error}</div></div></div>`;
     }
 
-    const ports = data.ports;
-    if (ports) {
-      if (ports.open_ports > 0) {
-        const rows = ports.ports.map(p =>
-          `<div class="check-item"><span class="icon" style="color:${p.dangerous ? '#ef4444' : '#22c55e'}">${p.dangerous ? '⚠' : '✓'}</span><div><span class="name">Puerto ${p.port}</span><div class="desc">${p.service} ${p.dangerous ? '(peligroso)' : ''}</div></div></div>`
-        ).join('');
-        document.getElementById('ports-result').innerHTML = `<div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:8px">${ports.open_ports} puertos abiertos · ${ports.dangerous_open} peligrosos</div>${rows}`;
-      } else {
-        document.getElementById('ports-result').innerHTML = '<div class="check-item"><span class="icon" style="color:#22c55e">✓</span><div><span class="name">Ningún puerto crítico abierto</span></div></div>';
-      }
+    const ports = data.ports || {};
+    if (ports.error) {
+      document.getElementById('ports-result').innerHTML = `<div class="check-item"><span class="icon" style="color:#eab308">⚠</span><div><span class="name">No se pudo escanear</span><div class="desc">${ports.error}</div></div></div>`;
+    } else if (ports.open_ports > 0) {
+      const rows = ports.ports.map(p =>
+        `<div class="check-item"><span class="icon" style="color:${p.dangerous ? '#ef4444' : '#22c55e'}">${p.dangerous ? '⚠' : '✓'}</span><div><span class="name">Puerto ${p.port}</span><div class="desc">${p.service} ${p.dangerous ? '(peligroso)' : ''}</div></div></div>`
+      ).join('');
+      document.getElementById('ports-result').innerHTML = `<div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:8px">${ports.open_ports} puertos abiertos · ${ports.dangerous_open} peligrosos</div>${rows}`;
+    } else {
+      document.getElementById('ports-result').innerHTML = '<div class="check-item"><span class="icon" style="color:#22c55e">✓</span><div><span class="name">Ningún puerto crítico abierto</span></div></div>';
     }
 
     window.scrollTo({ top: document.getElementById('results').offsetTop - 80, behavior: 'smooth' });
