@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{% block description %}Vulnify — Monitorización de reputación online y dark web.{% endblock %}">
+  <title>{% block title %}Vulnify{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/css/styles.css">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  {% block header %}
+  <header class="header" id="header">
+    <nav class="header-nav">
+      <a href="/#01">01</a>
+      <a href="/#02">02</a>
+      <a href="/#03">03</a>
+      <a href="/precios">04</a>
+    </nav>
+    <a href="/" class="header-center">Vulnify</a>
+    <div class="header-actions">
+      <div id="headerAuth">
+        <a href="/login" class="btn-ghost">Iniciar sesión</a>
+        <a href="/register" class="btn-primary">Registrarse</a>
+      </div>
+      <div id="headerUser">
+        <span id="headerUserName"></span>
+        <button onclick="logout()">Salir</button>
+      </div>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menú">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="/#01" onclick="closeMobileMenu()">01 — Monitoreo</a>
+    <a href="/#02" onclick="closeMobileMenu()">02 — Dark web</a>
+    <a href="/#03" onclick="closeMobileMenu()">03 — Alertas</a>
+    <a href="/precios" onclick="closeMobileMenu()">04 — Planes</a>
+    <a href="/contacto" onclick="closeMobileMenu()">Contacto</a>
+    <div id="mobileAuth" class="mobile-auth">
+      <a href="/login" style="color:#e8e5e0;font-weight:700">Iniciar sesión</a>
+      <a href="/register" style="color:#d4a853">Registrarse</a>
+    </div>
+    <div id="mobileUser" class="mobile-user">
+      <a href="/dashboard" id="mobileUserName" style="color:#e8e5e0;font-weight:700">Dashboard</a>
+      <button onclick="logout();closeMobileMenu()" style="background:none;border:none;color:#d4a853;font-size:1rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:left;padding:0">Salir</button>
+    </div>
+  </div>
+  {% endblock %}
+
+  {% block content %}{% endblock %}
+
+  <div id="toast" class="toast"></div>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+
+  {% block footer %}
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>© 2026 Vulnify</span>
+      <a href="/privacidad">Privacidad</a>
+      <a href="/terminos">Términos</a>
+      <a href="/contacto">Contacto</a>
+      <a href="/sobre-nosotros">Sobre nosotros</a>
+    </div>
+  </footer>
+  {% endblock %}
+
+  <script src="/static/js/script.js"></script>
+  {% block scripts %}{% endblock %}
+  <script>
+    var header = document.getElementById('header');
+    if (header) {
+      window.addEventListener('scroll', function() {
+        header.classList.toggle('scrolled', window.scrollY > 50);
+      });
+    }
+    var menuToggle = document.getElementById('menuToggle');
+    var mobileMenu = document.getElementById('mobileMenu');
+    if (menuToggle) {
+      menuToggle.addEventListener('click', function() {
+        menuToggle.classList.toggle('open');
+        mobileMenu.classList.toggle('open');
+        document.body.classList.toggle('menu-open');
+      });
+    }
+  </script>
+</body>
+</html>

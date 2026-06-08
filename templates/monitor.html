@@ -1,16 +1,8 @@
-<!DOCTYPE html>
-<html lang="es" data-theme="dark">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Monitorización de reputación online de Vulnify. Comprueba si tu dominio o email aparece en filtraciones de datos.">
-  <title>Monitor de reputación — Vulnify</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/static/css/styles.css">
-  <style>
+{% extends "base.html" %}
+{% block description %}Monitorización de reputación online de Vulnify. Comprueba si tu dominio o email aparece en filtraciones de datos.{% endblock %}
+{% block title %}Monitor de reputación — Vulnify{% endblock %}
+{% block head %}
+<style>
     .inline-alert {
       padding: 12px 16px; border-radius: var(--radius-md); margin-bottom: 16px;
       font-size: 0.85rem; display: none;
@@ -39,49 +31,9 @@
     .clean-result .icon { font-size: 3rem; margin-bottom: 12px; }
     .clean-result h3 { font-family: var(--font-sans); font-size: 1.1rem; margin-bottom: 6px; }
     .clean-result p { color: var(--text-secondary); font-size: 0.85rem; }
-  </style>
-</head>
-<body>
-
-<header class="header" id="header">
-  <div class="container">
-    <div class="header-inner">
-      <a href="/" class="logo">Vulnify<span>.</span></a>
-      <nav class="nav">
-        <a href="/monitor" class="nav-link active">Monitor</a>
-        <a href="/precios" class="nav-link">Precios</a>
-        <a href="/dashboard" class="nav-link">Dashboard</a>
-      </nav>
-      <div class="header-actions">
-        <button class="hamburger" id="hamburger" aria-label="Menú">
-          <span></span><span></span><span></span>
-        </button>
-        <div id="headerAuth">
-          <a href="/login" class="btn btn-ghost btn-sm">Iniciar sesión</a>
-          <a href="/register" class="btn btn-primary btn-sm">Registrarse</a>
-        </div>
-        <div id="headerUser" style="display:none;align-items:center;gap:8px">
-          <span class="user-name" id="headerUserName" style="font-size:0.85rem;color:var(--text-secondary);font-weight:600"></span>
-          <button class="btn btn-ghost btn-sm" onclick="logout()">Salir</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="mobile-menu" id="mobile-menu">
-    <a href="/monitor" class="nav-link">Monitor</a>
-    <a href="/precios" class="nav-link">Precios</a>
-    <a href="/dashboard" class="nav-link">Dashboard</a>
-    <div id="mobileAuth" class="header-actions-mobile">
-      <a href="/login" class="btn btn-ghost">Iniciar sesión</a>
-      <a href="/register" class="btn btn-primary">Registrarse</a>
-    </div>
-    <div id="mobileUser" class="header-actions-mobile" style="display:none">
-      <a href="/dashboard" class="btn btn-ghost" id="mobileUserName" style="font-weight:600">Dashboard</a>
-      <button class="btn btn-ghost" onclick="logout()">Salir</button>
-    </div>
-  </div>
-</header>
-
+</style>
+{% endblock %}
+{% block content %}
 <section class="section" style="padding-top:100px">
   <div class="container">
     <div class="section-header centered">
@@ -122,7 +74,8 @@
     </div>
   </div>
 </section>
-
+{% endblock %}
+{% block scripts %}
 <script>
   let assetType = 'domain';
 
@@ -271,18 +224,6 @@
   document.getElementById('check-btn').addEventListener('click', check);
   document.getElementById('asset-input').addEventListener('keydown', e => { if (e.key === 'Enter') check(); });
 
-  const hamburger = document.getElementById('hamburger');
-  const mobileMenu = document.getElementById('mobile-menu');
-  if (hamburger) {
-    hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('open');
-      mobileMenu.classList.toggle('open');
-      document.body.classList.toggle('menu-open');
-    });
-  }
-
   renderRecent();
 </script>
-<script src="/static/js/script.js"></script>
-</body>
-</html>
+{% endblock %}

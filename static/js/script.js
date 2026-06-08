@@ -108,14 +108,14 @@ document.addEventListener('DOMContentLoaded', applyTheme);
 
 // MOBILE MENU
 function closeMobileMenu() {
-  const btn = document.querySelector('.hamburger');
+  const btn = document.querySelector('.hamburger') || document.querySelector('.menu-toggle');
   const menu = document.getElementById('mobileMenu');
   if (menu) menu.classList.remove('open');
   if (btn) btn.classList.remove('open');
   document.body.classList.remove('menu-open');
 }
 function toggleMobileMenu() {
-  const btn = document.querySelector('.hamburger');
+  const btn = document.querySelector('.hamburger') || document.querySelector('.menu-toggle');
   const menu = document.getElementById('mobileMenu');
   const header = document.querySelector('.header');
   if (!btn || !menu) return;

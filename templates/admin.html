@@ -1,15 +1,7 @@
-<!DOCTYPE html>
-<html lang="es" data-theme="dark">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin — Vulnify</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/static/css/styles.css">
-  <style>
+{% extends "base.html" %}
+{% block title %}Admin — Vulnify{% endblock %}
+{% block head %}
+<style>
     .admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
     .admin-header h1 { font-size: 1.5rem; font-family: var(--font-sans); }
     .admin-tabs { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
@@ -35,288 +27,239 @@
     .log-filter { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
     .log-filter select, .log-filter input { padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-card); color: var(--text); font-family: var(--font-sans); font-size: 0.8rem; }
     .log-filter select:focus, .log-filter input:focus { outline: none; border-color: var(--accent); }
-  </style>
-</head>
-<body>
-
-<header class="header" id="header">
-  <div class="container">
-    <div class="header-inner">
-      <a href="/" class="logo">Vulnify<span>.</span></a>
-      <nav class="nav">
-        <a href="/monitor" class="nav-link">Monitor</a>
-        <a href="/precios" class="nav-link">Precios</a>
-        <a href="/dashboard" class="nav-link">Dashboard</a>
-        <a href="/admin" class="nav-link active">Admin</a>
-      </nav>
-      <div class="header-actions">
-        <button class="hamburger" id="hamburger" aria-label="Menú">
-          <span></span><span></span><span></span>
-        </button>
-        <div id="headerAuth">
-          <a href="/login" class="btn btn-ghost btn-sm">Iniciar sesión</a>
-          <a href="/register" class="btn btn-primary btn-sm">Registrarse</a>
-        </div>
-        <div id="headerUser" style="display:none;align-items:center;gap:8px">
-          <span id="headerUserName" style="font-size:0.85rem;color:var(--text-secondary);font-weight:600"></span>
-          <button class="btn btn-ghost btn-sm" onclick="logout()">Salir</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="mobile-menu" id="mobile-menu">
-    <a href="/monitor" class="nav-link">Monitor</a>
-    <a href="/precios" class="nav-link">Precios</a>
-    <a href="/dashboard" class="nav-link">Dashboard</a>
-    <a href="/admin" class="nav-link">Admin</a>
-    <div id="mobileAuth" class="header-actions-mobile">
-      <a href="/login" class="btn btn-ghost">Iniciar sesión</a>
-      <a href="/register" class="btn btn-primary">Registrarse</a>
-    </div>
-    <div id="mobileUser" class="header-actions-mobile" style="display:none">
-      <a href="/dashboard" class="btn btn-ghost" id="mobileUserName" style="font-weight:600">Dashboard</a>
-      <button class="btn btn-ghost" onclick="logout()">Salir</button>
-    </div>
-  </div>
-</header>
-
+</style>
+{% endblock %}
+{% block content %}
 <section class="section" style="padding-top:100px">
-  <div class="container">
-    <div class="admin-header">
-      <h1>Panel de administración</h1>
-    </div>
-
-    <div id="error-msg" style="color:#ef4444;font-size:0.85rem;margin-bottom:12px;display:none"></div>
-    <div id="login-prompt" style="display:none;text-align:center;padding:60px 0">
-      <p style="color:var(--text-secondary);margin-bottom:16px">Inicia sesión como admin para acceder.</p>
-      <a href="/login" class="btn btn-accent">Iniciar sesión</a>
-    </div>
-
-    <div id="admin-content" style="display:none">
-      <div class="stat-cards" id="stats-cards"></div>
-
-      <div class="admin-tabs">
-        <button class="active" data-tab="users">Usuarios</button>
-        <button data-tab="logs">Activity Log</button>
-      </div>
-
-      <div id="tab-users">
-        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:20px">
-          <table class="user-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Email</th>
-                <th>Rol</th>
-                <th>Registro</th>
-                <th>Acción</th>
-              </tr>
-            </thead>
-            <tbody id="users-tbody"></tbody>
-          </table>
-          <div class="pagination" id="pagination"></div>
+    <div class="container">
+        <div class="admin-header">
+            <h1>Panel de administración</h1>
         </div>
-      </div>
 
-      <div id="tab-logs" style="display:none">
-        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:20px">
-          <div class="log-filter">
-            <select id="log-action-filter">
-              <option value="">Todas las acciones</option>
-            </select>
-            <button class="btn btn-primary btn-sm" onclick="loadLogs(1)">Filtrar</button>
-          </div>
-          <table class="log-table">
-            <thead>
-              <tr>
-                <th>Fecha</th>
-                <th>Acción</th>
-                <th>Email</th>
-                <th>Detalles</th>
-                <th>IP</th>
-              </tr>
-            </thead>
-            <tbody id="logs-tbody"></tbody>
-          </table>
-          <div class="pagination" id="log-pagination"></div>
+        <div id="error-msg" style="color:#ef4444;font-size:0.85rem;margin-bottom:12px;display:none"></div>
+        <div id="login-prompt" style="display:none;text-align:center;padding:60px 0">
+            <p style="color:var(--text-secondary);margin-bottom:16px">Inicia sesión como admin para acceder.</p>
+            <a href="/login" class="btn btn-accent">Iniciar sesión</a>
         </div>
-      </div>
+
+        <div id="admin-content" style="display:none">
+            <div class="stat-cards" id="stats-cards"></div>
+
+            <div class="admin-tabs">
+                <button class="active" data-tab="users">Usuarios</button>
+                <button data-tab="logs">Activity Log</button>
+            </div>
+
+            <div id="tab-users">
+                <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:20px">
+                    <table class="user-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Rol</th>
+                                <th>Registro</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-tbody"></tbody>
+                    </table>
+                    <div class="pagination" id="pagination"></div>
+                </div>
+            </div>
+
+            <div id="tab-logs" style="display:none">
+                <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:20px">
+                    <div class="log-filter">
+                        <select id="log-action-filter">
+                            <option value="">Todas las acciones</option>
+                        </select>
+                        <button class="btn btn-primary btn-sm" onclick="loadLogs(1)">Filtrar</button>
+                    </div>
+                    <table class="log-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Acción</th>
+                                <th>Email</th>
+                                <th>Detalles</th>
+                                <th>IP</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logs-tbody"></tbody>
+                    </table>
+                    <div class="pagination" id="log-pagination"></div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </section>
-
-<script src="/static/js/script.js"></script>
+{% endblock %}
+{% block scripts %}
 <script>
-  const TOKEN_KEY = 'vulnify_token';
+    const TOKEN_KEY = 'vulnify_token';
 
-  function getToken() { return localStorage.getItem(TOKEN_KEY); }
+    function getToken() { return localStorage.getItem(TOKEN_KEY); }
 
-  async function adminFetch(url, opts = {}) {
-    const token = getToken();
-    if (!token) return null;
-    try {
-      const resp = await fetch(url, {
-        ...opts,
-        headers: { ...(opts.headers||{}), 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
-      });
-      if (resp.status === 401) {
-        localStorage.removeItem(TOKEN_KEY);
-        window.location.href = '/login';
-        return null;
-      }
-      if (resp.status === 403) {
-        document.getElementById('admin-content').style.display = 'none';
-        document.getElementById('login-prompt').querySelector('p').textContent = 'No tienes permisos de administrador.';
-        document.getElementById('login-prompt').style.display = 'block';
-        return null;
-      }
-      return resp;
-    } catch {
-      return null;
+    async function adminFetch(url, opts = {}) {
+        const token = getToken();
+        if (!token) return null;
+        try {
+            const resp = await fetch(url, {
+                ...opts,
+                headers: { ...(opts.headers||{}), 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+            });
+            if (resp.status === 401) {
+                localStorage.removeItem(TOKEN_KEY);
+                window.location.href = '/login';
+                return null;
+            }
+            if (resp.status === 403) {
+                document.getElementById('admin-content').style.display = 'none';
+                document.getElementById('login-prompt').querySelector('p').textContent = 'No tienes permisos de administrador.';
+                document.getElementById('login-prompt').style.display = 'block';
+                return null;
+            }
+            return resp;
+        } catch {
+            return null;
+        }
     }
-  }
 
-  let currentPage = 1;
-  let logCurrentPage = 1;
+    let currentPage = 1;
+    let logCurrentPage = 1;
 
-  document.querySelectorAll('.admin-tabs button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.admin-tabs button').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('tab-users').style.display = 'none';
-      document.getElementById('tab-logs').style.display = 'none';
-      document.getElementById('tab-' + btn.dataset.tab).style.display = 'block';
-      if (btn.dataset.tab === 'logs') {
-        loadLogActions();
-        loadLogs(1);
-      }
+    document.querySelectorAll('.admin-tabs button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.admin-tabs button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tab-users').style.display = 'none';
+            document.getElementById('tab-logs').style.display = 'none';
+            document.getElementById('tab-' + btn.dataset.tab).style.display = 'block';
+            if (btn.dataset.tab === 'logs') {
+                loadLogActions();
+                loadLogs(1);
+            }
+        });
     });
-  });
 
-  async function loadAdmin() {
-    const token = getToken();
-    if (!token) {
-      document.getElementById('login-prompt').style.display = 'block';
-      return;
+    async function loadAdmin() {
+        const token = getToken();
+        if (!token) {
+            document.getElementById('login-prompt').style.display = 'block';
+            return;
+        }
+
+        const meResp = await adminFetch('/api/auth/me');
+        if (!meResp) return;
+        const me = await meResp.json();
+        if (!me || !me.id) { localStorage.removeItem(TOKEN_KEY); window.location.href = '/login'; return; }
+        if (me.role !== 'admin') {
+            document.getElementById('login-prompt').querySelector('p').textContent = 'No tienes permisos de administrador.';
+            document.getElementById('login-prompt').style.display = 'block';
+            return;
+        }
+
+        document.getElementById('admin-content').style.display = 'block';
+        loadStats();
+        loadUsers();
     }
 
-    const meResp = await adminFetch('/api/auth/me');
-    if (!meResp) return;
-    const me = await meResp.json();
-    if (!me || !me.id) { localStorage.removeItem(TOKEN_KEY); window.location.href = '/login'; return; }
-    if (me.role !== 'admin') {
-      document.getElementById('login-prompt').querySelector('p').textContent = 'No tienes permisos de administrador.';
-      document.getElementById('login-prompt').style.display = 'block';
-      return;
+    async function loadStats() {
+        const resp = await adminFetch('/api/admin/stats');
+        if (!resp) return;
+        const data = await resp.json();
+        document.getElementById('stats-cards').innerHTML = `
+            <div class="stat-card"><div class="num">${data.total_users}</div><div class="label">Usuarios</div></div>
+            <div class="stat-card"><div class="num">${data.total_assets}</div><div class="label">Activos</div></div>
+            <div class="stat-card"><div class="num">${data.total_alerts}</div><div class="label">Alertas</div></div>
+            <div class="stat-card"><div class="num">${data.total_logs || 0}</div><div class="label">Eventos</div></div>
+            <div class="stat-card"><div class="num">${data.assets_by_type.domain}</div><div class="label">Dominios</div></div>
+            <div class="stat-card"><div class="num">${data.assets_by_type.email}</div><div class="label">Emails</div></div>
+        `;
     }
 
-    document.getElementById('admin-content').style.display = 'block';
-    loadStats();
-    loadUsers();
-  }
+    async function loadUsers(page = 1) {
+        currentPage = page;
+        const resp = await adminFetch(`/api/admin/users?page=${page}&per_page=50`);
+        if (!resp) return;
+        const data = await resp.json();
+        const tbody = document.getElementById('users-tbody');
 
-  async function loadStats() {
-    const resp = await adminFetch('/api/admin/stats');
-    if (!resp) return;
-    const data = await resp.json();
-    document.getElementById('stats-cards').innerHTML = `
-      <div class="stat-card"><div class="num">${data.total_users}</div><div class="label">Usuarios</div></div>
-      <div class="stat-card"><div class="num">${data.total_assets}</div><div class="label">Activos</div></div>
-      <div class="stat-card"><div class="num">${data.total_alerts}</div><div class="label">Alertas</div></div>
-      <div class="stat-card"><div class="num">${data.total_logs || 0}</div><div class="label">Eventos</div></div>
-      <div class="stat-card"><div class="num">${data.assets_by_type.domain}</div><div class="label">Dominios</div></div>
-      <div class="stat-card"><div class="num">${data.assets_by_type.email}</div><div class="label">Emails</div></div>
-    `;
-  }
+        tbody.innerHTML = data.items.map(u => `
+            <tr>
+                <td style="color:var(--text-tertiary)">${u.id}</td>
+                <td><strong>${u.name}</strong></td>
+                <td>${u.email}</td>
+                <td><span class="role-badge ${u.role}">${u.role}</span></td>
+                <td style="color:var(--text-tertiary);font-size:0.8rem">${u.created_at || ''}</td>
+                <td>
+                    ${u.role !== 'admin' ? `<button class="btn btn-ghost btn-sm" onclick="deleteUser(${u.id})" style="color:#ef4444">Eliminar</button>` : '<span style="color:var(--text-tertiary);font-size:0.75rem">—</span>'}
+                </td>
+            </tr>
+        `).join('');
 
-  async function loadUsers(page = 1) {
-    currentPage = page;
-    const resp = await adminFetch(`/api/admin/users?page=${page}&per_page=50`);
-    if (!resp) return;
-    const data = await resp.json();
-    const tbody = document.getElementById('users-tbody');
-
-    tbody.innerHTML = data.items.map(u => `
-      <tr>
-        <td style="color:var(--text-tertiary)">${u.id}</td>
-        <td><strong>${u.name}</strong></td>
-        <td>${u.email}</td>
-        <td><span class="role-badge ${u.role}">${u.role}</span></td>
-        <td style="color:var(--text-tertiary);font-size:0.8rem">${u.created_at || ''}</td>
-        <td>
-          ${u.role !== 'admin' ? `<button class="btn btn-ghost btn-sm" onclick="deleteUser(${u.id})" style="color:#ef4444">Eliminar</button>` : '<span style="color:var(--text-tertiary);font-size:0.75rem">—</span>'}
-        </td>
-      </tr>
-    `).join('');
-
-    const totalPages = Math.ceil(data.total / 50);
-    const pag = document.getElementById('pagination');
-    pag.innerHTML = '';
-    if (totalPages > 1) {
-      pag.innerHTML += `<button onclick="loadUsers(${page - 1})" ${page <= 1 ? 'disabled' : ''}>← Anterior</button>`;
-      pag.innerHTML += `<span style="font-size:0.8rem;color:var(--text-tertiary);padding:6px">${page} / ${totalPages}</span>`;
-      pag.innerHTML += `<button onclick="loadUsers(${page + 1})" ${page >= totalPages ? 'disabled' : ''}>Siguiente →</button>`;
+        const totalPages = Math.ceil(data.total / 50);
+        const pag = document.getElementById('pagination');
+        pag.innerHTML = '';
+        if (totalPages > 1) {
+            pag.innerHTML += `<button onclick="loadUsers(${page - 1})" ${page <= 1 ? 'disabled' : ''}>← Anterior</button>`;
+            pag.innerHTML += `<span style="font-size:0.8rem;color:var(--text-tertiary);padding:6px">${page} / ${totalPages}</span>`;
+            pag.innerHTML += `<button onclick="loadUsers(${page + 1})" ${page >= totalPages ? 'disabled' : ''}>Siguiente →</button>`;
+        }
     }
-  }
 
-  async function deleteUser(userId) {
-    if (!confirm('¿Eliminar este usuario? También se borrarán sus activos y alertas.')) return;
-    const resp = await adminFetch(`/api/admin/users/${userId}`, { method: 'DELETE' });
-    if (resp && resp.ok) {
-      loadUsers(currentPage);
-      loadStats();
+    async function deleteUser(userId) {
+        if (!confirm('¿Eliminar este usuario? También se borrarán sus activos y alertas.')) return;
+        const resp = await adminFetch(`/api/admin/users/${userId}`, { method: 'DELETE' });
+        if (resp && resp.ok) {
+            loadUsers(currentPage);
+            loadStats();
+        }
     }
-  }
 
-  async function loadLogActions() {
-    const resp = await adminFetch('/api/admin/activity-actions');
-    if (!resp) return;
-    const actions = await resp.json();
-    const sel = document.getElementById('log-action-filter');
-    const current = sel.value;
-    sel.innerHTML = '<option value="">Todas las acciones</option>' + actions.map(a => `<option value="${a}">${a}</option>`).join('');
-    sel.value = current;
-  }
-
-  async function loadLogs(page = 1) {
-    logCurrentPage = page;
-    const action = document.getElementById('log-action-filter').value;
-    let url = `/api/admin/activity-logs?page=${page}&per_page=50`;
-    if (action) url += '&action=' + encodeURIComponent(action);
-    const resp = await adminFetch(url);
-    if (!resp) return;
-    const data = await resp.json();
-    const tbody = document.getElementById('logs-tbody');
-
-    tbody.innerHTML = data.items.map(l => {
-      const details = l.details ? Object.entries(l.details).map(([k, v]) => `${k}: ${v}`).join(', ') : '';
-      return `<tr>
-        <td style="color:var(--text-tertiary);font-size:0.8rem;white-space:nowrap">${l.created_at || ''}</td>
-        <td><span class="action-badge">${l.action}</span></td>
-        <td>${l.email || ''}</td>
-        <td style="font-size:0.8rem;color:var(--text-secondary);max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${details}">${details}</td>
-        <td style="color:var(--text-tertiary);font-size:0.75rem">${l.ip_address || ''}</td>
-      </tr>`;
-    }).join('');
-
-    const totalPages = Math.ceil(data.total / 50);
-    const pag = document.getElementById('log-pagination');
-    pag.innerHTML = '';
-    if (totalPages > 1) {
-      pag.innerHTML += `<button onclick="loadLogs(${page - 1})" ${page <= 1 ? 'disabled' : ''}>← Anterior</button>`;
-      pag.innerHTML += `<span style="font-size:0.8rem;color:var(--text-tertiary);padding:6px">${page} / ${totalPages}</span>`;
-      pag.innerHTML += `<button onclick="loadLogs(${page + 1})" ${page >= totalPages ? 'disabled' : ''}>Siguiente →</button>`;
+    async function loadLogActions() {
+        const resp = await adminFetch('/api/admin/activity-actions');
+        if (!resp) return;
+        const actions = await resp.json();
+        const sel = document.getElementById('log-action-filter');
+        const current = sel.value;
+        sel.innerHTML = '<option value="">Todas las acciones</option>' + actions.map(a => `<option value="${a}">${a}</option>`).join('');
+        sel.value = current;
     }
-  }
 
-  document.getElementById('hamburger')?.addEventListener('click', () => {
-    document.getElementById('hamburger')?.classList.toggle('open');
-    document.getElementById('mobile-menu')?.classList.toggle('open');
-    document.body.classList.toggle('menu-open');
-  });
+    async function loadLogs(page = 1) {
+        logCurrentPage = page;
+        const action = document.getElementById('log-action-filter').value;
+        let url = `/api/admin/activity-logs?page=${page}&per_page=50`;
+        if (action) url += '&action=' + encodeURIComponent(action);
+        const resp = await adminFetch(url);
+        if (!resp) return;
+        const data = await resp.json();
+        const tbody = document.getElementById('logs-tbody');
 
-  loadAdmin();
+        tbody.innerHTML = data.items.map(l => {
+            const details = l.details ? Object.entries(l.details).map(([k, v]) => `${k}: ${v}`).join(', ') : '';
+            return `<tr>
+                <td style="color:var(--text-tertiary);font-size:0.8rem;white-space:nowrap">${l.created_at || ''}</td>
+                <td><span class="action-badge">${l.action}</span></td>
+                <td>${l.email || ''}</td>
+                <td style="font-size:0.8rem;color:var(--text-secondary);max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${details}">${details}</td>
+                <td style="color:var(--text-tertiary);font-size:0.75rem">${l.ip_address || ''}</td>
+            </tr>`;
+        }).join('');
+
+        const totalPages = Math.ceil(data.total / 50);
+        const pag = document.getElementById('log-pagination');
+        pag.innerHTML = '';
+        if (totalPages > 1) {
+            pag.innerHTML += `<button onclick="loadLogs(${page - 1})" ${page <= 1 ? 'disabled' : ''}>← Anterior</button>`;
+            pag.innerHTML += `<span style="font-size:0.8rem;color:var(--text-tertiary);padding:6px">${page} / ${totalPages}</span>`;
+            pag.innerHTML += `<button onclick="loadLogs(${page + 1})" ${page >= totalPages ? 'disabled' : ''}>Siguiente →</button>`;
+        }
+    }
+
+    loadAdmin();
 </script>
-</body>
-</html>
+{% endblock %}

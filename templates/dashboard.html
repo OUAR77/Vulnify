@@ -1,15 +1,7 @@
-<!DOCTYPE html>
-<html lang="es" data-theme="dark">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard — Vulnify</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/static/css/styles.css">
-  <style>
+{% extends "base.html" %}
+{% block title %}Dashboard — Vulnify{% endblock %}
+{% block head %}
+<style>
     .asset-card {
       background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md);
       padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
@@ -23,8 +15,6 @@
     .asset-card .info .value { font-weight: 600; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .asset-card .info .meta { font-size: 0.75rem; color: var(--text-tertiary); }
     .asset-card .actions { display: flex; gap: 6px; flex-shrink: 0; }
-    .header-authed { display: flex; align-items: center; gap: 12px; }
-    .header-authed .user-name { font-size: 0.85rem; color: var(--text-secondary); }
     .add-asset-bar { display: flex; gap: 8px; margin-bottom: 24px; }
     .add-asset-bar select, .add-asset-bar input { flex: 1; }
     .add-asset-bar button { flex-shrink: 0; }
@@ -50,403 +40,356 @@
     .toast.open { opacity: 1; transform: translateX(-50%) translateY(0); }
     .toast.success { border-color: #22c55e; }
     .toast.error { border-color: #ef4444; }
-  </style>
-</head>
-<body>
-
-<header class="header" id="header">
-  <div class="container">
-    <div class="header-inner">
-      <a href="/" class="logo">Vulnify<span>.</span></a>
-      <nav class="nav">
-        <a href="/monitor" class="nav-link">Monitor</a>
-        <a href="/precios" class="nav-link">Precios</a>
-        <a href="/dashboard" class="nav-link active">Dashboard</a>
-      </nav>
-      <div class="header-actions">
-        <button class="hamburger" id="hamburger" aria-label="Menú">
-          <span></span><span></span><span></span>
-        </button>
-        <div class="header-authed" id="header-authed" style="display:none">
-          <span class="user-name" id="user-name"></span>
-          <button class="btn btn-ghost btn-sm" id="logout-btn">Salir</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="mobile-menu" id="mobile-menu">
-    <a href="/monitor" class="nav-link">Monitor</a>
-    <a href="/precios" class="nav-link">Precios</a>
-    <a href="/dashboard" class="nav-link">Dashboard</a>
-    <div class="header-actions-mobile">
-      <a href="/login" class="btn btn-ghost">Iniciar sesión</a>
-      <a href="/register" class="btn btn-primary">Registrarse</a>
-    </div>
-  </div>
-</header>
-
+</style>
+{% endblock %}
+{% block content %}
 <section class="section" style="padding-top:100px">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-label">Dashboard</div>
-      <h2 class="section-title">Panel de monitorización</h2>
-      <p class="section-sub">Gestiona tus activos monitorizados y revisa las alertas de brechas.</p>
-    </div>
-
-    <div id="login-prompt" style="display:none;text-align:center;padding:60px 0">
-      <p style="color:var(--text-secondary);margin-bottom:16px">Inicia sesión para ver tu panel de monitorización.</p>
-      <a href="/login" class="btn btn-accent">Iniciar sesión</a>
-    </div>
-
-    <div id="dashboard-content" style="display:none">
-      <div class="stats-grid" style="margin-bottom:32px">
-        <div class="stat-item"><div class="stat-value" id="stat-assets">0</div><div class="stat-label">Activos</div></div>
-        <div class="stat-item"><div class="stat-value" id="stat-active">0</div><div class="stat-label">Activos</div></div>
-        <div class="stat-item"><div class="stat-value" id="stat-alerts">0</div><div class="stat-label">Alertas</div></div>
-        <div class="stat-item"><div class="stat-value" id="stat-unread">0</div><div class="stat-label">Sin leer</div></div>
-      </div>
-
-      <div class="tabs">
-        <button class="tab active" data-tab="assets">Activos monitorizados</button>
-        <button class="tab" data-tab="alerts">Alertas <span id="alert-count-badge" class="stats-badge" style="display:none">0</span></button>
-      </div>
-
-      <div class="tab-pane active" id="tab-assets">
-        <div class="add-asset-bar">
-          <select id="new-asset-type">
-            <option value="domain">Dominio</option>
-            <option value="email">Email</option>
-          </select>
-          <input type="text" id="new-asset-value" placeholder="ejemplo.com">
-          <button class="btn btn-accent" id="add-asset-btn">Añadir</button>
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label">Dashboard</div>
+            <h2 class="section-title">Panel de monitorización</h2>
+            <p class="section-sub">Gestiona tus activos monitorizados y revisa las alertas de brechas.</p>
         </div>
-        <div id="assets-list">
-          <div class="empty-state">
-            <div class="icon">📡</div>
-            <h3>Aún no monitorizas ningún activo</h3>
-            <p>Añade un dominio o email para empezar a recibir alertas de filtraciones.</p>
-          </div>
-        </div>
-      </div>
 
-      <div class="tab-pane" id="tab-alerts">
-        <div id="alerts-list">
-          <div class="empty-state">
-            <div class="icon">🔔</div>
-            <h3>No hay alertas</h3>
-            <p>Las alertas de filtraciones aparecerán aquí cuando detectemos algo.</p>
-          </div>
+        <div id="login-prompt" style="display:none;text-align:center;padding:60px 0">
+            <p style="color:var(--text-secondary);margin-bottom:16px">Inicia sesión para ver tu panel de monitorización.</p>
+            <a href="/login" class="btn btn-accent">Iniciar sesión</a>
         </div>
-      </div>
+
+        <div id="dashboard-content" style="display:none">
+            <div class="stats-grid" style="margin-bottom:32px">
+                <div class="stat-item"><div class="stat-value" id="stat-assets">0</div><div class="stat-label">Activos</div></div>
+                <div class="stat-item"><div class="stat-value" id="stat-active">0</div><div class="stat-label">Activos</div></div>
+                <div class="stat-item"><div class="stat-value" id="stat-alerts">0</div><div class="stat-label">Alertas</div></div>
+                <div class="stat-item"><div class="stat-value" id="stat-unread">0</div><div class="stat-label">Sin leer</div></div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" data-tab="assets">Activos monitorizados</button>
+                <button class="tab" data-tab="alerts">Alertas <span id="alert-count-badge" class="stats-badge" style="display:none">0</span></button>
+            </div>
+
+            <div class="tab-pane active" id="tab-assets">
+                <div class="add-asset-bar">
+                    <select id="new-asset-type">
+                        <option value="domain">Dominio</option>
+                        <option value="email">Email</option>
+                    </select>
+                    <input type="text" id="new-asset-value" placeholder="ejemplo.com">
+                    <button class="btn btn-accent" id="add-asset-btn">Añadir</button>
+                </div>
+                <div id="assets-list">
+                    <div class="empty-state">
+                        <div class="icon">📡</div>
+                        <h3>Aún no monitorizas ningún activo</h3>
+                        <p>Añade un dominio o email para empezar a recibir alertas de filtraciones.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane" id="tab-alerts">
+                <div id="alerts-list">
+                    <div class="empty-state">
+                        <div class="icon">🔔</div>
+                        <h3>No hay alertas</h3>
+                        <p>Las alertas de filtraciones aparecerán aquí cuando detectemos algo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </section>
 
 <div id="toast" class="toast"></div>
-
+{% endblock %}
+{% block scripts %}
 <script>
-  const TOKEN_KEY = 'vulnify_token';
+    const TOKEN_KEY = 'vulnify_token';
 
-  function getToken() { return localStorage.getItem(TOKEN_KEY); }
+    function getToken() { return localStorage.getItem(TOKEN_KEY); }
 
-  async function fetchWithAuth(url, opts = {}) {
-    const token = getToken();
-    if (!token) return null;
-    try {
-      const resp = await fetch(url, {
-        ...opts,
-        headers: { ...(opts.headers||{}), 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
-      });
-      if (resp.status === 401) {
-        localStorage.removeItem(TOKEN_KEY);
-        window.location.href = '/login';
-        return null;
-      }
-      return resp;
-    } catch (e) {
-      toast('Error de conexión', 'error');
-      return null;
-    }
-  }
-
-  function toast(msg, type = '') {
-    const el = document.getElementById('toast');
-    if (!el) return;
-    el.textContent = msg;
-    el.className = 'toast ' + type;
-    el.classList.add('open');
-    setTimeout(() => el.classList.remove('open'), 3000);
-  }
-
-  async function safeJson(resp) {
-    if (!resp) return null;
-    try { return await resp.json(); } catch { return null; }
-  }
-
-  function showTipsModal(asset, tips) {
-    const existing = document.getElementById('tips-modal');
-    if (existing) existing.remove();
-    const overlay = document.createElement('div');
-    overlay.id = 'tips-modal';
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px';
-    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
-    overlay.innerHTML = `
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;max-width:520px;width:100%;max-height:80vh;overflow-y:auto">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-          <div style="display:flex;align-items:center;gap:8px">
-            <span style="font-size:1.3rem">💡</span>
-            <strong style="font-size:1rem">Consejos para ${asset}</strong>
-          </div>
-          <button onclick="this.closest('#tips-modal').remove()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--text-tertiary)">×</button>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          ${tips.map((t, i) => `
-            <div class="check-item" style="display:flex;align-items:start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.85rem">
-              <span style="color:var(--accent);font-weight:600;flex-shrink:0;font-size:0.8rem">${i + 1}.</span>
-              <span style="color:var(--text-secondary);font-size:0.8rem">${t}</span>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    `;
-    document.body.appendChild(overlay);
-  }
-
-  function showScanResultModal(result) {
-    const existing = document.getElementById('scan-modal');
-    if (existing) existing.remove();
-    const breaches = result.breaches || [];
-    const intel = result.intel || {};
-    const overlay = document.createElement('div');
-    overlay.id = 'scan-modal';
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px';
-    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
-    const severityIcon = result.severity === 'critical' ? '🚨' : result.severity === 'high' ? '⚠️' : result.severity === 'medium' ? '🔶' : '✅';
-    overlay.innerHTML = `
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;max-width:600px;width:100%;max-height:85vh;overflow-y:auto">
-        <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:16px">
-          <div>
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
-              <span style="font-size:1.5rem">${severityIcon}</span>
-              <strong style="font-size:1.1rem">${result.asset}</strong>
-              <span class="sev-badge ${result.severity}" style="font-size:10px">${result.severity}</span>
-            </div>
-            <div style="font-size:0.8rem;color:var(--text-tertiary)">
-              ${result.breaches_found} filtración(es) · Riesgo: ${result.risk_score}/100 · ${result.type}
-            </div>
-          </div>
-          <button onclick="this.closest('#scan-modal').remove()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--text-tertiary);flex-shrink:0">×</button>
-        </div>
-        ${breaches.length ? `
-        <div style="margin-bottom:16px">
-          <div style="font-size:0.8rem;font-weight:600;margin-bottom:8px;color:var(--text-secondary)">Datos expuestos: ${(result.data_classes_exposed || []).join(', ') || 'N/A'}</div>
-          ${breaches.map(b => `
-            <div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:6px">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">
-                <strong style="font-size:0.85rem">${b.breach_name}</strong>
-                <span class="sev-badge ${b.severity}" style="font-size:10px">${b.severity}</span>
-              </div>
-              <div style="font-size:0.75rem;color:var(--text-tertiary)">${b.breach_date || ''} · confianza: ${b.confidence || 'media'}</div>
-              <div style="font-size:0.78rem;color:var(--text-secondary);margin-top:4px">${b.description || ''}</div>
-              ${b.data_classes && b.data_classes.length ? `<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:6px">${b.data_classes.map(c => `<span style="font-size:10px;padding:2px 8px;border-radius:100px;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-tertiary)">${c}</span>`).join('')}</div>` : ''}
-            </div>
-          `).join('')}
-        </div>
-        ` : '<div style="text-align:center;padding:20px;color:var(--text-tertiary)">🛡️ Sin filtraciones detectadas</div>'}
-        ${intel.github_leaks ? `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px"><strong style="font-size:0.8rem">🔍 GitHub Leaks:</strong> ${intel.github_leaks.found} resultado(s) encontrados</div>` : ''}
-        ${intel.typosquatting ? `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px"><strong style="font-size:0.8rem">🌐 Typosquatting:</strong> ${intel.typosquatting.count} dominio(s) activos</div>` : ''}
-        ${intel.dns && intel.dns.has_mx !== undefined ? `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px"><strong style="font-size:0.8rem">📡 DNS:</strong> MX: ${intel.dns.has_mx ? '✅' : '❌'} · SPF: ${intel.dns.has_spf ? '✅' : '❌'} · DMARC: ${intel.dns.has_dmarc ? '✅' : '❌'}</div>` : ''}
-        ${intel.paste_sites ? `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px"><strong style="font-size:0.8rem">📋 Paste Sites:</strong> ${intel.paste_sites.found} resultado(s) en paste sites</div>` : ''}
-        ${intel.darkweb ? `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px"><strong style="font-size:0.8rem">🌑 Dark Web:</strong> ${intel.darkweb.found} resultado(s) en .onion${intel.darkweb.found > 0 ? `<div style="margin-top:6px;font-size:0.78rem;color:var(--text-tertiary)">${intel.darkweb.results.slice(0,5).map(r => r.title).join(', ')}</div>` : ''}</div>` : ''}
-        ${intel.port_scan ? `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px"><strong style="font-size:0.8rem">🔌 Puertos:</strong> ${intel.port_scan.open_ports} abiertos (${intel.port_scan.dangerous_open || 0} peligrosos)${intel.port_scan.error ? ` · <span style="color:#eab308">⚠ ${intel.port_scan.error}</span>` : intel.port_scan.open_ports > 0 ? `<div style="margin-top:4px;font-size:0.78rem;color:var(--text-tertiary)">${intel.port_scan.ports.slice(0,8).map(p => `${p.port}/${p.service}${p.dangerous ? ' ⚠' : ''}`).join(', ')}</div>` : ''}</div>` : ''}
-        ${!intel.github_leaks && !intel.typosquatting && !(intel.dns && intel.dns.has_mx !== undefined) && !intel.paste_sites && !intel.darkweb && !intel.port_scan ? '<div style="text-align:center;padding:12px;color:var(--text-tertiary);font-size:0.85rem">No se encontró inteligencia adicional</div>' : ''}
-      </div>
-    `;
-    document.body.appendChild(overlay);
-  }
-
-  async function loadDashboard() {
-    const token = getToken();
-    if (!token) {
-      document.getElementById('login-prompt').style.display = 'block';
-      return;
-    }
-
-    const meResp = await fetchWithAuth('/api/auth/me');
-    if (!meResp) return;
-    const me = await safeJson(meResp);
-    if (!me || !me.id) { localStorage.removeItem(TOKEN_KEY); window.location.href = '/login'; return; }
-    document.getElementById('user-name').textContent = me.name;
-    document.getElementById('header-authed').style.display = 'flex';
-    document.getElementById('dashboard-content').style.display = 'block';
-    document.getElementById('mobile-menu').querySelector('.header-actions-mobile').innerHTML =
-      `<a href="/dashboard" class="btn btn-ghost">Dashboard</a>
-       <button class="btn btn-ghost" onclick="localStorage.removeItem('${TOKEN_KEY}');window.location.href='/'" style="padding:14px">Salir</button>`;
-
-    loadAssets();
-    loadAlerts();
-  }
-
-  async function loadAssets() {
-    const resp = await fetchWithAuth('/api/assets');
-    if (!resp) return;
-    const assets = await safeJson(resp);
-    if (!assets) return;
-    const el = document.getElementById('assets-list');
-
-    if (!assets.length) {
-      el.innerHTML = `<div class="empty-state"><div class="icon">📡</div><h3>Aún no monitorizas ningún activo</h3><p>Añade un dominio o email para empezar a recibir alertas de filtraciones.</p></div>`;
-      return;
-    }
-
-    el.innerHTML = assets.map(a => `
-      <div class="asset-card">
-        <div class="info">
-          <span class="type-badge ${a.type}">${a.type === 'domain' ? '🌐' : '📧'} ${a.type}</span>
-          <div>
-            <div class="value">${a.value}</div>
-            <div class="meta">${a.breaches_found > 0 ? `<span style="color:#ef4444">${a.breaches_found} brecha(s)</span>` : 'Sin brechas'} · ${a.last_checked ? 'Último check: ' + a.last_checked.slice(0,10) : 'Sin comprobar'}</div>
-          </div>
-        </div>
-        <div class="actions">
-          <button class="btn btn-ghost btn-sm check-asset" data-id="${a.id}">Verificar</button>
-          <button class="btn btn-ghost btn-sm delete-asset" data-id="${a.id}" style="color:#ef4444">Eliminar</button>
-        </div>
-      </div>
-    `).join('');
-
-    document.querySelectorAll('.check-asset').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        btn.disabled = true; btn.textContent = 'Verificando...';
+    async function fetchWithAuth(url, opts = {}) {
+        const token = getToken();
+        if (!token) return null;
         try {
-          const resp = await fetchWithAuth(`/api/assets/${btn.dataset.id}/check`, { method: 'POST' });
-          if (resp) {
-            const result = await safeJson(resp);
-            if (result) {
-              showScanResultModal(result);
-              if (result.security_tips && result.security_tips.length) {
-                showTipsModal(result.asset, result.security_tips);
-              }
+            const resp = await fetch(url, {
+                ...opts,
+                headers: { ...(opts.headers||{}), 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+            });
+            if (resp.status === 401) {
+                localStorage.removeItem(TOKEN_KEY);
+                window.location.href = '/login';
+                return null;
             }
-            loadAssets();
-            loadAlerts();
-          }
-        } catch (e) { toast('Error al verificar', 'error'); }
-        btn.disabled = false; btn.textContent = 'Verificar';
-      });
-    });
-
-    document.querySelectorAll('.delete-asset').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        try {
-          const resp = await fetchWithAuth(`/api/assets/${btn.dataset.id}`, { method: 'DELETE' });
-          if (resp) { toast('Activo eliminado'); loadAssets(); }
-        } catch (e) { toast('Error al eliminar', 'error'); }
-      });
-    });
-  }
-
-  async function loadAlerts() {
-    const resp = await fetchWithAuth('/api/alerts?per_page=50');
-    if (!resp) return;
-    const data = await safeJson(resp);
-    if (!data) return;
-    const el = document.getElementById('alerts-list');
-    const badge = document.getElementById('alert-count-badge');
-
-    badge.style.display = data.unread > 0 ? 'inline' : 'none';
-    if (data.unread > 0) badge.textContent = data.unread;
-
-    if (!data.items.length) {
-      el.innerHTML = `<div class="empty-state"><div class="icon">🔔</div><h3>No hay alertas</h3><p>Las alertas de filtraciones aparecerán aquí cuando detectemos algo.</p></div>`;
-      return;
+            return resp;
+        } catch (e) {
+            toast('Error de conexión', 'error');
+            return null;
+        }
     }
 
-    el.innerHTML = data.items.map(a => `
-      <div class="alert-item ${a.read ? '' : 'unread'}" style="${a.resolved ? 'opacity:0.6' : ''}">
-        <div class="alert-header">
-          <span class="alert-name">${a.breach_name} ${a.resolved ? '✅' : ''}</span>
-          <span class="sev-badge ${a.severity}">${a.severity}</span>
-        </div>
-        <div class="alert-desc">${a.description || ''}</div>
-        <div class="alert-meta">${a.breach_date || ''} ${a.resolved ? '· Resuelta' : ''} ${!a.read && !a.resolved ? '· <span style="color:var(--accent);font-weight:600">Nueva</span>' : ''}</div>
-        <div style="display:flex;gap:6px;margin-top:8px">
-          ${!a.read ? `<button class="btn btn-ghost btn-sm mark-read" data-id="${a.id}">Marcar leída</button>` : ''}
-          <button class="btn btn-ghost btn-sm toggle-resolve" data-id="${a.id}" style="color:${a.resolved ? 'var(--text-tertiary)' : '#22c55e'}">${a.resolved ? 'Reabrir' : 'Resolver'}</button>
-        </div>
-      </div>
-    `).join('');
+    function toast(msg, type = '') {
+        const el = document.getElementById('toast');
+        if (!el) return;
+        el.textContent = msg;
+        el.className = 'toast ' + type;
+        el.classList.add('open');
+        setTimeout(() => el.classList.remove('open'), 3000);
+    }
 
-    document.querySelectorAll('.mark-read').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        try {
-          await fetchWithAuth(`/api/alerts/${btn.dataset.id}/read`, { method: 'PUT' });
-          loadAlerts();
-        } catch (e) { toast('Error', 'error'); }
-      });
-    });
-    document.querySelectorAll('.toggle-resolve').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        try {
-          await fetchWithAuth(`/api/alerts/${btn.dataset.id}/resolve`, { method: 'PUT' });
-          loadAlerts();
-        } catch (e) { toast('Error', 'error'); }
-      });
-    });
-  }
+    async function safeJson(resp) {
+        if (!resp) return null;
+        try { return await resp.json(); } catch { return null; }
+    }
 
-  document.getElementById('add-asset-btn').addEventListener('click', async () => {
-    try {
-      const type = document.getElementById('new-asset-type').value;
-      const value = document.getElementById('new-asset-value').value.trim();
-      if (!value) { toast('Introduce un valor', 'error'); return; }
+    function showTipsModal(asset, tips) {
+        const existing = document.getElementById('tips-modal');
+        if (existing) existing.remove();
+        const overlay = document.createElement('div');
+        overlay.id = 'tips-modal';
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px';
+        overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+        overlay.innerHTML = `
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;max-width:520px;width:100%;max-height:80vh;overflow-y:auto">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                    <div style="display:flex;align-items:center;gap:8px">
+                        <span style="font-size:1.3rem">💡</span>
+                        <strong style="font-size:1rem">Consejos para ${asset}</strong>
+                    </div>
+                    <button onclick="this.closest('#tips-modal').remove()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--text-tertiary)">×</button>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                    ${tips.map((t, i) => `
+                        <div class="check-item" style="display:flex;align-items:start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.85rem">
+                            <span style="color:var(--accent);font-weight:600;flex-shrink:0;font-size:0.8rem">${i + 1}.</span>
+                            <span style="color:var(--text-secondary);font-size:0.8rem">${t}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    }
 
-      const resp = await fetchWithAuth('/api/assets', {
-        method: 'POST',
-        body: JSON.stringify({ type, value })
-      });
-      if (!resp) return;
-      if (resp.ok) {
-        toast('Activo añadido correctamente', 'success');
-        document.getElementById('new-asset-value').value = '';
+    function showScanResultModal(result) {
+        const existing = document.getElementById('scan-modal');
+        if (existing) existing.remove();
+        const breaches = result.breaches || [];
+        const intel = result.intel || {};
+        const overlay = document.createElement('div');
+        overlay.id = 'scan-modal';
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px';
+        overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+        const severityIcon = result.severity === 'critical' ? '🚨' : result.severity === 'high' ? '⚠️' : result.severity === 'medium' ? '🔶' : '✅';
+        overlay.innerHTML = `
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;max-width:600px;width:100%;max-height:85vh;overflow-y:auto">
+                <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:16px">
+                    <div>
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+                            <span style="font-size:1.5rem">${severityIcon}</span>
+                            <strong style="font-size:1.1rem">${result.asset}</strong>
+                            <span class="sev-badge ${result.severity}" style="font-size:10px">${result.severity}</span>
+                        </div>
+                        <div style="font-size:0.8rem;color:var(--text-tertiary)">
+                            ${result.breaches_found} filtración(es) · Riesgo: ${result.risk_score}/100 · ${result.type}
+                        </div>
+                    </div>
+                    <button onclick="this.closest('#scan-modal').remove()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--text-tertiary);flex-shrink:0">×</button>
+                </div>
+                ${breaches.length ? `
+                <div style="margin-bottom:16px">
+                    <div style="font-size:0.8rem;font-weight:600;margin-bottom:8px;color:var(--text-secondary)">Datos expuestos: ${(result.data_classes_exposed || []).join(', ') || 'N/A'}</div>
+                    ${breaches.map(b => `
+                        <div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:6px">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">
+                                <strong style="font-size:0.85rem">${b.breach_name}</strong>
+                                <span class="sev-badge ${b.severity}" style="font-size:10px">${b.severity}</span>
+                            </div>
+                            <div style="font-size:0.75rem;color:var(--text-tertiary)">${b.breach_date || ''} · confianza: ${b.confidence || 'media'}</div>
+                            <div style="font-size:0.78rem;color:var(--text-secondary);margin-top:4px">${b.description || ''}</div>
+                            ${b.data_classes && b.data_classes.length ? `<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:6px">${b.data_classes.map(c => `<span style="font-size:10px;padding:2px 8px;border-radius:100px;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-tertiary)">${c}</span>`).join('')}</div>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+                ` : '<div style="text-align:center;padding:20px;color:var(--text-tertiary)">🛡️ Sin filtraciones detectadas</div>'}
+                ${intel.github_leaks ? `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px"><strong style="font-size:0.8rem">🔍 GitHub Leaks:</strong> ${intel.github_leaks.found} resultado(s) encontrados</div>` : ''}
+                ${intel.typosquatting ? `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px"><strong style="font-size:0.8rem">🌐 Typosquatting:</strong> ${intel.typosquatting.count} dominio(s) activos</div>` : ''}
+                ${intel.dns && intel.dns.has_mx !== undefined ? `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px"><strong style="font-size:0.8rem">📡 DNS:</strong> MX: ${intel.dns.has_mx ? '✅' : '❌'} · SPF: ${intel.dns.has_spf ? '✅' : '❌'} · DMARC: ${intel.dns.has_dmarc ? '✅' : '❌'}</div>` : ''}
+                ${intel.paste_sites ? `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px"><strong style="font-size:0.8rem">📋 Paste Sites:</strong> ${intel.paste_sites.found} resultado(s) en paste sites</div>` : ''}
+                ${intel.darkweb ? `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px"><strong style="font-size:0.8rem">🌑 Dark Web:</strong> ${intel.darkweb.found} resultado(s) en .onion${intel.darkweb.found > 0 ? `<div style="margin-top:6px;font-size:0.78rem;color:var(--text-tertiary)">${intel.darkweb.results.slice(0,5).map(r => r.title).join(', ')}</div>` : ''}</div>` : ''}
+                ${intel.port_scan ? `<div style="padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px"><strong style="font-size:0.8rem">🔌 Puertos:</strong> ${intel.port_scan.open_ports} abiertos (${intel.port_scan.dangerous_open || 0} peligrosos)${intel.port_scan.error ? ` · <span style="color:#eab308">⚠ ${intel.port_scan.error}</span>` : intel.port_scan.open_ports > 0 ? `<div style="margin-top:4px;font-size:0.78rem;color:var(--text-tertiary)">${intel.port_scan.ports.slice(0,8).map(p => `${p.port}/${p.service}${p.dangerous ? ' ⚠' : ''}`).join(', ')}</div>` : ''}</div>` : ''}
+                ${!intel.github_leaks && !intel.typosquatting && !(intel.dns && intel.dns.has_mx !== undefined) && !intel.paste_sites && !intel.darkweb && !intel.port_scan ? '<div style="text-align:center;padding:12px;color:var(--text-tertiary);font-size:0.85rem">No se encontró inteligencia adicional</div>' : ''}
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    }
+
+    async function loadDashboard() {
+        const token = getToken();
+        if (!token) {
+            document.getElementById('login-prompt').style.display = 'block';
+            return;
+        }
+
+        const meResp = await fetchWithAuth('/api/auth/me');
+        if (!meResp) return;
+        const me = await safeJson(meResp);
+        if (!me || !me.id) { localStorage.removeItem(TOKEN_KEY); window.location.href = '/login'; return; }
+        document.getElementById('headerUserName').textContent = me.name;
+        document.getElementById('headerUser').style.display = 'inline-flex';
+        document.getElementById('dashboard-content').style.display = 'block';
+        document.getElementById('mobileAuth').innerHTML =
+            `<a href="/dashboard" class="btn btn-ghost">Dashboard</a>
+             <button class="btn btn-ghost" onclick="localStorage.removeItem('${TOKEN_KEY}');window.location.href='/'" style="padding:14px">Salir</button>`;
+
         loadAssets();
-      } else {
-        const d = await safeJson(resp);
-        toast((d && d.detail) || 'Error al añadir activo', 'error');
-      }
-    } catch (e) { toast('Error al añadir', 'error'); }
-  });
+        loadAlerts();
+    }
 
-  document.getElementById('new-asset-value').addEventListener('keydown', e => {
-    if (e.key === 'Enter') document.getElementById('add-asset-btn').click();
-  });
+    async function loadAssets() {
+        const resp = await fetchWithAuth('/api/assets');
+        if (!resp) return;
+        const assets = await safeJson(resp);
+        if (!assets) return;
+        const el = document.getElementById('assets-list');
 
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-      tab.classList.add('active');
-      const pane = document.getElementById('tab-' + tab.dataset.tab);
-      if (pane) pane.classList.add('active');
+        if (!assets.length) {
+            el.innerHTML = `<div class="empty-state"><div class="icon">📡</div><h3>Aún no monitorizas ningún activo</h3><p>Añade un dominio o email para empezar a recibir alertas de filtraciones.</p></div>`;
+            return;
+        }
+
+        el.innerHTML = assets.map(a => `
+            <div class="asset-card">
+                <div class="info">
+                    <span class="type-badge ${a.type}">${a.type === 'domain' ? '🌐' : '📧'} ${a.type}</span>
+                    <div>
+                        <div class="value">${a.value}</div>
+                        <div class="meta">${a.breaches_found > 0 ? `<span style="color:#ef4444">${a.breaches_found} brecha(s)</span>` : 'Sin brechas'} · ${a.last_checked ? 'Último check: ' + a.last_checked.slice(0,10) : 'Sin comprobar'}</div>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-ghost btn-sm check-asset" data-id="${a.id}">Verificar</button>
+                    <button class="btn btn-ghost btn-sm delete-asset" data-id="${a.id}" style="color:#ef4444">Eliminar</button>
+                </div>
+            </div>
+        `).join('');
+
+        document.querySelectorAll('.check-asset').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                btn.disabled = true; btn.textContent = 'Verificando...';
+                try {
+                    const resp = await fetchWithAuth(`/api/assets/${btn.dataset.id}/check`, { method: 'POST' });
+                    if (resp) {
+                        const result = await safeJson(resp);
+                        if (result) {
+                            showScanResultModal(result);
+                            if (result.security_tips && result.security_tips.length) {
+                                showTipsModal(result.asset, result.security_tips);
+                            }
+                        }
+                        loadAssets();
+                        loadAlerts();
+                    }
+                } catch (e) { toast('Error al verificar', 'error'); }
+                btn.disabled = false; btn.textContent = 'Verificar';
+            });
+        });
+
+        document.querySelectorAll('.delete-asset').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                try {
+                    const resp = await fetchWithAuth(`/api/assets/${btn.dataset.id}`, { method: 'DELETE' });
+                    if (resp) { toast('Activo eliminado'); loadAssets(); }
+                } catch (e) { toast('Error al eliminar', 'error'); }
+            });
+        });
+    }
+
+    async function loadAlerts() {
+        const resp = await fetchWithAuth('/api/alerts?per_page=50');
+        if (!resp) return;
+        const data = await safeJson(resp);
+        if (!data) return;
+        const el = document.getElementById('alerts-list');
+        const badge = document.getElementById('alert-count-badge');
+
+        badge.style.display = data.unread > 0 ? 'inline' : 'none';
+        if (data.unread > 0) badge.textContent = data.unread;
+
+        if (!data.items.length) {
+            el.innerHTML = `<div class="empty-state"><div class="icon">🔔</div><h3>No hay alertas</h3><p>Las alertas de filtraciones aparecerán aquí cuando detectemos algo.</p></div>`;
+            return;
+        }
+
+        el.innerHTML = data.items.map(a => `
+            <div class="alert-item ${a.read ? '' : 'unread'}" style="${a.resolved ? 'opacity:0.6' : ''}">
+                <div class="alert-header">
+                    <span class="alert-name">${a.breach_name} ${a.resolved ? '✅' : ''}</span>
+                    <span class="sev-badge ${a.severity}">${a.severity}</span>
+                </div>
+                <div class="alert-desc">${a.description || ''}</div>
+                <div class="alert-meta">${a.breach_date || ''} ${a.resolved ? '· Resuelta' : ''} ${!a.read && !a.resolved ? '· <span style="color:var(--accent);font-weight:600">Nueva</span>' : ''}</div>
+                <div style="display:flex;gap:6px;margin-top:8px">
+                    ${!a.read ? `<button class="btn btn-ghost btn-sm mark-read" data-id="${a.id}">Marcar leída</button>` : ''}
+                    <button class="btn btn-ghost btn-sm toggle-resolve" data-id="${a.id}" style="color:${a.resolved ? 'var(--text-tertiary)' : '#22c55e'}">${a.resolved ? 'Reabrir' : 'Resolver'}</button>
+                </div>
+            </div>
+        `).join('');
+
+        document.querySelectorAll('.mark-read').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                try {
+                    await fetchWithAuth(`/api/alerts/${btn.dataset.id}/read`, { method: 'PUT' });
+                    loadAlerts();
+                } catch (e) { toast('Error', 'error'); }
+            });
+        });
+        document.querySelectorAll('.toggle-resolve').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                try {
+                    await fetchWithAuth(`/api/alerts/${btn.dataset.id}/resolve`, { method: 'PUT' });
+                    loadAlerts();
+                } catch (e) { toast('Error', 'error'); }
+            });
+        });
+    }
+
+    document.getElementById('add-asset-btn').addEventListener('click', async () => {
+        try {
+            const type = document.getElementById('new-asset-type').value;
+            const value = document.getElementById('new-asset-value').value.trim();
+            if (!value) { toast('Introduce un valor', 'error'); return; }
+
+            const resp = await fetchWithAuth('/api/assets', {
+                method: 'POST',
+                body: JSON.stringify({ type, value })
+            });
+            if (!resp) return;
+            if (resp.ok) {
+                toast('Activo añadido correctamente', 'success');
+                document.getElementById('new-asset-value').value = '';
+                loadAssets();
+            } else {
+                const d = await safeJson(resp);
+                toast((d && d.detail) || 'Error al añadir activo', 'error');
+            }
+        } catch (e) { toast('Error al añadir', 'error'); }
     });
-  });
 
-  document.getElementById('logout-btn').addEventListener('click', () => {
-    localStorage.removeItem(TOKEN_KEY);
-    window.location.href = '/';
-  });
-
-  const hamburger = document.getElementById('hamburger');
-  const mobileMenu = document.getElementById('mobile-menu');
-  if (hamburger && mobileMenu) {
-    hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('open');
-      mobileMenu.classList.toggle('open');
-      document.body.classList.toggle('menu-open');
+    document.getElementById('new-asset-value').addEventListener('keydown', e => {
+        if (e.key === 'Enter') document.getElementById('add-asset-btn').click();
     });
-  }
 
-  loadDashboard();
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            tab.classList.add('active');
+            const pane = document.getElementById('tab-' + tab.dataset.tab);
+            if (pane) pane.classList.add('active');
+        });
+    });
+
+    loadDashboard();
 </script>
-</body>
-</html>
+{% endblock %}
