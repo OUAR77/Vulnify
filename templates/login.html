@@ -7,18 +7,18 @@
 {% block header %}{% endblock %}
 {% block footer %}{% endblock %}
 {% block content %}
-  <a href="/" class="back nav-link">← Volver</a>
-  <div class="card" style="width:380px">
+  <a href="/" class="back nav-link" style="font-size:13px;font-weight:500;color:var(--text-secondary);padding:8px 16px;text-decoration:none">← Volver</a>
+  <div style="width:380px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px">
     <h1 style="font-family:var(--font-sans);font-size:1.4rem;margin-bottom:4px">Iniciar sesión</h1>
-    <p class="text-tertiary" style="font-size:0.85rem;margin-bottom:24px">Accede a tu panel de Vulnify</p>
+    <p style="font-size:0.85rem;color:var(--text-tertiary);margin-bottom:24px">Accede a tu panel de Vulnify</p>
     <div id="error" style="color:#ef4444;font-size:0.85rem;margin-bottom:12px;display:none"></div>
-    <div class="modal-form">
-      <input type="email" id="email" placeholder="Email" autocomplete="email">
-      <input type="password" id="password" placeholder="Contraseña" autocomplete="current-password">
-      <button class="btn btn-accent" id="submit" style="width:100%;padding:12px">Entrar</button>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <input type="email" id="email" placeholder="Email" autocomplete="email" style="padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-surface);color:var(--text);font-size:14px;font-family:var(--font-body)">
+      <input type="password" id="password" placeholder="Contraseña" autocomplete="current-password" style="padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-surface);color:var(--text);font-size:14px;font-family:var(--font-body)">
+      <button class="btn btn-primary" id="submit" style="width:100%;padding:14px;justify-content:center"><span>Entrar</span></button>
     </div>
-    <div class="link text-center" style="font-size:0.85rem;color:var(--text-tertiary);margin-top:16px">
-      ¿No tienes cuenta? <a href="/register" style="color:var(--accent)">Regístrate</a>
+    <div style="font-size:0.85rem;color:var(--text-tertiary);margin-top:16px;text-align:center">
+      ¿No tienes cuenta? <a href="/register" style="color:var(--neon);text-decoration:none">Regístrate</a>
     </div>
   </div>
 {% endblock %}

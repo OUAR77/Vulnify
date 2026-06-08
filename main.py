@@ -334,6 +334,21 @@ async def settings_page(request: Request):
     return templates.TemplateResponse(request, "settings.html")
 
 
+@app.post("/api/contact")
+async def contact_form(request: Request):
+    try:
+        data = await request.json()
+        name = data.get("name", "")
+        email = data.get("email", "")
+        company = data.get("company", "")
+        service = data.get("service", "")
+        message = data.get("message", "")
+        logger.info("Contact form: %s (%s) - %s", name, email, service)
+        return {"ok": True}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
 @app.get("/health")
 async def health():
     from database import SessionLocal

@@ -1,891 +1,328 @@
-<!DOCTYPE html>
-<html lang="es" data-theme="dark">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Vulnify — Monitorización de reputación online y dark web.">
-  <title>Vulnify — Reputación digital</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background: #08080a;
-      color: #e8e5e0;
-      overflow-x: hidden;
-    }
-    ::selection { background: rgba(212, 168, 83, 0.3); }
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: #08080a; }
-    ::-webkit-scrollbar-thumb { background: #1e1d1b; border-radius: 2px; }
-    ::-webkit-scrollbar-thumb:hover { background: #2d2b28; }
+{% extends "base.html" %}
+{% block description %}Vulnify — Agencia de inteligencia artificial y desarrollo web. Creamos chatbots IA, automatizaciones, páginas web y agentes de IA para tu negocio.{% endblock %}
+{% block title %}Vulnify — IA + Desarrollo Web{% endblock %}
 
-    /* Canvas */
-    #canvas-container {
-      position: fixed; top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      z-index: 0; pointer-events: none;
-    }
+{% block content %}
 
-    /* Progress Bar */
-    #progress-bar {
-      position: fixed; top: 0; left: 0;
-      width: 0; height: 2px;
-      background: #d4a853;
-      z-index: 100;
-      transition: width 0.1s;
-    }
-
-    /* Header */
-    .header {
-      position: fixed; top: 0; left: 0; right: 0;
-      z-index: 50;
-      padding: 1.5rem 2.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: background 0.4s, padding 0.4s, border 0.4s;
-    }
-    .header.scrolled {
-      background: rgba(8, 8, 10, 0.9);
-      backdrop-filter: blur(16px);
-      padding: 1rem 2.5rem;
-      border-bottom: 1px solid rgba(212, 168, 83, 0.06);
-    }
-    .header-nav { display: flex; gap: 1.5rem; align-items: center; }
-    .header-nav a {
-      color: #5c5a55;
-      text-decoration: none;
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      transition: color 0.3s;
-    }
-    .header-nav a:hover { color: #d4a853; }
-    .header-center {
-      position: absolute; left: 50%;
-      transform: translateX(-50%);
-      font-size: 1rem; font-weight: 700;
-      letter-spacing: 3px; text-transform: uppercase;
-      text-decoration: none; color: #e8e5e0;
-      transition: opacity 0.3s;
-    }
-    .header-center:hover { opacity: 0.7; }
-    .header-actions { display: flex; gap: 1.25rem; align-items: center; }
-    .header-actions a {
-      font-size: 0.75rem; text-decoration: none;
-      font-weight: 600; transition: opacity 0.3s;
-      letter-spacing: 0.5px;
-    }
-    .header-actions .btn-ghost { color: #8a8780; }
-    .header-actions .btn-ghost:hover { opacity: 0.6; }
-    .header-actions .btn-primary {
-      color: #d4a853;
-      border-bottom: 1px solid rgba(212, 168, 83, 0.3);
-      padding-bottom: 2px;
-    }
-    .header-actions .btn-primary:hover { border-color: #d4a853; }
-    #headerUser {
-      display: none; align-items: center; gap: 0.75rem;
-    }
-    #headerUserName { font-size: 0.75rem; color: #8a8780; font-weight: 600; }
-    #headerUser button {
-      background: none; border: none; color: #5c5a55;
-      font-size: 0.75rem; font-weight: 600; cursor: pointer;
-      font-family: inherit; letter-spacing: 0.5px; transition: color 0.3s;
-    }
-    #headerUser button:hover { color: #d4a853; }
-
-    /* Mobile Menu */
-    .menu-toggle {
-      display: none; background: none; border: none;
-      cursor: pointer; padding: 4px; flex-direction: column; gap: 4px;
-    }
-    .menu-toggle span {
-      width: 20px; height: 1.5px;
-      background: #e8e5e0; transition: all 0.3s; border-radius: 1px;
-    }
-    .mobile-menu {
-      display: none; position: fixed; top: 0; right: -100%;
-      width: 280px; height: 100vh;
-      background: rgba(8, 8, 10, 0.98);
-      backdrop-filter: blur(20px);
-      padding: 5rem 2rem 2rem;
-      transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 40; flex-direction: column; gap: 1.5rem;
-    }
-    .mobile-menu.open { right: 0; }
-    .mobile-menu a {
-      color: #8a8780; text-decoration: none;
-      font-size: 1rem; font-weight: 600; transition: color 0.3s;
-    }
-    .mobile-menu a:hover { color: #d4a853; }
-    .mobile-menu .mobile-auth, .mobile-menu .mobile-user {
-      display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;
-    }
-    .mobile-menu .mobile-user { display: none; }
-
-    /* Hero */
-    .hero {
-      position: relative; z-index: 1;
-      min-height: 100vh;
-      display: flex; align-items: center;
-      padding: 8rem 2.5rem 4rem;
-    }
-    .hero-inner { max-width: 1280px; margin: 0 auto; width: 100%; }
-    .hero-num {
-      font-size: 0.6875rem; font-weight: 600;
-      color: #5c5a55; letter-spacing: 2px;
-      margin-bottom: 2.5rem; display: block;
-    }
-    .hero h1 {
-      font-size: clamp(3rem, 8vw, 7.5rem);
-      font-weight: 800; line-height: 0.9;
-      letter-spacing: -3px; margin-bottom: 2.5rem;
-    }
-    .hero h1 span { display: block; overflow: hidden; }
-    .hero h1 span span {
-      display: block;
-      transform: translateY(100%);
-      animation: slideUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
-    .hero h1 span:nth-child(2) span { animation-delay: 0.15s; }
-    .hero h1 span:nth-child(3) span { animation-delay: 0.3s; }
-    .hero h1 span:last-child span { color: #d4a853; }
-    @keyframes slideUp { to { transform: translateY(0); } }
-    .hero p {
-      font-size: 0.9375rem; color: #8a8780;
-      line-height: 1.7; max-width: 420px; margin-bottom: 3rem;
-      opacity: 0; animation: fadeIn 0.8s ease 0.5s forwards;
-    }
-    @keyframes fadeIn { to { opacity: 1; } }
-    .hero-actions {
-      display: flex; gap: 1.5rem; align-items: center;
-      opacity: 0; animation: fadeIn 0.8s ease 0.7s forwards;
-    }
-    .btn-accent {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      color: #08080a; background: #d4a853;
-      padding: 0.875rem 2rem; text-decoration: none;
-      font-weight: 700; font-size: 0.8125rem;
-      letter-spacing: 0.5px; transition: all 0.3s;
-      border: none; cursor: pointer; font-family: inherit;
-    }
-    .btn-accent:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
-      box-shadow: 0 8px 32px rgba(212, 168, 83, 0.2);
-    }
-    .btn-outline {
-      color: #8a8780; text-decoration: none;
-      font-size: 0.8125rem; font-weight: 500;
-      border-bottom: 1px solid rgba(138, 135, 128, 0.25);
-      padding-bottom: 2px; transition: border-color 0.3s;
-    }
-    .btn-outline:hover { border-color: #8a8780; }
-    .scroll-hint {
-      position: absolute; bottom: 2.5rem;
-      left: 50%; transform: translateX(-50%);
-      font-size: 0.625rem; color: #5c5a55;
-      letter-spacing: 3px; text-transform: uppercase;
-      animation: scrollPulse 2s ease-in-out infinite;
-    }
-    @keyframes scrollPulse {
-      0%, 100% { opacity: 0.4; transform: translateX(-50%) translateY(0); }
-      50% { opacity: 1; transform: translateX(-50%) translateY(4px); }
-    }
-
-    /* Sections */
-    .section {
-      position: relative; z-index: 1;
-      min-height: 100vh;
-      display: flex; align-items: center;
-      padding: 6rem 2.5rem;
-    }
-    .section-inner {
-      max-width: 1280px; margin: 0 auto;
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6rem; align-items: center;
-    }
-    .section-num {
-      font-size: 0.6875rem; font-weight: 600;
-      color: #5c5a55; letter-spacing: 2px;
-      display: block; margin-bottom: 1.5rem;
-    }
-    .section h2 {
-      font-size: clamp(2rem, 5vw, 4.5rem);
-      font-weight: 800; line-height: 0.92;
-      letter-spacing: -2px; margin-bottom: 1.5rem;
-    }
-    .section h2 span { display: block; }
-    .section h2 .gold { color: #d4a853; }
-    .section p {
-      font-size: 0.9375rem; color: #8a8780;
-      line-height: 1.7; max-width: 400px;
-    }
-
-    /* Scroll Reveal */
-    .reveal {
-      opacity: 0; transform: translateY(40px);
-      transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-    .reveal-delay-1 { transition-delay: 0.1s; }
-    .reveal-delay-2 { transition-delay: 0.2s; }
-    .reveal-delay-3 { transition-delay: 0.3s; }
-    .reveal-delay-4 { transition-delay: 0.4s; }
-
-    /* Stat Ring */
-    .section-visual { display: flex; justify-content: center; align-items: center; }
-    .stat-ring {
-      width: 260px; height: 260px;
-      border-radius: 50%;
-      border: 1px solid rgba(212, 168, 83, 0.15);
-      display: flex; align-items: center; justify-content: center;
-      position: relative;
-      animation: ringPulse 4s ease-in-out infinite;
-    }
-    @keyframes ringPulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(212, 168, 83, 0); }
-      50% { box-shadow: 0 0 40px 10px rgba(212, 168, 83, 0.04); }
-    }
-    .stat-ring::before {
-      content: '';
-      position: absolute; inset: -8px;
-      border-radius: 50%;
-      border: 1px solid rgba(212, 168, 83, 0.06);
-      animation: ringRotate 8s linear infinite;
-    }
-    @keyframes ringRotate {
-      to { transform: rotate(360deg); }
-    }
-    .stat-ring-inner {
-      width: 160px; height: 160px;
-      border-radius: 50%;
-      border: 1px solid rgba(212, 168, 83, 0.08);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      text-align: center;
-    }
-    .stat-ring-value {
-      font-size: 2.25rem; font-weight: 800; color: #d4a853;
-    }
-    .stat-ring-label {
-      font-size: 0.6875rem; color: #5c5a55;
-      margin-top: 0.25rem; letter-spacing: 1px; text-transform: uppercase;
-    }
-
-    /* Pricing */
-    .pricing {
-      position: relative; z-index: 1;
-      min-height: 100vh;
-      display: flex; align-items: center;
-      padding: 6rem 2.5rem;
-    }
-    .pricing-inner { max-width: 1100px; margin: 0 auto; width: 100%; }
-    .pricing h2 {
-      font-size: clamp(2rem, 4vw, 3.5rem);
-      font-weight: 800; line-height: 0.92;
-      letter-spacing: -2px; margin-bottom: 4rem;
-    }
-    .pricing h2 span { display: block; }
-    .pricing h2 .gold { color: #d4a853; }
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: rgba(212, 168, 83, 0.08);
-    }
-    .plan-card {
-      background: #0d0d10;
-      padding: 3rem;
-      display: flex; flex-direction: column;
-      transition: background 0.4s, transform 0.4s;
-    }
-    .plan-card:hover {
-      background: #111114;
-      transform: translateY(-2px);
-    }
-    .plan-name {
-      font-size: 0.6875rem; font-weight: 600;
-      color: #5c5a55; text-transform: uppercase;
-      letter-spacing: 2px; margin-bottom: 1rem;
-    }
-    .plan-price {
-      font-size: 3rem; font-weight: 800;
-      color: #e8e5e0; margin-bottom: 0.25rem;
-    }
-    .plan-period {
-      font-size: 0.75rem; color: #5c5a55;
-      margin-bottom: 2rem;
-    }
-    .plan-features { list-style: none; margin-bottom: 2.5rem; flex: 1; }
-    .plan-features li {
-      color: #8a8780; font-size: 0.8125rem;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid rgba(138, 135, 128, 0.06);
-    }
-    .plan-features li:last-child { border-bottom: none; }
-    .plan-btn {
-      display: inline-block; color: #d4a853;
-      text-decoration: none; font-size: 0.75rem;
-      font-weight: 700; letter-spacing: 1.5px;
-      text-transform: uppercase;
-      border-bottom: 1px solid rgba(212, 168, 83, 0.25);
-      padding-bottom: 2px;
-      transition: border-color 0.3s;
-      align-self: flex-start;
-    }
-    .plan-btn:hover { border-color: #d4a853; }
-
-    /* CTA Section */
-    .cta {
-      position: relative; z-index: 1;
-      padding: 8rem 2.5rem;
-      text-align: center;
-    }
-    .cta-inner { max-width: 600px; margin: 0 auto; }
-    .cta h2 {
-      font-size: clamp(2rem, 4vw, 3.5rem);
-      font-weight: 800; line-height: 0.95;
-      letter-spacing: -2px; margin-bottom: 1.5rem;
-    }
-    .cta h2 .gold { color: #d4a853; }
-    .cta p {
-      font-size: 0.9375rem; color: #8a8780;
-      line-height: 1.7; margin-bottom: 2.5rem;
-    }
-    .cta-actions { display: flex; gap: 1.5rem; justify-content: center; }
-
-    /* Footer */
-    .footer {
-      position: relative; z-index: 1;
-      padding: 3rem 2.5rem;
-      border-top: 1px solid rgba(212, 168, 83, 0.06);
-    }
-    .footer-inner {
-      max-width: 1280px; margin: 0 auto;
-      display: flex; justify-content: space-between;
-      align-items: center;
-      font-size: 0.6875rem; color: #5c5a55;
-      letter-spacing: 0.5px;
-    }
-    .footer a { color: #8a8780; text-decoration: none; transition: color 0.3s; }
-    .footer a:hover { color: #d4a853; }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .header { padding: 1rem 1.5rem; }
-      .header.scrolled { padding: 0.75rem 1.5rem; }
-      .header-nav { display: none; }
-      .header-center { position: static; transform: none; font-size: 0.875rem; }
-      .header-actions .btn-ghost { display: none; }
-      .menu-toggle { display: flex; }
-      .mobile-menu { display: flex; }
-      .hero { padding: 6rem 1.5rem 3rem; }
-      .hero h1 { letter-spacing: -1px; }
-      .scroll-hint { display: none; }
-      .section { padding: 4rem 1.5rem; min-height: auto; }
-      .section-inner { grid-template-columns: 1fr; gap: 2rem; }
-      .section-visual { display: none; }
-      .section p { max-width: none; }
-      .pricing { padding: 4rem 1.5rem; }
-      .pricing-grid { grid-template-columns: 1fr; }
-      .plan-card { padding: 2rem; }
-      .cta { padding: 4rem 1.5rem; }
-      .footer-inner { flex-direction: column; gap: 0.75rem; text-align: center; }
-    }
-    @media (min-width: 769px) {
-      .menu-toggle { display: none !important; }
-      .mobile-menu { display: none !important; }
-    }
-  </style>
-</head>
-<body>
-  <div id="progress-bar"></div>
-  <div id="canvas-container"></div>
-
-  <!-- Header -->
-  <header class="header" id="header">
-    <nav class="header-nav">
-      <a href="#01">01</a>
-      <a href="#02">02</a>
-      <a href="#03">03</a>
-      <a href="#planes">04</a>
-    </nav>
-    <a href="/" class="header-center">Vulnify</a>
-    <div class="header-actions">
-      <div id="headerAuth">
-        <a href="/login" class="btn-ghost">Iniciar sesión</a>
-        <a href="/register" class="btn-primary">Registrarse</a>
-      </div>
-      <div id="headerUser">
-        <span id="headerUserName"></span>
-        <button onclick="logout()">Salir</button>
-      </div>
-      <button class="menu-toggle" id="menuToggle" aria-label="Menú">
-        <span></span><span></span><span></span>
-      </button>
+<!-- ===== HERO ===== -->
+<section class="hero" id="inicio">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-orb"></div>
+  <div class="hero-orb"></div>
+  <div class="hero-content reveal">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Innovación con IA
     </div>
-  </header>
-
-  <!-- Mobile Menu -->
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="#01" onclick="closeMobileMenu()">01 — Monitoreo</a>
-    <a href="#02" onclick="closeMobileMenu()">02 — Dark web</a>
-    <a href="#03" onclick="closeMobileMenu()">03 — Alertas</a>
-    <a href="#planes" onclick="closeMobileMenu()">04 — Planes</a>
-    <div id="mobileAuth" class="mobile-auth">
-      <a href="/login" style="color:#e8e5e0;font-weight:700">Iniciar sesión</a>
-      <a href="/register" style="color:#d4a853">Registrarse</a>
-    </div>
-    <div id="mobileUser" class="mobile-user">
-      <a href="/dashboard" id="mobileUserName" style="color:#e8e5e0;font-weight:700">Dashboard</a>
-      <button onclick="logout();closeMobileMenu()" style="background:none;border:none;color:#d4a853;font-size:1rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:left;padding:0">Salir</button>
+    <h1>
+      Transformamos tu negocio<br>
+      con <span class="gradient-text">inteligencia artificial</span>
+    </h1>
+    <p>Creamos chatbots inteligentes, automatizaciones, páginas web y agentes de IA personalizados para impulsar tu empresa al siguiente nivel.</p>
+    <div class="hero-actions">
+      <a href="#contacto" class="btn btn-primary btn-lg"><span>Solicitar demo</span></a>
+      <a href="#servicios" class="btn btn-neon btn-lg"><span>Ver servicios</span></a>
     </div>
   </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero-inner">
-      <span class="hero-num">00</span>
-      <h1>
-        <span><span>Protegemos</span></span>
-        <span><span>tu reputación</span></span>
-        <span><span>digital</span></span>
-      </h1>
-      <p>Monitoreamos dominios y emails en busca de filtraciones de datos y exposición en la dark web. Recibe alertas al instante.</p>
-      <div class="hero-actions">
-        <a href="/monitor" class="btn-accent">Probar gratis →</a>
-        <a href="#01" class="btn-outline">Saber más</a>
+<!-- ===== STATS ===== -->
+<section class="section" style="padding-bottom:0">
+  <div class="container">
+    <div class="stats-row">
+      <div class="stat-card reveal">
+        <div class="stat-value"><span class="stat-counter" data-target="50">0</span>+</div>
+        <div class="stat-label">Proyectos entregados</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-1">
+        <div class="stat-value"><span class="stat-counter" data-target="30">0</span>+</div>
+        <div class="stat-label">Clientes satisfechos</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-2">
+        <div class="stat-value"><span class="stat-counter" data-target="98">0</span>%</div>
+        <div class="stat-label">Tasa de éxito</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-3">
+        <div class="stat-value"><span class="stat-counter" data-target="24">0</span>/7</div>
+        <div class="stat-label">Soporte continuo</div>
       </div>
     </div>
-    <span class="scroll-hint">Scroll</span>
-  </section>
+  </div>
+</section>
 
-  <!-- Section 01 -->
-  <section class="section" id="01">
-    <div class="section-inner">
-      <div>
-        <span class="section-num reveal">01</span>
-        <h2>
-          <span class="reveal reveal-delay-1">Monitoreo</span>
-          <span class="reveal reveal-delay-2 gold">de dominios</span>
-          <span class="reveal reveal-delay-3">24/7</span>
-        </h2>
-        <p class="reveal reveal-delay-4">Registra los dominios y correos de tu empresa. Vigilamos cada rincón de internet en busca de filtraciones y brechas de seguridad.</p>
+<!-- ===== SERVICES ===== -->
+<section class="section" id="servicios">
+  <div class="container">
+    <div class="section-header centered reveal">
+      <div class="section-label">Servicios</div>
+      <h2>Todo lo que necesitas <span class="gradient-text">en IA y web</span></h2>
+      <p class="section-sub">Ofrecemos soluciones completas de inteligencia artificial y desarrollo web para empresas de todos los tamaños.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="service-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4m0 4a4 4 0 0 1 4 4m-4-4a4 4 0 0 0-4 4m8 0a4 4 0 0 1-4 4m4-4h4m-12 0a4 4 0 0 0 4 4m-4-4H4m4 4v4m0-4a4 4 0 0 0 4 4m-4-4a4 4 0 0 1 4-4m0 8v4m0-4a4 4 0 0 0 4-4m-4 4a4 4 0 0 1-4-4m4 4h4"/></svg>
+        </div>
+        <h3>Chatbots con IA</h3>
+        <p>Integramos chatbots inteligentes con GPT, Claude y modelos propietarios en tu web, WhatsApp o Telegram. Atención al cliente 24/7 sin fricción.</p>
       </div>
-      <div class="section-visual">
-        <div class="stat-ring reveal">
-          <div class="stat-ring-inner">
-            <span class="stat-ring-value">10K+</span>
-            <span class="stat-ring-label">Activos monitorizados</span>
-          </div>
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <h3>Desarrollo Web</h3>
+        <p>Creamos páginas web impactantes, tiendas online y aplicaciones web a medida. Diseño moderno, rendimiento óptimo y experiencia de usuario excepcional.</p>
+      </div>
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3>Automatización IA</h3>
+        <p>Automatizamos procesos repetitivos con IA: procesamiento de documentos, extracción de datos, generación de informes y flujos de trabajo inteligentes.</p>
+      </div>
+      <div class="service-card reveal reveal-delay-3">
+        <div class="service-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <h3>Consultoría IA</h3>
+        <p>Te guiamos en la adopción de inteligencia artificial en tu empresa. Estrategia, selección de herramientas, implementación y formación.</p>
+      </div>
+      <div class="service-card reveal reveal-delay-4">
+        <div class="service-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <h3>Agentes IA Personalizados</h3>
+        <p>Diseñamos agentes autónomos de IA para tareas específicas: análisis de datos, atención multicanal, moderación de contenido y más.</p>
+      </div>
+      <div class="service-card reveal" style="background:linear-gradient(135deg,rgba(0,240,255,0.04),rgba(168,85,247,0.04));border-color:rgba(0,240,255,0.12);grid-column:span 3;text-align:center;padding:48px">
+        <h3 style="font-size:22px;margin-bottom:8px">¿No encuentras lo que buscas?</h3>
+        <p style="font-size:15px;color:var(--text-secondary);margin-bottom:20px;max-width:450px;margin-left:auto;margin-right:auto">Cada proyecto es único. Cuéntanos tu idea y creamos una solución a medida.</p>
+        <a href="#contacto" class="btn btn-primary"><span>Háblanos de tu proyecto</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROCESS ===== -->
+<section class="section" id="proceso">
+  <div class="container">
+    <div class="section-header centered reveal">
+      <div class="section-label">Proceso</div>
+      <h2>Cómo <span class="gradient-text">trabajamos</span></h2>
+      <p class="section-sub">De la idea al lanzamiento en 4 pasos. Rápido, transparente y sin complicaciones.</p>
+    </div>
+    <div class="process-grid">
+      <div class="process-line"></div>
+      <div class="process-step reveal">
+        <div class="process-step-num">1</div>
+        <h3>Descubrimiento</h3>
+        <p>Analizamos tu negocio, objetivos y necesidades. Definimos juntos el alcance del proyecto.</p>
+      </div>
+      <div class="process-step reveal reveal-delay-1">
+        <div class="process-step-num">2</div>
+        <h3>Diseño</h3>
+        <p>Creamos prototipos, definimos la arquitectura y seleccionamos las mejores herramientas de IA.</p>
+      </div>
+      <div class="process-step reveal reveal-delay-2">
+        <div class="process-step-num">3</div>
+        <h3>Desarrollo</h3>
+        <p>Construimos tu solución con entregas semanales. Revisas, pruebas y sugieres cambios en vivo.</p>
+      </div>
+      <div class="process-step reveal reveal-delay-3">
+        <div class="process-step-num">4</div>
+        <h3>Lanzamiento</h3>
+        <p>Desplegamos, monitorizamos y te formamos. Seguimos dando soporte para garantizar el éxito.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRICING ===== -->
+<section class="section" id="precios">
+  <div class="container">
+    <div class="section-header centered reveal">
+      <div class="section-label">Precios</div>
+      <h2>Planes <span class="gradient-text">transparentes</span></h2>
+      <p class="section-sub">Elige el plan que mejor se adapte a tu proyecto. Sin sorpresas ni comisiones ocultas.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="plan-card reveal">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price"><span class="currency">€</span>1.499</div>
+        <div class="plan-period">Proyecto único</div>
+        <div class="plan-desc">Perfecto para startups y pequeños negocios que quieren dar el salto digital.</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li>Web profesional (5 páginas)</li>
+          <li>Chatbot IA básico</li>
+          <li>Formulario inteligente</li>
+          <li>Diseño responsive</li>
+          <li>SEO básico</li>
+          <li>Hosting 6 meses incluido</li>
+        </ul>
+        <button class="plan-btn ghost" onclick="window.location.href='#contacto'">Solicitar</button>
+      </div>
+      <div class="plan-card featured reveal reveal-delay-1">
+        <div class="plan-name">Profesional</div>
+        <div class="plan-price"><span class="currency">€</span>3.999</div>
+        <div class="plan-period">Proyecto completo</div>
+        <div class="plan-desc">Para empresas que buscan una solución integral con IA avanzada.</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li>Web personalizada ilimitada</li>
+          <li>Chatbot IA avanzado + analytics</li>
+          <li>Automatización de procesos</li>
+          <li>Panel de administración</li>
+          <li>API de integración</li>
+          <li>Hosting 12 meses incluido</li>
+          <li>Soporte prioritario 24/7</li>
+        </ul>
+        <button class="plan-btn primary" onclick="window.location.href='#contacto'"><span>Elegir Profesional</span></button>
+      </div>
+      <div class="plan-card reveal reveal-delay-2">
+        <div class="plan-name">Enterprise</div>
+        <div class="plan-price"><span class="currency">€</span>9.999+</div>
+        <div class="plan-period">A medida</div>
+        <div class="plan-desc">Para grandes empresas que necesitan una solución completamente personalizada.</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li>Solución totalmente personalizada</li>
+          <li>Agentes IA autónomos</li>
+          <li>Integración con sistemas existentes</li>
+          <li>Infraestructura cloud dedicada</li>
+          <li>Formación del equipo</li>
+          <li>SLA garantizado 99.9%</li>
+          <li>Soporte dedicado 24/7</li>
+          <li>Consultoría trimestral</li>
+        </ul>
+        <button class="plan-btn ghost" onclick="window.location.href='#contacto'">Contactar</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section class="section" id="faq">
+  <div class="container">
+    <div class="section-header centered reveal">
+      <div class="section-label">FAQ</div>
+      <h2>Preguntas <span class="gradient-text">frecuentes</span></h2>
+      <p class="section-sub">Resolvemos tus dudas sobre nuestros servicios de IA y desarrollo web.</p>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item reveal">
+        <button class="faq-question" onclick="toggleFaq(this)">¿Cuánto tarda un proyecto? <span class="faq-arrow">+</span></button>
+        <div class="faq-answer">Depende del alcance. Un proyecto Starter puede estar listo en 2-3 semanas, uno Profesional en 4-6 semanas, y uno Enterprise lo planificamos contigo. Siempre damos entregas parciales para que veas el progreso.</div>
+      </div>
+      <div class="faq-item reveal reveal-delay-1">
+        <button class="faq-question" onclick="toggleFaq(this)">¿Necesito conocimientos técnicos? <span class="faq-arrow">+</span></button>
+        <div class="faq-answer">No. Nos encargamos de todo: desarrollo, integración, despliegue y formación. Tú solo necesitas tener claro qué quieres conseguir. Te guiamos en cada paso.</div>
+      </div>
+      <div class="faq-item reveal reveal-delay-2">
+        <button class="faq-question" onclick="toggleFaq(this)">¿Ofrecen mantenimiento después del proyecto? <span class="faq-arrow">+</span></button>
+        <div class="faq-answer">Sí. Todos los planes incluyen un período de soporte post-lanzamiento. También ofrecemos planes de mantenimiento continuo para mantener tu sitio y tus IA actualizadas y funcionando al 100%.</div>
+      </div>
+      <div class="faq-item reveal reveal-delay-3">
+        <button class="faq-question" onclick="toggleFaq(this)">¿Qué tecnología usan para los chatbots? <span class="faq-arrow">+</span></button>
+        <div class="faq-answer">Trabajamos con los mejores modelos del mercado: GPT-4 de OpenAI, Claude de Anthropic, y modelos open source. Elegimos la tecnología óptima para cada caso de uso, maximizando calidad y minimizando costes.</div>
+      </div>
+      <div class="faq-item reveal reveal-delay-4">
+        <button class="faq-question" onclick="toggleFaq(this)">¿Puedo ver ejemplos de trabajos anteriores? <span class="faq-arrow">+</span></button>
+        <div class="faq-answer">Por supuesto. En la llamada de descubrimiento te mostraremos casos de éxito de proyectos similares al tuyo, con resultados medibles y testimonios de clientes.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA / CONTACT ===== -->
+<section class="cta-section" id="contacto">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label" style="margin:0 auto 16px">Contacto</div>
+      <h2>¿Hablamos de tu <span class="gradient-text">proyecto?</span></h2>
+      <p>Cuéntanos qué necesitas y te enviaremos una propuesta personalizada en menos de 24 horas.</p>
+    </div>
+    <div class="contact-grid reveal">
+      <div class="contact-info">
+        <h3>Hablemos</h3>
+        <p>Estamos en Barcelona y trabajamos con clientes de todo el mundo. Respondemos en menos de 24 horas laborables.</p>
+        <div class="contact-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <span>hola@vulnify.es</span>
+        </div>
+        <div class="contact-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>Barcelona, España</span>
+        </div>
+        <div class="contact-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span>+34 123 456 789</span>
+        </div>
+        <div style="margin-top:32px;padding:20px;background:var(--neon-glow);border:1px solid rgba(0,240,255,0.1);border-radius:var(--radius-md)">
+          <p style="font-size:14px;color:var(--text-secondary);line-height:1.6">
+            <strong style="color:var(--text)">Respuesta rápida:</strong> Usamos IA para priorizar tu mensaje. Recibirás una primera respuesta en menos de 1 hora en horario laboral.
+          </p>
         </div>
       </div>
+      <form class="contact-form" id="contactForm">
+        <input type="text" placeholder="Nombre completo" id="contactName" required>
+        <input type="email" placeholder="Email" id="contactEmail" required>
+        <input type="text" placeholder="Empresa (opcional)" id="contactCompany">
+        <select id="contactService" style="padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-surface);color:var(--text);font-size:14px;font-family:var(--font-body);transition:border-color .25s">
+          <option value="">Selecciona un servicio</option>
+          <option value="chatbot">Chatbot IA</option>
+          <option value="web">Desarrollo Web</option>
+          <option value="automation">Automatización IA</option>
+          <option value="consulting">Consultoría IA</option>
+          <option value="agents">Agentes IA Personalizados</option>
+          <option value="other">Otro</option>
+        </select>
+        <textarea placeholder="Cuéntanos sobre tu proyecto..." id="contactMessage" required></textarea>
+        <button type="submit" class="btn btn-primary btn-lg" style="width:100%;justify-content:center" id="contactBtn"><span>Enviar mensaje</span></button>
+      </form>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Section 02 -->
-  <section class="section" id="02">
-    <div class="section-inner">
-      <div class="section-visual">
-        <div class="stat-ring reveal">
-          <div class="stat-ring-inner">
-            <span class="stat-ring-value">5M+</span>
-            <span class="stat-ring-label">Brechas indexadas</span>
-          </div>
-        </div>
-      </div>
-      <div>
-        <span class="section-num reveal">02</span>
-        <h2>
-          <span class="reveal reveal-delay-1">Dark web</span>
-          <span class="reveal reveal-delay-2 gold">intelligence</span>
-        </h2>
-        <p class="reveal reveal-delay-3">Rastreamos foros ocultos, markets y repositorios de la dark web con +5M de brechas indexadas buscando tus datos comprometidos.</p>
-      </div>
-    </div>
-  </section>
+{% endblock %}
 
-  <!-- Section 03 -->
-  <section class="section" id="03">
-    <div class="section-inner">
-      <div>
-        <span class="section-num reveal">03</span>
-        <h2>
-          <span class="reveal reveal-delay-1">Alertas</span>
-          <span class="reveal reveal-delay-2 gold">en tiempo</span>
-          <span class="reveal reveal-delay-3">real</span>
-        </h2>
-        <p class="reveal reveal-delay-4">Si detectamos una filtración, te notificamos al instante con los detalles, la gravedad y los pasos para actuar de inmediato.</p>
-      </div>
-      <div class="section-visual">
-        <div class="stat-ring reveal">
-          <div class="stat-ring-inner">
-            <span class="stat-ring-value">24/7</span>
-            <span class="stat-ring-label">Cobertura continua</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+{% block scripts %}
+<script>
+  // Contact form
+  document.getElementById('contactForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('contactBtn');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<span>Enviando...</span>';
+    btn.disabled = true;
 
-  <!-- Pricing -->
-  <section class="pricing" id="planes">
-    <div class="pricing-inner">
-      <h2>
-        <span class="reveal gold">Planes</span>
-        <span class="reveal reveal-delay-1">para cada</span>
-        <span class="reveal reveal-delay-2">necesidad</span>
-      </h2>
-      <div class="pricing-grid">
-        <div class="plan-card reveal reveal-delay-1">
-          <div class="plan-name">Gratis</div>
-          <div class="plan-price">0€</div>
-          <div class="plan-period">Siempre gratis</div>
-          <ul class="plan-features">
-            <li>1 dominio o email</li>
-            <li>Alertas por email</li>
-            <li>Informe básico</li>
-          </ul>
-          <a href="/monitor" class="plan-btn">Probar ahora</a>
-        </div>
-        <div class="plan-card reveal reveal-delay-2">
-          <div class="plan-name">Starter</div>
-          <div class="plan-price">49€</div>
-          <div class="plan-period">Al mes</div>
-          <ul class="plan-features">
-            <li>5 dominios o emails</li>
-            <li>Alertas + dashboard</li>
-            <li>Informe detallado</li>
-            <li>Historial completo</li>
-          </ul>
-          <a href="/register" class="plan-btn">Elegir starter</a>
-        </div>
-        <div class="plan-card reveal reveal-delay-3">
-          <div class="plan-name">Profesional</div>
-          <div class="plan-price">149€</div>
-          <div class="plan-period">Al mes</div>
-          <ul class="plan-features">
-            <li>Dominios ilimitados</li>
-            <li>API de consulta</li>
-            <li>Alertas en tiempo real</li>
-            <li>Soporte prioritario 24/7</li>
-          </ul>
-          <a href="/register" class="plan-btn">Elegir profesional</a>
-        </div>
-      </div>
-    </div>
-  </section>
+    const data = {
+      name: document.getElementById('contactName').value,
+      email: document.getElementById('contactEmail').value,
+      company: document.getElementById('contactCompany').value,
+      service: document.getElementById('contactService').value,
+      message: document.getElementById('contactMessage').value
+    };
 
-  <!-- CTA -->
-  <section class="cta">
-    <div class="cta-inner">
-      <h2 class="reveal">
-        <span class="gold">¿Sabes si tus datos</span>
-        <span>están en la</span>
-        <span class="gold">dark web?</span>
-      </h2>
-      <p class="reveal reveal-delay-1">Comprueba tu primer dominio o email gratis. Sin tarjeta de crédito.</p>
-      <div class="cta-actions reveal reveal-delay-2">
-        <a href="/monitor" class="btn-accent">Comprobar ahora →</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <span>© 2026 Vulnify</span>
-      <a href="/privacidad">Privacidad</a>
-      <a href="/terminos">Términos</a>
-      <a href="/contacto">Contacto</a>
-      <a href="/sobre-nosotros">Sobre nosotros</a>
-    </div>
-  </footer>
-
-  <script src="/static/js/script.js"></script>
-  <script>
-    // ─── Three.js Network ───
     try {
-      const c = document.getElementById('canvas-container');
-      if (!c) throw 0;
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
-      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      c.appendChild(renderer.domElement);
-
-      // ── Nodes (larger points) ──
-      const nodeCount = 60;
-      const nodePos = [];
-      for (let i = 0; i < nodeCount; i++) {
-        nodePos.push({
-          x: (Math.random() - 0.5) * 24,
-          y: (Math.random() - 0.5) * 16,
-          z: (Math.random() - 0.5) * 12,
-          vx: (Math.random() - 0.5) * 0.002,
-          vy: (Math.random() - 0.5) * 0.002,
-          vz: (Math.random() - 0.5) * 0.002,
-        });
-      }
-
-      const nodeGeo = new THREE.BufferGeometry();
-      const nodeArr = new Float32Array(nodeCount * 3);
-      for (let i = 0; i < nodeCount; i++) {
-        nodeArr[i*3] = nodePos[i].x;
-        nodeArr[i*3+1] = nodePos[i].y;
-        nodeArr[i*3+2] = nodePos[i].z;
-      }
-      nodeGeo.setAttribute('position', new THREE.BufferAttribute(nodeArr, 3));
-      const nodeMat = new THREE.PointsMaterial({
-        color: 0xd4a853,
-        size: 0.12,
-        transparent: true,
-        opacity: 0.7,
-        blending: THREE.AdditiveBlending,
+      const resp = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
       });
-      const nodeMesh = new THREE.Points(nodeGeo, nodeMat);
-      scene.add(nodeMesh);
-
-      // ── Connection lines ──
-      const linePairs = [];
-      for (let i = 0; i < nodeCount; i++) {
-        for (let j = i + 1; j < nodeCount; j++) {
-          const dx = nodePos[i].x - nodePos[j].x;
-          const dy = nodePos[i].y - nodePos[j].y;
-          const dz = nodePos[i].z - nodePos[j].z;
-          const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
-          if (dist < 5) {
-            linePairs.push(i, j);
-          }
-        }
-      }
-
-      const linePositions = [];
-      for (let k = 0; k < linePairs.length; k += 2) {
-        const i = linePairs[k];
-        const j = linePairs[k+1];
-        linePositions.push(
-          nodePos[i].x, nodePos[i].y, nodePos[i].z,
-          nodePos[j].x, nodePos[j].y, nodePos[j].z
-        );
-      }
-      const lineGeo = new THREE.BufferGeometry();
-      lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
-      const lineMat = new THREE.LineBasicMaterial({
-        color: 0xd4a853,
-        transparent: true,
-        opacity: 0.08,
-      });
-      const lineMesh = new THREE.LineSegments(lineGeo, lineMat);
-      scene.add(lineMesh);
-
-      // ── Ambient particles ──
-      const ambCount = 1000;
-      const ambPos = new Float32Array(ambCount * 3);
-      const ambVel = [];
-      for (let i = 0; i < ambCount; i++) {
-        ambPos[i*3] = (Math.random() - 0.5) * 30;
-        ambPos[i*3+1] = (Math.random() - 0.5) * 20;
-        ambPos[i*3+2] = (Math.random() - 0.5) * 15;
-        ambVel.push({
-          x: (Math.random() - 0.5) * 0.005,
-          y: (Math.random() - 0.5) * 0.005,
-          z: (Math.random() - 0.5) * 0.005,
-        });
-      }
-      const ambGeo = new THREE.BufferGeometry();
-      ambGeo.setAttribute('position', new THREE.BufferAttribute(ambPos, 3));
-      const ambMat = new THREE.PointsMaterial({
-        color: 0xd4a853,
-        size: 0.025,
-        transparent: true,
-        opacity: 0.3,
-        blending: THREE.AdditiveBlending,
-      });
-      const ambMesh = new THREE.Points(ambGeo, ambMat);
-      scene.add(ambMesh);
-
-      // ── Scan ring ──
-      const ringGeo = new THREE.RingGeometry(3.8, 4, 64);
-      const ringMat = new THREE.MeshBasicMaterial({
-        color: 0xd4a853,
-        transparent: true,
-        opacity: 0.06,
-        side: THREE.DoubleSide,
-        depthWrite: false,
-      });
-      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-      ringMesh.rotation.x = Math.PI / 3;
-      scene.add(ringMesh);
-
-      const ring2Geo = new THREE.RingGeometry(5.5, 5.7, 64);
-      const ring2Mat = new THREE.MeshBasicMaterial({
-        color: 0xd4a853,
-        transparent: true,
-        opacity: 0.04,
-        side: THREE.DoubleSide,
-        depthWrite: false,
-      });
-      const ring2Mesh = new THREE.Mesh(ring2Geo, ring2Mat);
-      ring2Mesh.rotation.x = -Math.PI / 4;
-      scene.add(ring2Mesh);
-
-      // ── Central glow ──
-      const glowGeo = new THREE.SphereGeometry(1.5, 24, 24);
-      const glowMat = new THREE.MeshBasicMaterial({
-        color: 0xd4a853,
-        transparent: true,
-        opacity: 0.03,
-      });
-      const glowMesh = new THREE.Mesh(glowGeo, glowMat);
-      scene.add(glowMesh);
-
-      camera.position.z = 14;
-
-      // ── Mouse ──
-      let mx = 0, my = 0;
-      document.addEventListener('mousemove', (e) => {
-        mx = (e.clientX / window.innerWidth - 0.5) * 2;
-        my = (e.clientY / window.innerHeight - 0.5) * 2;
-      });
-
-      let scanPhase = 0;
-
-      // ── Animate ──
-      function animate() {
-        requestAnimationFrame(animate);
-        const time = Date.now() * 0.001;
-
-        // Rotate entire scene slowly
-        nodeMesh.rotation.y += 0.00015;
-        nodeMesh.rotation.x += 0.00005;
-        lineMesh.rotation.y = nodeMesh.rotation.y;
-        lineMesh.rotation.x = nodeMesh.rotation.x;
-        ambMesh.rotation.y = nodeMesh.rotation.y;
-        ambMesh.rotation.x = nodeMesh.rotation.x;
-        ringMesh.rotation.y = nodeMesh.rotation.y;
-        ringMesh.rotation.x = nodeMesh.rotation.x;
-        ring2Mesh.rotation.y = nodeMesh.rotation.y;
-        ring2Mesh.rotation.x = nodeMesh.rotation.x;
-        glowMesh.rotation.y = nodeMesh.rotation.y;
-        glowMesh.rotation.x = nodeMesh.rotation.x;
-
-        // Mouse parallax
-        nodeMesh.rotation.x += (my * 0.02 - nodeMesh.rotation.x) * 0.008;
-        nodeMesh.rotation.y += (mx * 0.02 - nodeMesh.rotation.y) * 0.008;
-
-        // Nodes drift
-        const pos = nodeGeo.attributes.position.array;
-        for (let i = 0; i < nodeCount; i++) {
-          nodePos[i].x += nodePos[i].vx;
-          nodePos[i].y += nodePos[i].vy;
-          nodePos[i].z += nodePos[i].vz;
-          if (Math.abs(nodePos[i].x) > 12) nodePos[i].vx *= -1;
-          if (Math.abs(nodePos[i].y) > 8) nodePos[i].vy *= -1;
-          if (Math.abs(nodePos[i].z) > 6) nodePos[i].vz *= -1;
-          pos[i*3] = nodePos[i].x;
-          pos[i*3+1] = nodePos[i].y;
-          pos[i*3+2] = nodePos[i].z;
-        }
-        nodeGeo.attributes.position.needsUpdate = true;
-
-        // Update lines
-        const lPos = [];
-        for (let k = 0; k < linePairs.length; k += 2) {
-          const i = linePairs[k];
-          const j = linePairs[k+1];
-          const dx = nodePos[i].x - nodePos[j].x;
-          const dy = nodePos[i].y - nodePos[j].y;
-          const dz = nodePos[i].z - nodePos[j].z;
-          const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
-          if (dist < 6) {
-            lPos.push(nodePos[i].x, nodePos[i].y, nodePos[i].z);
-            lPos.push(nodePos[j].x, nodePos[j].y, nodePos[j].z);
-          }
-        }
-        lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(lPos, 3));
-        lineGeo.attributes.position.needsUpdate = true;
-
-        // Ambient particles float
-        const ambPosAttr = ambGeo.attributes.position.array;
-        for (let i = 0; i < ambCount; i++) {
-          ambPosAttr[i*3] += ambVel[i].x;
-          ambPosAttr[i*3+1] += ambVel[i].y;
-          ambPosAttr[i*3+2] += ambVel[i].z;
-          if (Math.abs(ambPosAttr[i*3]) > 15) ambVel[i].x *= -1;
-          if (Math.abs(ambPosAttr[i*3+1]) > 10) ambVel[i].y *= -1;
-          if (Math.abs(ambPosAttr[i*3+2]) > 7) ambVel[i].z *= -1;
-        }
-        ambGeo.attributes.position.needsUpdate = true;
-
-        // Scan pulse
-        scanPhase += 0.02;
-        const scanScale = 1 + Math.sin(scanPhase) * 0.3;
-        ringMesh.scale.set(scanScale, scanScale, scanScale);
-        ringMesh.material.opacity = 0.06 + Math.sin(scanPhase) * 0.03;
-        ring2Mesh.scale.set(scanScale * 0.7, scanScale * 0.7, scanScale * 0.7);
-
-        // Glow pulse
-        glowMesh.material.opacity = 0.03 + Math.sin(time * 0.5) * 0.015;
-
-        renderer.render(scene, camera);
-      }
-      animate();
-
-      window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-      });
-    } catch(e) {}
-
-    // ─── Scroll Reveal ───
-    const revealElements = document.querySelectorAll('.reveal');
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-    revealElements.forEach(el => revealObserver.observe(el));
-
-    // ─── Progress Bar ───
-    const progressBar = document.getElementById('progress-bar');
-    window.addEventListener('scroll', () => {
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      progressBar.style.width = (scrollTop / docHeight * 100) + '%';
-    });
-
-    // ─── Header Scroll ───
-    const header = document.getElementById('header');
-    window.addEventListener('scroll', () => {
-      header.classList.toggle('scrolled', window.scrollY > 50);
-    });
-
-    // ─── Mobile Menu ───
-    const menuToggle = document.getElementById('menuToggle');
-    const mobileMenu = document.getElementById('mobileMenu');
-    if (menuToggle) {
-      menuToggle.addEventListener('click', () => {
-        menuToggle.classList.toggle('open');
-        mobileMenu.classList.toggle('open');
-        document.body.classList.toggle('menu-open');
-      });
+      if (!resp.ok) throw new Error('Error');
+      this.reset();
+      showToast('Mensaje enviado correctamente. Te respondemos en menos de 24h.', 'success');
+    } catch {
+      showToast('Error al enviar. Escríbenos a hola@vulnify.es', 'error');
     }
-  </script>
-</body>
-</html>
+    btn.innerHTML = orig;
+    btn.disabled = false;
+  });
+</script>
+{% endblock %}

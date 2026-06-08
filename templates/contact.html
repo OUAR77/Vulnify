@@ -1,27 +1,24 @@
 {% extends "base.html" %}
 {% block title %}Contacto — Vulnify{% endblock %}
 {% block head %}
-<meta property="og:title" content="Contacto — Vulnify">
-<meta property="og:description" content="Ponte en contacto con Vulnify, la plataforma de bug bounty española. Escríbenos a hola@vulnify.es.">
-<meta property="og:image" content="/static/og-image.svg">
-<meta property="og:type" content="website">
 <style>
     .contact-section{text-align:center;padding:80px 0}
     .contact-section h1{font-size:clamp(1.8rem,3vw,2.8rem);margin-bottom:12px}
     .contact-section p{font-size:15px;color:var(--text-secondary);max-width:500px;margin:0 auto;line-height:1.7}
-    .contact-email{display:inline-block;margin-top:24px;padding:14px 32px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);font-size:18px;font-weight:600;color:var(--accent);text-decoration:none;transition:border-color 0.2s,box-shadow 0.2s}
-    .contact-email:hover{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
+    .contact-email{display:inline-block;margin-top:24px;padding:14px 32px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);font-size:18px;font-weight:600;color:var(--neon);text-decoration:none;transition:border-color 0.2s}
+    .contact-email:hover{border-color:var(--neon);box-shadow:0 0 0 3px var(--neon-glow)}
     .contact-note{margin-top:20px;font-size:13px;color:var(--text-tertiary)}
 </style>
 {% endblock %}
 {% block content %}
 <section class="section">
   <div class="container">
-    <div class="contact-section">
-      <h1>Contacto</h1>
-      <p>¿Tienes alguna pregunta, sugerencia o quieres reportar un problema? Estaremos encantados de leerte.</p>
-      <a href="/contacto" class="contact-email">hola@vulnify.es</a>
-      <p class="contact-note">Respondemos en menos de 24 horas hábiles. Para temas urgentes, indícalo en el asunto del correo.</p>
+    <div class="contact-section reveal">
+      <div class="section-label" style="margin:0 auto 16px">Contacto</div>
+      <h1>Hablemos</h1>
+      <p>¿Tienes un proyecto en mente? Cuéntanos tu idea y te enviaremos una propuesta personalizada.</p>
+      <a href="mailto:hola@vulnify.es" class="contact-email">hola@vulnify.es</a>
+      <p class="contact-note">Respondemos en menos de 24 horas laborables. Para proyectos urgentes, indícalo en el asunto.</p>
     </div>
   </div>
 </section>
