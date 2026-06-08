@@ -715,6 +715,8 @@ body{animation:fadeIn .3s ease}
   position:fixed;top:0;left:0;right:0;z-index:100;
   display:flex;align-items:center;justify-content:space-between;
   padding:1.5rem 2rem;
+  background:transparent;
+  border-bottom:1px solid transparent;
   transition:background .4s,padding .4s,box-shadow .4s,border-color .4s;
 }
 .header.scrolled{
