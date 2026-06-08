@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Vulnify — Monitorización de reputación online y dark web. Detecta filtraciones de datos, brechas de seguridad y protege tu marca en internet.">
+  <meta name="description" content="Vulnify — Monitorización de reputación online y dark web.">
   <title>Vulnify — Reputación digital</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,19 +25,16 @@
     ::-webkit-scrollbar-thumb { background: #1e1d1b; border-radius: 2px; }
     ::-webkit-scrollbar-thumb:hover { background: #2d2b28; }
 
-    /* Three.js Canvas */
+    /* Canvas */
     #canvas-container {
-      position: fixed;
-      top: 0; left: 0;
+      position: fixed; top: 0; left: 0;
       width: 100vw; height: 100vh;
-      z-index: 0;
-      pointer-events: none;
+      z-index: 0; pointer-events: none;
     }
 
     /* Progress Bar */
     #progress-bar {
-      position: fixed;
-      top: 0; left: 0;
+      position: fixed; top: 0; left: 0;
       width: 0; height: 2px;
       background: #d4a853;
       z-index: 100;
@@ -52,7 +49,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: background 0.4s, padding 0.4s;
+      transition: background 0.4s, padding 0.4s, border 0.4s;
     }
     .header.scrolled {
       background: rgba(8, 8, 10, 0.9);
@@ -60,11 +57,7 @@
       padding: 1rem 2.5rem;
       border-bottom: 1px solid rgba(212, 168, 83, 0.06);
     }
-    .header-nav {
-      display: flex;
-      gap: 1.5rem;
-      align-items: center;
-    }
+    .header-nav { display: flex; gap: 1.5rem; align-items: center; }
     .header-nav a {
       color: #5c5a55;
       text-decoration: none;
@@ -76,33 +69,21 @@
     }
     .header-nav a:hover { color: #d4a853; }
     .header-center {
-      position: absolute;
-      left: 50%;
+      position: absolute; left: 50%;
       transform: translateX(-50%);
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      text-decoration: none;
-      color: #e8e5e0;
+      font-size: 1rem; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase;
+      text-decoration: none; color: #e8e5e0;
       transition: opacity 0.3s;
     }
     .header-center:hover { opacity: 0.7; }
-    .header-actions {
-      display: flex;
-      gap: 1.25rem;
-      align-items: center;
-    }
+    .header-actions { display: flex; gap: 1.25rem; align-items: center; }
     .header-actions a {
-      font-size: 0.75rem;
-      text-decoration: none;
-      font-weight: 600;
-      transition: opacity 0.3s;
+      font-size: 0.75rem; text-decoration: none;
+      font-weight: 600; transition: opacity 0.3s;
       letter-spacing: 0.5px;
     }
-    .header-actions .btn-ghost {
-      color: #8a8780;
-    }
+    .header-actions .btn-ghost { color: #8a8780; }
     .header-actions .btn-ghost:hover { opacity: 0.6; }
     .header-actions .btn-primary {
       color: #d4a853;
@@ -111,257 +92,209 @@
     }
     .header-actions .btn-primary:hover { border-color: #d4a853; }
     #headerUser {
-      display: none;
-      align-items: center;
-      gap: 0.75rem;
+      display: none; align-items: center; gap: 0.75rem;
     }
-    #headerUserName {
-      font-size: 0.75rem;
-      color: #8a8780;
-      font-weight: 600;
-    }
+    #headerUserName { font-size: 0.75rem; color: #8a8780; font-weight: 600; }
     #headerUser button {
-      background: none;
-      border: none;
-      color: #5c5a55;
-      font-size: 0.75rem;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: inherit;
-      letter-spacing: 0.5px;
-      transition: color 0.3s;
+      background: none; border: none; color: #5c5a55;
+      font-size: 0.75rem; font-weight: 600; cursor: pointer;
+      font-family: inherit; letter-spacing: 0.5px; transition: color 0.3s;
     }
     #headerUser button:hover { color: #d4a853; }
 
     /* Mobile Menu */
     .menu-toggle {
-      display: none;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 4px;
-      flex-direction: column;
-      gap: 4px;
+      display: none; background: none; border: none;
+      cursor: pointer; padding: 4px; flex-direction: column; gap: 4px;
     }
     .menu-toggle span {
-      width: 20px;
-      height: 1.5px;
-      background: #e8e5e0;
-      transition: all 0.3s;
-      border-radius: 1px;
+      width: 20px; height: 1.5px;
+      background: #e8e5e0; transition: all 0.3s; border-radius: 1px;
     }
     .mobile-menu {
-      display: none;
-      position: fixed;
-      top: 0; right: -100%;
-      width: 280px;
-      height: 100vh;
+      display: none; position: fixed; top: 0; right: -100%;
+      width: 280px; height: 100vh;
       background: rgba(8, 8, 10, 0.98);
       backdrop-filter: blur(20px);
       padding: 5rem 2rem 2rem;
       transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 40;
-      flex-direction: column;
-      gap: 1.5rem;
+      z-index: 40; flex-direction: column; gap: 1.5rem;
     }
     .mobile-menu.open { right: 0; }
     .mobile-menu a {
-      color: #8a8780;
-      text-decoration: none;
-      font-size: 1rem;
-      font-weight: 600;
-      transition: color 0.3s;
+      color: #8a8780; text-decoration: none;
+      font-size: 1rem; font-weight: 600; transition: color 0.3s;
     }
     .mobile-menu a:hover { color: #d4a853; }
     .mobile-menu .mobile-auth, .mobile-menu .mobile-user {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      margin-top: 1rem;
+      display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;
     }
     .mobile-menu .mobile-user { display: none; }
 
     /* Hero */
     .hero {
-      position: relative;
-      z-index: 1;
+      position: relative; z-index: 1;
       min-height: 100vh;
-      display: flex;
-      align-items: center;
+      display: flex; align-items: center;
       padding: 8rem 2.5rem 4rem;
     }
-    .hero-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      width: 100%;
-    }
+    .hero-inner { max-width: 1280px; margin: 0 auto; width: 100%; }
     .hero-num {
-      font-size: 0.6875rem;
-      font-weight: 600;
-      color: #5c5a55;
-      letter-spacing: 2px;
-      margin-bottom: 2.5rem;
-      display: block;
+      font-size: 0.6875rem; font-weight: 600;
+      color: #5c5a55; letter-spacing: 2px;
+      margin-bottom: 2.5rem; display: block;
     }
     .hero h1 {
       font-size: clamp(3rem, 8vw, 7.5rem);
-      font-weight: 800;
-      line-height: 0.9;
-      letter-spacing: -3px;
-      margin-bottom: 2.5rem;
+      font-weight: 800; line-height: 0.9;
+      letter-spacing: -3px; margin-bottom: 2.5rem;
     }
-    .hero h1 span { display: block; }
-    .hero h1 span:last-child { color: #d4a853; }
+    .hero h1 span { display: block; overflow: hidden; }
+    .hero h1 span span {
+      display: block;
+      transform: translateY(100%);
+      animation: slideUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .hero h1 span:nth-child(2) span { animation-delay: 0.15s; }
+    .hero h1 span:nth-child(3) span { animation-delay: 0.3s; }
+    .hero h1 span:last-child span { color: #d4a853; }
+    @keyframes slideUp { to { transform: translateY(0); } }
     .hero p {
-      font-size: 0.9375rem;
-      color: #8a8780;
-      line-height: 1.7;
-      max-width: 420px;
-      margin-bottom: 3rem;
+      font-size: 0.9375rem; color: #8a8780;
+      line-height: 1.7; max-width: 420px; margin-bottom: 3rem;
+      opacity: 0; animation: fadeIn 0.8s ease 0.5s forwards;
     }
+    @keyframes fadeIn { to { opacity: 1; } }
     .hero-actions {
-      display: flex;
-      gap: 1.5rem;
-      align-items: center;
+      display: flex; gap: 1.5rem; align-items: center;
+      opacity: 0; animation: fadeIn 0.8s ease 0.7s forwards;
     }
     .btn-accent {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: #08080a;
-      background: #d4a853;
-      padding: 0.875rem 2rem;
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 0.8125rem;
-      letter-spacing: 0.5px;
-      transition: opacity 0.3s;
-      border: none;
-      cursor: pointer;
-      font-family: inherit;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      color: #08080a; background: #d4a853;
+      padding: 0.875rem 2rem; text-decoration: none;
+      font-weight: 700; font-size: 0.8125rem;
+      letter-spacing: 0.5px; transition: all 0.3s;
+      border: none; cursor: pointer; font-family: inherit;
     }
-    .btn-accent:hover { opacity: 0.85; }
+    .btn-accent:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 32px rgba(212, 168, 83, 0.2);
+    }
     .btn-outline {
-      color: #8a8780;
-      text-decoration: none;
-      font-size: 0.8125rem;
-      font-weight: 500;
+      color: #8a8780; text-decoration: none;
+      font-size: 0.8125rem; font-weight: 500;
       border-bottom: 1px solid rgba(138, 135, 128, 0.25);
-      padding-bottom: 2px;
-      transition: border-color 0.3s;
+      padding-bottom: 2px; transition: border-color 0.3s;
     }
     .btn-outline:hover { border-color: #8a8780; }
     .scroll-hint {
-      position: absolute;
-      bottom: 2.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.625rem;
-      color: #5c5a55;
-      letter-spacing: 3px;
-      text-transform: uppercase;
+      position: absolute; bottom: 2.5rem;
+      left: 50%; transform: translateX(-50%);
+      font-size: 0.625rem; color: #5c5a55;
+      letter-spacing: 3px; text-transform: uppercase;
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; transform: translateX(-50%) translateY(0); }
+      50% { opacity: 1; transform: translateX(-50%) translateY(4px); }
     }
 
     /* Sections */
     .section {
-      position: relative;
-      z-index: 1;
+      position: relative; z-index: 1;
       min-height: 100vh;
-      display: flex;
-      align-items: center;
+      display: flex; align-items: center;
       padding: 6rem 2.5rem;
     }
     .section-inner {
-      max-width: 1280px;
-      margin: 0 auto;
+      max-width: 1280px; margin: 0 auto;
       width: 100%;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 6rem;
-      align-items: center;
+      gap: 6rem; align-items: center;
     }
     .section-num {
-      font-size: 0.6875rem;
-      font-weight: 600;
-      color: #5c5a55;
-      letter-spacing: 2px;
-      display: block;
-      margin-bottom: 1.5rem;
+      font-size: 0.6875rem; font-weight: 600;
+      color: #5c5a55; letter-spacing: 2px;
+      display: block; margin-bottom: 1.5rem;
     }
     .section h2 {
       font-size: clamp(2rem, 5vw, 4.5rem);
-      font-weight: 800;
-      line-height: 0.92;
-      letter-spacing: -2px;
-      margin-bottom: 1.5rem;
+      font-weight: 800; line-height: 0.92;
+      letter-spacing: -2px; margin-bottom: 1.5rem;
     }
     .section h2 span { display: block; }
     .section h2 .gold { color: #d4a853; }
     .section p {
-      font-size: 0.9375rem;
-      color: #8a8780;
-      line-height: 1.7;
-      max-width: 400px;
+      font-size: 0.9375rem; color: #8a8780;
+      line-height: 1.7; max-width: 400px;
     }
-    .section-visual {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+
+    /* Scroll Reveal */
+    .reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
     }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* Stat Ring */
+    .section-visual { display: flex; justify-content: center; align-items: center; }
     .stat-ring {
-      width: 260px;
-      height: 260px;
+      width: 260px; height: 260px;
       border-radius: 50%;
-      border: 1px solid rgba(212, 168, 83, 0.12);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      border: 1px solid rgba(212, 168, 83, 0.15);
+      display: flex; align-items: center; justify-content: center;
       position: relative;
+      animation: ringPulse 4s ease-in-out infinite;
+    }
+    @keyframes ringPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(212, 168, 83, 0); }
+      50% { box-shadow: 0 0 40px 10px rgba(212, 168, 83, 0.04); }
+    }
+    .stat-ring::before {
+      content: '';
+      position: absolute; inset: -8px;
+      border-radius: 50%;
+      border: 1px solid rgba(212, 168, 83, 0.06);
+      animation: ringRotate 8s linear infinite;
+    }
+    @keyframes ringRotate {
+      to { transform: rotate(360deg); }
     }
     .stat-ring-inner {
-      width: 160px;
-      height: 160px;
+      width: 160px; height: 160px;
       border-radius: 50%;
       border: 1px solid rgba(212, 168, 83, 0.08);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
       text-align: center;
     }
     .stat-ring-value {
-      font-size: 2.25rem;
-      font-weight: 800;
-      color: #d4a853;
+      font-size: 2.25rem; font-weight: 800; color: #d4a853;
     }
     .stat-ring-label {
-      font-size: 0.6875rem;
-      color: #5c5a55;
-      margin-top: 0.25rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
+      font-size: 0.6875rem; color: #5c5a55;
+      margin-top: 0.25rem; letter-spacing: 1px; text-transform: uppercase;
     }
 
     /* Pricing */
     .pricing {
-      position: relative;
-      z-index: 1;
+      position: relative; z-index: 1;
       min-height: 100vh;
-      display: flex;
-      align-items: center;
+      display: flex; align-items: center;
       padding: 6rem 2.5rem;
     }
-    .pricing-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      width: 100%;
-    }
+    .pricing-inner { max-width: 1100px; margin: 0 auto; width: 100%; }
     .pricing h2 {
       font-size: clamp(2rem, 4vw, 3.5rem);
-      font-weight: 800;
-      line-height: 0.92;
-      letter-spacing: -2px;
-      margin-bottom: 4rem;
+      font-weight: 800; line-height: 0.92;
+      letter-spacing: -2px; margin-bottom: 4rem;
     }
     .pricing h2 span { display: block; }
     .pricing h2 .gold { color: #d4a853; }
@@ -374,47 +307,37 @@
     .plan-card {
       background: #0d0d10;
       padding: 3rem;
-      display: flex;
-      flex-direction: column;
+      display: flex; flex-direction: column;
+      transition: background 0.4s, transform 0.4s;
+    }
+    .plan-card:hover {
+      background: #111114;
+      transform: translateY(-2px);
     }
     .plan-name {
-      font-size: 0.6875rem;
-      font-weight: 600;
-      color: #5c5a55;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-bottom: 1rem;
+      font-size: 0.6875rem; font-weight: 600;
+      color: #5c5a55; text-transform: uppercase;
+      letter-spacing: 2px; margin-bottom: 1rem;
     }
     .plan-price {
-      font-size: 3rem;
-      font-weight: 800;
-      color: #e8e5e0;
-      margin-bottom: 0.25rem;
+      font-size: 3rem; font-weight: 800;
+      color: #e8e5e0; margin-bottom: 0.25rem;
     }
     .plan-period {
-      font-size: 0.75rem;
-      color: #5c5a55;
+      font-size: 0.75rem; color: #5c5a55;
       margin-bottom: 2rem;
     }
-    .plan-features {
-      list-style: none;
-      margin-bottom: 2.5rem;
-      flex: 1;
-    }
+    .plan-features { list-style: none; margin-bottom: 2.5rem; flex: 1; }
     .plan-features li {
-      color: #8a8780;
-      font-size: 0.8125rem;
+      color: #8a8780; font-size: 0.8125rem;
       padding: 0.5rem 0;
       border-bottom: 1px solid rgba(138, 135, 128, 0.06);
     }
     .plan-features li:last-child { border-bottom: none; }
     .plan-btn {
-      display: inline-block;
-      color: #d4a853;
-      text-decoration: none;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 1.5px;
+      display: inline-block; color: #d4a853;
+      text-decoration: none; font-size: 0.75rem;
+      font-weight: 700; letter-spacing: 1.5px;
       text-transform: uppercase;
       border-bottom: 1px solid rgba(212, 168, 83, 0.25);
       padding-bottom: 2px;
@@ -423,28 +346,39 @@
     }
     .plan-btn:hover { border-color: #d4a853; }
 
+    /* CTA Section */
+    .cta {
+      position: relative; z-index: 1;
+      padding: 8rem 2.5rem;
+      text-align: center;
+    }
+    .cta-inner { max-width: 600px; margin: 0 auto; }
+    .cta h2 {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 800; line-height: 0.95;
+      letter-spacing: -2px; margin-bottom: 1.5rem;
+    }
+    .cta h2 .gold { color: #d4a853; }
+    .cta p {
+      font-size: 0.9375rem; color: #8a8780;
+      line-height: 1.7; margin-bottom: 2.5rem;
+    }
+    .cta-actions { display: flex; gap: 1.5rem; justify-content: center; }
+
     /* Footer */
     .footer {
-      position: relative;
-      z-index: 1;
+      position: relative; z-index: 1;
       padding: 3rem 2.5rem;
       border-top: 1px solid rgba(212, 168, 83, 0.06);
     }
     .footer-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
+      max-width: 1280px; margin: 0 auto;
+      display: flex; justify-content: space-between;
       align-items: center;
-      font-size: 0.6875rem;
-      color: #5c5a55;
+      font-size: 0.6875rem; color: #5c5a55;
       letter-spacing: 0.5px;
     }
-    .footer a {
-      color: #8a8780;
-      text-decoration: none;
-      transition: color 0.3s;
-    }
+    .footer a { color: #8a8780; text-decoration: none; transition: color 0.3s; }
     .footer a:hover { color: #d4a853; }
 
     /* Responsive */
@@ -452,36 +386,22 @@
       .header { padding: 1rem 1.5rem; }
       .header.scrolled { padding: 0.75rem 1.5rem; }
       .header-nav { display: none; }
-      .header-center {
-        position: static;
-        transform: none;
-        font-size: 0.875rem;
-      }
+      .header-center { position: static; transform: none; font-size: 0.875rem; }
       .header-actions .btn-ghost { display: none; }
       .menu-toggle { display: flex; }
       .mobile-menu { display: flex; }
-
       .hero { padding: 6rem 1.5rem 3rem; }
       .hero h1 { letter-spacing: -1px; }
       .scroll-hint { display: none; }
-
       .section { padding: 4rem 1.5rem; min-height: auto; }
-      .section-inner {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
+      .section-inner { grid-template-columns: 1fr; gap: 2rem; }
       .section-visual { display: none; }
       .section p { max-width: none; }
-
       .pricing { padding: 4rem 1.5rem; }
       .pricing-grid { grid-template-columns: 1fr; }
       .plan-card { padding: 2rem; }
-
-      .footer-inner {
-        flex-direction: column;
-        gap: 0.75rem;
-        text-align: center;
-      }
+      .cta { padding: 4rem 1.5rem; }
+      .footer-inner { flex-direction: column; gap: 0.75rem; text-align: center; }
     }
     @media (min-width: 769px) {
       .menu-toggle { display: none !important; }
@@ -523,10 +443,9 @@
     <a href="#02" onclick="closeMobileMenu()">02 — Dark web</a>
     <a href="#03" onclick="closeMobileMenu()">03 — Alertas</a>
     <a href="#planes" onclick="closeMobileMenu()">04 — Planes</a>
-    <a href="/contacto" onclick="closeMobileMenu()">Contacto</a>
     <div id="mobileAuth" class="mobile-auth">
-      <a href="/login" style="color:#e8e5e0;font-weight:700" onclick="closeMobileMenu()">Iniciar sesión</a>
-      <a href="/register" style="color:#d4a853" onclick="closeMobileMenu()">Registrarse</a>
+      <a href="/login" style="color:#e8e5e0;font-weight:700">Iniciar sesión</a>
+      <a href="/register" style="color:#d4a853">Registrarse</a>
     </div>
     <div id="mobileUser" class="mobile-user">
       <a href="/dashboard" id="mobileUserName" style="color:#e8e5e0;font-weight:700">Dashboard</a>
@@ -539,9 +458,9 @@
     <div class="hero-inner">
       <span class="hero-num">00</span>
       <h1>
-        <span>Protegemos</span>
-        <span>tu reputación</span>
-        <span>digital</span>
+        <span><span>Protegemos</span></span>
+        <span><span>tu reputación</span></span>
+        <span><span>digital</span></span>
       </h1>
       <p>Monitoreamos dominios y emails en busca de filtraciones de datos y exposición en la dark web. Recibe alertas al instante.</p>
       <div class="hero-actions">
@@ -556,16 +475,16 @@
   <section class="section" id="01">
     <div class="section-inner">
       <div>
-        <span class="section-num">01</span>
+        <span class="section-num reveal">01</span>
         <h2>
-          <span>Monitoreo</span>
-          <span class="gold">de dominios</span>
-          <span>24/7</span>
+          <span class="reveal reveal-delay-1">Monitoreo</span>
+          <span class="reveal reveal-delay-2 gold">de dominios</span>
+          <span class="reveal reveal-delay-3">24/7</span>
         </h2>
-        <p>Registra los dominios y correos de tu empresa. Vigilamos cada rincón de internet en busca de filtraciones y brechas de seguridad.</p>
+        <p class="reveal reveal-delay-4">Registra los dominios y correos de tu empresa. Vigilamos cada rincón de internet en busca de filtraciones y brechas de seguridad.</p>
       </div>
       <div class="section-visual">
-        <div class="stat-ring">
+        <div class="stat-ring reveal">
           <div class="stat-ring-inner">
             <span class="stat-ring-value">10K+</span>
             <span class="stat-ring-label">Activos monitorizados</span>
@@ -579,7 +498,7 @@
   <section class="section" id="02">
     <div class="section-inner">
       <div class="section-visual">
-        <div class="stat-ring">
+        <div class="stat-ring reveal">
           <div class="stat-ring-inner">
             <span class="stat-ring-value">5M+</span>
             <span class="stat-ring-label">Brechas indexadas</span>
@@ -587,12 +506,12 @@
         </div>
       </div>
       <div>
-        <span class="section-num">02</span>
+        <span class="section-num reveal">02</span>
         <h2>
-          <span>Dark web</span>
-          <span class="gold">intelligence</span>
+          <span class="reveal reveal-delay-1">Dark web</span>
+          <span class="reveal reveal-delay-2 gold">intelligence</span>
         </h2>
-        <p>Rastreamos foros ocultos, markets y repositorios de la dark web con +5M de brechas indexadas buscando tus datos comprometidos.</p>
+        <p class="reveal reveal-delay-3">Rastreamos foros ocultos, markets y repositorios de la dark web con +5M de brechas indexadas buscando tus datos comprometidos.</p>
       </div>
     </div>
   </section>
@@ -601,16 +520,16 @@
   <section class="section" id="03">
     <div class="section-inner">
       <div>
-        <span class="section-num">03</span>
+        <span class="section-num reveal">03</span>
         <h2>
-          <span>Alertas</span>
-          <span class="gold">en tiempo</span>
-          <span>real</span>
+          <span class="reveal reveal-delay-1">Alertas</span>
+          <span class="reveal reveal-delay-2 gold">en tiempo</span>
+          <span class="reveal reveal-delay-3">real</span>
         </h2>
-        <p>Si detectamos una filtración, te notificamos al instante con los detalles, la gravedad y los pasos para actuar de inmediato.</p>
+        <p class="reveal reveal-delay-4">Si detectamos una filtración, te notificamos al instante con los detalles, la gravedad y los pasos para actuar de inmediato.</p>
       </div>
       <div class="section-visual">
-        <div class="stat-ring">
+        <div class="stat-ring reveal">
           <div class="stat-ring-inner">
             <span class="stat-ring-value">24/7</span>
             <span class="stat-ring-label">Cobertura continua</span>
@@ -624,12 +543,12 @@
   <section class="pricing" id="planes">
     <div class="pricing-inner">
       <h2>
-        <span class="gold">Planes</span>
-        <span>para cada</span>
-        <span>necesidad</span>
+        <span class="reveal gold">Planes</span>
+        <span class="reveal reveal-delay-1">para cada</span>
+        <span class="reveal reveal-delay-2">necesidad</span>
       </h2>
       <div class="pricing-grid">
-        <div class="plan-card">
+        <div class="plan-card reveal reveal-delay-1">
           <div class="plan-name">Gratis</div>
           <div class="plan-price">0€</div>
           <div class="plan-period">Siempre gratis</div>
@@ -640,7 +559,7 @@
           </ul>
           <a href="/monitor" class="plan-btn">Probar ahora</a>
         </div>
-        <div class="plan-card">
+        <div class="plan-card reveal reveal-delay-2">
           <div class="plan-name">Starter</div>
           <div class="plan-price">49€</div>
           <div class="plan-period">Al mes</div>
@@ -652,7 +571,7 @@
           </ul>
           <a href="/register" class="plan-btn">Elegir starter</a>
         </div>
-        <div class="plan-card">
+        <div class="plan-card reveal reveal-delay-3">
           <div class="plan-name">Profesional</div>
           <div class="plan-price">149€</div>
           <div class="plan-period">Al mes</div>
@@ -668,6 +587,21 @@
     </div>
   </section>
 
+  <!-- CTA -->
+  <section class="cta">
+    <div class="cta-inner">
+      <h2 class="reveal">
+        <span class="gold">¿Sabes si tus datos</span>
+        <span>están en la</span>
+        <span class="gold">dark web?</span>
+      </h2>
+      <p class="reveal reveal-delay-1">Comprueba tu primer dominio o email gratis. Sin tarjeta de crédito.</p>
+      <div class="cta-actions reveal reveal-delay-2">
+        <a href="/monitor" class="btn-accent">Comprobar ahora →</a>
+      </div>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="footer">
     <div class="footer-inner">
@@ -675,53 +609,237 @@
       <a href="/privacidad">Privacidad</a>
       <a href="/terminos">Términos</a>
       <a href="/contacto">Contacto</a>
-      <span>Hecho con dedicación</span>
+      <a href="/sobre-nosotros">Sobre nosotros</a>
     </div>
   </footer>
 
   <script src="/static/js/script.js"></script>
   <script>
-    // Three.js Background
+    // ─── Three.js Network ───
     try {
       const c = document.getElementById('canvas-container');
       if (!c) throw 0;
       const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
       const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       c.appendChild(renderer.domElement);
 
-      const count = 1500;
-      const positions = new Float32Array(count * 3);
-      for (let i = 0; i < count * 3; i++) positions[i] = (Math.random() - 0.5) * 25;
+      // ── Nodes (larger points) ──
+      const nodeCount = 60;
+      const nodePos = [];
+      for (let i = 0; i < nodeCount; i++) {
+        nodePos.push({
+          x: (Math.random() - 0.5) * 24,
+          y: (Math.random() - 0.5) * 16,
+          z: (Math.random() - 0.5) * 12,
+          vx: (Math.random() - 0.5) * 0.002,
+          vy: (Math.random() - 0.5) * 0.002,
+          vz: (Math.random() - 0.5) * 0.002,
+        });
+      }
 
-      const geo = new THREE.BufferGeometry();
-      geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-      const mat = new THREE.PointsMaterial({
+      const nodeGeo = new THREE.BufferGeometry();
+      const nodeArr = new Float32Array(nodeCount * 3);
+      for (let i = 0; i < nodeCount; i++) {
+        nodeArr[i*3] = nodePos[i].x;
+        nodeArr[i*3+1] = nodePos[i].y;
+        nodeArr[i*3+2] = nodePos[i].z;
+      }
+      nodeGeo.setAttribute('position', new THREE.BufferAttribute(nodeArr, 3));
+      const nodeMat = new THREE.PointsMaterial({
         color: 0xd4a853,
-        size: 0.035,
+        size: 0.12,
         transparent: true,
-        opacity: 0.5,
+        opacity: 0.7,
         blending: THREE.AdditiveBlending,
       });
-      const mesh = new THREE.Points(geo, mat);
-      scene.add(mesh);
+      const nodeMesh = new THREE.Points(nodeGeo, nodeMat);
+      scene.add(nodeMesh);
 
-      camera.position.z = 10;
+      // ── Connection lines ──
+      const linePairs = [];
+      for (let i = 0; i < nodeCount; i++) {
+        for (let j = i + 1; j < nodeCount; j++) {
+          const dx = nodePos[i].x - nodePos[j].x;
+          const dy = nodePos[i].y - nodePos[j].y;
+          const dz = nodePos[i].z - nodePos[j].z;
+          const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+          if (dist < 5) {
+            linePairs.push(i, j);
+          }
+        }
+      }
 
+      const linePositions = [];
+      for (let k = 0; k < linePairs.length; k += 2) {
+        const i = linePairs[k];
+        const j = linePairs[k+1];
+        linePositions.push(
+          nodePos[i].x, nodePos[i].y, nodePos[i].z,
+          nodePos[j].x, nodePos[j].y, nodePos[j].z
+        );
+      }
+      const lineGeo = new THREE.BufferGeometry();
+      lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+      const lineMat = new THREE.LineBasicMaterial({
+        color: 0xd4a853,
+        transparent: true,
+        opacity: 0.08,
+      });
+      const lineMesh = new THREE.LineSegments(lineGeo, lineMat);
+      scene.add(lineMesh);
+
+      // ── Ambient particles ──
+      const ambCount = 1000;
+      const ambPos = new Float32Array(ambCount * 3);
+      const ambVel = [];
+      for (let i = 0; i < ambCount; i++) {
+        ambPos[i*3] = (Math.random() - 0.5) * 30;
+        ambPos[i*3+1] = (Math.random() - 0.5) * 20;
+        ambPos[i*3+2] = (Math.random() - 0.5) * 15;
+        ambVel.push({
+          x: (Math.random() - 0.5) * 0.005,
+          y: (Math.random() - 0.5) * 0.005,
+          z: (Math.random() - 0.5) * 0.005,
+        });
+      }
+      const ambGeo = new THREE.BufferGeometry();
+      ambGeo.setAttribute('position', new THREE.BufferAttribute(ambPos, 3));
+      const ambMat = new THREE.PointsMaterial({
+        color: 0xd4a853,
+        size: 0.025,
+        transparent: true,
+        opacity: 0.3,
+        blending: THREE.AdditiveBlending,
+      });
+      const ambMesh = new THREE.Points(ambGeo, ambMat);
+      scene.add(ambMesh);
+
+      // ── Scan ring ──
+      const ringGeo = new THREE.RingGeometry(3.8, 4, 64);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: 0xd4a853,
+        transparent: true,
+        opacity: 0.06,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+      });
+      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+      ringMesh.rotation.x = Math.PI / 3;
+      scene.add(ringMesh);
+
+      const ring2Geo = new THREE.RingGeometry(5.5, 5.7, 64);
+      const ring2Mat = new THREE.MeshBasicMaterial({
+        color: 0xd4a853,
+        transparent: true,
+        opacity: 0.04,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+      });
+      const ring2Mesh = new THREE.Mesh(ring2Geo, ring2Mat);
+      ring2Mesh.rotation.x = -Math.PI / 4;
+      scene.add(ring2Mesh);
+
+      // ── Central glow ──
+      const glowGeo = new THREE.SphereGeometry(1.5, 24, 24);
+      const glowMat = new THREE.MeshBasicMaterial({
+        color: 0xd4a853,
+        transparent: true,
+        opacity: 0.03,
+      });
+      const glowMesh = new THREE.Mesh(glowGeo, glowMat);
+      scene.add(glowMesh);
+
+      camera.position.z = 14;
+
+      // ── Mouse ──
       let mx = 0, my = 0;
       document.addEventListener('mousemove', (e) => {
         mx = (e.clientX / window.innerWidth - 0.5) * 2;
         my = (e.clientY / window.innerHeight - 0.5) * 2;
       });
 
+      let scanPhase = 0;
+
+      // ── Animate ──
       function animate() {
         requestAnimationFrame(animate);
-        mesh.rotation.y += 0.0002;
-        mesh.rotation.x += 0.00005;
-        mesh.rotation.x += (my * 0.015 - mesh.rotation.x) * 0.01;
-        mesh.rotation.y += (mx * 0.015 - mesh.rotation.y) * 0.01;
+        const time = Date.now() * 0.001;
+
+        // Rotate entire scene slowly
+        nodeMesh.rotation.y += 0.00015;
+        nodeMesh.rotation.x += 0.00005;
+        lineMesh.rotation.y = nodeMesh.rotation.y;
+        lineMesh.rotation.x = nodeMesh.rotation.x;
+        ambMesh.rotation.y = nodeMesh.rotation.y;
+        ambMesh.rotation.x = nodeMesh.rotation.x;
+        ringMesh.rotation.y = nodeMesh.rotation.y;
+        ringMesh.rotation.x = nodeMesh.rotation.x;
+        ring2Mesh.rotation.y = nodeMesh.rotation.y;
+        ring2Mesh.rotation.x = nodeMesh.rotation.x;
+        glowMesh.rotation.y = nodeMesh.rotation.y;
+        glowMesh.rotation.x = nodeMesh.rotation.x;
+
+        // Mouse parallax
+        nodeMesh.rotation.x += (my * 0.02 - nodeMesh.rotation.x) * 0.008;
+        nodeMesh.rotation.y += (mx * 0.02 - nodeMesh.rotation.y) * 0.008;
+
+        // Nodes drift
+        const pos = nodeGeo.attributes.position.array;
+        for (let i = 0; i < nodeCount; i++) {
+          nodePos[i].x += nodePos[i].vx;
+          nodePos[i].y += nodePos[i].vy;
+          nodePos[i].z += nodePos[i].vz;
+          if (Math.abs(nodePos[i].x) > 12) nodePos[i].vx *= -1;
+          if (Math.abs(nodePos[i].y) > 8) nodePos[i].vy *= -1;
+          if (Math.abs(nodePos[i].z) > 6) nodePos[i].vz *= -1;
+          pos[i*3] = nodePos[i].x;
+          pos[i*3+1] = nodePos[i].y;
+          pos[i*3+2] = nodePos[i].z;
+        }
+        nodeGeo.attributes.position.needsUpdate = true;
+
+        // Update lines
+        const lPos = [];
+        for (let k = 0; k < linePairs.length; k += 2) {
+          const i = linePairs[k];
+          const j = linePairs[k+1];
+          const dx = nodePos[i].x - nodePos[j].x;
+          const dy = nodePos[i].y - nodePos[j].y;
+          const dz = nodePos[i].z - nodePos[j].z;
+          const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+          if (dist < 6) {
+            lPos.push(nodePos[i].x, nodePos[i].y, nodePos[i].z);
+            lPos.push(nodePos[j].x, nodePos[j].y, nodePos[j].z);
+          }
+        }
+        lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(lPos, 3));
+        lineGeo.attributes.position.needsUpdate = true;
+
+        // Ambient particles float
+        const ambPosAttr = ambGeo.attributes.position.array;
+        for (let i = 0; i < ambCount; i++) {
+          ambPosAttr[i*3] += ambVel[i].x;
+          ambPosAttr[i*3+1] += ambVel[i].y;
+          ambPosAttr[i*3+2] += ambVel[i].z;
+          if (Math.abs(ambPosAttr[i*3]) > 15) ambVel[i].x *= -1;
+          if (Math.abs(ambPosAttr[i*3+1]) > 10) ambVel[i].y *= -1;
+          if (Math.abs(ambPosAttr[i*3+2]) > 7) ambVel[i].z *= -1;
+        }
+        ambGeo.attributes.position.needsUpdate = true;
+
+        // Scan pulse
+        scanPhase += 0.02;
+        const scanScale = 1 + Math.sin(scanPhase) * 0.3;
+        ringMesh.scale.set(scanScale, scanScale, scanScale);
+        ringMesh.material.opacity = 0.06 + Math.sin(scanPhase) * 0.03;
+        ring2Mesh.scale.set(scanScale * 0.7, scanScale * 0.7, scanScale * 0.7);
+
+        // Glow pulse
+        glowMesh.material.opacity = 0.03 + Math.sin(time * 0.5) * 0.015;
+
         renderer.render(scene, camera);
       }
       animate();
@@ -733,7 +851,18 @@
       });
     } catch(e) {}
 
-    // Progress bar
+    // ─── Scroll Reveal ───
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // ─── Progress Bar ───
     const progressBar = document.getElementById('progress-bar');
     window.addEventListener('scroll', () => {
       const scrollTop = window.scrollY;
@@ -741,19 +870,20 @@
       progressBar.style.width = (scrollTop / docHeight * 100) + '%';
     });
 
-    // Header scroll
+    // ─── Header Scroll ───
     const header = document.getElementById('header');
     window.addEventListener('scroll', () => {
       header.classList.toggle('scrolled', window.scrollY > 50);
     });
 
-    // Mobile menu
+    // ─── Mobile Menu ───
     const menuToggle = document.getElementById('menuToggle');
     const mobileMenu = document.getElementById('mobileMenu');
     if (menuToggle) {
       menuToggle.addEventListener('click', () => {
         menuToggle.classList.toggle('open');
         mobileMenu.classList.toggle('open');
+        document.body.classList.toggle('menu-open');
       });
     }
   </script>
