@@ -289,9 +289,9 @@ async def monitor_page(request: Request):
     return templates.TemplateResponse(request, "monitor.html")
 
 
-@app.get("/scanner", response_class=HTMLResponse, description="Redirect to monitor")
-async def scanner_redirect(request: Request):
-    return templates.TemplateResponse(request, "monitor.html")
+@app.get("/scanner", response_class=HTMLResponse, description="Security scanner")
+async def scanner_page(request: Request, target: str = ""):
+    return templates.TemplateResponse(request, "scan.html", {"target": target})
 
 
 @app.get("/precios", response_class=HTMLResponse, description="Pricing plans")

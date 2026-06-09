@@ -1,33 +1,34 @@
 {% extends "base.html" %}
-{% block description %}Planes de Vulnify para monitorización de reputación digital. Gratuito, Starter y Profesional.{% endblock %}
+{% block description %}Planes y precios de Vulnify para monitorización de reputación digital. Gratuito, Starter y Profesional.{% endblock %}
 {% block title %}Precios — Vulnify{% endblock %}
 {% block content %}
 <section class="section" style="padding-top:100px">
   <div class="container">
     <div class="section-header centered">
       <div class="section-label">Planes</div>
-      <h2 class="section-title">Protege tu reputación digital</h2>
+      <h2>Protege tu reputación digital</h2>
       <p class="section-sub">Todos los planes incluyen monitorización de brechas. Escala según tus necesidades.</p>
     </div>
-    <div class="billing-toggle" id="billing-toggle">
-      <div class="toggle-slider" id="toggle-slider"></div>
-      <button class="toggle-btn active" data-interval="month">Mensual</button>
-      <button class="toggle-btn" data-interval="year">Anual <span class="savings-badge">Ahorra</span></button>
+    <div style="display:flex;justify-content:center;margin-bottom:32px">
+      <div class="bill-toggle" id="bill-toggle">
+        <button class="bill-btn active" data-interval="month">Mensual</button>
+        <button class="bill-btn" data-interval="year">Anual</button>
+      </div>
     </div>
     <div class="pricing-grid" id="pricing-grid"></div>
 
     <div class="section" style="padding-bottom:0">
-      <div class="faq-list">
+      <div class="faq-list" style="margin-top:40px">
         <div class="faq-item">
-          <button class="faq-question">¿Qué tipos de activos puedo monitorizar? <span class="faq-arrow">→</span></button>
-          <div class="faq-answer">Puedes monitorizar dominios (ejemplo.com) y direcciones de email. Comprobamos si aparecen en nuestra base de datos de brechas conocidas.</div>
+          <button class="faq-question" onclick="toggleFaq(this)">¿Qué tipos de activos puedo monitorizar? <span class="faq-arrow">+</span></button>
+          <div class="faq-answer">Puedes monitorizar dominios y direcciones de email. Comprobamos si aparecen en nuestra base de datos de brechas conocidas.</div>
         </div>
         <div class="faq-item">
-          <button class="faq-question">¿De dónde obtenéis los datos de brechas? <span class="faq-arrow">→</span></button>
-          <div class="faq-answer">Mantenemos una base de datos actualizada con las filtraciones más conocidas: LinkedIn, Dropbox, Adobe, Facebook, y cientos más. También consultamos fuentes públicas adicionales.</div>
+          <button class="faq-question" onclick="toggleFaq(this)">¿De dónde obtenéis los datos? <span class="faq-arrow">+</span></button>
+          <div class="faq-answer">Mantenemos una base de datos actualizada con las filtraciones más conocidas: LinkedIn, Dropbox, Adobe, Facebook, y cientos más.</div>
         </div>
         <div class="faq-item">
-          <button class="faq-question">¿Puedo cancelar mi suscripción? <span class="faq-arrow">→</span></button>
+          <button class="faq-question" onclick="toggleFaq(this)">¿Puedo cancelar mi suscripción? <span class="faq-arrow">+</span></button>
           <div class="faq-answer">Sí, en cualquier momento desde tu dashboard. Sin permanencia ni penalización.</div>
         </div>
       </div>
@@ -37,101 +38,58 @@
 {% endblock %}
 {% block scripts %}
 <script>
-  let plans = [];
-  let currentInterval = 'month';
+let plans = [];
+let interval = 'month';
 
-  document.querySelectorAll('.toggle-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentInterval = btn.dataset.interval;
-      const slider = document.getElementById('toggle-slider');
-      if (currentInterval === 'year') slider.classList.add('right');
-      else slider.classList.remove('right');
-      renderPlans();
-    });
+document.querySelectorAll('.bill-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.bill-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    interval = b.dataset.interval;
+    renderPlans();
   });
+});
 
-  function getToken() { return localStorage.getItem('vulnify_token'); }
-
-  function renderPlans() {
-    const grid = document.getElementById('pricing-grid');
-    grid.innerHTML = '';
-    plans.forEach((plan, i) => {
-      const price = currentInterval === 'month' ? plan.price_monthly : (plan.price_yearly || plan.price_monthly);
-      const period = currentInterval === 'month' ? 'al mes' : 'al año';
-      const priceText = price === 0 ? '0€' : price + '€';
-      const featured = i === 1 ? ' featured' : '';
-      const btnClass = i === 1 ? 'fill-accent' : 'outline';
-      const btnText = plan.name === 'Gratis' ? 'Probar ahora' : `Elegir ${plan.name}`;
-      const isFree = plan.name === 'Gratis';
-
-      let savings = '';
-      if (currentInterval === 'year' && plan.price_monthly > 0 && plan.price_yearly) {
-        const monthlyTotal = plan.price_monthly * 12;
-        const saved = monthlyTotal - plan.price_yearly;
-        if (saved > 0) savings = `<div style="font-size:10px;color:var(--accent);font-weight:600;margin-bottom:4px">Ahorras ${saved}€/año</div>`;
-      }
-
-      grid.innerHTML += `
-        <div class="plan-card${featured}">
-          <div class="plan-name">${plan.name}</div>
-          <div class="plan-price">${priceText}</div>
-          <div class="plan-period">${price === 0 ? 'siempre gratis' : period}</div>
-          ${savings}
-          <div class="plan-desc">${plan.description}.</div>
-          <div class="plan-divider"></div>
-          <ul class="plan-features">
-            ${plan.features.map(f => `<li>${f}</li>`).join('')}
-          </ul>
-          ${isFree
-            ? `<a href="/monitor" class="plan-btn outline">${btnText}</a>`
-            : `<button class="plan-btn ${btnClass} subscribe-btn" data-plan-id="${plan.id}">${btnText}</button>`
-          }
-        </div>
-      `;
-    });
-    document.querySelectorAll('.subscribe-btn').forEach(btn => {
-      btn.addEventListener('click', () => subscribe(parseInt(btn.dataset.planId)));
-    });
-  }
-
-  async function loadPlans() {
-    try {
-      const resp = await fetch('/api/plans');
-      plans = await resp.json();
-      renderPlans();
-    } catch { /* keep static fallback */ }
-  }
-
-  async function subscribe(planId) {
-    const token = getToken();
-    if (!token) {
-      window.location.href = '/register?plan=' + planId;
-      return;
+function renderPlans() {
+  const grid = document.getElementById('pricing-grid');
+  grid.innerHTML = plans.map((plan, i) => {
+    const p = interval === 'month' ? plan.price_monthly : (plan.price_yearly || plan.price_monthly);
+    const pt = p === 0 ? '0€' : p + '€';
+    const per = p === 0 ? 'siempre gratis' : (interval === 'month' ? 'al mes' : 'al año');
+    const feat = i === 1 ? ' featured' : '';
+    const bc = i === 1 ? 'primary' : 'ghost';
+    const bt = plan.name === 'Gratis' ? 'Probar ahora' : 'Elegir ' + plan.name;
+    const isFree = plan.name === 'Gratis';
+    let sv = '';
+    if (interval === 'year' && plan.price_monthly > 0 && plan.price_yearly) {
+      const s = plan.price_monthly * 12 - plan.price_yearly;
+      if (s > 0) sv = '<div style="font-size:10px;color:var(--accent);font-weight:600;margin-bottom:4px">Ahorras ' + s + '€/año</div>';
     }
-    const btn = document.querySelector(`.subscribe-btn[data-plan-id="${planId}"]`);
-    const orig = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = 'Procesando...';
-    try {
-      const resp = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan_id: planId, interval: currentInterval })
-      });
-      const data = await resp.json();
-      if (!resp.ok) { alert(data.detail || 'Error al procesar'); btn.disabled = false; btn.textContent = orig; return; }
-      if (data.free) { window.location.href = '/dashboard'; return; }
-      if (data.checkout_url) { window.location.href = data.checkout_url; return; }
-      alert('Error: no se pudo iniciar el proceso de pago');
-    } catch {
-      alert('Error de conexión');
-    }
-    btn.disabled = false;
-    btn.textContent = orig;
-  }
+    return '<div class="plan-card' + feat + '"><div class="plan-name">' + plan.name + '</div><div class="plan-price">' + pt + '</div><div class="plan-period">' + per + '</div>' + sv + '<div class="plan-desc">' + plan.description + '.</div><div class="plan-divider"></div><ul class="plan-features">' + plan.features.map(f => '<li>' + f + '</li>').join('') + '</ul>' + (isFree ? '<a href="/monitor" class="plan-btn primary">' + bt + '</a>' : '<button class="plan-btn ' + bc + ' sub-btn" data-id="' + plan.id + '">' + bt + '</button>') + '</div>';
+  });
+  document.querySelectorAll('.sub-btn').forEach(b => b.addEventListener('click', () => sub(parseInt(b.dataset.id))));
+}
 
-  loadPlans();
+async function loadPlans() {
+  try { const r = await fetch('/api/plans'); plans = await r.json(); renderPlans(); } catch {}
+}
+
+async function sub(planId) {
+  const t = localStorage.getItem('vulnify_token');
+  if (!t) { window.location.href = '/register?plan=' + planId; return; }
+  const b = document.querySelector('.sub-btn[data-id="' + planId + '"]');
+  const orig = b.textContent;
+  b.disabled = true; b.textContent = '...';
+  try {
+    const r = await fetch('/api/subscribe', { method:'POST', headers:{'Authorization':'Bearer '+t,'Content-Type':'application/json'}, body:JSON.stringify({plan_id:planId,interval:interval}) });
+    const d = await r.json();
+    if (!r.ok) { alert(d.detail||'Error'); b.disabled = false; b.textContent = orig; return; }
+    if (d.free) { window.location.href = '/dashboard'; return; }
+    if (d.checkout_url) { window.location.href = d.checkout_url; return; }
+  } catch { alert('Error de conexión'); }
+  b.disabled = false; b.textContent = orig;
+}
+
+loadPlans();
 </script>
 {% endblock %}

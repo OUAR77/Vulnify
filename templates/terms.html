@@ -1,55 +1,40 @@
 {% extends "base.html" %}
-{% block title %}Términos y condiciones — Vulnify{% endblock %}
-{% block head %}
-<style>
-.legal-section{max-width:720px;margin:0 auto;padding:40px 0}
-.legal-section h1{font-size:32px;font-weight:800;margin-bottom:8px}
-.legal-section .date{color:var(--text-tertiary);font-size:14px;margin-bottom:32px}
-.legal-section h2{font-size:18px;font-weight:700;margin-top:32px;margin-bottom:8px}
-.legal-section p,.legal-section li{font-size:15px;color:var(--text-secondary);line-height:1.7}
-.legal-section ul{padding-left:20px}
-.legal-section li{margin-bottom:4px}
-</style>
-{% endblock %}
+{% block description %}Términos y condiciones de uso de Vulnify.{% endblock %}
+{% block title %}Términos — Vulnify{% endblock %}
 {% block content %}
-<section class="section"><div class="container">
-<div class="legal-section">
-  <h1>Términos y condiciones</h1>
-  <p class="date">Última actualización: 22 de mayo de 2026</p>
-
-  <h2>1. La plataforma</h2>
-  <p>Vulnify conecta empresas (en adelante, "clientes") con investigadores de seguridad (en adelante, "hunters") para la identificación y reporte de vulnerabilidades en aplicaciones y sistemas autorizados.</p>
-
-  <h2>2. Roles</h2>
-  <ul>
-    <li><strong>Hunter:</strong> persona física que reporta vulnerabilidades a través de la plataforma.</li>
-    <li><strong>Cliente:</strong> empresa que publica programas de bug bounty y paga recompensas por reportes válidos.</li>
-    <li><strong>Vulnify:</strong> plataforma que actúa como intermediaria entre hunters y clientes.</li>
-  </ul>
-
-  <h2>3. Registro y cuentas</h2>
-  <p>Al registrarte, aceptas proporcionar información veraz. Eres responsable de mantener la confidencialidad de tus credenciales. Vulnify se reserva el derecho de suspender cuentas que incumplan estos términos.</p>
-
-  <h2>4. Programas de bug bounty</h2>
-  <p>Los hunters solo pueden probar vulnerabilidades en sistemas expresamente autorizados por los clientes dentro del alcance definido en cada programa. Cualquier prueba fuera de alcance constituye una infracción de estos términos. Los clientes se comprometen a definir claramente el alcance, las exclusiones y las recompensas de cada programa.</p>
-
-  <h2>5. Reportes y recompensas</h2>
-  <p>Los hunters se comprometen a reportar vulnerabilidades de manera responsable, proporcionando evidencia suficiente para su reproducción. Los clientes se comprometen a evaluar los reportes en un plazo máximo de 48 horas y a pagar las recompensas acordadas dentro de las 24 horas siguientes a la validación del reporte. Vulnify retiene una comisión del 10% sobre cada bounty pagado.</p>
-
-  <h2>6. Privacidad</h2>
-  <p>Vulnify recopila y procesa datos personales según lo descrito en nuestra <a href="/privacidad">Política de privacidad</a>. No compartimos datos personales de hunters con terceros sin su consentimiento explícito, salvo obligación legal.</p>
-
-  <h2>7. No procesamiento</h2>
-  <p>Los clientes aceptan no emprender acciones legales contra hunters que actúen de buena fe, dentro del alcance definido y de acuerdo con estos términos. Vulnify no se hace responsable de actividades realizadas fuera del alcance de los programas.</p>
-
-  <h2>8. Limitación de responsabilidad</h2>
-  <p>Vulnify actúa únicamente como intermediario. No garantizamos la exactitud de los reportes ni la capacidad de pago de los clientes. En ningún caso Vulnify será responsable por daños indirectos o pérdidas derivadas del uso de la plataforma.</p>
-
-  <h2>9. Modificaciones</h2>
-  <p>Vulnify se reserva el derecho de modificar estos términos en cualquier momento. Los cambios serán notificados a través de la plataforma y entrarán en vigor 15 días después de su publicación.</p>
-
-  <h2>10. Contacto</h2>
-  <p>Para cualquier consulta sobre estos términos, puedes contactarnos a través de la plataforma o mediante el correo electrónico disponible en nuestra página de contacto.</p>
-</div>
-</div></section>
+<section class="section" style="padding-top:100px">
+  <div class="container" style="max-width:720px">
+    <div class="section-header">
+      <div class="section-label">Términos</div>
+      <h2>Términos y condiciones</h2>
+      <p class="section-sub">Última actualización: mayo 2026</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:24px;font-size:14px;line-height:1.7;color:var(--text-secondary)">
+      <section>
+        <h3 style="font-size:15px;color:var(--text);margin-bottom:6px">1. Aceptación de los términos</h3>
+        <p>Al utilizar Vulnify aceptas estos términos. Si no estás de acuerdo, no uses el servicio.</p>
+      </section>
+      <section>
+        <h3 style="font-size:15px;color:var(--text);margin-bottom:6px">2. Uso del servicio</h3>
+        <p>Vulnify permite la monitorización de activos digitales para fines de seguridad legítimos. No está permitido usar la plataforma para actividades ilegales, acoso o violación de derechos de terceros.</p>
+      </section>
+      <section>
+        <h3 style="font-size:15px;color:var(--text);margin-bottom:6px">3. Responsabilidad</h3>
+        <p>Vulnify se proporciona "tal cual". Hacemos nuestro mejor esfuerzo por mantener la base de datos actualizada, pero no garantizamos que todos los datos estén completos o libres de errores. No somos responsables de daños derivados del uso del servicio.</p>
+      </section>
+      <section>
+        <h3 style="font-size:15px;color:var(--text);margin-bottom:6px">4. Cuentas</h3>
+        <p>Eres responsable de mantener la confidencialidad de tu cuenta y contraseña. Debes notificarnos inmediatamente cualquier uso no autorizado.</p>
+      </section>
+      <section>
+        <h3 style="font-size:15px;color:var(--text);margin-bottom:6px">5. Cancelación</h3>
+        <p>Puedes cancelar tu suscripción en cualquier momento desde tu dashboard. Los datos asociados a tu cuenta se eliminarán dentro de los 30 días posteriores a la cancelación.</p>
+      </section>
+      <section>
+        <h3 style="font-size:15px;color:var(--text);margin-bottom:6px">6. Contacto</h3>
+        <p>Para preguntas sobre estos términos, escribe a <a href="mailto:hola@vulnify.app" style="color:var(--accent)">hola@vulnify.app</a>.</p>
+      </section>
+    </div>
+  </div>
+</section>
 {% endblock %}

@@ -1,25 +1,68 @@
 {% extends "base.html" %}
+{% block description %}Contacta con el equipo de Vulnify. Soporte, consultas y prensa.{% endblock %}
 {% block title %}Contacto — Vulnify{% endblock %}
-{% block head %}
-<style>
-    .contact-section{text-align:center;padding:80px 0}
-    .contact-section h1{font-size:clamp(1.8rem,3vw,2.8rem);margin-bottom:12px}
-    .contact-section p{font-size:15px;color:var(--text-secondary);max-width:500px;margin:0 auto;line-height:1.7}
-    .contact-email{display:inline-block;margin-top:24px;padding:14px 32px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);font-size:18px;font-weight:600;color:var(--neon);text-decoration:none;transition:border-color 0.2s}
-    .contact-email:hover{border-color:var(--neon);box-shadow:0 0 0 3px var(--neon-glow)}
-    .contact-note{margin-top:20px;font-size:13px;color:var(--text-tertiary)}
-</style>
-{% endblock %}
 {% block content %}
-<section class="section">
+<section class="section" style="padding-top:100px">
   <div class="container">
-    <div class="contact-section reveal">
-      <div class="section-label" style="margin:0 auto 16px">Contacto</div>
-      <h1>Hablemos</h1>
-      <p>¿Tienes un proyecto en mente? Cuéntanos tu idea y te enviaremos una propuesta personalizada.</p>
-      <a href="mailto:hola@vulnify.es" class="contact-email">hola@vulnify.es</a>
-      <p class="contact-note">Respondemos en menos de 24 horas laborables. Para proyectos urgentes, indícalo en el asunto.</p>
+    <div class="section-header centered">
+      <div class="section-label">Contacto</div>
+      <h2>Háblanos</h2>
+      <p class="section-sub">¿Tienes una pregunta, un problema o quieres colaborar con nosotros?</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;max-width:800px;margin:0 auto">
+      <div>
+        <form id="contact-form" style="display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <label for="cf-name" style="font-size:12px;font-weight:600;color:var(--text-secondary)">Nombre</label>
+            <input type="text" id="cf-name" required placeholder="Tu nombre" class="input">
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <label for="cf-email" style="font-size:12px;font-weight:600;color:var(--text-secondary)">Email</label>
+            <input type="email" id="cf-email" required placeholder="tu@email.com" class="input">
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <label for="cf-subject" style="font-size:12px;font-weight:600;color:var(--text-secondary)">Asunto</label>
+            <input type="text" id="cf-subject" required placeholder="¿Sobre qué trata?" class="input">
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <label for="cf-message" style="font-size:12px;font-weight:600;color:var(--text-secondary)">Mensaje</label>
+            <textarea id="cf-message" rows="5" required placeholder="Cuéntanos..." class="input" style="resize:vertical"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="align-self:flex-start">Enviar mensaje</button>
+        </form>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:20px;padding-top:4px">
+        <div>
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-tertiary);margin-bottom:4px">Email</div>
+          <a href="mailto:hola@vulnify.app" style="color:var(--accent);text-decoration:none;font-size:14px">hola@vulnify.app</a>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-tertiary);margin-bottom:4px">Tiempo de respuesta</div>
+          <p style="font-size:13px;color:var(--text-secondary)">Normalmente respondemos en menos de 24 horas.</p>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-tertiary);margin-bottom:4px">¿Eres una empresa?</div>
+          <p style="font-size:13px;color:var(--text-secondary)">Consulta nuestros planes profesionales o escríbenos para una demo personalizada.</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
+{% endblock %}
+{% block scripts %}
+<script>
+document.getElementById('contact-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = this.querySelector('button[type="submit"]');
+  const orig = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Enviando...';
+  const body = { name: document.getElementById('cf-name').value, email: document.getElementById('cf-email').value, subject: document.getElementById('cf-subject').value, message: document.getElementById('cf-message').value };
+  try {
+    const r = await fetch('/api/contact', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    if (r.ok) { this.innerHTML = '<div style="text-align:center;padding:32px 0"><p style="color:var(--accent);font-size:16px;font-weight:600">✓ Mensaje enviado</p><p style="font-size:13px;color:var(--text-secondary);margin-top:4px">Te responderemos pronto.</p></div>'; }
+    else { const d = await r.json(); alert(d.detail || 'Error'); btn.disabled = false; btn.textContent = orig; }
+  } catch { alert('Error de conexión.'); btn.disabled = false; btn.textContent = orig; }
+});
+</script>
 {% endblock %}

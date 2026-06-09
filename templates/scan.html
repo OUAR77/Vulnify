@@ -1,309 +1,135 @@
 {% extends "base.html" %}
-{% block description %}Escáner de seguridad web gratuito de Vulnify. Analiza SSL, cabeceras y DNS de cualquier dominio.{% endblock %}
-{% block title %}Escáner de seguridad — Vulnify{% endblock %}
+{% block description %}Resultado del análisis de seguridad de tu dominio. Escanea tu sitio web en busca de vulnerabilidades comunes.{% endblock %}
+{% block title %}Resultado análisis — Vulnify{% endblock %}
 {% block head %}
 <style>
-    .score-ring {
-      text-align: center; padding: 60px 0 32px;
-    }
-    .score-ring .num {
-      font-size: 4rem; font-weight: 700; font-family: var(--font-serif);
-      color: var(--accent);
-    }
-    .score-ring .label {
-      font-size: 0.9rem; color: var(--text-tertiary); margin-top: 4px;
-    }
-    .recent-scans {
-      margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border);
-    }
-    .recent-scans h3 {
-      font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 12px;
-      text-transform: uppercase; letter-spacing: 0.5px;
-    }
-    .recent-item {
-      display: inline-block; padding: 6px 14px; border: 1px solid var(--border);
-      border-radius: 20px; font-size: 0.85rem; color: var(--text-secondary);
-      cursor: pointer; margin: 4px; background: var(--bg-surface);
-    }
-    .recent-item:hover {
-      border-color: var(--accent); color: var(--accent);
-    }
-    .check-item {
-      display: flex; align-items: start; gap: 10px; padding: 8px 0;
-      border-bottom: 1px solid var(--border); font-size: 0.9rem;
-    }
-    .check-item:last-child { border-bottom: none; }
-    .check-item .icon { font-weight: 600; flex-shrink: 0; font-size: 1rem; }
-    .check-item .name { font-weight: 600; color: var(--text); }
-    .check-item .desc { color: var(--text-secondary); font-size: 0.85rem; margin-top: 2px; }
-
-    .issue {
-      padding: 12px 16px; border-radius: var(--radius-md); margin-bottom: 8px;
-      font-size: 0.85rem; border-left: 3px solid;
-    }
-    .issue.critical { background: rgba(239,68,68,0.06); border-color: #ef4444; }
-    .issue.high { background: rgba(234,179,8,0.06); border-color: #eab308; }
-    .issue.medium { background: rgba(59,130,246,0.06); border-color: #3b82f6; }
-    .issue.low { background: rgba(99,102,241,0.06); border-color: #6366f1; }
-    .issue .sev { font-weight: 600; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.05em; }
-    .issue.critical .sev { color: #ef4444; }
-    .issue.high .sev { color: #eab308; }
-    .issue.medium .sev { color: #3b82f6; }
-    .issue.low .sev { color: #6366f1; }
-
-    .inline-alert {
-      padding: 12px 16px; border-radius: var(--radius-md); margin-bottom: 16px;
-      font-size: 0.85rem; display: none;
-    }
-    .inline-alert.error { display: block; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.15); color: #fca5a5; }
-
-    .search-section {
-      max-width: 580px; margin: 0 auto 40px;
-    }
+  .s-wrap{max-width:800px;margin:0 auto}
+  .s-url{font-size:13px;color:var(--text-tertiary);margin-bottom:20px;word-break:break-all}
+  .s-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:24px}
+  .s-stat{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;text-align:center}
+  .s-stat .n{font-size:24px;font-weight:700;line-height:1}
+  .s-stat .l{font-size:11px;color:var(--text-tertiary);margin-top:4px}
+  .s-stat.danger .n{color:#ef4444}
+  .s-stat.warning .n{color:#f59e0b}
+  .s-stat.safe .n{color:#22c55e}
+  .vuln{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .vuln-info{flex:1}
+  .vuln-info h3{font-size:13px;margin-bottom:2px}
+  .vuln-info p{font-size:11px;color:var(--text-tertiary)}
+  .vuln-info a{color:var(--accent);font-size:11px}
+  .vuln .badge{font-size:10px;font-weight:600;padding:3px 10px;border-radius:100px;white-space:nowrap}
+  .vuln .badge.critical{background:rgba(239,68,68,0.1);color:#ef4444}
+  .vuln .badge.high{background:rgba(245,158,11,0.1);color:#f59e0b}
+  .vuln .badge.medium{background:rgba(59,130,246,0.08);color:#3b82f6}
+  .vuln .badge.low{background:rgba(34,197,94,0.08);color:#22c55e}
+  .s-start{text-align:center;padding:60px 0}
+  .s-start h2{margin-bottom:8px}
+  .s-start p{color:var(--text-secondary);margin-bottom:20px}
+  .s-form{display:flex;gap:10px;max-width:480px;margin:0 auto}
+  .s-form input{flex:1;padding:12px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text);font-size:13px;font-family:var(--font-body)}
+  .s-form input:focus{outline:none;border-color:var(--accent)}
 </style>
 {% endblock %}
 {% block content %}
 <section class="section" style="padding-top:100px">
   <div class="container">
     <div class="section-header centered">
-      <div class="section-label">Escáner</div>
-      <h2 class="section-title">Analiza cualquier dominio</h2>
-      <p class="section-sub">Introduce la URL y en segundos sabrás el estado de su seguridad.</p>
+      <div class="section-label">Análisis</div>
+      <h2>Escáner de seguridad</h2>
+      <p class="section-sub">Analiza dominios públicos en busca de vulnerabilidades y malas prácticas.</p>
     </div>
 
-    <div class="search-section">
-      <div class="two-col" style="grid-template-columns:1fr auto;gap:8px">
-        <input type="text" id="domain-input" placeholder="ejemplo.com" autocomplete="off" spellcheck="false" style="padding:14px 18px;font-size:1rem">
-        <button id="scan-btn" class="btn btn-accent btn-lg" style="padding:14px 28px">Analizar</button>
-      </div>
+    <div class="s-form">
+      <input type="text" id="scan-url" placeholder="ejemplo.com" value="{{ target if target else '' }}">
+      <button onclick="startScan()" class="btn btn-primary">Escanear</button>
     </div>
 
-    <div id="error-box" class="inline-alert error"></div>
-
-    <div id="status" style="text-align:center;padding:40px 0;display:none">
-      <div class="spinner spinner-lg" style="margin:0 auto 16px"></div>
-      <p style="color:var(--text-secondary)">Analizando dominio...</p>
-    </div>
-
-    <div id="results" class="card" style="display:none">
-      <div class="score-ring">
-        <div class="num" id="score-general">0</div>
-        <div class="label">/ 100 — Puntuación general</div>
+    <div id="s-results" class="s-wrap" style="margin-top:32px">
+      {% if not target %}
+      <div class="s-start" style="display:block">
+        <p>Introduce una URL o dominio para comenzar.</p>
       </div>
-
-      <div class="grid-3" style="margin-bottom:32px">
-        <div class="stat-item"><div class="stat-value" id="score-ssl" style="font-size:2rem">—</div><div class="stat-label">SSL</div></div>
-        <div class="stat-item"><div class="stat-value" id="score-headers" style="font-size:2rem">—</div><div class="stat-label">Cabeceras</div></div>
-        <div class="stat-item"><div class="stat-value" id="issues-count" style="font-size:2rem">0</div><div class="stat-label">Problemas</div></div>
+      {% else %}
+      <div id="s-inner">
+        <div class="s-url">Objetivo: <strong>{{ target }}</strong></div>
+        <div id="s-loading" style="text-align:center;padding:40px 0;display:none">
+          <p style="color:var(--accent);font-weight:600">Analizando...</p>
+          <p style="font-size:12px;color:var(--text-tertiary)">Esto puede llevar unos segundos.</p>
+        </div>
+        <div id="s-content"></div>
       </div>
-
-      <div class="section" id="issues-section" style="display:none">
-        <h2 class="section-label" style="margin-bottom:12px">Problemas detectados</h2>
-        <div id="issues-list"></div>
-      </div>
-
-      <div class="section" style="margin-top:24px">
-        <h2 class="section-label" style="margin-bottom:12px">SSL / TLS</h2>
-        <div id="ssl-result" class="card" style="padding:16px"></div>
-      </div>
-
-      <div class="section" style="margin-top:24px">
-        <h2 class="section-label" style="margin-bottom:12px">Cabeceras de seguridad</h2>
-        <div id="headers-result" class="card" style="padding:16px"></div>
-      </div>
-
-      <div class="section" style="margin-top:24px">
-        <h2 class="section-label" style="margin-bottom:12px">DNS</h2>
-        <div id="dns-result" class="card" style="padding:16px"></div>
-      </div>
-
-      <div class="section" style="margin-top:24px">
-        <h2 class="section-label" style="margin-bottom:12px">Puertos abiertos</h2>
-        <div id="ports-result" class="card" style="padding:16px"></div>
-      </div>
-
-      <div style="text-align:center;margin-top:24px">
-        <button class="btn btn-accent" id="btn-pdf">Descargar informe PDF</button>
-      </div>
-    </div>
-
-    <div class="recent-scans">
-      <h3>Escaneos recientes</h3>
-      <div id="recent-list"></div>
+      {% endif %}
     </div>
   </div>
 </section>
 {% endblock %}
 {% block scripts %}
 <script>
-  const RECENT_KEY = 'vulnifyRecentScans';
-  let lastResult = null;
-  let lastDomain = '';
+const TK = 'vulnify_token';
+function gt() { return localStorage.getItem(TK); }
 
-  function loadRecent() {
-    try { return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); }
-    catch { return []; }
+async function startScan() {
+  const u = document.getElementById('scan-url').value.trim();
+  if (!u) { alert('Introduce un dominio'); return; }
+  window.history.replaceState(null, '', '/scan?target=' + encodeURIComponent(u));
+  const inner = document.getElementById('s-inner') || document.getElementById('s-results');
+  if (!document.getElementById('s-inner')) {
+    document.querySelector('.s-start').style.display = 'none';
+    const ni = document.createElement('div'); ni.id = 's-inner';
+    ni.innerHTML = '<div class="s-url">Objetivo: <strong>' + u + '</strong></div><div id="s-loading" style="text-align:center;padding:40px 0;display:block"><p style="color:var(--accent);font-weight:600">Analizando...</p><p style="font-size:12px;color:var(--text-tertiary)">Esto puede llevar unos segundos.</p></div><div id="s-content"></div>';
+    document.getElementById('s-results').appendChild(ni);
+  } else {
+    document.getElementById('s-loading').style.display = 'block';
+    document.getElementById('s-content').innerHTML = '';
   }
 
-  function saveRecent(domain) {
-    let list = loadRecent().filter(d => d !== domain);
-    list.unshift(domain);
-    if (list.length > 6) list = list.slice(0, 6);
-    localStorage.setItem(RECENT_KEY, JSON.stringify(list));
-    renderRecent();
-  }
+  try {
+    const r = await fetch('/api/scan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ domain: u })
+    });
+    if (!r.ok) { const d = await r.json(); alert(d.detail || 'Error'); document.getElementById('s-loading').style.display = 'none'; return; }
+    const d = await r.json();
+    document.getElementById('s-loading').style.display = 'none';
+    renderResults(d, u);
+  } catch { alert('Error de conexión'); document.getElementById('s-loading').style.display = 'none'; }
+}
 
-  function renderRecent() {
-    const list = loadRecent();
-    const el = document.getElementById('recent-list');
-    if (!list.length) { el.innerHTML = '<span style="color:var(--text-tertiary);font-size:0.85rem">Ninguno aún</span>'; return; }
-    el.innerHTML = list.map(d => `<span class="recent-item" onclick="document.getElementById('domain-input').value='${d}';scan()">${d}</span>`).join('');
-  }
+const SEV_ORDER = {critical:0, high:1, medium:2, low:3};
 
-  async function scan() {
-    const domain = document.getElementById('domain-input').value.trim();
-    if (!domain) { showError('Introduce un dominio'); return; }
+function classifyIssue(msg) {
+  const l = msg.toLowerCase();
+  if (l.includes('critical') || l.includes('ssl') || l.includes('dangerous')) return 'critical';
+  if (l.includes('hsts') || l.includes('csp') || l.includes('server')) return 'high';
+  if (l.includes('dns') || l.includes('x-frame') || l.includes('x-content')) return 'medium';
+  return 'low';
+}
 
-    hideError();
-    document.getElementById('status').style.display = 'block';
-    document.getElementById('results').style.display = 'none';
-    document.getElementById('scan-btn').disabled = true;
+function renderResults(d, url) {
+  const issues = d.issues || [];
+  const counts = { critical: 0, high: 0, medium: 0, low: 0 };
+  issues.forEach(msg => { const s = classifyIssue(msg); if (counts[s] !== undefined) counts[s]++; });
 
-    try {
-      const resp = await fetch('/api/scan', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ domain })
-      });
-      if (!resp.ok) { const e = await resp.json(); throw new Error(e.detail || 'Error'); }
-      const data = await resp.json();
-      lastResult = data;
-      lastDomain = domain;
-      showResults(data);
-      saveRecent(domain);
-    } catch (err) {
-      showError(err.message);
-    }
-    document.getElementById('status').style.display = 'none';
-    document.getElementById('scan-btn').disabled = false;
-  }
+  const total = issues.length;
 
-  function showResults(data) {
-    document.getElementById('results').style.display = 'block';
+  const html = '<div class="s-summary">' +
+    '<div class="s-stat danger"><div class="n">' + counts.critical + '</div><div class="l">Críticas</div></div>' +
+    '<div class="s-stat warning"><div class="n">' + counts.high + '</div><div class="l">Altas</div></div>' +
+    '<div class="s-stat warning"><div class="n">' + counts.medium + '</div><div class="l">Medias</div></div>' +
+    '<div class="s-stat safe"><div class="n">' + counts.low + '</div><div class="l">Bajas</div></div>' +
+    '</div>' +
+    (total === 0 ? '<div class="vuln" style="justify-content:center"><p style="font-size:13px;color:#22c55e;font-weight:600">✓ Sin vulnerabilidades detectadas</p></div>' :
+    '<div id="vuln-list">' + issues.map(msg => '<div class="vuln"><div class="vuln-info"><h3>' + msg.split(':')[0] + '</h3><p>' + msg + '</p></div><span class="badge ' + classifyIssue(msg) + '">' + classifyIssue(msg).toUpperCase() + '</span></div>').join('') + '</div>');
 
-    document.getElementById('score-general').textContent = data.score;
-    document.getElementById('score-ssl').textContent = data.ssl?.valid ? '✓' : '✗';
-    document.getElementById('score-headers').textContent = data.headers?.error ? '✗' : '✓';
-    document.getElementById('issues-count').textContent = data.issues.length;
+  const sc = d.score !== undefined ? d.score : (100 - total * 10);
+  const sp = '<div style="text-align:center;margin-top:16px;padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--bg-card)"><span style="font-size:11px;color:var(--text-tertiary)">Puntuación de seguridad' + (d.grade ? ' · Grado ' + d.grade : '') + '</span><br><span style="font-size:28px;font-weight:700;color:' + (sc >= 70 ? '#22c55e' : sc >= 40 ? '#f59e0b' : '#ef4444') + '">' + sc + '/100</span></div>';
 
-    if (data.issues.length) {
-      document.getElementById('issues-section').style.display = 'block';
-      document.getElementById('issues-list').innerHTML = data.issues.map(i =>
-        `<div class="issue high"><span class="sev">⚠</span> ${i}</div>`
-      ).join('');
-    } else {
-      document.getElementById('issues-section').style.display = 'none';
-    }
+  document.getElementById('s-content').innerHTML = html + sp;
+}
 
-    const ssl = data.ssl;
-    if (ssl) {
-      if (ssl.valid) {
-        const issuer = ssl.issuer || 'Desconocido';
-        const version = ssl.version || '';
-        document.getElementById('ssl-result').innerHTML = `<div class="check-item"><span class="icon" style="color:#22c55e">✓</span><div><span class="name">Válido (${version})</span><div class="desc">Emisor: ${issuer} · Vence: ${ssl.expiry || 'N/A'}</div></div></div>`;
-      } else {
-        document.getElementById('ssl-result').innerHTML = `<div class="check-item"><span class="icon" style="color:#ef4444">✗</span><div><span class="name">Error</span><div class="desc">${ssl.error || 'No válido'}</div></div></div>`;
-      }
-    }
-
-    const h = data.headers;
-    if (h && !h.error) {
-      const checks = [
-        { name: 'Content-Security-Policy', value: h.csp, ok: h.csp !== 'No configurado' },
-        { name: 'Strict-Transport-Security', value: h.hsts, ok: h.hsts !== 'No configurado' },
-        { name: 'X-Frame-Options', value: h.xframe, ok: h.xframe !== 'No configurado' },
-        { name: 'X-Content-Type-Options', value: h.xcontent, ok: h.xcontent !== 'No configurado' },
-        { name: 'Referrer-Policy', value: h.referrer, ok: h.referrer !== 'No configurado' },
-      ];
-      document.getElementById('headers-result').innerHTML = checks.map(c =>
-        `<div class="check-item"><span class="icon" style="color:${c.ok ? '#22c55e' : '#eab308'}">${c.ok ? '✓' : '⚠'}</span><div><span class="name">${c.name}</span><div class="desc">${c.value || 'No configurado'}</div></div></div>`
-      ).join('');
-    } else if (h) {
-      document.getElementById('headers-result').innerHTML = `<div class="check-item"><span class="icon" style="color:#ef4444">✗</span><div><span class="name">Error</span><div class="desc">${h.error}</div></div></div>`;
-    }
-
-    const dns = data.dns;
-    if (dns && !dns.error) {
-      const rows = [];
-      if (dns.a?.length) rows.push({ type: 'A', value: dns.a.join(', '), ok: true });
-      if (dns.mx?.length) rows.push({ type: 'MX', value: dns.mx.join(', '), ok: true });
-      if (dns.ns?.length) rows.push({ type: 'NS', value: dns.ns.join(', '), ok: true });
-      if (dns.txt?.length) rows.push({ type: 'TXT', value: dns.txt.slice(0, 3).join(', '), ok: true });
-      document.getElementById('dns-result').innerHTML = rows.length
-        ? rows.map(r => `<div class="check-item"><span class="icon" style="color:#22c55e">✓</span><div><span class="name">${r.type}</span><div class="desc">${r.value}</div></div></div>`).join('')
-        : '<div class="check-item"><span class="icon" style="color:#eab308">⚠</span><div><span class="name">Sin registros</span></div></div>';
-    } else if (dns) {
-      document.getElementById('dns-result').innerHTML = `<div class="check-item"><span class="icon" style="color:#eab308">⚠</span><div><span class="name">Error</span><div class="desc">${dns.error}</div></div></div>`;
-    }
-
-    const ports = data.ports || {};
-    if (ports.error) {
-      document.getElementById('ports-result').innerHTML = `<div class="check-item"><span class="icon" style="color:#eab308">⚠</span><div><span class="name">No se pudo escanear</span><div class="desc">${ports.error}</div></div></div>`;
-    } else if (ports.open_ports > 0) {
-      const rows = ports.ports.map(p =>
-        `<div class="check-item"><span class="icon" style="color:${p.dangerous ? '#ef4444' : '#22c55e'}">${p.dangerous ? '⚠' : '✓'}</span><div><span class="name">Puerto ${p.port}</span><div class="desc">${p.service} ${p.dangerous ? '(peligroso)' : ''}</div></div></div>`
-      ).join('');
-      document.getElementById('ports-result').innerHTML = `<div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:8px">${ports.open_ports} puertos abiertos · ${ports.dangerous_open} peligrosos</div>${rows}`;
-    } else {
-      document.getElementById('ports-result').innerHTML = '<div class="check-item"><span class="icon" style="color:#22c55e">✓</span><div><span class="name">Ningún puerto crítico abierto</span></div></div>';
-    }
-
-    window.scrollTo({ top: document.getElementById('results').offsetTop - 80, behavior: 'smooth' });
-  }
-
-  function showError(msg) {
-    const el = document.getElementById('error-box');
-    el.textContent = msg;
-    el.classList.add('error');
-  }
-  function hideError() { document.getElementById('error-box').classList.remove('error'); }
-
-  document.getElementById('scan-btn').addEventListener('click', scan);
-  document.getElementById('domain-input').addEventListener('keydown', e => { if (e.key === 'Enter') scan(); });
-
-  document.getElementById('btn-pdf').addEventListener('click', async () => {
-    if (!lastDomain) return;
-    const btn = document.getElementById('btn-pdf');
-    btn.textContent = 'Descargando...';
-    btn.disabled = true;
-    try {
-      const resp = await fetch('/api/scan/pdf', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ domain: lastDomain })
-      });
-      if (!resp.ok) throw new Error();
-      const blob = await resp.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `vulnify-${lastDomain}.pdf`;
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch {}
-    btn.textContent = 'Descargar informe PDF';
-    btn.disabled = false;
-  });
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const params = new URLSearchParams(window.location.search);
-    const domain = params.get('domain');
-    if (domain) {
-      document.getElementById('domain-input').value = domain;
-      scan();
-    }
-  });
-
-  renderRecent();
+{% if target %}
+document.addEventListener('DOMContentLoaded', () => startScan());
+{% endif %}
 </script>
 {% endblock %}

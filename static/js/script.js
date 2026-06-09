@@ -122,7 +122,7 @@ function showToast(msg, type) {
   var t = document.getElementById('toast');
   if (!t) return;
   var icon = '';
-  if (type === 'success') icon = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#00f0ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="20 6 9 17 4 12"/></svg>';
+  if (type === 'success') icon = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="20 6 9 17 4 12"/></svg>';
   else if (type === 'error') icon = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
   t.innerHTML = icon + '<span>' + msg + '</span>';
   t.className = 'toast open' + (type ? ' toast-' + type : '');
@@ -146,7 +146,7 @@ function openModal(type) {
          <form class="modal-form" id="loginForm">
            <input type="email" placeholder="Email" id="loginEmail" required>
            <input type="password" placeholder="Contraseña" id="loginPass" required>
-           <p id="loginError" style="color:#00f0ff;font-size:13px;display:none;"></p>
+           <p id="loginError" style="color:var(--accent);font-size:13px;display:none;"></p>
            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center" id="loginBtn"><span>Iniciar sesión</span></button>
            <p style="text-align:center;margin-top:8px"><a onclick="openModal('forgot')" style="font-size:13px;color:var(--text-tertiary);cursor:pointer">¿Olvidaste tu contraseña?</a></p>
          </form>
@@ -157,7 +157,7 @@ function openModal(type) {
          <p class="modal-desc">Te enviaremos un enlace para restablecer tu contraseña.</p>
          <form class="modal-form" id="forgotForm">
            <input type="email" placeholder="Tu email" id="forgotEmail" required>
-           <p id="forgotError" style="color:#00f0ff;font-size:13px;display:none;"></p>
+           <p id="forgotError" style="color:var(--accent);font-size:13px;display:none;"></p>
            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center" id="forgotBtn"><span>Enviar enlace</span></button>
          </form>
          <p class="modal-footer-text"><a onclick="openModal('login')" style="cursor:pointer">Volver a iniciar sesión</a></p>`
@@ -168,7 +168,7 @@ function openModal(type) {
          <form class="modal-form" id="resetForm">
            <input type="password" placeholder="Nueva contraseña" id="resetPass" required minlength="8">
            <input type="password" placeholder="Confirmar contraseña" id="resetPass2" required>
-           <p id="resetError" style="color:#00f0ff;font-size:13px;display:none;"></p>
+           <p id="resetError" style="color:var(--accent);font-size:13px;display:none;"></p>
            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center" id="resetBtn"><span>Restablecer</span></button>
          </form>`
       : `<div class="modal-handle"></div>
@@ -179,7 +179,7 @@ function openModal(type) {
            <input type="email" placeholder="Email" id="regEmail" required>
            <input type="password" placeholder="Contraseña" id="regPass" required minlength="8">
            <input type="password" placeholder="Confirmar contraseña" id="regPass2" required>
-           <p id="regError" style="color:#00f0ff;font-size:13px;display:none;"></p>
+           <p id="regError" style="color:var(--accent);font-size:13px;display:none;"></p>
            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center" id="regBtn"><span>Crear cuenta</span></button>
          </form>
          <p class="modal-footer-text">¿Ya tienes cuenta? <a onclick="openModal('login')">Inicia sesión</a></p>`;

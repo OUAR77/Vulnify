@@ -1,41 +1,39 @@
 {% extends "base.html" %}
+{% block description %}Conoce Vulnify. Nuestra misión, equipo y por qué construimos una plataforma de monitorización de brechas de seguridad.{% endblock %}
 {% block title %}Sobre nosotros — Vulnify{% endblock %}
-{% block head %}
-<style>
-    .about-hero{text-align:center;padding:80px 0 40px}
-    .about-hero h1{font-size:clamp(1.8rem,3vw,2.8rem);margin-bottom:12px}
-    .about-hero p{font-size:15px;color:var(--text-secondary);max-width:560px;margin:0 auto;line-height:1.7}
-    .values-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-top:40px}
-    .value-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:28px 24px}
-    .value-card svg{margin-bottom:16px}
-    .value-card h3{font-family:var(--font-sans);font-size:15px;font-weight:600;margin-bottom:6px}
-    .value-card p{font-size:13px;color:var(--text-secondary);line-height:1.6}
-</style>
-{% endblock %}
 {% block content %}
-<section class="section">
+<section class="section" style="padding-top:100px">
   <div class="container">
-    <div class="about-hero reveal">
-      <div class="section-label" style="margin:0 auto 16px">Nosotros</div>
-      <h1>Sobre <span class="gradient-text">Vulnify</span></h1>
-      <p>Somos una agencia de inteligencia artificial y desarrollo web apasionada por transformar negocios con tecnología de vanguardia.</p>
+    <div class="section-header centered">
+      <div class="section-label">Sobre nosotros</div>
+      <h2>Construyendo un internet más seguro</h2>
+      <p class="section-sub">Vulnify nace de la necesidad de democratizar la ciberseguridad.</p>
     </div>
-    <div class="values-grid">
-      <div class="value-card reveal">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        <h3>Transparencia</h3>
-        <p>Creemos en relaciones claras y honestas. Cada proyecto, cada hito, cada interacción es trazable y justa.</p>
+
+    <div style="max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:20px;font-size:14px;line-height:1.7;color:var(--text-secondary)">
+      <p>Cada día se filtran millones de credenciales en todo el mundo. Contraseñas, correos electrónicos, datos personales — todo está en juego. Y la mayoría de la gente no sabe que sus datos ya están expuestos.</p>
+      <p>Vulnify es una plataforma de monitorización de reputación digital que te permite comprobar si tus cuentas han sido comprometidas en brechas de seguridad conocidas. Rastreamos cientos de filtraciones para que puedas actuar antes de que sea demasiado tarde.</p>
+      <p>Nuestro objetivo es sencillo: darte visibilidad sobre tu huella de seguridad digital, sin necesidad de ser un experto. Creemos que la transparencia es el primer paso hacia un ecosistema digital más confiable.</p>
+      <p style="border-left:2px solid var(--accent);padding-left:16px;font-style:italic">Hoy en día, la seguridad no es un lujo, es un derecho. Y queremos que esté al alcance de todos.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px;max-width:680px;margin-left:auto;margin-right:auto">
+      <div style="text-align:center;padding:24px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg)">
+        <div class="stat-number" style="font-size:28px">+5B</div>
+        <div style="font-size:12px;color:var(--text-tertiary)">Registros indexados</div>
       </div>
-      <div class="value-card reveal reveal-delay-1">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        <h3>Pasión por la IA</h3>
-        <p>La inteligencia artificial no es solo nuestra herramienta, es nuestra vocación. Cada integración acerca el futuro a las empresas.</p>
+      <div style="text-align:center;padding:24px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg)">
+        <div class="stat-number" style="font-size:28px">+200</div>
+        <div style="font-size:12px;color:var(--text-tertiary)">Brechas monitorizadas</div>
       </div>
-      <div class="value-card reveal reveal-delay-2">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-        <h3>Innovación</h3>
-        <p>No seguimos tendencias, las creamos. Investigamos constantemente las últimas tecnologías para ofrecer soluciones que marcan la diferencia.</p>
+      <div style="text-align:center;padding:24px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg)">
+        <div class="stat-number" style="font-size:28px">100%</div>
+        <div style="font-size:12px;color:var(--text-tertiary)">Gratuito para empezar</div>
       </div>
+    </div>
+
+    <div style="text-align:center;margin-top:48px">
+      <a href="/register" class="btn btn-primary">Empieza ahora</a>
     </div>
   </div>
 </section>
