@@ -1,62 +1,56 @@
 {% extends "base.html" %}
 {% block title %}Admin — Vulnify{% endblock %}
-{% block head %}
-<style>
-  .ah{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-  .ah h1{font-size:20px;font-family:var(--font-display)}
-  .at{display:flex;gap:4px;margin-bottom:20px;border-bottom:1px solid var(--border)}
-  .at button{padding:10px 20px;border:none;background:none;font-family:var(--font-display);font-size:13px;font-weight:600;color:var(--text-tertiary);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
-  .at button.active{color:var(--accent);border-bottom-color:var(--accent)}
-  .at button:hover{color:var(--text)}
-  .sc{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:24px}
-  .sci{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;text-align:center}
-  .sci .n{font-size:24px;font-weight:700;color:var(--accent)}
-  .sci .l{font-size:11px;color:var(--text-tertiary);margin-top:2px}
-  .tbl{width:100%;border-collapse:collapse;font-size:13px}
-  .tbl th{text-align:left;padding:8px 10px;color:var(--text-tertiary);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.3px;border-bottom:1px solid var(--border)}
-  .tbl td{padding:8px 10px;border-bottom:1px solid var(--border)}
-  .tbl tr:hover td{background:var(--bg-surface)}
-  .rb{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px}
-  .rb.admin{background:rgba(201,168,76,0.1);color:var(--accent)}
-  .rb.user{background:rgba(59,130,246,0.08);color:#3b82f6}
-  .lf{display:flex;gap:8px;margin-bottom:12px;align-items:center;flex-wrap:wrap}
-  .lf select,.lf input{padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text);font-family:var(--font-display);font-size:12px}
-  .lf select:focus,.lf input:focus{outline:none;border-color:var(--accent)}
-  .pg{display:flex;gap:8px;justify-content:center;margin-top:16px}
-  .pg button{padding:6px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text);cursor:pointer;font-size:12px}
-  .pg button:hover{border-color:var(--accent)}
-  .pg button:disabled{opacity:0.4;cursor:default}
-</style>
-{% endblock %}
 {% block content %}
-<section class="section" style="padding-top:100px">
+<section class="section" style="padding-top:140px">
   <div class="container">
-    <div class="ah"><h1>Panel de administración</h1></div>
-    <div id="err" style="color:#ef4444;font-size:13px;margin-bottom:12px;display:none"></div>
+    <div style="margin-bottom:40px">
+      <div class="section-label">Admin</div>
+      <h2>Panel de administración</h2>
+    </div>
+
+    <div id="err" style="color:#ef4444;font-size:13px;margin-bottom:16px;display:none"></div>
+
     <div id="lp" style="display:none;text-align:center;padding:60px 0">
-      <p style="color:var(--text-secondary);margin-bottom:12px">Acceso restringido a administradores.</p>
+      <p style="font-size:15px;color:var(--text-secondary);margin-bottom:16px">Acceso restringido a administradores.</p>
       <a href="/login" class="btn btn-primary">Iniciar sesión</a>
     </div>
+
     <div id="ac" style="display:none">
-      <div class="sc" id="stats-cards"></div>
-      <div class="at">
-        <button class="active" data-tab="users">Usuarios</button>
-        <button data-tab="logs">Actividad</button>
+      <div class="dash-stats" id="stats-cards" style="margin-bottom:32px">
+        <div class="dash-stat"><div class="n" id="stat-users">-</div><div class="l">Usuarios</div></div>
+        <div class="dash-stat"><div class="n" id="stat-assets">-</div><div class="l">Activos</div></div>
+        <div class="dash-stat"><div class="n" id="stat-alerts">-</div><div class="l">Alertas</div></div>
+        <div class="dash-stat"><div class="n" id="stat-logs">-</div><div class="l">Eventos</div></div>
       </div>
+
+      <div class="admin-tabs">
+        <button class="admin-tab active" data-tab="users">Usuarios</button>
+        <button class="admin-tab" data-tab="logs">Actividad</button>
+      </div>
+
       <div id="tab-users">
-        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;overflow-x:auto">
-          <table class="tbl"><thead><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Rol</th><th>Registro</th><th>Acción</th></tr></thead><tbody id="users-tbody"></tbody></table>
-          <div class="pg" id="pagination"></div>
+        <div style="overflow-x:auto">
+          <table class="tbl">
+            <thead><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Rol</th><th>Registro</th><th>Acción</th></tr></thead>
+            <tbody id="users-tbody"></tbody>
+          </table>
+          <div style="display:flex;gap:8px;justify-content:center;margin-top:16px" id="pagination"></div>
         </div>
       </div>
+
       <div id="tab-logs" style="display:none">
-        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;overflow-x:auto">
-          <div class="lf">
-            <select id="log-action-filter"><option value="">Todas</option></select>
-            <button class="btn btn-ghost btn-sm" onclick="loadLogs(1)">Filtrar</button>
-          </div>
-          <table class="tbl"><thead><tr><th>Fecha</th><th>Acción</th><th>Email</th><th>Detalles</th><th>IP</th></tr></thead><tbody id="logs-tbody"></tbody></table>
-          <div class="pg" id="log-pagination"></div>
+        <div style="margin-bottom:16px;display:flex;gap:8px;align-items:center">
+          <select id="log-action-filter" class="input" style="padding:8px 12px;font-size:12px">
+            <option value="">Todas las acciones</option>
+          </select>
+          <button class="btn btn-ghost btn-sm" onclick="loadLogs(1)">Filtrar</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="tbl">
+            <thead><tr><th>Fecha</th><th>Acción</th><th>Email</th><th>Detalles</th><th>IP</th></tr></thead>
+            <tbody id="logs-tbody"></tbody>
+          </table>
+          <div style="display:flex;gap:8px;justify-content:center;margin-top:16px" id="log-pagination"></div>
         </div>
       </div>
     </div>
@@ -79,9 +73,9 @@ async function af(url, opts = {}) {
 }
 let cp = 1, lcp = 1;
 
-document.querySelectorAll('.at button').forEach(b => {
+document.querySelectorAll('.admin-tab').forEach(b => {
   b.addEventListener('click', () => {
-    document.querySelectorAll('.at button').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.admin-tab').forEach(x => x.classList.remove('active'));
     b.classList.add('active');
     document.getElementById('tab-users').style.display = 'none';
     document.getElementById('tab-logs').style.display = 'none';
@@ -106,7 +100,10 @@ async function loadStats() {
   const r = await af('/api/admin/stats');
   if (!r) return;
   const d = await r.json();
-  document.getElementById('stats-cards').innerHTML = '<div class="sci"><div class="n">' + d.total_users + '</div><div class="l">Usuarios</div></div><div class="sci"><div class="n">' + d.total_assets + '</div><div class="l">Activos</div></div><div class="sci"><div class="n">' + d.total_alerts + '</div><div class="l">Alertas</div></div><div class="sci"><div class="n">' + (d.total_logs||0) + '</div><div class="l">Eventos</div></div>';
+  document.getElementById('stat-users').textContent = d.total_users||0;
+  document.getElementById('stat-assets').textContent = d.total_assets||0;
+  document.getElementById('stat-alerts').textContent = d.total_alerts||0;
+  document.getElementById('stat-logs').textContent = d.total_logs||0;
 }
 
 async function loadUsers(page) {
@@ -114,10 +111,10 @@ async function loadUsers(page) {
   const r = await af('/api/admin/users?page=' + cp + '&per_page=50');
   if (!r) return;
   const d = await r.json();
-  document.getElementById('users-tbody').innerHTML = d.items.map(u => '<tr><td style="color:var(--text-tertiary)">' + u.id + '</td><td><strong>' + u.name + '</strong></td><td>' + u.email + '</td><td><span class="rb ' + u.role + '">' + u.role + '</span></td><td style="color:var(--text-tertiary);font-size:12px">' + (u.created_at||'') + '</td><td>' + (u.role!=='admin' ? '<button class="btn btn-ghost btn-sm" onclick="deleteUser(' + u.id + ')" style="color:#ef4444">Eliminar</button>' : '<span style="color:var(--text-tertiary);font-size:11px">—</span>') + '</td></tr>').join('');
+  document.getElementById('users-tbody').innerHTML = d.items.map(u => '<tr><td style="color:var(--text-tertiary)">' + u.id + '</td><td><strong>' + u.name + '</strong></td><td>' + u.email + '</td><td><span class="sev-badge ' + u.role + '">' + u.role + '</span></td><td style="color:var(--text-tertiary);font-size:12px">' + (u.created_at||'') + '</td><td>' + (u.role!=='admin' ? '<button class="btn btn-ghost btn-sm" onclick="deleteUser(' + u.id + ')" style="color:#ef4444">Eliminar</button>' : '<span style="color:var(--text-tertiary);font-size:11px">—</span>') + '</td></tr>').join('');
   const tp = Math.ceil(d.total / 50);
   const pg = document.getElementById('pagination');
-  pg.innerHTML = tp > 1 ? '<button onclick="loadUsers(' + (cp-1) + ')" ' + (cp<=1?'disabled':'') + '>←</button><span style="font-size:12px;color:var(--text-tertiary);padding:6px">' + cp + '/' + tp + '</span><button onclick="loadUsers(' + (cp+1) + ')" ' + (cp>=tp?'disabled':'') + '>→</button>' : '';
+  pg.innerHTML = tp > 1 ? '<button onclick="loadUsers(' + (cp-1) + ')" ' + (cp<=1?'disabled':'') + ' class="btn btn-ghost btn-sm">←</button><span style="font-size:12px;color:var(--text-tertiary);padding:6px">' + cp + '/' + tp + '</span><button onclick="loadUsers(' + (cp+1) + ')" ' + (cp>=tp?'disabled':'') + ' class="btn btn-ghost btn-sm">→</button>' : '';
 }
 
 async function deleteUser(id) {
@@ -144,10 +141,10 @@ async function loadLogs(page) {
   const r = await af(u);
   if (!r) return;
   const d = await r.json();
-  document.getElementById('logs-tbody').innerHTML = d.items.map(l => { const dt = l.details ? Object.entries(l.details).map(([k,v]) => k+': '+v).join(', ') : ''; return '<tr><td style="color:var(--text-tertiary);font-size:12px;white-space:nowrap">' + (l.created_at||'') + '</td><td><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;background:rgba(201,168,76,0.1);color:var(--accent)">' + l.action + '</span></td><td>' + (l.email||'') + '</td><td style="font-size:12px;color:var(--text-secondary);max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + dt + '">' + dt + '</td><td style="color:var(--text-tertiary);font-size:11px">' + (l.ip_address||'') + '</td></tr>'; }).join('');
+  document.getElementById('logs-tbody').innerHTML = d.items.map(l => { const dt = l.details ? Object.entries(l.details).map(([k,v]) => k+': '+v).join(', ') : ''; return '<tr><td style="color:var(--text-tertiary);font-size:12px;white-space:nowrap">' + (l.created_at||'') + '</td><td><span class="sev-badge info">' + l.action + '</span></td><td>' + (l.email||'') + '</td><td style="font-size:12px;color:var(--text-secondary);max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + dt + '">' + dt + '</td><td style="color:var(--text-tertiary);font-size:11px">' + (l.ip_address||'') + '</td></tr>'; }).join('');
   const tp = Math.ceil(d.total / 50);
   const pg = document.getElementById('log-pagination');
-  pg.innerHTML = tp > 1 ? '<button onclick="loadLogs(' + (lcp-1) + ')" ' + (lcp<=1?'disabled':'') + '>←</button><span style="font-size:12px;color:var(--text-tertiary);padding:6px">' + lcp + '/' + tp + '</span><button onclick="loadLogs(' + (lcp+1) + ')" ' + (lcp>=tp?'disabled':'') + '>→</button>' : '';
+  pg.innerHTML = tp > 1 ? '<button onclick="loadLogs(' + (lcp-1) + ')" ' + (lcp<=1?'disabled':'') + ' class="btn btn-ghost btn-sm">←</button><span style="font-size:12px;color:var(--text-tertiary);padding:6px">' + lcp + '/' + tp + '</span><button onclick="loadLogs(' + (lcp+1) + ')" ' + (lcp>=tp?'disabled':'') + ' class="btn btn-ghost btn-sm">→</button>' : '';
 }
 
 loadAdmin();

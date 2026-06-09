@@ -1,82 +1,40 @@
 {% extends "base.html" %}
 {% block title %}Dashboard — Vulnify{% endblock %}
-{% block head %}
-<style>
-  .db-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px}
-  .db-stat{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:20px;text-align:center}
-  .db-stat .num{font-size:28px;font-weight:700;font-family:var(--font-display);color:var(--accent)}
-  .db-stat .lbl{font-size:11px;color:var(--text-tertiary);margin-top:2px}
-  .tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px}
-  .tab{padding:10px 20px;font-size:12px;font-weight:600;font-family:var(--font-display);color:var(--text-secondary);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:all .15s}
-  .tab:hover{color:var(--text)}
-  .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-  .tab-pane{display:none}
-  .tab-pane.active{display:block}
-  .asset-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;transition:border-color .2s}
-  .asset-card:hover{border-color:var(--border-hover)}
-  .asset-card .info{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
-  .asset-card .info .badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;text-transform:uppercase;flex-shrink:0}
-  .asset-card .info .badge.domain{background:rgba(59,130,246,0.08);color:#3b82f6;border:1px solid rgba(59,130,246,0.12)}
-  .asset-card .info .badge.email{background:rgba(201,168,76,0.08);color:var(--accent);border:1px solid rgba(201,168,76,0.12)}
-  .asset-card .info .val{font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .asset-card .info .meta{font-size:11px;color:var(--text-tertiary)}
-  .asset-card .actions{display:flex;gap:4px;flex-shrink:0}
-  .add-bar{display:flex;gap:8px;margin-bottom:20px}
-  .add-bar select,.add-bar input{flex:1}
-  .alert-item{padding:12px 16px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:6px;transition:border-color .2s}
-  .alert-item:hover{border-color:var(--border-hover)}
-  .alert-item.unread{border-left:3px solid var(--accent)}
-  .alert-item .hdr{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:2px}
-  .alert-item .name{font-weight:600;font-size:13px}
-  .alert-item .desc{font-size:12px;color:var(--text-secondary);line-height:1.5}
-  .alert-item .meta{font-size:11px;color:var(--text-tertiary);margin-top:4px}
-  .empty-state{text-align:center;padding:48px 20px;color:var(--text-tertiary)}
-  .empty-state h3{font-size:16px;color:var(--text-secondary);margin-bottom:4px}
-  .empty-state p{font-size:12px}
-</style>
-{% endblock %}
 {% block content %}
-<section class="section" style="padding-top:100px">
+<section class="section" style="padding-top:140px">
   <div class="container">
-    <div class="section-header">
-      <div class="section-label">Dashboard</div>
-      <h2>Panel de monitorización</h2>
-      <p class="section-sub">Gestiona tus activos y revisa alertas de brechas.</p>
+    <div class="dash-header reveal">
+      <div class="section-label">Panel</div>
+      <h1>Bienvenido</h1>
+      <p>Resumen de tu monitorización de brechas.</p>
     </div>
 
-    <div id="login-prompt" style="display:none;text-align:center;padding:60px 0">
-      <p style="color:var(--text-secondary);margin-bottom:12px">Inicia sesión para ver tu panel.</p>
-      <a href="/login" class="btn btn-primary">Iniciar sesión</a>
+    <div class="dash-stats reveal" id="stats-row">
+      <div class="dash-stat"><div class="n" id="stat-assets">-</div><div class="l">Activos</div></div>
+      <div class="dash-stat"><div class="n" id="stat-alerts">-</div><div class="l">Alertas</div></div>
+      <div class="dash-stat"><div class="n" id="stat-unread">-</div><div class="l">Sin leer</div></div>
+      <div class="dash-stat"><div class="n" id="stat-breached">-</div><div class="l">Comprometidos</div></div>
     </div>
 
-    <div id="dashboard-content" style="display:none">
-      <div class="db-stats">
-        <div class="db-stat"><div class="num" id="stat-assets">0</div><div class="lbl">Activos</div></div>
-        <div class="db-stat"><div class="num" id="stat-breaches">0</div><div class="lbl">Brechas</div></div>
-        <div class="db-stat"><div class="num" id="stat-alerts">0</div><div class="lbl">Alertas</div></div>
-        <div class="db-stat"><div class="num" id="stat-unread">0</div><div class="lbl">Sin leer</div></div>
-      </div>
+    <div class="dash-tabs">
+      <button class="dash-tab active" data-tab="assets">Activos</button>
+      <button class="dash-tab" data-tab="alerts">Alertas</button>
+    </div>
 
-      <div class="tabs">
-        <button class="tab active" data-tab="assets">Activos</button>
-        <button class="tab" data-tab="alerts">Alertas</button>
+    <div id="tab-assets">
+      <div style="display:flex;gap:8px;margin-bottom:24px">
+        <input type="text" id="new-asset" class="input" placeholder="ejemplo.com o email@ejemplo.com" style="flex:1">
+        <button onclick="addAsset()" class="btn btn-accent btn-sm">Añadir</button>
       </div>
+      <div id="assets-list"></div>
+    </div>
 
-      <div class="tab-pane active" id="tab-assets">
-        <div class="add-bar">
-          <select id="new-asset-type">
-            <option value="domain">Dominio</option>
-            <option value="email">Email</option>
-          </select>
-          <input type="text" id="new-asset-value" placeholder="ejemplo.com">
-          <button class="btn btn-accent btn-sm" id="add-asset-btn">Añadir</button>
-        </div>
-        <div id="assets-list"><div class="empty-state"><h3>Aún no monitorizas nada</h3><p>Añade un dominio o email para empezar.</p></div></div>
+    <div id="tab-alerts" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <span style="font-size:12px;color:var(--text-tertiary)" id="alert-count"></span>
+        <button onclick="markAllRead()" class="btn btn-ghost btn-sm">Marcar todo leído</button>
       </div>
-
-      <div class="tab-pane" id="tab-alerts">
-        <div id="alerts-list"><div class="empty-state"><h3>Sin alertas</h3><p>Las alertas aparecerán aquí.</p></div></div>
-      </div>
+      <div id="alerts-list" class="alert-list"></div>
     </div>
   </div>
 </section>
@@ -86,93 +44,97 @@
 const TK = 'vulnify_token';
 function gt() { return localStorage.getItem(TK); }
 
-async function fwu(url, opts = {}) {
+document.querySelectorAll('.dash-tab').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.dash-tab').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('tab-assets').style.display = 'none';
+    document.getElementById('tab-alerts').style.display = 'none';
+    document.getElementById('tab-' + b.dataset.tab).style.display = 'block';
+  });
+});
+
+async function af(url, opts = {}) {
   const t = gt();
-  if (!t) return null;
+  if (!t) { window.location.href = '/login'; return null; }
   try {
-    const r = await fetch(url, { ...opts, headers: { ...(opts.headers||{}), 'Authorization': 'Bearer ' + t, 'Content-Type': 'application/json' } });
+    const r = await fetch(url, { ...opts, headers: { ...opts.headers, 'Authorization': 'Bearer ' + t, 'Content-Type': 'application/json' } });
     if (r.status === 401) { localStorage.removeItem(TK); window.location.href = '/login'; return null; }
     return r;
   } catch { return null; }
 }
 
-function toast(msg, type) {
-  const el = document.getElementById('toast');
-  if (!el) return;
-  el.innerHTML = '<span>' + msg + '</span>';
-  el.className = 'toast open' + (type ? ' toast-' + type : '');
-  clearTimeout(el._t);
-  el._t = setTimeout(() => el.classList.remove('open'), 3000);
-}
-
-function sj(r) { try { return r.json(); } catch { return null; } }
-
 async function loadDashboard() {
   const t = gt();
-  if (!t) { document.getElementById('login-prompt').style.display = 'block'; return; }
-  const mr = await fwu('/api/auth/me');
-  if (!mr) return;
-  const me = await sj(mr);
-  if (!me||!me.id) { localStorage.removeItem(TK); window.location.href = '/login'; return; }
-  document.getElementById('headerUserName').textContent = me.name;
-  document.getElementById('headerUser').style.display = 'inline-flex';
-  document.getElementById('dashboard-content').style.display = 'block';
-  document.getElementById('mobileAuth').innerHTML = '<a href="/dashboard" class="btn btn-ghost" style="width:100%;justify-content:center">Dashboard</a><button class="btn btn-ghost" onclick="localStorage.removeItem(\''+TK+'\');window.location.href=\'/\'" style="width:100%;justify-content:center">Salir</button>';
+  if (!t) { window.location.href = '/login'; return; }
+  const r = await af('/api/auth/me');
+  if (!r) return;
+  const me = await r.json();
+  if (me.name) document.getElementById('headerUserName').textContent = me.name;
+  loadStats();
   loadAssets();
   loadAlerts();
 }
 
-async function loadAssets() {
-  const r = await fwu('/api/assets');
+async function loadStats() {
+  const r = await af('/api/assets');
   if (!r) return;
-  const assets = await sj(r);
-  if (!assets) return;
-  const el = document.getElementById('assets-list');
-  if (!assets.length) { el.innerHTML = '<div class="empty-state"><h3>Aún no monitorizas nada</h3><p>Añade un dominio o email para empezar.</p></div>'; return; }
-  el.innerHTML = assets.map(a => '<div class="asset-card"><div class="info"><span class="badge ' + a.type + '">' + (a.type==='domain'?'🌐':'📧') + ' ' + a.type + '</span><div><div class="val">' + a.value + '</div><div class="meta">' + (a.breaches_found > 0 ? '<span style="color:#ef4444">' + a.breaches_found + ' brecha(s)</span>' : 'Sin brechas') + ' · ' + (a.last_checked ? a.last_checked.slice(0,10) : 'Sin comprobar') + '</div></div></div><div class="actions"><button class="btn btn-ghost btn-sm ck" data-id="' + a.id + '">Verificar</button><button class="btn btn-ghost btn-sm del" data-id="' + a.id + '" style="color:#ef4444">×</button></div></div>').join('');
-  document.querySelectorAll('.ck').forEach(b => b.addEventListener('click', async () => {
-    b.disabled = true; b.textContent = '...';
-    const r = await fwu('/api/assets/' + b.dataset.id + '/check', { method: 'POST' });
-    if (r) { const d = await sj(r); if (d && d.security_tips && d.security_tips.length) alert('Consejos:\n' + d.security_tips.join('\n')); }
-    loadAssets(); loadAlerts();
-    b.disabled = false; b.textContent = 'Verificar';
-  }));
-  document.querySelectorAll('.del').forEach(b => b.addEventListener('click', async () => {
-    await fwu('/api/assets/' + b.dataset.id, { method: 'DELETE' });
-    toast('Eliminado'); loadAssets();
-  }));
+  const d = await r.json();
+  document.getElementById('stat-assets').textContent = d.active_assets || 0;
+  document.getElementById('stat-alerts').textContent = d.total_alerts || 0;
+  document.getElementById('stat-unread').textContent = d.unread_alerts || 0;
+  document.getElementById('stat-breached').textContent = d.assets_with_breaches || 0;
+}
+
+async function addAsset() {
+  const val = document.getElementById('new-asset').value.trim();
+  if (!val) return;
+  const btn = document.querySelector('#tab-assets .btn');
+  const orig = btn.textContent;
+  btn.disabled = true; btn.textContent = '...';
+  try {
+    const r = await af('/api/assets', { method: 'POST', body: JSON.stringify({ value: val }) });
+    if (!r) return;
+    if (!r.ok) { const e = await r.json(); alert(e.detail || 'Error'); btn.disabled = false; btn.textContent = orig; return; }
+    document.getElementById('new-asset').value = '';
+    loadAssets(); loadStats();
+  } catch { alert('Error'); }
+  btn.disabled = false; btn.textContent = orig;
+}
+
+async function loadAssets() {
+  const r = await af('/api/assets');
+  if (!r) return;
+  const d = await r.json();
+  const list = document.getElementById('assets-list');
+  if (!d.assets || !d.assets.length) { list.innerHTML = '<p style="font-size:13px;color:var(--text-tertiary);padding:24px 0">Sin activos monitorizados. Añade un dominio o email.</p>'; return; }
+  list.innerHTML = d.assets.map(a => '<div class="asset-item"><div class="asset-info"><h4>' + a.value + '</h4><p>' + (a.type||'') + ' · ' + (a.status||'') + (a.last_checked ? ' · ' + a.last_checked : '') + (a.breaches_found > 0 ? ' · <span style="color:#ef4444">' + a.breaches_found + ' brechas</span>' : '') + '</p></div><button onclick="deleteAsset(' + a.id + ')" class="btn btn-ghost btn-sm" style="color:var(--text-tertiary)">Eliminar</button></div>').join('');
+}
+
+async function deleteAsset(id) {
+  if (!confirm('¿Eliminar activo?')) return;
+  await af('/api/assets/' + id, { method: 'DELETE' });
+  loadAssets(); loadStats();
 }
 
 async function loadAlerts() {
-  const r = await fwu('/api/alerts?per_page=50');
+  const r = await af('/api/alerts');
   if (!r) return;
-  const data = await sj(r);
-  if (!data) return;
-  const el = document.getElementById('alerts-list');
-  if (!data.items.length) { el.innerHTML = '<div class="empty-state"><h3>Sin alertas</h3><p>Las alertas aparecerán aquí.</p></div>'; return; }
-  el.innerHTML = data.items.map(a => '<div class="alert-item' + (a.read ? '' : ' unread') + '" style="' + (a.resolved?'opacity:0.5':'') + '"><div class="hdr"><span class="name">' + a.breach_name + (a.resolved?' ✅':'') + '</span><span class="sev-badge ' + a.severity + '">' + a.severity + '</span></div><div class="desc">' + (a.description||'') + '</div><div class="meta">' + (a.breach_date||'') + (a.resolved?' · Resuelta':'') + (!a.read&&!a.resolved?' · <span style="color:var(--accent);font-weight:600">Nueva</span>':'') + '</div></div>').join('');
+  const d = await r.json();
+  document.getElementById('alert-count').textContent = d.total + ' alertas (' + d.unread + ' sin leer)';
+  const list = document.getElementById('alerts-list');
+  if (!d.items || !d.items.length) { list.innerHTML = '<p style="font-size:13px;color:var(--text-tertiary);padding:24px 0">Sin alertas por ahora.</p>'; return; }
+  list.innerHTML = d.items.map(a => {
+    const sev = a.severity || 'info';
+    const dt = a.created_at ? new Date(a.created_at).toLocaleDateString('es') : '';
+    return '<div class="alert-item"' + (a.read ? '' : ' style="opacity:1"') + '><span class="sev-badge ' + sev + '">' + sev + '</span><div class="alert-info"><h4>' + (a.breach_name || 'Alerta') + '</h4><p>' + (a.description || '') + ' · ' + dt + '</p></div></div>';
+  }).join('');
 }
 
-document.getElementById('add-asset-btn').addEventListener('click', async () => {
-  const type = document.getElementById('new-asset-type').value;
-  const value = document.getElementById('new-asset-value').value.trim();
-  if (!value) { toast('Introduce un valor', 'error'); return; }
-  const r = await fwu('/api/assets', { method: 'POST', body: JSON.stringify({ type, value }) });
-  if (r && r.ok) { toast('Añadido', 'success'); document.getElementById('new-asset-value').value = ''; loadAssets(); }
-  else { const d = await sj(r); toast((d&&d.detail)||'Error', 'error'); }
-});
-
-document.getElementById('new-asset-value').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('add-asset-btn').click(); });
-
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-    tab.classList.add('active');
-    const p = document.getElementById('tab-' + tab.dataset.tab);
-    if (p) p.classList.add('active');
-  });
-});
+async function markAllRead() {
+  await af('/api/alerts/read-all', { method: 'PUT' });
+  loadAlerts();
+}
 
 loadDashboard();
 </script>

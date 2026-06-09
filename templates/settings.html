@@ -1,79 +1,68 @@
 {% extends "base.html" %}
 {% block title %}Configuración — Vulnify{% endblock %}
-{% block head %}
-<style>
-  .sg{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}
-  .sc{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px}
-  .sc h2{font-size:15px;margin-bottom:12px}
-  .sc p{font-size:12px;color:var(--text-secondary);margin-bottom:12px}
-  .fg{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
-  .fg label{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
-  .fg input[type="checkbox"]{accent-color:var(--accent)}
-  .fg input[type="text"]{padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-surface);color:var(--text);font-size:13px;font-family:var(--font-body)}
-  @media(max-width:768px){.sg{grid-template-columns:1fr}}
-</style>
-{% endblock %}
 {% block content %}
-<section class="section" style="padding-top:100px">
+<section class="section" style="padding-top:140px">
   <div class="container">
-    <div class="section-header">
+    <div class="section-header reveal">
       <div class="section-label">Configuración</div>
       <h2>Ajustes de tu cuenta</h2>
       <p class="section-sub">Gestiona tu autenticación, notificaciones y API keys.</p>
     </div>
 
-    <div class="sg">
-      <div class="sc">
+    <div class="settings-grid">
+      <div class="settings-card">
         <h2>Autenticación</h2>
         <div id="2fa-section">
-          <p id="2fa-status">Cargando...</p>
-          <div id="2fa-setup" style="display:none;margin-top:12px">
-            <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">Escanea el QR con Google Authenticator o Authy.</p>
-            <div id="qr-container" style="margin-bottom:8px"></div>
-            <p style="font-size:11px;color:var(--text-tertiary)">Clave: <code id="totp-secret" style="color:var(--accent)"></code></p>
-            <div style="display:flex;gap:8px;margin-top:8px">
-              <input type="text" id="totp-code" maxlength="6" placeholder="000000" style="padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-surface);color:var(--text);font-size:13px;font-family:var(--font-body);width:120px">
+          <p style="font-size:13px" id="2fa-status">Cargando...</p>
+          <div id="2fa-setup" style="display:none;margin-top:16px">
+            <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px">Escanea el QR con Google Authenticator o Authy.</p>
+            <div id="qr-container" style="margin-bottom:12px"></div>
+            <p style="font-size:11px;color:var(--text-tertiary);margin-bottom:8px">Clave: <code id="totp-secret" style="color:var(--accent)"></code></p>
+            <div style="display:flex;gap:8px">
+              <input type="text" id="totp-code" maxlength="6" placeholder="000000" class="input" style="width:120px">
               <button onclick="enable2FA()" class="btn btn-accent btn-sm">Activar</button>
             </div>
           </div>
-          <div id="2fa-enabled" style="display:none;margin-top:8px">
+          <div id="2fa-enabled" style="display:none;margin-top:12px">
             <p style="font-size:13px;color:var(--text-secondary)">2FA activado. <button onclick="disable2FA()" class="btn btn-ghost btn-sm" style="color:#ef4444">Desactivar</button></p>
           </div>
-          <button id="setup-2fa-btn" onclick="setup2FA()" class="btn btn-ghost btn-sm" style="display:none">Configurar 2FA</button>
+          <button id="setup-2fa-btn" onclick="setup2FA()" class="btn btn-ghost btn-sm" style="display:none;margin-top:12px">Configurar 2FA</button>
         </div>
       </div>
 
-      <div class="sc">
+      <div class="settings-card">
         <h2>Notificaciones</h2>
-        <div class="fg">
-          <label><input type="checkbox" id="notify-critical" checked> Crítica</label>
-          <label><input type="checkbox" id="notify-high" checked> Alta</label>
-          <label><input type="checkbox" id="notify-medium" checked> Media</label>
-          <label><input type="checkbox" id="notify-low"> Baja</label>
-          <label><input type="checkbox" id="notify-email" checked> Email</label>
+        <p>Alertas por severidad y canal.</p>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px">
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="notify-critical" checked style="accent-color:var(--accent)"> Crítica</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="notify-high" checked style="accent-color:var(--accent)"> Alta</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="notify-medium" checked style="accent-color:var(--accent)"> Media</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="notify-low" style="accent-color:var(--accent)"> Baja</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="notify-email" checked style="accent-color:var(--accent)"> Email</label>
         </div>
-        <button onclick="saveNotificationPrefs()" class="btn btn-primary btn-sm">Guardar</button>
+        <button onclick="saveNotificationPrefs()" class="btn btn-accent btn-sm">Guardar</button>
       </div>
 
-      <div class="sc">
+      <div class="settings-card">
         <h2>Apariencia</h2>
-        <div class="fg">
-          <label><input type="checkbox" id="dark-mode" checked> Modo oscuro</label>
+        <p>Modo oscuro.</p>
+        <div style="margin-bottom:16px">
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="dark-mode" checked style="accent-color:var(--accent)"> Modo oscuro</label>
         </div>
-        <button onclick="saveAppearance()" class="btn btn-primary btn-sm">Guardar</button>
+        <button onclick="saveAppearance()" class="btn btn-accent btn-sm">Guardar</button>
       </div>
 
-      <div class="sc">
+      <div class="settings-card">
         <h2>API Keys</h2>
         <p>Gestiona tus claves de API.</p>
-        <div id="api-keys-list" style="margin-bottom:8px"></div>
+        <div id="api-keys-list" style="margin-bottom:12px"></div>
         <div style="display:flex;gap:8px">
-          <input type="text" id="new-api-key-name" placeholder="Nombre de la key" style="flex:1">
+          <input type="text" id="new-api-key-name" placeholder="Nombre de la key" class="input" style="flex:1">
           <button onclick="createApiKey()" class="btn btn-accent btn-sm">Crear</button>
         </div>
       </div>
 
-      <div class="sc">
+      <div class="settings-card">
         <h2>Informes</h2>
         <p>Descarga un informe PDF con el resumen de seguridad.</p>
         <a href="/api/reports/pdf" class="btn btn-ghost btn-sm" target="_blank">Descargar PDF</a>
@@ -85,7 +74,7 @@
 {% block scripts %}
 <script>
 const api = "/api";
-const token = typeof getAuthToken === 'function' ? getAuthToken() : localStorage.getItem("token");
+const token = typeof getAuthToken === 'function' ? getAuthToken() : localStorage.getItem("vulnify_token");
 if (!token) { window.location.href = "/login"; }
 
 async function af(path, opts = {}) {
@@ -146,7 +135,7 @@ async function loadApiKeys() {
   const k = await af("/auth/api-keys");
   const el = document.getElementById("api-keys-list");
   if (!k.length) { el.innerHTML = '<p style="font-size:12px;color:var(--text-tertiary)">Sin API keys.</p>'; return; }
-  el.innerHTML = '<div style="display:flex;flex-direction:column;gap:4px">' + k.map(x => '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px"><span>' + x.name + '</span><button onclick="deleteApiKey(' + x.id + ')" class="btn btn-ghost btn-sm" style="color:#ef4444">Eliminar</button></div>').join('') + '</div>';
+  el.innerHTML = '<div style="display:flex;flex-direction:column;gap:4px">' + k.map(x => '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span>' + x.name + '</span><button onclick="deleteApiKey(' + x.id + ')" class="btn btn-ghost btn-sm" style="color:#ef4444">Eliminar</button></div>').join('') + '</div>';
 }
 
 async function createApiKey() {

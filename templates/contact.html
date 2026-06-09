@@ -2,47 +2,47 @@
 {% block description %}Contacta con el equipo de Vulnify. Soporte, consultas y prensa.{% endblock %}
 {% block title %}Contacto — Vulnify{% endblock %}
 {% block content %}
-<section class="section" style="padding-top:100px">
+<section class="section" style="padding-top:140px">
   <div class="container">
-    <div class="section-header centered">
+    <div class="section-header centered reveal">
       <div class="section-label">Contacto</div>
       <h2>Háblanos</h2>
       <p class="section-sub">¿Tienes una pregunta, un problema o quieres colaborar con nosotros?</p>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;max-width:800px;margin:0 auto">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;max-width:720px;margin:0 auto">
       <div>
         <form id="contact-form" style="display:flex;flex-direction:column;gap:16px">
-          <div style="display:flex;flex-direction:column;gap:4px">
-            <label for="cf-name" style="font-size:12px;font-weight:600;color:var(--text-secondary)">Nombre</label>
+          <div>
+            <label for="cf-name" style="font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;display:block">Nombre</label>
             <input type="text" id="cf-name" required placeholder="Tu nombre" class="input">
           </div>
-          <div style="display:flex;flex-direction:column;gap:4px">
-            <label for="cf-email" style="font-size:12px;font-weight:600;color:var(--text-secondary)">Email</label>
+          <div>
+            <label for="cf-email" style="font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;display:block">Email</label>
             <input type="email" id="cf-email" required placeholder="tu@email.com" class="input">
           </div>
-          <div style="display:flex;flex-direction:column;gap:4px">
-            <label for="cf-subject" style="font-size:12px;font-weight:600;color:var(--text-secondary)">Asunto</label>
+          <div>
+            <label for="cf-subject" style="font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;display:block">Asunto</label>
             <input type="text" id="cf-subject" required placeholder="¿Sobre qué trata?" class="input">
           </div>
-          <div style="display:flex;flex-direction:column;gap:4px">
-            <label for="cf-message" style="font-size:12px;font-weight:600;color:var(--text-secondary)">Mensaje</label>
+          <div>
+            <label for="cf-message" style="font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;display:block">Mensaje</label>
             <textarea id="cf-message" rows="5" required placeholder="Cuéntanos..." class="input" style="resize:vertical"></textarea>
           </div>
           <button type="submit" class="btn btn-primary" style="align-self:flex-start">Enviar mensaje</button>
         </form>
       </div>
-      <div style="display:flex;flex-direction:column;gap:20px;padding-top:4px">
+      <div style="display:flex;flex-direction:column;gap:24px;padding-top:4px">
         <div>
-          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-tertiary);margin-bottom:4px">Email</div>
-          <a href="mailto:hola@vulnify.app" style="color:var(--accent);text-decoration:none;font-size:14px">hola@vulnify.app</a>
+          <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.14em;color:var(--text-tertiary);margin-bottom:4px">Email</div>
+          <a href="mailto:hola@vulnify.app" style="color:var(--accent);font-size:14px">hola@vulnify.app</a>
         </div>
         <div>
-          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-tertiary);margin-bottom:4px">Tiempo de respuesta</div>
+          <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.14em;color:var(--text-tertiary);margin-bottom:4px">Respuesta</div>
           <p style="font-size:13px;color:var(--text-secondary)">Normalmente respondemos en menos de 24 horas.</p>
         </div>
         <div>
-          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-tertiary);margin-bottom:4px">¿Eres una empresa?</div>
+          <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.14em;color:var(--text-tertiary);margin-bottom:4px">Empresas</div>
           <p style="font-size:13px;color:var(--text-secondary)">Consulta nuestros planes profesionales o escríbenos para una demo personalizada.</p>
         </div>
       </div>
