@@ -4,6 +4,7 @@ os.environ["ADMIN_SEED_SECRET"] = "test-seed-secret-123"
 os.environ["DISABLE_RATE_LIMITS"] = "true"
 os.environ["ENVIRONMENT"] = "testing"
 os.environ["DATABASE_URL"] = "sqlite:///./tests/test_vulnify.db"
+os.environ["HIBP_API_KEY"] = "test-hibp-key"
 
 import pytest
 from fastapi.testclient import TestClient
@@ -43,3 +44,27 @@ def client():
 
     limiter._check_request_limit = original_check
     app.dependency_overrides.clear()
+
+
+@pytest.fixture()
+def auth_headers(client):
+    resp = client.post("/api/auth/register", json={"name": "Test User", "email": "test@example.com", "password": "TestPass123"})
+    assert resp.status_code == 200
+    token = resp.json()["token"]
+    return {"Authorization": f"Bearer {token}"}
+
+
+@pytest.fixture()
+def admin_headers(client):
+    resp = client.post("/api/auth/register", json={"name": "Admin", "email": "admin@test.com", "password": "AdminPass123"})
+    assert resp.status_code == 200
+    from database import SessionLocal
+    from models.user import User
+    from modules.auth import hash_password
+    db = SessionLocal()
+    user = db.query(User).filter(User.email == "admin@test.com").first()
+    user.role = "admin"
+    db.commit()
+    db.close()
+    token = resp.json()["token"]
+    return {"Authorization": f"Bearer {token}"}

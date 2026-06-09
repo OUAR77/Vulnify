@@ -19,20 +19,25 @@ class Settings:
         return self.MAX_UPLOAD_SIZE_MB * 1024 * 1024
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
-    AI_PROVIDER: str = os.getenv("AI_PROVIDER", "ollama")
-    OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-    OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "qwen2.5-coder:14b")
-    OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
-    OPENAI_BASE_URL: str = os.getenv("OPENAI_BASE_URL", "")
-    OPENAI_MODEL: str = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
     STRIPE_SECRET_KEY: str = os.getenv("STRIPE_SECRET_KEY", "")
     STRIPE_WEBHOOK_SECRET: str = os.getenv("STRIPE_WEBHOOK_SECRET", "")
-    STRIPE_PRICE_MONTHLY: str = os.getenv("STRIPE_PRICE_MONTHLY", "")
-    STRIPE_PRICE_YEARLY: str = os.getenv("STRIPE_PRICE_YEARLY", "")
+    STRIPE_PRICE_STARTER_MONTHLY: str = os.getenv("STRIPE_PRICE_STARTER_MONTHLY", "")
+    STRIPE_PRICE_STARTER_YEARLY: str = os.getenv("STRIPE_PRICE_STARTER_YEARLY", "")
+    STRIPE_PRICE_PROFESIONAL_MONTHLY: str = os.getenv("STRIPE_PRICE_PROFESIONAL_MONTHLY", "")
+    STRIPE_PRICE_PROFESIONAL_YEARLY: str = os.getenv("STRIPE_PRICE_PROFESIONAL_YEARLY", "")
     SENDGRID_API_KEY: str = os.getenv("SENDGRID_API_KEY", "")
-    ADMIN_SEED_SECRET: str = os.getenv("ADMIN_SEED_SECRET", "")
     SITE_URL: str = os.getenv("SITE_URL", "https://vulnify.es")
-    PLATFORM_COMMISSION_PERCENT: float = float(os.getenv("PLATFORM_COMMISSION_PERCENT", "10.0"))
+    HIBP_API_KEY: str = os.getenv("HIBP_API_KEY", "")
+    GITHUB_TOKEN: str = os.getenv("GITHUB_TOKEN", "")
+    SENTRY_DSN: str = os.getenv("SENTRY_DSN", "")
+    OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
+    OPENAI_BASE_URL: str = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
+    OPENAI_MODEL: str = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+    AI_PROVIDER: str = os.getenv("AI_PROVIDER", "openai")
+    OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+    OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "qwen2.5-coder:14b")
+    NOTIFY_SEVERITIES: list = os.getenv("NOTIFY_SEVERITIES", "critical,high,medium").split(",")
+    ASSET_CHECK_INTERVAL_HOURS: int = int(os.getenv("ASSET_CHECK_INTERVAL_HOURS", "24"))
 
 
 settings = Settings()
@@ -40,4 +45,16 @@ settings = Settings()
 if settings.ENVIRONMENT == "production" and settings.SECRET_KEY in ("dev-secret-change-in-production", ""):
     raise RuntimeError("SECRET_KEY must be set in production")
 
-limiter = Limiter(key_func=get_remote_address)
+
+def _user_key_func(request):
+    if hasattr(request.state, "user_id") and request.state.user_id:
+        return f"user_{request.state.user_id}"
+    forwarded = request.headers.get("x-forwarded-for")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    if request.client:
+        return request.client.host
+    return "unknown"
+
+
+limiter = Limiter(key_func=_user_key_func)

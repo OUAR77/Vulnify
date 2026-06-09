@@ -1,43 +1,15 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>500 — Error interno · Vulnify</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
-<script>!function(){try{var t=localStorage.getItem('theme'),h=document.documentElement,d=t?t==='dark':window.matchMedia('(prefers-color-scheme:dark)').matches;h.setAttribute('data-theme',d?'dark':'light');var v=d?['#08080a','#111114','#0d0d10','#e8e5e0','#8a8780','#5c5a55','#1e1d1b','#2d2b28','#d4a853','rgba(212,168,83,0.06)','rgba(212,168,83,0.12)','rgba(212,168,83,0.08)','0 4px 24px rgba(0,0,0,0.5)','0 12px 48px rgba(0,0,0,0.6)']:['#f8f7f5','#ffffff','#ffffff','#1a1816','#6e6b67','#9e9b97','#d6d3d0','#b8b5b0','#b8943f','rgba(184,148,63,0.06)','rgba(184,148,63,0.12)','rgba(184,148,63,0.08)','0 2px 12px rgba(0,0,0,0.04)','0 8px 32px rgba(0,0,0,0.06)'];var n=['--bg','--bg-card','--bg-surface','--text','--text-secondary','--text-tertiary','--border','--border-hover','--accent','--accent-light','--accent-mid','--accent-glow','--shadow','--shadow-lg'];for(var i=0;i<n.length;i++)h.style.setProperty(n[i],v[i])}catch(e){}}()</script>
-  <link rel="stylesheet" href="/static/css/styles.css?v=5">
-  <style>
-    body{background:var(--bg);display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;font-family:var(--font-sans);color:var(--text)}
-    .error-wrap{text-align:center;padding:40px 20px;max-width:480px}
-    .error-code{font-size:100px;font-weight:900;letter-spacing:-6px;background:linear-gradient(135deg,var(--accent),#b8943f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:8px;font-family:var(--font-serif)}
-    .error-shield{margin-bottom:24px}
-    .error-wrap h1{font-size:22px;font-weight:700;margin-bottom:8px;font-family:var(--font-sans)}
-    .error-wrap p{font-size:14px;color:var(--text-secondary);margin-bottom:28px;line-height:1.6}
-    .error-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-    .error-actions .btn{text-decoration:none}
-  </style>
-</head>
-<body>
-<div class="error-wrap">
-  <div class="error-shield">
-    <svg viewBox="0 0 64 64" width="56" height="56" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5">
-      <path d="M32 4L8 16v12c0 14.5 10.3 28 24 32 13.7-4 24-17.5 24-32V16L32 4z"/>
-      <line x1="24" y1="22" x2="40" y2="38" stroke-width="2"/>
-      <line x1="40" y1="22" x2="24" y2="38" stroke-width="2"/>
-      <circle cx="32" cy="46" r="1.5" fill="var(--accent)"/>
-    </svg>
+{% extends "base.html" %}
+{% block title %}Error interno — Vulnify{% endblock %}
+{% block content %}
+<section class="section" style="padding-top:120px;min-height:80vh;display:flex;align-items:center;justify-content:center">
+  <div class="container" style="text-align:center">
+    <div style="font-size:80px;font-weight:700;color:var(--accent);font-family:var(--font-display);line-height:1">500</div>
+    <h2 style="margin-top:12px;font-size:24px">Error interno del servidor</h2>
+    <p style="font-size:14px;color:var(--text-secondary);margin-top:8px;max-width:400px;margin-left:auto;margin-right:auto">Algo salió mal. Nuestro equipo ha sido notificado y estamos trabajando en solucionarlo.</p>
+    <div style="margin-top:24px;display:flex;gap:12px;justify-content:center">
+      <a href="/" class="btn btn-primary">Volver al inicio</a>
+      <a href="/contact" class="btn btn-ghost">Reportar problema</a>
+    </div>
   </div>
-  <div class="error-code">500</div>
-  <h1>Algo se rompió</h1>
-  <p>Error interno del servidor. Ya estamos revisando los logs para encontrar el bug. Vuelve a intentarlo en unos minutos.</p>
-  <div class="error-actions">
-    <a href="/" class="btn btn-accent">Volver al inicio</a>
-    <a href="/programas" class="btn btn-ghost">Ver programas</a>
-  </div>
-</div>
-</body>
-</html>
+</section>
+{% endblock %}

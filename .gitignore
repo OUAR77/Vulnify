@@ -9,3 +9,5 @@ __pycache__/
 
 *.bak
 .env.production
+.pytest_cache/
+backups/

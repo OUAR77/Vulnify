@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block description %}Resultado del análisis de seguridad de tu dominio. Escanea tu sitio web en busca de vulnerabilidades comunes.{% endblock %}
+{% block title %}Resultado análisis — Vulnify{% endblock %}
+{% block head %}
+<style>
+  .s-wrap{max-width:800px;margin:0 auto}
+  .s-url{font-size:13px;color:var(--text-tertiary);margin-bottom:20px;word-break:break-all}
+  .s-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:24px}
+  .s-stat{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;text-align:center}
+  .s-stat .n{font-size:24px;font-weight:700;line-height:1}
+  .s-stat .l{font-size:11px;color:var(--text-tertiary);margin-top:4px}
+  .s-stat.danger .n{color:#ef4444}
+  .s-stat.warning .n{color:#f59e0b}
+  .s-stat.safe .n{color:#22c55e}
+  .vuln{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .vuln-info{flex:1}
+  .vuln-info h3{font-size:13px;margin-bottom:2px}
+  .vuln-info p{font-size:11px;color:var(--text-tertiary)}
+  .vuln-info a{color:var(--accent);font-size:11px}
+  .vuln .badge{font-size:10px;font-weight:600;padding:3px 10px;border-radius:100px;white-space:nowrap}
+  .vuln .badge.critical{background:rgba(239,68,68,0.1);color:#ef4444}
+  .vuln .badge.high{background:rgba(245,158,11,0.1);color:#f59e0b}
+  .vuln .badge.medium{background:rgba(59,130,246,0.08);color:#3b82f6}
+  .vuln .badge.low{background:rgba(34,197,94,0.08);color:#22c55e}
+  .s-start{text-align:center;padding:60px 0}
+  .s-start h2{margin-bottom:8px}
+  .s-start p{color:var(--text-secondary);margin-bottom:20px}
+  .s-form{display:flex;gap:10px;max-width:480px;margin:0 auto}
+  .s-form input{flex:1;padding:12px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text);font-size:13px;font-family:var(--font-body)}
+  .s-form input:focus{outline:none;border-color:var(--accent)}
+</style>
+{% endblock %}
+{% block content %}
+<section class="section" style="padding-top:100px">
+  <div class="container">
+    <div class="section-header centered">
+      <div class="section-label">Análisis</div>
+      <h2>Escáner de seguridad</h2>
+      <p class="section-sub">Analiza dominios públicos en busca de vulnerabilidades y malas prácticas.</p>
+    </div>
+
+    <div class="s-form">
+      <input type="text" id="scan-url" placeholder="ejemplo.com" value="{{ target if target else '' }}">
+      <button onclick="startScan()" class="btn btn-primary">Escanear</button>
+    </div>
+
+    <div id="s-results" class="s-wrap" style="margin-top:32px">
+      {% if not target %}
+      <div class="s-start" style="display:block">
+        <p>Introduce una URL o dominio para comenzar.</p>
+      </div>
+      {% else %}
+      <div id="s-inner">
+        <div class="s-url">Objetivo: <strong>{{ target }}</strong></div>
+        <div id="s-loading" style="text-align:center;padding:40px 0;display:none">
+          <p style="color:var(--accent);font-weight:600">Analizando...</p>
+          <p style="font-size:12px;color:var(--text-tertiary)">Esto puede llevar unos segundos.</p>
+        </div>
+        <div id="s-content"></div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+const TK = 'vulnify_token';
+function gt() { return localStorage.getItem(TK); }
+
+async function startScan() {
+  const u = document.getElementById('scan-url').value.trim();
+  if (!u) { alert('Introduce un dominio'); return; }
+  window.history.replaceState(null, '', '/scan?target=' + encodeURIComponent(u));
+  const inner = document.getElementById('s-inner') || document.getElementById('s-results');
+  if (!document.getElementById('s-inner')) {
+    document.querySelector('.s-start').style.display = 'none';
+    const ni = document.createElement('div'); ni.id = 's-inner';
+    ni.innerHTML = '<div class="s-url">Objetivo: <strong>' + u + '</strong></div><div id="s-loading" style="text-align:center;padding:40px 0;display:block"><p style="color:var(--accent);font-weight:600">Analizando...</p><p style="font-size:12px;color:var(--text-tertiary)">Esto puede llevar unos segundos.</p></div><div id="s-content"></div>';
+    document.getElementById('s-results').appendChild(ni);
+  } else {
+    document.getElementById('s-loading').style.display = 'block';
+    document.getElementById('s-content').innerHTML = '';
+  }
+
+  try {
+    const r = await fetch('/api/scan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ domain: u })
+    });
+    if (!r.ok) { const d = await r.json(); alert(d.detail || 'Error'); document.getElementById('s-loading').style.display = 'none'; return; }
+    const d = await r.json();
+    document.getElementById('s-loading').style.display = 'none';
+    renderResults(d, u);
+  } catch { alert('Error de conexión'); document.getElementById('s-loading').style.display = 'none'; }
+}
+
+const SEV_ORDER = {critical:0, high:1, medium:2, low:3};
+
+function classifyIssue(msg) {
+  const l = msg.toLowerCase();
+  if (l.includes('critical') || l.includes('ssl') || l.includes('dangerous')) return 'critical';
+  if (l.includes('hsts') || l.includes('csp') || l.includes('server')) return 'high';
+  if (l.includes('dns') || l.includes('x-frame') || l.includes('x-content')) return 'medium';
+  return 'low';
+}
+
+function renderResults(d, url) {
+  const issues = d.issues || [];
+  const counts = { critical: 0, high: 0, medium: 0, low: 0 };
+  issues.forEach(msg => { const s = classifyIssue(msg); if (counts[s] !== undefined) counts[s]++; });
+
+  const total = issues.length;
+
+  const html = '<div class="s-summary">' +
+    '<div class="s-stat danger"><div class="n">' + counts.critical + '</div><div class="l">Críticas</div></div>' +
+    '<div class="s-stat warning"><div class="n">' + counts.high + '</div><div class="l">Altas</div></div>' +
+    '<div class="s-stat warning"><div class="n">' + counts.medium + '</div><div class="l">Medias</div></div>' +
+    '<div class="s-stat safe"><div class="n">' + counts.low + '</div><div class="l">Bajas</div></div>' +
+    '</div>' +
+    (total === 0 ? '<div class="vuln" style="justify-content:center"><p style="font-size:13px;color:#22c55e;font-weight:600">✓ Sin vulnerabilidades detectadas</p></div>' :
+    '<div id="vuln-list">' + issues.map(msg => '<div class="vuln"><div class="vuln-info"><h3>' + msg.split(':')[0] + '</h3><p>' + msg + '</p></div><span class="badge ' + classifyIssue(msg) + '">' + classifyIssue(msg).toUpperCase() + '</span></div>').join('') + '</div>');
+
+  const sc = d.score !== undefined ? d.score : (100 - total * 10);
+  const sp = '<div style="text-align:center;margin-top:16px;padding:12px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--bg-card)"><span style="font-size:11px;color:var(--text-tertiary)">Puntuación de seguridad' + (d.grade ? ' · Grado ' + d.grade : '') + '</span><br><span style="font-size:28px;font-weight:700;color:' + (sc >= 70 ? '#22c55e' : sc >= 40 ? '#f59e0b' : '#ef4444') + '">' + sc + '/100</span></div>';
+
+  document.getElementById('s-content').innerHTML = html + sp;
+}
+
+{% if target %}
+document.addEventListener('DOMContentLoaded', () => startScan());
+{% endif %}
+</script>
+{% endblock %}

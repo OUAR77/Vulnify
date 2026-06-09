@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{% block description %}Vulnify — Monitorización de reputación digital y detección de brechas de datos. Protege tu identidad online.{% endblock %}">
+  <title>{% block title %}Vulnify — Reputación digital{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/css/styles.css?v=7">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  {% block header %}
+  <header class="header" id="header">
+    <div class="header-inner">
+      <a href="/" class="logo">Vulnify</a>
+      <nav class="nav" id="mainNav">
+        <a href="/" class="nav-link">Inicio</a>
+        <a href="/monitor" class="nav-link">Monitor</a>
+        <a href="/scanner" class="nav-link">Escáner</a>
+        <a href="/precios" class="nav-link">Precios</a>
+      </nav>
+      <div class="header-actions">
+        <div id="headerAuth">
+          <a href="/login" class="btn btn-ghost btn-sm">Acceder</a>
+          <a href="/register" class="btn btn-primary btn-sm">Crear cuenta</a>
+        </div>
+        <div id="headerUser" style="display:none">
+          <a href="/dashboard" class="btn btn-ghost btn-sm" id="headerUserName"></a>
+          <button onclick="logout()" class="btn btn-ghost btn-sm">Salir</button>
+        </div>
+        <button class="hamburger" id="menuToggle" aria-label="Menú">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="/" class="nav-link" onclick="closeMobileMenu()">Inicio</a>
+    <a href="/monitor" class="nav-link" onclick="closeMobileMenu()">Monitor</a>
+    <a href="/scanner" class="nav-link" onclick="closeMobileMenu()">Escáner</a>
+    <a href="/precios" class="nav-link" onclick="closeMobileMenu()">Precios</a>
+    <div class="mobile-auth" id="mobileAuth">
+      <a href="/login" class="btn btn-ghost" style="width:100%;justify-content:center">Acceder</a>
+      <a href="/register" class="btn btn-primary" style="width:100%;justify-content:center">Crear cuenta</a>
+    </div>
+    <div id="mobileUser" style="display:none">
+      <a href="/dashboard" class="btn btn-ghost" id="mobileUserName" style="width:100%;justify-content:center"></a>
+      <button onclick="logout();closeMobileMenu()" class="btn btn-ghost" style="width:100%;justify-content:center">Salir</button>
+    </div>
+  </div>
+  {% endblock %}
+
+  {% block content %}{% endblock %}
+
+  <div id="toast" class="toast"></div>
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+
+  {% block footer %}
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="/" class="logo">Vulnify</a>
+        <p class="footer-desc">Monitorización de reputación digital y detección de brechas de datos para pymes y autónomos.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Producto</h4>
+        <a href="/monitor">Monitor</a>
+        <a href="/scanner">Escáner</a>
+        <a href="/precios">Precios</a>
+      </div>
+      <div class="footer-col">
+        <h4>Empresa</h4>
+        <a href="/sobre-nosotros">Sobre nosotros</a>
+        <a href="/contacto">Contacto</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="/privacidad">Privacidad</a>
+        <a href="/terminos">Términos</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Vulnify. Todos los derechos reservados.</span>
+      <div class="footer-social">
+        <a href="mailto:hola@vulnify.es" aria-label="Email" class="social-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+  {% endblock %}
+
+  <script src="/static/js/script.js?v=2"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

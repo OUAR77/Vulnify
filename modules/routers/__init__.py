@@ -1,0 +1,9 @@
+from modules.routers.auth import router as auth_router
+from modules.routers.assets import router as assets_router
+from modules.routers.alerts import router as alerts_router
+from modules.routers.plans import router as plans_router
+from modules.routers.admin import router as admin_router
+from modules.routers.search import router as search_router
+from modules.routers.reports import router as reports_router
+from modules.routers.scan import router as scan_router
+from modules.routers.batch import router as batch_router

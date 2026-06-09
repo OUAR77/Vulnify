@@ -24,9 +24,12 @@ class JSONColumn(TypeDecorator):
 DATABASE_URL = settings.DATABASE_URL
 if DATABASE_URL.startswith("sqlite"):
     connect_args = {"check_same_thread": False}
+    engine = create_engine(DATABASE_URL, connect_args=connect_args)
 else:
-    connect_args = {"sslmode": "require"}
-engine = create_engine(DATABASE_URL, connect_args=connect_args)
+    if "sslmode" not in DATABASE_URL and "ssl" not in DATABASE_URL:
+        engine = create_engine(DATABASE_URL, connect_args={"sslmode": "require"})
+    else:
+        engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
 

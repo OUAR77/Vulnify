@@ -18,12 +18,8 @@ config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
+import models
 from database import Base
-from models.user import User
-from models.report import Report
-from models.program import Program
-from models.notification import Notification
-from models.apikey import ApiKey
 
 target_metadata = Base.metadata
 

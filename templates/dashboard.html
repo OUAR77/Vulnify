@@ -1,149 +1,179 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard — Vulnify</title>
-  <meta name="description" content="Panel de control de Vulnify. Gestiona tus reportes, programas y perfil.">
-  <meta property="og:title" content="Dashboard — Vulnify">
-  <meta property="og:description" content="Panel de control de Vulnify. Gestiona tus reportes, programas y perfil.">
-  <meta property="og:image" content="/static/og-image.svg">
-  <meta property="og:type" content="website">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
-<script>!function(){try{var t=localStorage.getItem('theme'),h=document.documentElement,d=t?t==='dark':window.matchMedia('(prefers-color-scheme:dark)').matches;h.setAttribute('data-theme',d?'dark':'light');var v=d?['#08080a','#111114','#0d0d10','#e8e5e0','#8a8780','#5c5a55','#1e1d1b','#2d2b28','#d4a853','rgba(212,168,83,0.06)','rgba(212,168,83,0.12)','rgba(212,168,83,0.08)','0 4px 24px rgba(0,0,0,0.5)','0 12px 48px rgba(0,0,0,0.6)']:['#f8f7f5','#ffffff','#ffffff','#1a1816','#6e6b67','#9e9b97','#d6d3d0','#b8b5b0','#b8943f','rgba(184,148,63,0.06)','rgba(184,148,63,0.12)','rgba(184,148,63,0.08)','0 2px 12px rgba(0,0,0,0.04)','0 8px 32px rgba(0,0,0,0.06)'];var n=['--bg','--bg-card','--bg-surface','--text','--text-secondary','--text-tertiary','--border','--border-hover','--accent','--accent-light','--accent-mid','--accent-glow','--shadow','--shadow-lg'];for(var i=0;i<n.length;i++)h.style.setProperty(n[i],v[i])}catch(e){}}()</script>
-<link rel="stylesheet" href="/static/css/styles.css?v=5">
-</head>
-<body>
-<header class="header">
-  <div class="container header-inner">
-    <a href="/" class="logo"><svg viewBox="0 0 32 32" width="16" height="16" style="display:inline-block"><rect width="32" height="32" rx="8" fill="#d4a853"/><circle cx="16" cy="16" r="10" fill="none" stroke="#08080a" stroke-width="1.5"/><circle cx="16" cy="16" r="5" fill="none" stroke="#08080a" stroke-width="1" opacity="0.6"/><line x1="16" y1="4" x2="16" y2="7" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="16" y1="25" x2="16" y2="28" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="16" x2="7" y2="16" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="25" y1="16" x2="28" y2="16" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><path d="M13 19 L16 12 L19 19" fill="none" stroke="#08080a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Vuln</span>ify</a>
-    <button class="hamburger" onclick="toggleMobileMenu()" aria-label="Menú"><span></span><span></span><span></span></button>
-    <nav class="nav">
-      <a class="nav-link" href="/programas">Programas</a>
-      <a class="nav-link" href="/dashboard" style="color:var(--text);">Dashboard</a>
-      <a class="nav-link" href="/report/new">Reportar bug</a>
-      <a class="nav-link" href="/ai">IA Tools</a>
-    </nav>
-    <div class="header-actions">
-      <button class="theme-btn" id="themeToggle" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
-      <button class="btn btn-ghost" id="dashUserName" onclick="logout()" style="display:none;"></button>
-    </div>
-  </div>
-  <div class="mobile-menu" id="mobileMenu">
-    <div id="mobileNavLinks">
-      <a class="nav-link" href="/programas">Programas</a>
-      <a class="nav-link" href="/dashboard">Dashboard</a>
-      <a class="nav-link" href="/report/new">Reportar bug</a>
-      <a class="nav-link" href="/ai">IA Tools</a>
-    </div>
-    <div class="header-actions-mobile" id="mobileUser" style="display:none">
-      <button class="btn btn-ghost" onclick="logout()">Cerrar sesión</button>
-    </div>
-  </div>
-</header>
-
-<section class="section">
+{% extends "base.html" %}
+{% block title %}Dashboard — Vulnify{% endblock %}
+{% block head %}
+<style>
+  .db-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px}
+  .db-stat{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:20px;text-align:center}
+  .db-stat .num{font-size:28px;font-weight:700;font-family:var(--font-display);color:var(--accent)}
+  .db-stat .lbl{font-size:11px;color:var(--text-tertiary);margin-top:2px}
+  .tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px}
+  .tab{padding:10px 20px;font-size:12px;font-weight:600;font-family:var(--font-display);color:var(--text-secondary);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:all .15s}
+  .tab:hover{color:var(--text)}
+  .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+  .tab-pane{display:none}
+  .tab-pane.active{display:block}
+  .asset-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;transition:border-color .2s}
+  .asset-card:hover{border-color:var(--border-hover)}
+  .asset-card .info{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+  .asset-card .info .badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;text-transform:uppercase;flex-shrink:0}
+  .asset-card .info .badge.domain{background:rgba(59,130,246,0.08);color:#3b82f6;border:1px solid rgba(59,130,246,0.12)}
+  .asset-card .info .badge.email{background:rgba(201,168,76,0.08);color:var(--accent);border:1px solid rgba(201,168,76,0.12)}
+  .asset-card .info .val{font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .asset-card .info .meta{font-size:11px;color:var(--text-tertiary)}
+  .asset-card .actions{display:flex;gap:4px;flex-shrink:0}
+  .add-bar{display:flex;gap:8px;margin-bottom:20px}
+  .add-bar select,.add-bar input{flex:1}
+  .alert-item{padding:12px 16px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:6px;transition:border-color .2s}
+  .alert-item:hover{border-color:var(--border-hover)}
+  .alert-item.unread{border-left:3px solid var(--accent)}
+  .alert-item .hdr{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:2px}
+  .alert-item .name{font-weight:600;font-size:13px}
+  .alert-item .desc{font-size:12px;color:var(--text-secondary);line-height:1.5}
+  .alert-item .meta{font-size:11px;color:var(--text-tertiary);margin-top:4px}
+  .empty-state{text-align:center;padding:48px 20px;color:var(--text-tertiary)}
+  .empty-state h3{font-size:16px;color:var(--text-secondary);margin-bottom:4px}
+  .empty-state p{font-size:12px}
+</style>
+{% endblock %}
+{% block content %}
+<section class="section" style="padding-top:100px">
   <div class="container">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:40px;">
-      <div>
-        <h1 style="font-size:28px;font-weight:800;letter-spacing:-1px;">Dashboard</h1>
-        <p style="color:var(--text-secondary);font-size:14px;" id="dashSubtitle">Bienvenido de nuevo</p>
-      </div>
-      <a href="/report/new" class="btn btn-accent">Nuevo reporte</a>
+    <div class="section-header">
+      <div class="section-label">Dashboard</div>
+      <h2>Panel de monitorización</h2>
+      <p class="section-sub">Gestiona tus activos y revisa alertas de brechas.</p>
     </div>
 
-    <div class="stats-row" style="margin-bottom:40px;" id="dashStats">
-      <div class="stat-counter">
-        <div class="stat-counter-num" style="font-size:32px;" id="statReports">0</div>
-        <div class="stat-counter-label">Reportes enviados</div>
-      </div>
-      <div class="stat-counter">
-        <div class="stat-counter-num" style="font-size:32px;color:#16a34a;" id="statValid">0</div>
-        <div class="stat-counter-label">Válidos</div>
-      </div>
-      <div class="stat-counter">
-        <div class="stat-counter-num" style="font-size:32px;color:var(--accent);" id="statPaid">0</div>
-        <div class="stat-counter-label">Pagados</div>
-      </div>
-      <div class="stat-counter">
-        <div class="stat-counter-num" style="font-size:32px;color:var(--text-tertiary);" id="statPending">0</div>
-        <div class="stat-counter-label">Pendientes</div>
-      </div>
+    <div id="login-prompt" style="display:none;text-align:center;padding:60px 0">
+      <p style="color:var(--text-secondary);margin-bottom:12px">Inicia sesión para ver tu panel.</p>
+      <a href="/login" class="btn btn-primary">Iniciar sesión</a>
     </div>
 
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-      <h2 style="font-size:18px;font-weight:700;">Tus reportes</h2>
-    </div>
+    <div id="dashboard-content" style="display:none">
+      <div class="db-stats">
+        <div class="db-stat"><div class="num" id="stat-assets">0</div><div class="lbl">Activos</div></div>
+        <div class="db-stat"><div class="num" id="stat-breaches">0</div><div class="lbl">Brechas</div></div>
+        <div class="db-stat"><div class="num" id="stat-alerts">0</div><div class="lbl">Alertas</div></div>
+        <div class="db-stat"><div class="num" id="stat-unread">0</div><div class="lbl">Sin leer</div></div>
+      </div>
 
-    <div id="reportsList" style="display:flex;flex-direction:column;gap:8px;">
-      <div style="text-align:center;padding:40px;color:var(--text-tertiary);font-size:14px;" id="reportsEmpty">
-        Aún no has enviado ningún reporte.
+      <div class="tabs">
+        <button class="tab active" data-tab="assets">Activos</button>
+        <button class="tab" data-tab="alerts">Alertas</button>
+      </div>
+
+      <div class="tab-pane active" id="tab-assets">
+        <div class="add-bar">
+          <select id="new-asset-type">
+            <option value="domain">Dominio</option>
+            <option value="email">Email</option>
+          </select>
+          <input type="text" id="new-asset-value" placeholder="ejemplo.com">
+          <button class="btn btn-accent btn-sm" id="add-asset-btn">Añadir</button>
+        </div>
+        <div id="assets-list"><div class="empty-state"><h3>Aún no monitorizas nada</h3><p>Añade un dominio o email para empezar.</p></div></div>
+      </div>
+
+      <div class="tab-pane" id="tab-alerts">
+        <div id="alerts-list"><div class="empty-state"><h3>Sin alertas</h3><p>Las alertas aparecerán aquí.</p></div></div>
       </div>
     </div>
   </div>
 </section>
-
-<footer class="footer" style="border-top:1px solid var(--border);">
-  <div class="container footer-bottom" style="border:none;padding-top:0;">
-    <span>© 2026 <span class="accent">Vulnify</span></span>
-    <span><a href="/" style="color:var(--text-tertiary);text-decoration:none;font-size:12px;">Volver al inicio</a></span>
-  </div>
-</footer>
-
-<div class="toast" id="toast"></div>
-
-<button class="back-top" id="backTop" aria-label="Volver arriba">&#8593;</button>
-<script src="/static/js/script.js?v=5"></script>
+{% endblock %}
+{% block scripts %}
 <script>
-async function loadDashboard() {
-  const token = await getValidToken();
-  if (!token) { window.location.href = '/'; return; }
+const TK = 'vulnify_token';
+function gt() { return localStorage.getItem(TK); }
 
+async function fwu(url, opts = {}) {
+  const t = gt();
+  if (!t) return null;
   try {
-    const me = await (await fetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } })).json();
-    if (me.role === 'company') { window.location.href = '/company'; return; }
-    if (me.role === 'admin') { window.location.href = '/admin'; return; }
-    document.getElementById('dashUserName').textContent = me.name;
-    document.getElementById('dashUserName').style.display = 'inline-flex';
-    document.getElementById('dashSubtitle').textContent = `Bienvenido de nuevo, ${me.name}`;
-
-    const res = await fetch('/api/reports?per_page=50', { headers: { Authorization: `Bearer ${token}` } });
-    const reportsData = await res.json();
-    const reports = reportsData.items || [];
-    const stats = { total: reports.length, valid: 0, paid: 0, pending: 0 };
-    reports.forEach(r => {
-      if (r.status === 'valid') stats.valid++;
-      else if (r.status === 'paid') { stats.valid++; stats.paid++; }
-      else stats.pending++;
-    });
-    document.getElementById('statReports').textContent = stats.total;
-    document.getElementById('statValid').textContent = stats.valid;
-    document.getElementById('statPaid').textContent = stats.paid;
-    document.getElementById('statPending').textContent = stats.pending;
-
-    const container = document.getElementById('reportsList');
-    if (reports.length === 0) return;
-
-    document.getElementById('reportsEmpty').style.display = 'none';
-    container.innerHTML = reports.map(r => {
-      const sevColors = { info: '#6b6b75', low: '#16a34a', medium: '#d97706', high: '#dc2626', critical: '#dc2626' };
-      const sv = ['info','low','medium','high','critical'].includes(r.severity) ? r.severity : 'info';
-      return `<a href="/report/${r.id}" class="mw-report" style="padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);text-decoration:none;">
-        <span class="mw-dot" style="background:${sevColors[sv]}"></span>
-        <span class="mw-name">${r.title}</span>
-        <span class="mw-badge" style="color:${sevColors[sv]};background:${sevColors[sv]}15;
-          text-transform:capitalize;">${sv} · ${r.status}</span>
-      </a>`;
-    }).join('');
-  } catch {
-    window.location.href = '/';
-  }
+    const r = await fetch(url, { ...opts, headers: { ...(opts.headers||{}), 'Authorization': 'Bearer ' + t, 'Content-Type': 'application/json' } });
+    if (r.status === 401) { localStorage.removeItem(TK); window.location.href = '/login'; return null; }
+    return r;
+  } catch { return null; }
 }
+
+function toast(msg, type) {
+  const el = document.getElementById('toast');
+  if (!el) return;
+  el.innerHTML = '<span>' + msg + '</span>';
+  el.className = 'toast open' + (type ? ' toast-' + type : '');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('open'), 3000);
+}
+
+function sj(r) { try { return r.json(); } catch { return null; } }
+
+async function loadDashboard() {
+  const t = gt();
+  if (!t) { document.getElementById('login-prompt').style.display = 'block'; return; }
+  const mr = await fwu('/api/auth/me');
+  if (!mr) return;
+  const me = await sj(mr);
+  if (!me||!me.id) { localStorage.removeItem(TK); window.location.href = '/login'; return; }
+  document.getElementById('headerUserName').textContent = me.name;
+  document.getElementById('headerUser').style.display = 'inline-flex';
+  document.getElementById('dashboard-content').style.display = 'block';
+  document.getElementById('mobileAuth').innerHTML = '<a href="/dashboard" class="btn btn-ghost" style="width:100%;justify-content:center">Dashboard</a><button class="btn btn-ghost" onclick="localStorage.removeItem(\''+TK+'\');window.location.href=\'/\'" style="width:100%;justify-content:center">Salir</button>';
+  loadAssets();
+  loadAlerts();
+}
+
+async function loadAssets() {
+  const r = await fwu('/api/assets');
+  if (!r) return;
+  const assets = await sj(r);
+  if (!assets) return;
+  const el = document.getElementById('assets-list');
+  if (!assets.length) { el.innerHTML = '<div class="empty-state"><h3>Aún no monitorizas nada</h3><p>Añade un dominio o email para empezar.</p></div>'; return; }
+  el.innerHTML = assets.map(a => '<div class="asset-card"><div class="info"><span class="badge ' + a.type + '">' + (a.type==='domain'?'🌐':'📧') + ' ' + a.type + '</span><div><div class="val">' + a.value + '</div><div class="meta">' + (a.breaches_found > 0 ? '<span style="color:#ef4444">' + a.breaches_found + ' brecha(s)</span>' : 'Sin brechas') + ' · ' + (a.last_checked ? a.last_checked.slice(0,10) : 'Sin comprobar') + '</div></div></div><div class="actions"><button class="btn btn-ghost btn-sm ck" data-id="' + a.id + '">Verificar</button><button class="btn btn-ghost btn-sm del" data-id="' + a.id + '" style="color:#ef4444">×</button></div></div>').join('');
+  document.querySelectorAll('.ck').forEach(b => b.addEventListener('click', async () => {
+    b.disabled = true; b.textContent = '...';
+    const r = await fwu('/api/assets/' + b.dataset.id + '/check', { method: 'POST' });
+    if (r) { const d = await sj(r); if (d && d.security_tips && d.security_tips.length) alert('Consejos:\n' + d.security_tips.join('\n')); }
+    loadAssets(); loadAlerts();
+    b.disabled = false; b.textContent = 'Verificar';
+  }));
+  document.querySelectorAll('.del').forEach(b => b.addEventListener('click', async () => {
+    await fwu('/api/assets/' + b.dataset.id, { method: 'DELETE' });
+    toast('Eliminado'); loadAssets();
+  }));
+}
+
+async function loadAlerts() {
+  const r = await fwu('/api/alerts?per_page=50');
+  if (!r) return;
+  const data = await sj(r);
+  if (!data) return;
+  const el = document.getElementById('alerts-list');
+  if (!data.items.length) { el.innerHTML = '<div class="empty-state"><h3>Sin alertas</h3><p>Las alertas aparecerán aquí.</p></div>'; return; }
+  el.innerHTML = data.items.map(a => '<div class="alert-item' + (a.read ? '' : ' unread') + '" style="' + (a.resolved?'opacity:0.5':'') + '"><div class="hdr"><span class="name">' + a.breach_name + (a.resolved?' ✅':'') + '</span><span class="sev-badge ' + a.severity + '">' + a.severity + '</span></div><div class="desc">' + (a.description||'') + '</div><div class="meta">' + (a.breach_date||'') + (a.resolved?' · Resuelta':'') + (!a.read&&!a.resolved?' · <span style="color:var(--accent);font-weight:600">Nueva</span>':'') + '</div></div>').join('');
+}
+
+document.getElementById('add-asset-btn').addEventListener('click', async () => {
+  const type = document.getElementById('new-asset-type').value;
+  const value = document.getElementById('new-asset-value').value.trim();
+  if (!value) { toast('Introduce un valor', 'error'); return; }
+  const r = await fwu('/api/assets', { method: 'POST', body: JSON.stringify({ type, value }) });
+  if (r && r.ok) { toast('Añadido', 'success'); document.getElementById('new-asset-value').value = ''; loadAssets(); }
+  else { const d = await sj(r); toast((d&&d.detail)||'Error', 'error'); }
+});
+
+document.getElementById('new-asset-value').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('add-asset-btn').click(); });
+
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    const p = document.getElementById('tab-' + tab.dataset.tab);
+    if (p) p.classList.add('active');
+  });
+});
 
 loadDashboard();
 </script>
-</body>
-</html>
+{% endblock %}

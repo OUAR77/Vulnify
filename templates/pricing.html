@@ -1,141 +1,95 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Planes de bug bounty para empresas españolas. Gratis, Starter (49€) y Profesional (149€). Precios claros, sin sorpresas.">
-<title>Planes — Vulnify</title>
-<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script>!function(){try{var t=localStorage.getItem('theme'),h=document.documentElement,d=t?t==='dark':window.matchMedia('(prefers-color-scheme:dark)').matches;h.setAttribute('data-theme',d?'dark':'light');var v=d?['#08080a','#111114','#0d0d10','#e8e5e0','#8a8780','#5c5a55','#1e1d1b','#2d2b28','#d4a853','rgba(212,168,83,0.06)','rgba(212,168,83,0.12)','rgba(212,168,83,0.08)','0 4px 24px rgba(0,0,0,0.5)','0 12px 48px rgba(0,0,0,0.6)']:['#f8f7f5','#ffffff','#ffffff','#1a1816','#6e6b67','#9e9b97','#d6d3d0','#b8b5b0','#b8943f','rgba(184,148,63,0.06)','rgba(184,148,63,0.12)','rgba(184,148,63,0.08)','0 2px 12px rgba(0,0,0,0.04)','0 8px 32px rgba(0,0,0,0.06)'];var n=['--bg','--bg-card','--bg-surface','--text','--text-secondary','--text-tertiary','--border','--border-hover','--accent','--accent-light','--accent-mid','--accent-glow','--shadow','--shadow-lg'];for(var i=0;i<n.length;i++)h.style.setProperty(n[i],v[i])}catch(e){}}()</script>
-<link rel="stylesheet" href="/static/css/styles.css?v=5">
-<style>
-.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:32px}
-.plan-card{border:1px solid var(--border);border-radius:var(--radius-md);padding:32px;background:var(--bg-card);display:flex;flex-direction:column;transition:border-color .2s,transform .2s}
-.plan-card:hover{transform:translateY(-4px);border-color:var(--accent)}
-.plan-card.featured{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 8px 32px rgba(212,168,83,0.1)}
-.plan-card h3{font-size:20px;font-weight:700}
-.plan-card .price{font-size:40px;font-weight:800;letter-spacing:-2px;color:var(--accent);margin:16px 0 4px}
-.plan-card .price small{font-size:16px;font-weight:400;color:var(--text-tertiary)}
-.plan-card .period{font-size:13px;color:var(--text-tertiary);margin-bottom:16px}
-.plan-card ul{list-style:none;padding:0;margin:16px 0 24px;flex:1}
-.plan-card ul li{padding:8px 0;font-size:14px;color:var(--text-secondary);border-bottom:1px solid var(--border)}
-.plan-card ul li:last-child{border-bottom:none}
-.plan-card ul li::before{content:'';width:14px;height:14px;flex-shrink:0;background:var(--accent);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/contain no-repeat;display:inline-block;margin-right:8px}
-.plan-card .badge{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px;background:var(--accent);color:var(--bg);margin-bottom:8px}
-</style>
-</head>
-<body>
-<header class="header"><div class="container header-inner"><a href="/" class="logo"><svg viewBox="0 0 32 32" width="16" height="16" style="display:inline-block"><rect width="32" height="32" rx="8" fill="#d4a853"/><circle cx="16" cy="16" r="10" fill="none" stroke="#08080a" stroke-width="1.5"/><circle cx="16" cy="16" r="5" fill="none" stroke="#08080a" stroke-width="1" opacity="0.6"/><line x1="16" y1="4" x2="16" y2="7" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="16" y1="25" x2="16" y2="28" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="16" x2="7" y2="16" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="25" y1="16" x2="28" y2="16" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><path d="M13 19 L16 12 L19 19" fill="none" stroke="#08080a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Vuln</span>ify</a><button class="hamburger" onclick="toggleMobileMenu()" aria-label="Menú"><span></span><span></span><span></span></button><nav class="nav"><a class="nav-link" href="/programas">Programas</a><a class="nav-link" href="/precios">Planes</a></nav><div class="header-actions"><button class="theme-btn" id="themeToggle" onclick="toggleTheme()" title="Cambiar tema">&#127769;</button><div id="headerAuth"><button class="btn btn-ghost" onclick="openModal('login')">Iniciar sesión</button><button class="btn btn-primary" onclick="openModal('register')">Registrarse</button></div><div id="headerUser" style="display:none;align-items:center;gap:8px"><a href="/dashboard" class="btn btn-ghost" id="headerUserName" style="font-weight:600"></a><button class="btn btn-ghost" onclick="logout()" style="font-size:12px">Salir</button></div></div></div>
-<div class="mobile-menu" id="mobileMenu">
-  <div id="mobileNavLinks">
-    <a class="nav-link" href="/programas">Programas</a>
-    <a class="nav-link" href="/precios">Planes</a>
-  </div>
-  <div class="header-actions-mobile" id="mobileAuth">
-    <button class="btn btn-ghost" onclick="openModal('login')">Iniciar sesión</button>
-    <button class="btn btn-primary" onclick="openModal('register')">Registrarse</button>
-  </div>
-  <div class="header-actions-mobile" id="mobileUser" style="display:none">
-    <a href="/dashboard" class="btn btn-ghost" id="mobileUserName" style="font-weight:600"></a>
-    <button class="btn btn-ghost" onclick="logout()">Salir</button>
-  </div>
-</div>
-</header>
-
-<section class="section"><div class="container">
-  <div style="text-align:center;max-width:600px;margin:0 auto">
-    <h1 style="font-size:36px;font-weight:800;letter-spacing:-1.5px;margin-bottom:8px">Planes para empresas</h1>
-    <p style="font-size:16px;color:var(--text-secondary)">Elige el plan que mejor encaje con tu equipo. El 10% del bounty se queda en la plataforma.</p>
-  </div>
-  <div class="pricing-grid" id="pricingGrid">
-    <div style="text-align:center;padding:60px"><div class="spinner spinner-lg"></div></div>
-  </div>
-</div></section>
-
-<div class="modal-overlay" id="modalOverlay"><div class="modal-body" id="modalBody"></div></div>
-<div class="toast" id="toast"></div>
-<button class="back-top" id="backTop" aria-label="Volver arriba">&uarr;</button>
-<footer class="footer">
+{% extends "base.html" %}
+{% block description %}Planes y precios de Vulnify para monitorización de reputación digital. Gratuito, Starter y Profesional.{% endblock %}
+{% block title %}Precios — Vulnify{% endblock %}
+{% block content %}
+<section class="section" style="padding-top:100px">
   <div class="container">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="logo" style="display:flex;align-items:center;gap:6px;"><svg viewBox="0 0 32 32" width="16" height="16" style="display:inline-block"><rect width="32" height="32" rx="8" fill="#d4a853"/><circle cx="16" cy="16" r="10" fill="none" stroke="#08080a" stroke-width="1.5"/><circle cx="16" cy="16" r="5" fill="none" stroke="#08080a" stroke-width="1" opacity="0.6"/><line x1="16" y1="4" x2="16" y2="7" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="16" y1="25" x2="16" y2="28" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="16" x2="7" y2="16" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><line x1="25" y1="16" x2="28" y2="16" stroke="#08080a" stroke-width="1.5" stroke-linecap="round"/><path d="M13 19 L16 12 L19 19" fill="none" stroke="#08080a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Vuln</span>ify</div>
-        <p class="footer-desc">La plataforma de bug bounty española. Conectamos hackers éticos con startups tech.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Plataforma</h4>
-        <a href="/programas">Programas activos</a>
-        <a href="/hall-of-fame">Ranking hunters</a>
-        <a href="/hall-of-fame">Hall of Fame</a>
-        <a href="/#features">Cómo funciona</a>
-      </div>
-      <div class="footer-col">
-        <h4>Hunters</h4>
-        <a href="/#precios">Registrarse</a>
-        <a href="/#features">Guía de inicio</a>
-        <a href="/terminos">Reglas</a>
-        <a href="/terminos">Disclosure policy</a>
-      </div>
-      <div class="footer-col">
-        <h4>Empresa</h4>
-        <a href="/sobre-nosotros">Sobre nosotros</a>
-        <a href="/contacto">Contacto</a>
-        <a href="/privacidad">Privacidad</a>
-        <a href="/terminos">Términos</a>
+    <div class="section-header centered">
+      <div class="section-label">Planes</div>
+      <h2>Protege tu reputación digital</h2>
+      <p class="section-sub">Todos los planes incluyen monitorización de brechas. Escala según tus necesidades.</p>
+    </div>
+    <div style="display:flex;justify-content:center;margin-bottom:32px">
+      <div class="bill-toggle" id="bill-toggle">
+        <button class="bill-btn active" data-interval="month">Mensual</button>
+        <button class="bill-btn" data-interval="year">Anual</button>
       </div>
     </div>
-    <div class="footer-bottom">
-      <span>© 2026 <span class="accent">Vulnify</span> · vulnify.es</span>
-      <span>Bug Bounty Platform</span>
+    <div class="pricing-grid" id="pricing-grid"></div>
+
+    <div class="section" style="padding-bottom:0">
+      <div class="faq-list" style="margin-top:40px">
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">¿Qué tipos de activos puedo monitorizar? <span class="faq-arrow">+</span></button>
+          <div class="faq-answer">Puedes monitorizar dominios y direcciones de email. Comprobamos si aparecen en nuestra base de datos de brechas conocidas.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">¿De dónde obtenéis los datos? <span class="faq-arrow">+</span></button>
+          <div class="faq-answer">Mantenemos una base de datos actualizada con las filtraciones más conocidas: LinkedIn, Dropbox, Adobe, Facebook, y cientos más.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">¿Puedo cancelar mi suscripción? <span class="faq-arrow">+</span></button>
+          <div class="faq-answer">Sí, en cualquier momento desde tu dashboard. Sin permanencia ni penalización.</div>
+        </div>
+      </div>
     </div>
   </div>
-</footer>
-
-<script src="/static/js/script.js?v=5"></script>
+</section>
+{% endblock %}
+{% block scripts %}
 <script>
-(async()=>{
-  let user = null;
-  var tok = await getValidToken();
-  if(!tok) tok = localStorage.getItem('token');
-  if(tok){
-    try{
-      const r = await fetch('/api/auth/me', {headers:{Authorization:'Bearer '+tok}});
-      if(r.ok) user = await r.json();
-    }catch{}
-  }
-  var btn = user?.role==='company'
-    ? '<a href="/company/billing" class="btn btn-accent" style="width:100%;justify-content:center;text-decoration:none">Ir a facturación</a>'
-    : user?.role==='hunter'
-      ? '<button class="btn btn-outline" style="width:100%;justify-content:center" disabled>Solo para empresas</button>'
-      : localStorage.getItem('token')
-        ? '<button class="btn btn-accent" style="width:100%;justify-content:center" onclick="openModal(\'login\')">Iniciar sesión</button>'
-        : '<button class="btn btn-accent" style="width:100%;justify-content:center" onclick="openModal(\'register\')">Comenzar</button>';
+let plans = [];
+let interval = 'month';
 
-  try{
-    const res = await fetch('/api/plans');
-    const plans = await res.json();
-    document.getElementById('pricingGrid').innerHTML = plans.map((p,i) => `
-      <div class="plan-card${i===2?' featured':''}">
-        ${i===2?'<span class="badge">Mas popular</span>':''}
-        <h3>${p.name}</h3>
-        <p style="font-size:13px;color:var(--text-tertiary)">${p.description}</p>
-        <div class="price">${p.price_monthly}€ <small>/mes</small></div>
-        ${p.price_yearly ? `<div class="period">o ${p.price_yearly}€/año (ahorra ${Math.round((1-p.price_yearly/(p.price_monthly*12))*100)}%)</div>` : '<div class="period">&nbsp;</div>'}
-        <ul>
-          <li>${p.max_reports===-1?'Reportes ilimitados':`Hasta ${p.max_reports} reportes/mes`}</li>
-          <li>${p.max_programs===-1?'Programas ilimitados':`Hasta ${p.max_programs} programas`}</li>
-          ${(p.features||[]).map(f => '<li>'+f+'</li>').join('')}
-        </ul>
-        ${btn}
-      </div>
-    `).join('');
-  }catch{
-    document.getElementById('pricingGrid').innerHTML = '<div style="text-align:center;padding:60px;color:var(--text-tertiary)">Error al cargar planes</div>';
-  }
-})();
+document.querySelectorAll('.bill-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.bill-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    interval = b.dataset.interval;
+    renderPlans();
+  });
+});
+
+function renderPlans() {
+  const grid = document.getElementById('pricing-grid');
+  grid.innerHTML = plans.map((plan, i) => {
+    const p = interval === 'month' ? plan.price_monthly : (plan.price_yearly || plan.price_monthly);
+    const pt = p === 0 ? '0€' : p + '€';
+    const per = p === 0 ? 'siempre gratis' : (interval === 'month' ? 'al mes' : 'al año');
+    const feat = i === 1 ? ' featured' : '';
+    const bc = i === 1 ? 'primary' : 'ghost';
+    const bt = plan.name === 'Gratis' ? 'Probar ahora' : 'Elegir ' + plan.name;
+    const isFree = plan.name === 'Gratis';
+    let sv = '';
+    if (interval === 'year' && plan.price_monthly > 0 && plan.price_yearly) {
+      const s = plan.price_monthly * 12 - plan.price_yearly;
+      if (s > 0) sv = '<div style="font-size:10px;color:var(--accent);font-weight:600;margin-bottom:4px">Ahorras ' + s + '€/año</div>';
+    }
+    return '<div class="plan-card' + feat + '"><div class="plan-name">' + plan.name + '</div><div class="plan-price">' + pt + '</div><div class="plan-period">' + per + '</div>' + sv + '<div class="plan-desc">' + plan.description + '.</div><div class="plan-divider"></div><ul class="plan-features">' + plan.features.map(f => '<li>' + f + '</li>').join('') + '</ul>' + (isFree ? '<a href="/monitor" class="plan-btn primary">' + bt + '</a>' : '<button class="plan-btn ' + bc + ' sub-btn" data-id="' + plan.id + '">' + bt + '</button>') + '</div>';
+  });
+  document.querySelectorAll('.sub-btn').forEach(b => b.addEventListener('click', () => sub(parseInt(b.dataset.id))));
+}
+
+async function loadPlans() {
+  try { const r = await fetch('/api/plans'); plans = await r.json(); renderPlans(); } catch {}
+}
+
+async function sub(planId) {
+  const t = localStorage.getItem('vulnify_token');
+  if (!t) { window.location.href = '/register?plan=' + planId; return; }
+  const b = document.querySelector('.sub-btn[data-id="' + planId + '"]');
+  const orig = b.textContent;
+  b.disabled = true; b.textContent = '...';
+  try {
+    const r = await fetch('/api/subscribe', { method:'POST', headers:{'Authorization':'Bearer '+t,'Content-Type':'application/json'}, body:JSON.stringify({plan_id:planId,interval:interval}) });
+    const d = await r.json();
+    if (!r.ok) { alert(d.detail||'Error'); b.disabled = false; b.textContent = orig; return; }
+    if (d.free) { window.location.href = '/dashboard'; return; }
+    if (d.checkout_url) { window.location.href = d.checkout_url; return; }
+  } catch { alert('Error de conexión'); }
+  b.disabled = false; b.textContent = orig;
+}
+
+loadPlans();
 </script>
-</body>
-</html>
+{% endblock %}
