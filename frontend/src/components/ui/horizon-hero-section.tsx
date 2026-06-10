@@ -560,6 +560,14 @@ export const Component = () => {
             automatización y diseño que convierte
           </p>
         </div>
+        <div className="hero-ctas" style={{ marginTop: '40px', display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <a href="#contacto" className="cta-primary">
+            Solicitar presupuesto
+          </a>
+          <a href="#servicios" className="cta-secondary">
+            Ver servicios
+          </a>
+        </div>
       </div>
 
       <div ref={scrollProgressRef} className="scroll-progress" style={{ visibility: 'hidden' }}>
@@ -616,6 +624,63 @@ export const Component = () => {
           );
         })}
       </div>
+
+      {/* Services Section */}
+      <section id="servicios" className="services-section">
+        <div className="services-inner">
+          <div className="services-header">
+            <p className="services-label">Servicios</p>
+            <h2 className="services-title">Todo lo que necesitas</h2>
+            <p className="services-desc">
+              Soluciones completas para llevar tu negocio al siguiente nivel digital.
+            </p>
+          </div>
+          <div className="services-grid">
+            {[
+              { icon: "01", title: "Desarrollo Web", desc: "Creamos páginas web corporativas, tiendas online y aplicaciones web con tecnologías modernas." },
+              { icon: "02", title: "Integraciones IA", desc: "Conectamos tu negocio con inteligencia artificial: chatbots, automatizaciones y análisis predictivo." },
+              { icon: "03", title: "APIs & Backend", desc: "Diseñamos APIs robustas, paneles de administración y sistemas backend escalables." },
+              { icon: "04", title: "Consultoría", desc: "Te asesoramos en la estrategia digital de tu empresa, desde la tecnología hasta la implementación." },
+            ].map((s) => (
+              <div key={s.title} className="service-card">
+                <span className="service-card-icon">{s.icon}</span>
+                <h3 className="service-card-title">{s.title}</h3>
+                <p className="service-card-desc">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section id="contacto" className="cta-section">
+        <div className="cta-inner">
+          <p className="cta-label">Empieza ahora</p>
+          <h2 className="cta-title">Transforma tu negocio<br/>con tecnología que <em>impacta</em></h2>
+          <p className="cta-desc">
+            Cuéntanos tu proyecto y te enviaremos un presupuesto personalizado en 24h.
+          </p>
+          <div className="cta-actions">
+            <a href="mailto:hola@vulnify.es" className="cta-button">hola@vulnify.es</a>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="site-footer">
+        <div className="footer-inner">
+          <div className="footer-brand">
+            <span className="footer-logo">VULNIFY</span>
+            <p className="footer-tagline">Desarrollo web & inteligencia artificial</p>
+          </div>
+          <div className="footer-links">
+            <a href="/terminos">Términos</a>
+            <a href="/privacidad">Privacidad</a>
+            <a href="/contacto">Contacto</a>
+          </div>
+          <p className="footer-copy">© {new Date().getFullYear()} Vulnify. Todos los derechos reservados.</p>
+        </div>
+      </footer>
     </div>
   );
 };
