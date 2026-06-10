@@ -2,20 +2,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { GLSLHills } from '@/components/ui/glsl-hills';
 import RadialOrbitalTimeline from '@/components/ui/radial-orbital-timeline';
-import { Calendar, FileText, Code, Cpu, Rocket, Mail, Globe, Bot, ShieldCheck, TrendingUp, Sparkles, ArrowRight, CheckCircle } from 'lucide-react';
-
-const stats = [
-  { value: '50+', label: 'Proyectos entregados', icon: Globe },
-  { value: '100%', label: 'Personalizado', icon: Sparkles },
-  { value: '24h', label: 'Respuesta inicial', icon: Mail },
-  { value: '9/10', label: 'Clientes satisfechos', icon: TrendingUp },
-];
+import { Calendar, FileText, Code, Cpu, Rocket, Mail, Globe, Bot, ShieldCheck, TrendingUp } from 'lucide-react';
 
 const services = [
-  { num: '01', icon: Globe, title: 'Desarrollo Web', desc: 'Páginas corporativas, tiendas online y aplicaciones web con React, Next.js y diseño responsive que convierte visitantes en clientes.' },
-  { num: '02', icon: Bot, title: 'Integraciones IA', desc: 'Chatbots inteligentes, automatización de procesos y análisis predictivo para optimizar tu negocio.' },
-  { num: '03', icon: ShieldCheck, title: 'APIs & Backend', desc: 'Arquitectura escalable, APIs robustas y paneles de administración diseñados para crecer contigo.' },
-  { num: '04', icon: TrendingUp, title: 'Consultoría Digital', desc: 'Estrategia tecnológica personalizada: desde la idea hasta la implementación y el crecimiento.' },
+  { icon: Globe, title: 'Desarrollo Web', desc: 'Páginas corporativas, tiendas online y aplicaciones web con React, Next.js y diseño responsive.' },
+  { icon: Bot, title: 'Integraciones IA', desc: 'Chatbots inteligentes, automatización de procesos y análisis predictivo para tu negocio.' },
+  { icon: ShieldCheck, title: 'APIs & Backend', desc: 'Arquitectura escalable, APIs robustas y paneles de administración diseñados para crecer.' },
+  { icon: TrendingUp, title: 'Consultoría Digital', desc: 'Estrategia tecnológica personalizada: desde la idea hasta la implementación.' },
 ];
 
 export const Component = () => {
@@ -40,8 +33,8 @@ export const Component = () => {
   }, [totalSections]);
 
   const sections = [
-    { icon: Globe, title: 'DESARROLLO WEB', desc: 'Creamos tu web con las tecnologías más modernas para que tu negocio destaque y convierta visitantes en clientes.' },
-    { icon: Bot, title: 'INTELIGENCIA ARTIFICIAL', desc: 'Automatiza tu negocio con IA: chatbots, análisis predictivo y procesos inteligentes que te ahorran tiempo y dinero.' },
+    { icon: Globe, title: 'DESARROLLO WEB', desc: 'Creamos tu web con las tecnologías más modernas para que tu negocio destaque y convierta.' },
+    { icon: Bot, title: 'INTELIGENCIA ARTIFICIAL', desc: 'Automatiza tu negocio con IA: chatbots, análisis predictivo y procesos inteligentes.' },
   ];
 
   const splitTitle = (text) => {
@@ -62,43 +55,16 @@ export const Component = () => {
       </div>
 
       <div className="hero-content">
-        <div className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/60 px-4 py-1.5 text-xs text-zinc-400 mb-8">
-          <Sparkles className="size-3 text-blue-400" />
-          Transformamos ideas en resultados digitales
-        </div>
-
         <h1 className="hero-title">{splitTitle('VULNIFY')}</h1>
-
-        <p className="text-zinc-300 text-lg md:text-xl max-w-2xl text-center leading-relaxed">
-          Creamos tu web con{' '}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 font-semibold">
-            tecnología moderna
-          </span>
-          {' '}y diseño que{' '}
-          <span className="text-white font-semibold">convierte</span>.
+        <p className="text-zinc-400 text-lg md:text-xl max-w-2xl text-center leading-relaxed">
+          Creamos tu web con tecnología moderna y diseño que convierte.
         </p>
-        <p className="text-zinc-500 text-sm mt-3 max-w-lg text-center">
+        <p className="text-zinc-600 text-sm mt-2 max-w-lg text-center">
           Desarrollo web, inteligencia artificial y automatización para impulsar tu negocio.
         </p>
-
         <div className="hero-ctas">
-          <a href="#contacto" className="cta-primary">
-            Solicitar presupuesto <ArrowRight className="size-4 ml-1" />
-          </a>
+          <a href="#contacto" className="cta-primary">Solicitar presupuesto</a>
           <a href="#servicios" className="cta-secondary">Ver servicios</a>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 max-w-3xl w-full">
-          {stats.map((s, i) => {
-            const Icon = s.icon;
-            return (
-              <div key={i} className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-zinc-900/40 border border-zinc-800/50">
-                <Icon className="size-4 text-blue-400" />
-                <span className="text-lg font-bold text-white">{s.value}</span>
-                <span className="text-xs text-zinc-500 text-center">{s.label}</span>
-              </div>
-            );
-          })}
         </div>
       </div>
 
@@ -115,9 +81,6 @@ export const Component = () => {
       <div className="scroll-sections">
         {sections.map((s, i) => (
           <section key={i} className="content-section">
-            <div className="inline-flex items-center justify-center size-16 rounded-2xl bg-zinc-900 border border-zinc-800 mb-6">
-              <s.icon className="size-7 text-blue-400" />
-            </div>
             <h2 className="section-title">{s.title}</h2>
             <div className="section-subtitle max-w-2xl">
               <p>{s.desc}</p>
@@ -150,13 +113,13 @@ export const Component = () => {
               const Icon = s.icon;
               return (
                 <div key={i} className="service-card group">
-                  <div className="flex items-center gap-4 mb-4">
-                    <span className="service-card-icon">{s.num}</span>
-                    <div className="size-10 rounded-xl bg-zinc-800/80 flex items-center justify-center group-hover:bg-blue-500/10 transition-colors">
-                      <Icon className="size-5 text-zinc-400 group-hover:text-blue-400 transition-colors" />
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="service-card-icon">{String(i + 1).padStart(2, '0')}</span>
+                    <div className="size-9 rounded-lg bg-zinc-800/80 flex items-center justify-center">
+                      <Icon className="size-4 text-zinc-400" />
                     </div>
                   </div>
-                  <h3 className="service-card-title group-hover:text-white transition-colors">{s.title}</h3>
+                  <h3 className="service-card-title">{s.title}</h3>
                   <p className="service-card-desc">{s.desc}</p>
                 </div>
               );
@@ -167,24 +130,12 @@ export const Component = () => {
 
       <section id="contacto" className="cta-section">
         <div className="cta-inner">
-          <div className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/60 px-4 py-1.5 text-xs text-zinc-400 mb-6">
-            <Mail className="size-3 text-blue-400" />
-            Empieza hoy
-          </div>
-          <h2 className="cta-title">
-            ¿Listo para <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">transformar</span> tu negocio?
-          </h2>
-          <p className="cta-desc">
-            Cuéntanos tu proyecto y te enviaremos un presupuesto personalizado en menos de 24h. Sin compromiso.
-          </p>
+          <p className="cta-label">Empieza ahora</p>
+          <h2 className="cta-title">Transforma tu negocio<br/>con tecnología que <em>impacta</em></h2>
+          <p className="cta-desc">Cuéntanos tu proyecto y te enviaremos un presupuesto personalizado en 24h.</p>
           <div className="flex flex-col items-center gap-3">
-            <a href="mailto:hola@vulnify.es" className="cta-button inline-flex items-center gap-2">
-              Solicitar presupuesto <ArrowRight className="size-4" />
-            </a>
-            <span className="inline-flex items-center gap-1.5 text-xs text-zinc-600">
-              <CheckCircle className="size-3 text-green-500" />
-              Precio personalizado · Sin compromiso · Respuesta en 24h
-            </span>
+            <a href="mailto:hola@vulnify.es" className="cta-button">Solicitar presupuesto</a>
+            <span className="text-xs text-zinc-600">Precio personalizado · Sin compromiso</span>
           </div>
         </div>
       </section>
@@ -198,9 +149,9 @@ export const Component = () => {
           <div className="footer-links">
             <a href="/terminos">Términos</a>
             <a href="/privacidad">Privacidad</a>
-            <a href="mailto:hola@vulnify.es">hola@vulnify.es</a>
+            <a href="mailto:hola@vulnify.es">Contacto</a>
           </div>
-          <p className="footer-copy">&copy; {new Date().getFullYear()} Vulnify. Todos los derechos reservados.</p>
+          <p className="footer-copy">&copy; {new Date().getFullYear()} Vulnify.</p>
         </div>
       </footer>
     </div>
