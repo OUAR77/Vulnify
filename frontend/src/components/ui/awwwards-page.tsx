@@ -1,9 +1,23 @@
 // @ts-nocheck
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Canvas } from '@react-three/fiber';
 import { GLSLHills } from '@/components/ui/glsl-hills';
 import { Menu, X, ArrowUpRight, Globe, Bot, Code, Cpu, Rocket, Sparkles, Zap, Quote, ChevronRight, Plus } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { ShaderPlane, EnergyRing } from '@/components/ui/background-paper-shaders';
+
+const ShaderBackground = () => (
+  <div className="fixed inset-0 z-0 pointer-events-none" style={{ background: '#050505' }}>
+    <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
+      <ShaderPlane position={[0, 0, 0]} color1="#06b6d4" color2="#050505" />
+      <ShaderPlane position={[2, -1, -2]} color1="#f59e0b" color2="#050505" />
+      <ShaderPlane position={[-2, 1, -3]} color1="#06b6d4" color2="#050505" />
+      <EnergyRing radius={1.5} position={[0, 0, -1]} />
+      <EnergyRing radius={2.0} position={[0, 0, -2]} />
+    </Canvas>
+  </div>
+);
 
 const ScrollProgress = () => {
   const [progress, setProgress] = useState(0);
@@ -340,7 +354,8 @@ export const Component = () => {
   ];
 
   return (
-    <div className="bg-[#050505] text-[#f5f0e8] antialiased selection:bg-cyan-500/30 selection:text-white">
+    <div className="bg-[#050505] text-[#f5f0e8] antialiased selection:bg-cyan-500/30 selection:text-white relative z-10">
+      <ShaderBackground />
       <ScrollProgress />
       <Nav menuOpen={menuOpen} setMenuOpen={setMenuOpen} isDark={isDark} onToggle={() => setIsDark(!isDark)} />
 
