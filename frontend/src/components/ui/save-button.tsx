@@ -67,14 +67,14 @@ export function SaveButton({
       <motion.button
         onClick={handleClick}
         className={cn(
-          "group relative grid overflow-hidden rounded-lg px-6 py-2.5 transition-all duration-200",
+          "group relative grid overflow-hidden rounded-xl px-8 py-3.5 transition-all duration-200",
           status === "idle"
             ? "shadow-[0_1000px_0_0_hsl(0_0%_85%)_inset] dark:shadow-[0_1000px_0_0_hsl(0_0%_20%)_inset]"
             : "",
           "hover:shadow-lg",
           className
         )}
-        style={{ minWidth: "160px" }}
+        style={{ minWidth: "200px" }}
         whileHover={status === "idle" ? { scale: 1.05 } : {}}
         whileTap={status === "idle" ? { scale: 0.95 } : {}}
       >
@@ -100,7 +100,7 @@ export function SaveButton({
               : "bg-green-500"
           )}
         />
-        <span className="relative z-10 flex items-center justify-center gap-2 text-sm font-medium">
+        <span className="relative z-10 flex items-center justify-center gap-3 text-base font-medium tracking-wide">
           <AnimatePresence mode="wait">
             {status === "saving" && (
               <motion.span
@@ -109,7 +109,7 @@ export function SaveButton({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
-                <Loader2 className="size-4 animate-spin" />
+                <Loader2 className="size-5 animate-spin" />
               </motion.span>
             )}
             {status === "saved" && (
@@ -119,7 +119,7 @@ export function SaveButton({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
               >
-                <Check className="size-4" />
+                <Check className="size-5" />
               </motion.span>
             )}
           </AnimatePresence>
