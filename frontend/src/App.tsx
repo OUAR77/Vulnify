@@ -4,7 +4,7 @@ import { ServicesSection } from './components/services-section'
 
 function App() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <HeroSection />
       <ServicesSection />
     </div>
