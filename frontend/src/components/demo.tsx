@@ -1,9 +1,11 @@
-import { HeroSection } from "@/components/ui/galaxy-interactive-hero-section"
+import { SignInPage } from "@/components/ui/sign-in-flow-1";
 
-export function HeroSectionBasic() {
+const DemoOne = () => {
   return (
-    <main className="bg-black relative min-h-screen">
-      <HeroSection />
-    </main>
+    <div className="flex w-full h-screen justify-center items-center">
+      <SignInPage />
+    </div>
   );
-}
+};
+
+export { DemoOne };
