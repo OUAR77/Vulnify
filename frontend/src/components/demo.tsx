@@ -1,7 +1,7 @@
-import { SignInPage } from "@/components/ui/sign-in-flow-1";
+import RainingLetters from "@/components/ui/modern-animated-hero-section";
 
-const DemoOne = () => {
-  return <SignInPage />;
+const Main = () => {
+  return <RainingLetters />;
 };
 
-export { DemoOne };
+export { Main };

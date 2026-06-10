@@ -786,3 +786,8 @@ html.light .progress-fill {
 html.light .content-section {
   background: #fafafa;
 }
+
+.dud {
+  color: #0f0;
+  opacity: 0.7;
+}

@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ArrowUpRight, Globe, Bot, Code, Cpu, Rocket, Sparkles, Zap, Quote, ChevronRight, Plus } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { CanvasRevealEffect } from '@/components/ui/sign-in-flow-1';
+import { RainingLettersBackground } from '@/components/ui/modern-animated-hero-section';
 
 const ScrollProgress = () => {
   const [progress, setProgress] = useState(0);
@@ -327,14 +327,8 @@ export const Component = () => {
 
   return (
     <div className="relative bg-black text-zinc-300 antialiased selection:bg-zinc-500/30 selection:text-white">
-      <div className="fixed inset-0">
-        <CanvasRevealEffect
-          animationSpeed={2}
-          containerClassName="bg-black"
-          colors={[[255, 255, 255], [200, 200, 200]]}
-          dotSize={4}
-          showGradient={true}
-        />
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <RainingLettersBackground />
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-transparent to-black/80 pointer-events-none" />
       </div>
       <div className="relative z-10">
