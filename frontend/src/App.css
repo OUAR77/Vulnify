@@ -232,6 +232,7 @@ body {
   text-align: center;
   padding: 60px 24px;
   min-height: 50vh;
+  background: #000;
 }
 
 .section-title {
