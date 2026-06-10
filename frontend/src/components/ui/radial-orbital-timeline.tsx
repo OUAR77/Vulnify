@@ -30,14 +30,22 @@ export default function RadialOrbitalTimeline({
   const [rotationAngle, setRotationAngle] = useState<number>(0);
   const [autoRotate, setAutoRotate] = useState<boolean>(true);
   const [pulseEffect, setPulseEffect] = useState<Record<number, boolean>>({});
-  const [centerOffset] = useState<{ x: number; y: number }>({
-    x: 0,
-    y: 0,
-  });
   const [activeNodeId, setActiveNodeId] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const orbitRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef<Record<number, HTMLDivElement | null>>({});
+
+  const [radius, setRadius] = useState(200);
+
+  useEffect(() => {
+    const updateRadius = () => {
+      const vw = Math.min(window.innerWidth, 768);
+      setRadius(Math.min(200, Math.max(100, vw * 0.28)));
+    };
+    updateRadius();
+    window.addEventListener("resize", updateRadius);
+    return () => window.removeEventListener("resize", updateRadius);
+  }, []);
 
   const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === containerRef.current || e.target === orbitRef.current) {
@@ -112,11 +120,10 @@ export default function RadialOrbitalTimeline({
 
   const calculateNodePosition = (index: number, total: number) => {
     const angle = ((index / total) * 360 + rotationAngle) % 360;
-    const radius = 200;
     const radian = (angle * Math.PI) / 180;
 
-    const x = radius * Math.cos(radian) + centerOffset.x;
-    const y = radius * Math.sin(radian) + centerOffset.y;
+    const x = radius * Math.cos(radian);
+    const y = radius * Math.sin(radian);
 
     const zIndex = Math.round(100 + 50 * Math.cos(radian));
     const opacity = Math.max(
@@ -168,7 +175,7 @@ export default function RadialOrbitalTimeline({
           ref={orbitRef}
           style={{
             perspective: "1000px",
-            transform: `translate(${centerOffset.x}px, ${centerOffset.y}px)`,
+            transform: "translate(0px, 0px)",
           }}
         >
           <div className="absolute w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 via-blue-500 to-teal-500 animate-pulse flex items-center justify-center z-10">
@@ -180,7 +187,7 @@ export default function RadialOrbitalTimeline({
             <div className="w-8 h-8 rounded-full bg-white/80 backdrop-blur-md"></div>
           </div>
 
-          <div className="absolute w-96 h-96 rounded-full border border-white/10"></div>
+          <div className="absolute rounded-full border border-white/10" style={{ width: radius * 2, height: radius * 2 }}></div>
 
           {timelineData.map((item, index) => {
             const position = calculateNodePosition(index, timelineData.length);
