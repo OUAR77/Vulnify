@@ -16,19 +16,24 @@ const colors = {
 };
 
 // ─── Reusable Motion Components ─────────────────────────────────
-const Section = ({ children, className = '', id, delay = 0 }: any) => (
-  <motion.section
+const Section = ({ children, className = '', id }: any) => (
+  <section
     id={id}
+    className={`relative z-10 px-6 md:px-12 lg:px-20 ${className}`}
+  >
+    {children}
+  </section>
+);
+
+const AnimatedContent = ({ children, delay = 0 }: any) => (
+  <motion.div
     initial={{ opacity: 0, y: 60 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, margin: '-80px' }}
     transition={{ duration: 0.7, delay, ease: [0.25, 0.1, 0.1, 1] }}
-    className={`relative z-10 w-full flex flex-col items-center px-6 md:px-12 lg:px-20 ${className}`}
   >
-    <div className="w-full max-w-6xl">
-      {children}
-    </div>
-  </motion.section>
+    {children}
+  </motion.div>
 );
 
 const Label = ({ children }: any) => (
