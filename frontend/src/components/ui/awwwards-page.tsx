@@ -245,20 +245,14 @@ const HeroSection = () => (
       </motion.div>
 
       <motion.h1
-        className="text-[clamp(3rem,10vw,8rem)] font-bold leading-[0.85] tracking-[-0.04em] mb-6 max-w-4xl"
-        initial={{ backgroundPosition: '0% 50%' }}
-        animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-        style={{
-          backgroundImage: 'linear-gradient(90deg, #ffffff, #06b6d4, #ffffff, #06b6d4)',
-          backgroundSize: '300% 100%',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-        }}
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.1, 0.1, 1] }}
+        className="text-[clamp(3rem,10vw,8rem)] font-bold leading-[0.85] tracking-[-0.04em] text-white mb-6 max-w-4xl"
       >
-        <SplitText text="Arquitectura" delay={0.4} />
+        <SplitText text="Arquitectura" delay={0.6} />
         <br />
-        <SplitText text="Digital Inteligente" delay={0.9} />
+        <SplitText text="Digital Inteligente" delay={1.1} />
       </motion.h1>
 
       <motion.p
