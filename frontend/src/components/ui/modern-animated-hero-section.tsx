@@ -100,12 +100,12 @@ export const ScrambledTitle: React.FC = () => {
   useEffect(() => {
     if (mounted && scramblerRef.current) {
       const phrases = [
-        'Hello, 21st.dev,',
-        'It\'s RAINING',
-        'with\' letters',
-        'and alphabets',
-        'dont FORGET to bring',
-        'your umbrella today'
+        'Arquitectura',
+        'Digital',
+        'Inteligente',
+        'Web + IA',
+        'Innovación',
+        'Sin Límites'
       ]
       
       let counter = 0
