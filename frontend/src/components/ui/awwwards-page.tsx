@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ArrowUpRight, Globe, Bot, Code, Cpu, Rocket, Sparkles, Zap, Quote, ChevronRight, Plus } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { NeuralNoise } from '@/components/ui/neural-noise';
+import { CanvasRevealEffect } from '@/components/ui/sign-in-flow-1';
 
 const ScrollProgress = () => {
   const [progress, setProgress] = useState(0);
@@ -327,7 +327,15 @@ export const Component = () => {
 
   return (
     <div className="relative bg-black text-zinc-300 antialiased selection:bg-zinc-500/30 selection:text-white">
-      <NeuralNoise color={[0.15, 0.15, 0.18]} opacity={0.3} speed={0.0008} />
+      <div className="fixed inset-0 z-0">
+        <CanvasRevealEffect
+          animationSpeed={2}
+          containerClassName="bg-black"
+          colors={[[255, 255, 255], [200, 200, 200]]}
+          dotSize={4}
+          showGradient={true}
+        />
+      </div>
       <ScrollProgress />
       <Nav menuOpen={menuOpen} setMenuOpen={setMenuOpen} isDark={isDark} onToggle={() => setIsDark(!isDark)} />
 
