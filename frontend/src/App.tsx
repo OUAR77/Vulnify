@@ -1,8 +1,13 @@
 import './App.css'
-import { HeroSectionBasic } from './components/demo'
+import { Component } from './components/ui/awwwards-page'
+import { ErrorBoundary } from './components/ui/error-boundary'
 
 function App() {
-  return <HeroSectionBasic />
+  return (
+    <ErrorBoundary>
+      <Component />
+    </ErrorBoundary>
+  )
 }
 
 export default App
