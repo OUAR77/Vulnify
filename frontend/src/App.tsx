@@ -1,13 +1,8 @@
 import './App.css'
-import { Component } from './components/ui/awwwards-page'
-import { ErrorBoundary } from './components/ui/error-boundary'
+import { DemoOne } from './components/demo'
 
 function App() {
-  return (
-    <ErrorBoundary>
-      <Component />
-    </ErrorBoundary>
-  )
+  return <DemoOne />
 }
 
 export default App
