@@ -1,7 +1,52 @@
-import { Component } from "@/components/ui/horizon-hero-section";
+import { SplineScene } from "@/components/ui/splite";
+import { Card } from "@/components/ui/card"
+import { Spotlight } from "@/components/ui/spotlight"
 
-const DemoOne = () => {
-  return <Component />;
-};
+export function SplineSceneBasic() {
+  return (
+    <section className="py-32 px-6 bg-[#f2f2f2]">
+      <div className="max-w-6xl mx-auto text-center mb-20">
+        <p className="text-sm uppercase tracking-[0.2em] text-neutral-400 mb-4">
+          Tecnología 3D
+        </p>
+        <h2 className="text-4xl md:text-5xl font-bold text-neutral-900">
+          Experiencias digitales inmersivas
+        </h2>
+        <p className="mt-4 text-neutral-500 max-w-xl mx-auto text-lg">
+          Integramos gráficos 3D interactivos en tu web para captar la atención y diferenciar tu marca.
+        </p>
+      </div>
 
-export { DemoOne };
+      <Card className="w-full max-w-5xl mx-auto h-[500px] bg-black/[0.96] relative overflow-hidden">
+        <Spotlight
+          className="-top-40 left-0 md:left-60 md:-top-20"
+          fill="white"
+        />
+
+        <div className="flex h-full flex-col md:flex-row">
+          <div className="flex-1 p-8 relative z-10 flex flex-col justify-center">
+            <h3 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400">
+              Web + IA
+            </h3>
+            <p className="mt-4 text-neutral-300 max-w-lg leading-relaxed">
+              Creamos tu web con integraciones de inteligencia artificial,
+              diseño 3D interactivo y automatizaciones que transforman tu negocio.
+            </p>
+            <div className="mt-6">
+              <a href="#contacto" className="inline-flex h-11 items-center justify-center rounded-md bg-white px-6 text-sm font-medium text-black transition-all hover:bg-neutral-200">
+                Solicitar presupuesto
+              </a>
+            </div>
+          </div>
+
+          <div className="flex-1 relative min-h-[250px] md:min-h-0">
+            <SplineScene
+              scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
+              className="w-full h-full"
+            />
+          </div>
+        </div>
+      </Card>
+    </section>
+  )
+}
