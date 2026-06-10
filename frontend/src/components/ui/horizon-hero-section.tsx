@@ -2,6 +2,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { GLSLHills } from '@/components/ui/glsl-hills';
 import { MorphingText } from '@/components/ui/liquid-text';
+import RadialOrbitalTimeline from '@/components/ui/radial-orbital-timeline';
+import { Calendar, FileText, Code, Cpu, Rocket } from 'lucide-react';
 
 
 export const Component = () => {
@@ -115,6 +117,18 @@ export const Component = () => {
             </div>
           </div>
         </div>
+      </section>
+
+      <section id="proceso" className="bg-black">
+        <RadialOrbitalTimeline
+          timelineData={[
+            { id: 1, title: "Planificación", date: "Semana 1", content: "Analizamos tu negocio, definimos objetivos y creamos el roadmap del proyecto.", category: "Planning", icon: Calendar, relatedIds: [2], status: "completed", energy: 100 },
+            { id: 2, title: "Diseño UI/UX", date: "Semana 2", content: "Diseñamos interfaces modernas, intuitivas y centradas en la conversión.", category: "Design", icon: FileText, relatedIds: [1, 3], status: "completed", energy: 90 },
+            { id: 3, title: "Desarrollo Web", date: "Semana 3-6", content: "Construimos tu web con React, Next.js o el stack que mejor se adapte a tu proyecto.", category: "Development", icon: Code, relatedIds: [2, 4], status: "in-progress", energy: 60 },
+            { id: 4, title: "Integración IA", date: "Semana 6-7", content: "Incorporamos chatbots, automatización y análisis predictivo con inteligencia artificial.", category: "AI", icon: Cpu, relatedIds: [3, 5], status: "pending", energy: 30 },
+            { id: 5, title: "Lanzamiento", date: "Semana 8", content: "Despliegue en producción, testing final y puesta en marcha de tu nueva web.", category: "Launch", icon: Rocket, relatedIds: [4], status: "pending", energy: 10 },
+          ]}
+        />
       </section>
 
       <section id="contacto" className="cta-section">
