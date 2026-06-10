@@ -66,34 +66,34 @@ export const Component = () => {
         <GLSLHills cameraZ={125} planeSize={256} speed={0.3} />
       </div>
 
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 md:px-10">
-        <span className="text-sm font-bold tracking-[0.2em] text-white">VULNIFY</span>
-        <div className="hidden md:flex items-center gap-8">
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 md:px-10 bg-black/60 backdrop-blur-xl border-b border-white/[0.04]">
+        <span className="text-sm font-bold tracking-[0.25em] text-white/90">VULNIFY</span>
+        <div className="hidden md:flex items-center gap-10">
           {navLinks.map((link) => (
-            <a key={link.href} href={link.href} className="text-sm text-zinc-400 hover:text-white transition-colors">{link.label}</a>
+            <a key={link.href} href={link.href} className="text-sm text-zinc-500 hover:text-white transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-white after:transition-all hover:after:w-full">{link.label}</a>
           ))}
-          <a href="#contacto" className="text-sm font-medium text-black bg-white px-4 py-2 rounded-md hover:bg-zinc-200 transition-colors">Solicitar presupuesto</a>
+          <a href="#contacto" className="text-sm font-medium text-black bg-white/90 hover:bg-white px-5 py-2.5 rounded-lg transition-all">Solicitar presupuesto</a>
         </div>
-        <button onClick={() => setMenuOpen(true)} className="md:hidden text-white p-2" aria-label="Abrir menú">
-          <Menu className="size-6" />
+        <button onClick={() => setMenuOpen(true)} className="md:hidden text-white/80 hover:text-white p-2 transition-colors" aria-label="Abrir menú">
+          <Menu className="size-5" />
         </button>
       </nav>
 
       {menuOpen && (
-        <div className="fixed inset-0 z-50 bg-black flex flex-col">
-          <div className="flex items-center justify-between px-6 py-4">
-            <span className="text-sm font-bold tracking-[0.2em] text-white">VULNIFY</span>
-            <button onClick={() => setMenuOpen(false)} className="text-white p-2" aria-label="Cerrar menú">
-              <X className="size-6" />
+        <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl flex flex-col">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.04]">
+            <span className="text-sm font-bold tracking-[0.25em] text-white/90">VULNIFY</span>
+            <button onClick={() => setMenuOpen(false)} className="text-white/60 hover:text-white p-2 transition-colors" aria-label="Cerrar menú">
+              <X className="size-5" />
             </button>
           </div>
-          <div className="flex-1 flex flex-col items-center justify-center gap-8">
+          <div className="flex-1 flex flex-col items-center justify-center gap-10">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="text-2xl text-zinc-300 hover:text-white transition-colors"
+                className="text-3xl tracking-tight text-zinc-500 hover:text-white transition-colors"
               >
                 {link.label}
               </a>
@@ -101,7 +101,7 @@ export const Component = () => {
             <a
               href="#contacto"
               onClick={() => setMenuOpen(false)}
-              className="mt-4 text-base font-medium text-black bg-white px-8 py-3 rounded-md hover:bg-zinc-200 transition-colors"
+              className="mt-4 text-base font-medium text-black bg-white/90 hover:bg-white px-10 py-3.5 rounded-lg transition-all"
             >
               Solicitar presupuesto
             </a>
