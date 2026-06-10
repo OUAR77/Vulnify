@@ -1,5 +1,5 @@
 import './App.css'
-import { Component } from './components/ui/horizon-hero-section'
+import { Component } from './components/ui/awwwards-page'
 import { ErrorBoundary } from './components/ui/error-boundary'
 
 function App() {
