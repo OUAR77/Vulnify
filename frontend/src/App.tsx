@@ -1,8 +1,8 @@
 import './App.css'
-import { GlowyWavesHero } from './components/ui/glowy-waves-hero-shadcnui'
+import { Component } from './components/ui/horizon-hero-section'
 
 function App() {
-  return <GlowyWavesHero />
+  return <Component />
 }
 
 export default App
