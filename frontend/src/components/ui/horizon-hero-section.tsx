@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React, { useEffect, useRef, useState } from 'react';
 import { GLSLHills } from '@/components/ui/glsl-hills';
+import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { SplineSceneBasic } from '@/components/ui/spline-scene-basic';
 
 
@@ -87,7 +88,9 @@ export const Component = () => {
 
       <section className="py-16 md:py-32 bg-black">
         <div className="mx-auto max-w-5xl px-6">
-          <SplineSceneBasic />
+          <ErrorBoundary fallback={<div className="text-center py-20 text-zinc-500"><p>Componente 3D no disponible</p></div>}>
+            <SplineSceneBasic />
+          </ErrorBoundary>
         </div>
       </section>
 
