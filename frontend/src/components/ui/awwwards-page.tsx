@@ -214,7 +214,7 @@ const Nav = ({ menuOpen, setMenuOpen, isDark, onToggle }: any) => {
 // ─── Hero ────────────────────────────────────────────────────────
 const HeroSection = () => (
   <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden">
-    <div className="absolute inset-0 bg-gradient-to-b from-[#050505]/80 via-fuchsia-950/20 to-[#050505]/80" />
+    <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-black/50 to-[#050505]" />
 
     <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-5xl pt-32 pb-20 w-full">
       <motion.div
@@ -327,7 +327,8 @@ export const Component = () => {
 
   return (
     <div className="text-[#f5f0e8] antialiased selection:bg-fuchsia-500/30 selection:text-white">
-      <NeuralNoise color={[0.85, 0.12, 0.58]} opacity={0.9} speed={0.0008} />
+      <NeuralNoise color={[0.85, 0.12, 0.58]} opacity={0.4} speed={0.0008} />
+      <div className="fixed inset-0 bg-black/60 pointer-events-none z-0" />
       <ScrollProgress />
       <Nav menuOpen={menuOpen} setMenuOpen={setMenuOpen} isDark={isDark} onToggle={() => setIsDark(!isDark)} />
 
