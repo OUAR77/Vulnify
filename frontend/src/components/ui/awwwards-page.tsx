@@ -18,7 +18,7 @@ const ScrollProgress = () => {
   }, []);
   return (
     <motion.div
-      className="fixed top-0 left-0 right-0 z-[60] h-[2px] origin-left bg-gradient-to-r from-cyan-500 via-amber-500 to-cyan-500"
+      className="fixed top-0 left-0 right-0 z-[60] h-[2px] origin-left bg-gradient-to-r from-fuchsia-500 via-fuchsia-300 to-fuchsia-500"
       style={{ scaleX: progress }}
     />
   );
@@ -214,7 +214,7 @@ const Nav = ({ menuOpen, setMenuOpen, isDark, onToggle }: any) => {
 // ─── Hero ────────────────────────────────────────────────────────
 const HeroSection = () => (
   <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden">
-    <div className="absolute inset-0 bg-gradient-to-b from-[#050505]/80 via-cyan-950/20 to-[#050505]/80" />
+    <div className="absolute inset-0 bg-gradient-to-b from-[#050505]/80 via-fuchsia-950/20 to-[#050505]/80" />
 
     <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-5xl pt-32 pb-20 w-full">
       <motion.div
@@ -224,7 +224,7 @@ const HeroSection = () => (
         className="mb-8"
       >
         <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 text-[11px] tracking-[0.2em] uppercase text-zinc-500">
-          <span className="size-1.5 rounded-full bg-cyan-400 animate-pulse" />
+          <span className="size-1.5 rounded-full bg-fuchsia-400 animate-pulse" />
           Desarrollo Web + Inteligencia Artificial
         </span>
       </motion.div>
@@ -326,8 +326,8 @@ export const Component = () => {
   ];
 
   return (
-    <div className="text-[#f5f0e8] antialiased selection:bg-cyan-500/30 selection:text-white">
-      <NeuralNoise color={[0.02, 0.55, 0.65]} opacity={0.9} speed={0.0008} />
+    <div className="text-[#f5f0e8] antialiased selection:bg-fuchsia-500/30 selection:text-white">
+      <NeuralNoise color={[0.85, 0.12, 0.58]} opacity={0.9} speed={0.0008} />
       <ScrollProgress />
       <Nav menuOpen={menuOpen} setMenuOpen={setMenuOpen} isDark={isDark} onToggle={() => setIsDark(!isDark)} />
 
@@ -434,8 +434,8 @@ export const Component = () => {
                 whileHover={{ y: -6 }}
                 className="group p-8 md:p-10 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500"
               >
-                <div className="size-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-6 group-hover:bg-cyan-500/20 transition-colors">
-                  <item.icon className="size-5 text-cyan-400" />
+                <div className="size-12 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/20 flex items-center justify-center mb-6 group-hover:bg-fuchsia-500/20 transition-colors">
+                  <item.icon className="size-5 text-fuchsia-400" />
                 </div>
                 <h3 className="text-xl font-semibold text-white mb-3">{item.title}</h3>
                 <p className="text-sm text-zinc-500 leading-relaxed">{item.desc}</p>
@@ -464,8 +464,8 @@ export const Component = () => {
               >
                 <div className="flex items-center gap-4 mb-6">
                   <span className="text-3xl font-bold text-zinc-700 group-hover:text-zinc-500 transition-colors">{String(i + 1).padStart(2, '0')}</span>
-                  <div className="size-10 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-cyan-500/10 transition-colors">
-                    <s.icon className="size-4 text-zinc-400 group-hover:text-cyan-400 transition-colors" />
+                  <div className="size-10 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-fuchsia-500/10 transition-colors">
+                    <s.icon className="size-4 text-zinc-400 group-hover:text-fuchsia-400 transition-colors" />
                   </div>
                 </div>
                 <h3 className="text-xl font-semibold text-white mb-3">{s.title}</h3>
@@ -542,8 +542,8 @@ export const Component = () => {
                 <div className="aspect-[16/10] rounded-xl bg-white/[0.03] mb-6 flex items-center justify-center border border-white/[0.04]">
                   <span className="text-5xl font-bold text-white/[0.06]">{i + 1}</span>
                 </div>
-                <span className="text-[11px] tracking-[0.2em] uppercase text-cyan-500/70 mb-2 block">{p.cat}</span>
-                <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-cyan-400 transition-colors">{p.title}</h3>
+                <span className="text-[11px] tracking-[0.2em] uppercase text-fuchsia-500/70 mb-2 block">{p.cat}</span>
+                <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-fuchsia-400 transition-colors">{p.title}</h3>
                 <p className="text-sm text-zinc-500">{p.desc}</p>
               </motion.div>
               </ScaleIn>
@@ -576,12 +576,12 @@ export const Component = () => {
               </div>
             </FadeIn>
             <FadeIn delay={0.2}>
-              <div className="p-8 rounded-2xl bg-white/[0.02] border border-cyan-500/20">
-                <div className="text-xs tracking-[0.2em] uppercase text-cyan-500/70 mb-6">Después</div>
+              <div className="p-8 rounded-2xl bg-white/[0.02] border border-fuchsia-500/20">
+                <div className="text-xs tracking-[0.2em] uppercase text-fuchsia-500/70 mb-6">Después</div>
                 <div className="space-y-4">
                   {['Web con IA integrada y chatbot', '150+ leads cualificados al mes', 'Automatización 24/7'].map((item) => (
-                    <div key={item} className="flex items-center gap-3 p-4 rounded-xl bg-cyan-500/5 border border-cyan-500/10">
-                      <span className="size-2 rounded-full bg-cyan-400/60" />
+                    <div key={item} className="flex items-center gap-3 p-4 rounded-xl bg-fuchsia-500/5 border border-fuchsia-500/10">
+                      <span className="size-2 rounded-full bg-fuchsia-400/60" />
                       <span className="text-sm text-zinc-400">{item}</span>
                     </div>
                   ))}
@@ -635,7 +635,7 @@ export const Component = () => {
                 whileHover={{ y: -6 }}
                 className="p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500"
               >
-                <Quote className="size-6 text-cyan-500/30 mb-4" />
+                <Quote className="size-6 text-fuchsia-500/30 mb-4" />
                 <p className="text-sm text-zinc-400 leading-relaxed mb-6">&ldquo;{t.text}&rdquo;</p>
                 <div>
                   <div className="text-sm font-medium text-white">{t.name}</div>
@@ -677,7 +677,7 @@ export const Component = () => {
             <Label>Empieza hoy</Label>
             <h2 className="text-3xl md:text-6xl font-bold text-white leading-[1.05] tracking-tight mb-6">
               Hablemos de tu<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-amber-400">próximo proyecto</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 to-fuchsia-200">próximo proyecto</span>
             </h2>
             <p className="text-lg text-zinc-500 max-w-lg mx-auto mb-10 leading-relaxed">
               Cuéntanos qué necesitas y te enviaremos un presupuesto personalizado en 24 horas. Sin compromiso.
