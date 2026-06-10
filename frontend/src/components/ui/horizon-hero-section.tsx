@@ -1,15 +1,10 @@
 // @ts-nocheck
 import React, { useEffect, useRef, useState } from 'react';
+import { GLSLHills } from '@/components/ui/glsl-hills';
 import { SplineScene } from '@/components/ui/splite';
 import { Spotlight } from '@/components/ui/spotlight';
 
 export const Component = () => {
-  const containerRef = useRef(null);
-  const titleRef = useRef(null);
-  const subtitleRef = useRef(null);
-  const scrollProgressRef = useRef(null);
-  const menuRef = useRef(null);
-
   const [scrollProgress, setScrollProgress] = useState(0);
   const [currentSection, setCurrentSection] = useState(1);
   const totalSections = 2;
@@ -30,6 +25,11 @@ export const Component = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [totalSections]);
 
+  const sections = [
+    { title: 'DESARROLLO WEB', line1: 'Creamos experiencias digitales únicas', line2: 'con React, Next.js y diseño responsive' },
+    { title: 'INTELIGENCIA ARTIFICIAL', line1: 'Integramos IA en tu negocio', line2: 'chatbots, automatización y análisis predictivo' },
+  ];
+
   const splitTitle = (text) => {
     return text.split('').map((char, i) => (
       <span key={i} className="title-char">{char}</span>
@@ -37,10 +37,12 @@ export const Component = () => {
   };
 
   return (
-    <div ref={containerRef} className="hero-container">
-      <div className="hero-bg" />
+    <div className="hero-container">
+      <div className="hero-canvas-layer">
+        <GLSLHills cameraZ={125} planeSize={256} speed={0.3} />
+      </div>
 
-      <div ref={menuRef} className="side-menu">
+      <div className="side-menu">
         <div className="menu-icon">
           <span /><span /><span />
         </div>
@@ -48,10 +50,10 @@ export const Component = () => {
       </div>
 
       <div className="hero-content">
-        <h1 ref={titleRef} className="hero-title">
+        <h1 className="hero-title">
           {splitTitle('CREAMOS TU WEB')}
         </h1>
-        <div ref={subtitleRef} className="hero-subtitle">
+        <div className="hero-subtitle">
           <p>Sitios web modernos con inteligencia artificial,</p>
           <p>automatización y diseño que convierte</p>
         </div>
@@ -61,33 +63,26 @@ export const Component = () => {
         </div>
       </div>
 
-      <div ref={scrollProgressRef} className="scroll-progress">
+      <div className="scroll-progress">
         <div className="scroll-text">DESCUBRE</div>
         <div className="progress-track">
           <div className="progress-fill" style={{ width: `${scrollProgress * 100}%` }} />
         </div>
         <div className="section-counter">
-          {String(currentSection).padStart(2, '0')} / {String(totalSections).padStart(2, '0')}
+          {String(currentSection + 1).padStart(2, '0')} / {String(sections.length + 1).padStart(2, '0')}
         </div>
       </div>
 
       <div className="scroll-sections">
-        {[...Array(2)].map((_, i) => {
-          const titles = { 0: 'DESARROLLO WEB', 1: 'INTELIGENCIA ARTIFICIAL' };
-          const subtitles = {
-            0: { line1: 'Creamos experiencias digitales únicas', line2: 'con React, Next.js y diseño responsive' },
-            1: { line1: 'Integramos IA en tu negocio', line2: 'chatbots, automatización y análisis predictivo' }
-          };
-          return (
-            <section key={i} className="content-section">
-              <h2 className="section-title">{titles[i + 1]}</h2>
-              <div className="section-subtitle">
-                <p>{subtitles[i + 1]?.line1}</p>
-                <p>{subtitles[i + 1]?.line2}</p>
-              </div>
-            </section>
-          );
-        })}
+        {sections.map((s, i) => (
+          <section key={i} className="content-section">
+            <h2 className="section-title">{s.title}</h2>
+            <div className="section-subtitle">
+              <p>{s.line1}</p>
+              <p>{s.line2}</p>
+            </div>
+          </section>
+        ))}
       </div>
 
       <section className="spline-section">
