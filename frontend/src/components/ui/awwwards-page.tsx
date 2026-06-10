@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ArrowUpRight, Globe, Bot, Code, Cpu, Rocket, Sparkles, Zap, Quote, ChevronRight, Plus } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { RainingLettersBackground } from '@/components/ui/modern-animated-hero-section';
+import { RainingLettersBackground, ScrambledTitle } from '@/components/ui/modern-animated-hero-section';
 
 const ScrollProgress = () => {
   const [progress, setProgress] = useState(0);
@@ -229,11 +229,9 @@ const HeroSection = () => (
         </span>
       </motion.div>
 
-      <h1 className="text-[clamp(3rem,10vw,8rem)] font-bold leading-[0.85] tracking-[-0.04em] text-white mb-6 max-w-4xl">
-        <SplitText text="Arquitectura" delay={0.6} />
-        <br />
-        <SplitText text="Digital Inteligente" delay={1.1} />
-      </h1>
+      <div className="mb-8 max-w-4xl">
+        <ScrambledTitle />
+      </div>
 
       <motion.p
         initial={{ opacity: 0, y: 20 }}
