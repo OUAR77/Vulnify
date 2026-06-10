@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { GLSLHills } from '@/components/ui/glsl-hills';
 import RadialOrbitalTimeline from '@/components/ui/radial-orbital-timeline';
-import { Calendar, FileText, Code, Cpu, Rocket, Mail, Globe, Bot, ShieldCheck, TrendingUp } from 'lucide-react';
+import { Calendar, FileText, Code, Cpu, Rocket, Mail, Globe, Bot, ShieldCheck, TrendingUp, Menu, X } from 'lucide-react';
 
 const services = [
   { icon: Globe, title: 'Desarrollo Web', desc: 'Páginas corporativas, tiendas online y aplicaciones web con React, Next.js y diseño responsive.' },
@@ -11,9 +11,17 @@ const services = [
   { icon: TrendingUp, title: 'Consultoría Digital', desc: 'Estrategia tecnológica personalizada: desde la idea hasta la implementación.' },
 ];
 
+const navLinks = [
+  { href: '#inicio', label: 'Inicio' },
+  { href: '#servicios', label: 'Servicios' },
+  { href: '#proceso', label: 'Proceso' },
+  { href: '#contacto', label: 'Contacto' },
+];
+
 export const Component = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [currentSection, setCurrentSection] = useState(1);
+  const [menuOpen, setMenuOpen] = useState(false);
   const totalSections = 2;
 
   useEffect(() => {
@@ -32,6 +40,15 @@ export const Component = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [totalSections]);
 
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
+
   const sections = [
     { icon: Globe, title: 'DESARROLLO WEB', desc: 'Creamos tu web con las tecnologías más modernas para que tu negocio destaque y convierta.' },
     { icon: Bot, title: 'INTELIGENCIA ARTIFICIAL', desc: 'Automatiza tu negocio con IA: chatbots, análisis predictivo y procesos inteligentes.' },
@@ -49,12 +66,50 @@ export const Component = () => {
         <GLSLHills cameraZ={125} planeSize={256} speed={0.3} />
       </div>
 
-      <div className="side-menu">
-        <div className="menu-icon"><span /><span /><span /></div>
-        <div className="vertical-text">VULNIFY</div>
-      </div>
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 md:px-10">
+        <span className="text-sm font-bold tracking-[0.2em] text-white">VULNIFY</span>
+        <div className="hidden md:flex items-center gap-8">
+          {navLinks.map((link) => (
+            <a key={link.href} href={link.href} className="text-sm text-zinc-400 hover:text-white transition-colors">{link.label}</a>
+          ))}
+          <a href="#contacto" className="text-sm font-medium text-black bg-white px-4 py-2 rounded-md hover:bg-zinc-200 transition-colors">Solicitar presupuesto</a>
+        </div>
+        <button onClick={() => setMenuOpen(true)} className="md:hidden text-white p-2" aria-label="Abrir menú">
+          <Menu className="size-6" />
+        </button>
+      </nav>
 
-      <div className="hero-content">
+      {menuOpen && (
+        <div className="fixed inset-0 z-50 bg-black flex flex-col">
+          <div className="flex items-center justify-between px-6 py-4">
+            <span className="text-sm font-bold tracking-[0.2em] text-white">VULNIFY</span>
+            <button onClick={() => setMenuOpen(false)} className="text-white p-2" aria-label="Cerrar menú">
+              <X className="size-6" />
+            </button>
+          </div>
+          <div className="flex-1 flex flex-col items-center justify-center gap-8">
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className="text-2xl text-zinc-300 hover:text-white transition-colors"
+              >
+                {link.label}
+              </a>
+            ))}
+            <a
+              href="#contacto"
+              onClick={() => setMenuOpen(false)}
+              className="mt-4 text-base font-medium text-black bg-white px-8 py-3 rounded-md hover:bg-zinc-200 transition-colors"
+            >
+              Solicitar presupuesto
+            </a>
+          </div>
+        </div>
+      )}
+
+      <div className="hero-content" id="inicio">
         <h1 className="hero-title">{splitTitle('VULNIFY')}</h1>
         <p className="text-zinc-400 text-lg md:text-xl max-w-2xl text-center leading-relaxed">
           Creamos tu web con tecnología moderna y diseño que convierte.
@@ -147,9 +202,9 @@ export const Component = () => {
             <p className="footer-tagline">Desarrollo web & inteligencia artificial</p>
           </div>
           <div className="footer-links">
-            <a href="/terminos">Términos</a>
-            <a href="/privacidad">Privacidad</a>
-            <a href="mailto:hola@vulnify.es">Contacto</a>
+            {navLinks.map((link) => (
+              <a key={link.href} href={link.href}>{link.label}</a>
+            ))}
           </div>
           <p className="footer-copy">&copy; {new Date().getFullYear()} Vulnify.</p>
         </div>
