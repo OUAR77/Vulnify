@@ -53,7 +53,7 @@ export const Component = () => {
 
       <div className="hero-content">
         <h1 className="hero-title">
-          {splitTitle('CREAMOS TU WEB')}
+          {splitTitle('VULNIFY')}
         </h1>
         <div className="hero-subtitle">
           <p>Sitios web modernos con inteligencia artificial,</p>
