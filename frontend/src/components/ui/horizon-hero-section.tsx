@@ -4,6 +4,7 @@ import { GLSLHills } from '@/components/ui/glsl-hills';
 import { SplineScene } from '@/components/ui/splite';
 import { Spotlight } from '@/components/ui/spotlight';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
+import { Features } from '@/components/ui/features-8';
 
 export const Component = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -121,37 +122,7 @@ export const Component = () => {
         </div>
       </section>
 
-      <section id="servicios" className="services-section">
-        <div className="services-inner">
-          <div className="services-header">
-            <p className="services-label">Servicios</p>
-            <h2 className="services-title">Todo lo que necesitas</h2>
-            <p className="services-desc">Soluciones completas para tu negocio.</p>
-          </div>
-          <div className="services-grid">
-            <div className="service-card">
-              <span className="service-card-icon">01</span>
-              <h3 className="service-card-title">Desarrollo Web</h3>
-              <p className="service-card-desc">Páginas web corporativas, tiendas online y aplicaciones web.</p>
-            </div>
-            <div className="service-card">
-              <span className="service-card-icon">02</span>
-              <h3 className="service-card-title">Integraciones IA</h3>
-              <p className="service-card-desc">Chatbots, automatización y análisis predictivo.</p>
-            </div>
-            <div className="service-card">
-              <span className="service-card-icon">03</span>
-              <h3 className="service-card-title">APIs & Backend</h3>
-              <p className="service-card-desc">APIs robustas, paneles de administración y sistemas escalables.</p>
-            </div>
-            <div className="service-card">
-              <span className="service-card-icon">04</span>
-              <h3 className="service-card-title">Consultoría</h3>
-              <p className="service-card-desc">Estrategia digital, desde la tecnología hasta la implementación.</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Features />
 
       <section id="contacto" className="cta-section">
         <div className="cta-inner">
