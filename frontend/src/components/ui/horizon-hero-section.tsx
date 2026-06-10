@@ -1,8 +1,8 @@
 // @ts-nocheck
 import React, { useEffect, useRef, useState } from 'react';
 import { GLSLHills } from '@/components/ui/glsl-hills';
-import { MorphingText } from '@/components/ui/liquid-text';
 import RadialOrbitalTimeline from '@/components/ui/radial-orbital-timeline';
+import PricingSection4 from '@/components/ui/pricing-section-4';
 import { Calendar, FileText, Code, Cpu, Rocket } from 'lucide-react';
 
 
@@ -127,6 +127,8 @@ export const Component = () => {
           </div>
         </div>
       </section>
+
+      <PricingSection4 />
 
       <section id="contacto" className="cta-section">
         <div className="cta-inner">
