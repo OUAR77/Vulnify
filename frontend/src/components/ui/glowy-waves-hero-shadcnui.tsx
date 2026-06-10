@@ -18,15 +18,15 @@ interface WaveConfig {
 }
 
 const highlightPills = [
-  "Immersive visuals",
-  "Responsive motion",
-  "GPU friendly",
+  "Desarrollo web",
+  "Integraciones IA",
+  "APIs escalables",
 ] as const;
 
 const heroStats: { label: string; value: string }[] = [
-  { label: "Live installations", value: "320+" },
-  { label: "Latency", value: "8ms" },
-  { label: "Teams onboarded", value: "120+" },
+  { label: "Proyectos entregados", value: "50+" },
+  { label: "Tiempo medio", value: "15 días" },
+  { label: "Clientes felices", value: "40+" },
 ];
 
 const containerVariants: Variants = {
@@ -309,16 +309,16 @@ export function GlowyWavesHero() {
             className="mb-6 inline-flex items-center gap-2 rounded-full border border-border/40 bg-background/60 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-foreground/70 dark:border-border/60 dark:bg-background/70 dark:text-foreground/80"
           >
             <Sparkles className="h-4 w-4 text-primary" aria-hidden="true" />
-            Reactive canvas hero
+            Desarrollo Web & IA
           </motion.div>
 
           <motion.h1
             variants={itemVariants}
             className="mb-6 text-4xl font-semibold tracking-tight text-foreground md:text-6xl lg:text-7xl"
           >
-            Welcome to immersive{" "}
+            Creamos tu web{" "}
             <span className="bg-gradient-to-r from-primary via-primary/60 to-foreground/80 bg-clip-text text-transparent">
-              realtime playgrounds
+              con inteligencia artificial
             </span>
           </motion.h1>
 
@@ -326,9 +326,8 @@ export function GlowyWavesHero() {
             variants={itemVariants}
             className="mx-auto mb-10 max-w-3xl text-lg text-foreground/70 md:text-2xl"
           >
-            Build living surfaces that respond to every interaction. Craft
-            cinematic hero moments, responsive canvases, and luminous gradients
-            without leaving your design system.
+            Transformamos tu negocio con sitios web modernos e integraciones de IA.
+            Automatizamos procesos, mejoramos la experiencia de usuario y aumentamos tus ventas.
           </motion.p>
 
           <motion.div
@@ -339,7 +338,7 @@ export function GlowyWavesHero() {
               size="lg"
               className="group gap-2 rounded-full px-8 text-base uppercase tracking-[0.2em]"
             >
-              Launch Studio
+              Solicitar presupuesto
               <ArrowRight
                 className="h-4 w-4 transition-transform group-hover:translate-x-1"
                 aria-hidden="true"
@@ -350,7 +349,7 @@ export function GlowyWavesHero() {
               variant="outline"
               className="rounded-full border-border/40 bg-background/60 px-8 text-base text-foreground/80 backdrop-blur transition-all hover:border-border/60 hover:bg-background/70 dark:border-border/50 dark:bg-background/40 dark:text-foreground/70 dark:hover:border-border/70 dark:hover:bg-background/50"
             >
-              Explore stories
+              Ver proyectos
             </Button>
           </motion.div>
 
