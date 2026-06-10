@@ -25,6 +25,9 @@ export const Component = () => {
   const [currentSection, setCurrentSection] = useState(1);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState(true);
+  const [navVisible, setNavVisible] = useState(true);
+  const [navSolid, setNavSolid] = useState(0);
+  const lastScrollY = useRef(0);
   const totalSections = 2;
 
   const toggleTheme = () => {
@@ -49,8 +52,22 @@ export const Component = () => {
       const progress = Math.min(scrollY / maxScroll, 1);
       setScrollProgress(progress);
       setCurrentSection(Math.floor(progress * totalSections));
+
+      const solid = Math.min(scrollY / 200, 1);
+      setNavSolid(solid);
+
+      if (scrollY > 100) {
+        if (scrollY > lastScrollY.current) {
+          setNavVisible(false);
+        } else {
+          setNavVisible(true);
+        }
+      } else {
+        setNavVisible(true);
+      }
+      lastScrollY.current = scrollY;
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, [totalSections]);
@@ -81,12 +98,31 @@ export const Component = () => {
         <GLSLHills cameraZ={125} planeSize={256} speed={0.3} />
       </div>
 
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 md:px-10 bg-black/60 backdrop-blur-xl border-b border-white/[0.04]">
-        <span className="text-sm font-bold tracking-[0.25em] text-white/90">VULNIFY</span>
-        <div className="hidden md:flex items-center gap-8">
+      <nav
+        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 transition-all duration-500"
+        style={{
+          transform: navVisible ? 'translateY(0)' : 'translateY(-100%)',
+          backgroundColor: `rgba(0, 0, 0, ${0.4 + navSolid * 0.4})`,
+          backdropFilter: `blur(${12 + navSolid * 16}px)`,
+          WebkitBackdropFilter: `blur(${12 + navSolid * 16}px)`,
+          paddingTop: `${20 - navSolid * 4}px`,
+          paddingBottom: `${20 - navSolid * 4}px`,
+          borderBottom: navSolid > 0.1 ? '1px solid rgba(255,255,255,0.04)' : '1px solid transparent',
+          boxShadow: navSolid > 0.1 ? '0 4px 30px rgba(0,0,0,0.3)' : 'none',
+        }}
+      >
+        <span className="text-base font-bold tracking-[0.35em] text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.15)]">VULNIFY</span>
+        <div className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => (
-            <a key={link.href} href={link.href} className="text-sm text-zinc-500 hover:text-white transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-white after:transition-all hover:after:w-full">{link.label}</a>
+            <a
+              key={link.href}
+              href={link.href}
+              className="px-4 py-2 text-sm text-zinc-400 hover:text-white hover:bg-white/5 rounded-full transition-all duration-300"
+            >
+              {link.label}
+            </a>
           ))}
+          <div className="w-px h-5 bg-white/10 mx-3" />
           <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
           <SaveButton
             href="mailto:hola@vulnify.es"
@@ -97,6 +133,13 @@ export const Component = () => {
           <Menu className="size-5" />
         </button>
       </nav>
+
+      <div
+        className="fixed top-[56px] left-0 right-0 z-40 pointer-events-none transition-opacity duration-700"
+        style={{ opacity: navSolid * 0.6 }}
+      >
+        <div className="h-[1px] bg-gradient-to-r from-transparent via-white/25 to-transparent w-full shadow-[0_0_15px_rgba(255,255,255,0.1)]" />
+      </div>
 
       {menuOpen && (
         <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl flex flex-col">
