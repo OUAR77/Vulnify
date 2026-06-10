@@ -235,7 +235,8 @@ app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
-app.mount("/app/assets", StaticFiles(directory="frontend/dist/assets"), name="frontend_assets")
+if os.path.isdir("frontend/dist/assets"):
+    app.mount("/app/assets", StaticFiles(directory="frontend/dist/assets"), name="frontend_assets")
 app.include_router(auth_router)
 app.include_router(assets_router)
 app.include_router(alerts_router)
@@ -352,7 +353,10 @@ async def contact_form(request: Request):
 
 @app.get("/app/{full_path:path}")
 async def react_app(request: Request, full_path: str):
-    return FileResponse("frontend/dist/index.html")
+    index_path = "frontend/dist/index.html"
+    if os.path.isfile(index_path):
+        return FileResponse(index_path)
+    return HTMLResponse("<h1>Frontend not built yet</h1><p>Run <code>cd frontend && npm install && npm run build</code></p>", status_code=200)
 
 @app.get("/health")
 async def health():
