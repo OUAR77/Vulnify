@@ -335,6 +335,7 @@ export const Component = () => {
           dotSize={4}
           showGradient={true}
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-transparent to-black/80 pointer-events-none" />
       </div>
       <div className="relative z-10">
         <ScrollProgress />
