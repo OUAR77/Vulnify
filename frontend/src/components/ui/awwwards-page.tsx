@@ -327,7 +327,7 @@ export const Component = () => {
 
   return (
     <div className="relative bg-black text-zinc-300 antialiased selection:bg-zinc-500/30 selection:text-white">
-      <div className="fixed inset-0 z-0">
+      <div className="fixed inset-0">
         <CanvasRevealEffect
           animationSpeed={2}
           containerClassName="bg-black"
@@ -336,23 +336,24 @@ export const Component = () => {
           showGradient={true}
         />
       </div>
-      <ScrollProgress />
-      <Nav menuOpen={menuOpen} setMenuOpen={setMenuOpen} isDark={isDark} onToggle={() => setIsDark(!isDark)} />
+      <div className="relative z-10">
+        <ScrollProgress />
+        <Nav menuOpen={menuOpen} setMenuOpen={setMenuOpen} isDark={isDark} onToggle={() => setIsDark(!isDark)} />
 
-      <motion.a
-        href="mailto:hola@vulnify.es"
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 2, duration: 0.4, type: 'spring' }}
-        className="fixed bottom-6 right-6 z-40 size-14 rounded-full bg-white text-black flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
-        whileHover={{ rotate: -12 }}
-        aria-label="Contacto"
-      >
-        <ArrowUpRight className="size-5" />
-      </motion.a>
+        <motion.a
+          href="mailto:hola@vulnify.es"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 2, duration: 0.4, type: 'spring' }}
+          className="fixed bottom-6 right-6 z-40 size-14 rounded-full bg-white text-black flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+          whileHover={{ rotate: -12 }}
+          aria-label="Contacto"
+        >
+          <ArrowUpRight className="size-5" />
+        </motion.a>
 
-      {/* ─── HERO ─── */}
-      <HeroSection />
+        {/* ─── HERO ─── */}
+        <HeroSection />
 
       {/* ─── STATS ─── */}
       <div className="w-full border-b border-white/[0.04]">
@@ -733,6 +734,7 @@ export const Component = () => {
           </div>
         </div>
       </footer>
+      </div>
     </div>
   );
 };
