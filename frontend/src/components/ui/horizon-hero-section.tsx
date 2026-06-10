@@ -123,7 +123,7 @@ export const Component = () => {
           ))}
           <div className="w-px h-6 bg-white/10 mx-5" />
           <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
-          <a href="mailto:hola@vulnify.es" className="inline-flex items-center justify-center rounded-lg border border-zinc-600 px-5 py-2 text-sm font-medium text-zinc-300 hover:border-zinc-400 hover:text-white hover:scale-105 transition-all duration-200">Solicitar presupuesto</a>
+          <a href="mailto:hola@vulnify.es" className="inline-flex items-center justify-center rounded-lg border border-zinc-600 px-5 py-2 text-sm font-medium text-zinc-400 hover:border-zinc-400 hover:text-white hover:scale-105 transition-all duration-200">Solicitar presupuesto</a>
         </div>
         <button onClick={() => setMenuOpen(true)} className="md:hidden text-white/80 hover:text-white p-2 transition-colors" aria-label="Abrir menú">
           <Menu className="size-5" />
@@ -159,7 +159,7 @@ export const Component = () => {
             <a
               href="mailto:hola@vulnify.es"
               onClick={() => setMenuOpen(false)}
-              className="text-base font-medium text-zinc-300 border border-zinc-600 hover:border-zinc-400 hover:text-white px-10 py-3.5 rounded-lg transition-all duration-200"
+              className="text-base font-medium text-zinc-400 border border-zinc-600 hover:border-zinc-400 hover:text-white px-10 py-3.5 rounded-lg transition-all duration-200"
             >
               Solicitar presupuesto
             </a>
@@ -176,7 +176,7 @@ export const Component = () => {
           Desarrollo web, inteligencia artificial y automatización para impulsar tu negocio.
         </p>
         <div className="hero-ctas">
-          <a href="mailto:hola@vulnify.es" className="inline-flex items-center justify-center rounded-lg border border-zinc-600 px-8 py-3.5 text-base font-medium text-zinc-300 hover:border-zinc-400 hover:text-white hover:scale-105 transition-all duration-200">Solicitar presupuesto</a>
+          <a href="mailto:hola@vulnify.es" className="inline-flex items-center justify-center rounded-lg border border-zinc-600 px-8 py-3.5 text-base font-medium text-zinc-400 hover:border-zinc-400 hover:text-white hover:scale-105 transition-all duration-200">Solicitar presupuesto</a>
           <a href="#servicios" className="cta-secondary">Ver servicios</a>
         </div>
       </div>
@@ -247,7 +247,7 @@ export const Component = () => {
           <h2 className="cta-title">Transforma tu negocio<br/>con tecnología que <em>impacta</em></h2>
           <p className="cta-desc">Cuéntanos tu proyecto y te enviaremos un presupuesto personalizado en 24h.</p>
           <div className="flex flex-col items-center gap-3">
-            <a href="mailto:hola@vulnify.es" className="inline-flex items-center justify-center rounded-lg border border-zinc-600 px-10 py-4 text-base font-medium text-zinc-300 hover:border-zinc-400 hover:text-white hover:scale-105 transition-all duration-200">Solicitar presupuesto</a>
+            <a href="mailto:hola@vulnify.es" className="inline-flex items-center justify-center rounded-lg border border-zinc-600 px-10 py-4 text-base font-medium text-zinc-400 hover:border-zinc-400 hover:text-white hover:scale-105 transition-all duration-200">Solicitar presupuesto</a>
             <span className="text-xs text-zinc-600">Precio personalizado · Sin compromiso</span>
           </div>
         </div>
