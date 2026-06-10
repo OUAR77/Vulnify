@@ -1,199 +1,279 @@
 {% extends "base.html" %}
 {% block description %}Vulnify — Monitorización de reputación digital. Detecta brechas de datos, filtración de credenciales y exposición de información sensible.{% endblock %}
 {% block title %}Vulnify — Reputación digital y brechas de datos{% endblock %}
+{% block page %}home{% endblock %}
+
 {% block content %}
+<h1 class="gl-sr-only">Vulnify — Monitorización de brechas de datos</h1>
 
-<section class="hero" id="inicio">
-  <div class="hero-content reveal">
-    <div class="section-label" style="margin-bottom:16px">Monitorización de brechas</div>
-    <h1>Protege tu<br>reputación <span style="color:var(--accent)">digital</span></h1>
-    <p>Detecta si tus dominios, emails o datos personales aparecen en filtraciones y brechas de seguridad conocidas.</p>
-    <div class="hero-actions">
-      <a href="/monitor" class="btn btn-primary btn-lg">Comprobar ahora</a>
-      <a href="/register" class="btn btn-ghost btn-lg">Crear cuenta gratis</a>
-    </div>
-  </div>
-  <div class="hero-scroll">
-    <span>Scroll</span>
-    <div class="hero-scroll-line"></div>
-  </div>
-</section>
+<div class="svg-container">
+  <svg id="main-svg" class="cursor-target" viewBox="0 0 854.1 142.3" overflow="visible">
+    <g class="letter-group" data-idx="0">
+      <path id="V" class="orig-path" fill="#212121" d="M30.8,124.2 L60.5,15.6 L75.2,15.6 L117.8,124.2 L96.8,124.2 L88.2,98.4 L47.5,98.4 L38.9,124.2 L30.8,124.2 Z M52.5,82.5 L83.2,82.5 L67.8,32.5 L52.5,82.5 Z"/>
+      <path id="V-change" class="eff-path" fill="#212121" d="M34.8,32.5 L64.5,15.6 L79.2,15.6 L121.8,56.4 L100.8,56.4 L92.2,42.5 L51.5,42.5 L42.9,56.4 L34.8,56.4 L34.8,32.5 Z"/>
+    </g>
+    <g class="letter-group" data-idx="1">
+      <path id="u" class="orig-path" fill="#212121" d="M177.7,126.5 C177.7,116.8 180.3,108.5 185.5,101.6 C190.8,94.7 197.5,90.1 205.7,87.8 C213.9,85.5 222.5,85.5 231.5,87.8 C240.5,90.1 247.5,94.7 252.5,101.6 C257.5,108.5 260,116.8 260,126.5 L260,134.5 L240.5,134.5 L240.5,126.5 C240.5,118.8 237.8,112.8 232.5,108.5 C227.2,104.2 220.5,102 212.5,102 C204.5,102 197.8,104.2 192.5,108.5 C187.2,112.8 184.5,118.8 184.5,126.5 L184.5,134.5 L177.7,134.5 L177.7,126.5 Z"/>
+      <path id="u-change" class="eff-path" fill="#212121" d="M181.7,44.9 L183.3,53.6 C188.5,46.7 195.2,42.1 203.4,39.8 C211.6,37.5 220.2,37.5 229.2,39.8 C238.2,42.1 245.2,46.7 250.2,53.6 C255.2,60.5 257.7,68.8 257.7,78.5 L257.7,86.5 L238.2,86.5 L238.2,78.5 C238.2,70.8 235.5,64.8 230.2,60.5 C224.9,56.2 218.2,54 210.2,54 C202.2,54 195.5,56.2 190.2,60.5 C184.9,64.8 182.2,70.8 182.2,78.5 L182.2,86.5 L175.4,86.5 L175.4,78.5 C175.4,68.8 178,60.5 183.2,53.6 L181.7,44.9 Z"/>
+    </g>
+    <g class="letter-group" data-idx="2">
+      <path id="l" class="orig-path" fill="#212121" d="M281.3,124.2 L281.3,13.6 L301.5,13.6 L301.5,124.2 L281.3,124.2 Z"/>
+      <polygon id="l-change" class="eff-path" fill="#212121" points="285.3,3.6 301.5,3.6 301.5,56.4 285.3,56.4"/>
+    </g>
+    <g class="letter-group" data-idx="3">
+      <path id="n-dos" class="orig-path" fill="#212121" d="M365.1,126.5 C365.1,118.8 367.5,112.2 372.3,106.8 C377.1,101.4 383.1,97.8 390.3,96 C397.5,94.2 404.8,94.2 412.2,96 L412.2,77.5 L431.7,77.5 L431.7,134.5 L412.2,134.5 L412.2,126.5 C405,131.5 396.5,134 386.7,134 C377.5,134 370.2,131.2 364.8,125.5 C359.4,119.8 365.1,126.5 365.1,126.5 Z M386.7,118.5 C394.7,118.5 401.5,116.3 407.1,112 C412.7,107.7 415.5,102 415.5,95 C415.5,88 412.7,82.3 407.1,78 C401.5,73.7 394.7,71.5 386.7,71.5 C378.7,71.5 371.7,73.7 365.7,78 C359.7,82.3 356.7,88 356.7,95 C356.7,102 359.7,107.7 365.7,112 C371.7,116.3 378.7,118.5 386.7,118.5 Z"/>
+      <polygon id="n-change1" class="eff-path" fill="#212121" points="345.7,39.3 377.1,39.3 377.1,60 419.7,60 419.7,39.3 435.7,39.3 435.7,86.5 419.7,86.5 419.7,77.5 412.2,77.5 412.2,96 L412.2,134.5 L392.7,134.5 L392.7,96 C385.5,94.2 378.2,94.2 371,96 C363.8,97.8 357.8,101.4 353,106.8 C348.2,112.2 345.8,118.8 345.8,126.5 L345.8,134.5 L339,134.5 L339,126.5 C339,118.8 341.4,112.2 346.2,106.8 L345.7,39.3 Z"/>
+    </g>
+    <g class="letter-group" data-idx="4">
+      <path id="i" class="orig-path" fill="#212121" d="M427,124.2 L427,77.5 L447.2,77.5 L447.2,124.2 L427,124.2 Z M427,13.6 L447.2,13.6 L447.2,32.5 L427,32.5 L427,13.6 Z"/>
+      <polygon id="i-change" class="eff-path" fill="#212121" points="431,3.6 451.2,3.6 451.2,56.4 431,56.4"/>
+    </g>
+    <g class="letter-group" data-idx="5">
+      <path id="f" class="orig-path" fill="#212121" d="M547.6,121.8 C547.6,112.1 550.2,103.8 555.4,96.9 C560.6,90 567.2,85.3 575.2,82.8 C583.2,80.3 591.6,80.3 600.4,82.8 C609.2,85.3 616,90 621,96.9 C626,103.8 628.5,112.1 628.5,121.8 C628.5,131.5 626,139.8 621,146.7 C616,153.6 609.2,158.3 600.4,160.8 C591.6,163.3 583.2,163.3 575.2,160.8 C567.2,158.3 560.6,153.6 555.4,146.7 C550.2,139.8 547.6,131.5 547.6,121.8 Z M567.8,121.8 C567.8,129.5 570.5,135.5 575.8,139.8 C581.1,144.1 587.8,146.3 595.8,146.3 C603.8,146.3 610.5,144.1 615.8,139.8 C621.1,135.5 623.8,129.5 623.8,121.8 C623.8,114.1 621.1,108.1 615.8,103.8 C610.5,99.5 603.8,97.3 595.8,97.3 C587.8,97.3 581.1,99.5 575.8,103.8 C570.5,108.1 567.8,114.1 567.8,121.8 Z"/>
+      <path id="f-change" class="eff-path" fill="#212121" d="M551.6,39.3 C551.6,29.6 554.2,21.3 559.4,14.4 C564.6,7.5 571.2,2.8 579.2,0.3 C587.2,-2.2 595.6,-2.2 604.4,0.3 C613.2,2.8 620,7.5 625,14.4 C630,21.3 632.5,29.6 632.5,39.3 C632.5,49 630,57.3 625,64.2 C620,71.1 613.2,75.8 604.4,78.3 C595.6,80.8 587.2,80.8 579.2,78.3 C571.2,75.8 564.6,71.1 559.4,64.2 C554.2,57.3 551.6,49 551.6,39.3 Z"/>
+    </g>
+    <g class="letter-group" data-idx="6">
+      <path id="y" class="orig-path" fill="#212121" d="M689.8,124.2 L653.5,77.5 L677.5,77.5 L701.5,108.5 L717.5,77.5 L740.5,77.5 L715.5,112.5 L732.5,134.5 L710.5,134.5 L700.5,118.6 L689.8,134.5 L689.8,124.2 Z"/>
+      <path id="y-change" class="eff-path" fill="#212121" d="M685.8,32.5 L649.5,56.4 L673.5,56.4 L697.5,60.5 L713.5,56.4 L736.5,56.4 L711.5,64.5 L728.5,58.5 L706.5,58.5 L696.5,118.6 L685.8,134.5 L685.8,32.5 Z"/>
+    </g>
+  </svg>
+</div>
 
-<section class="section" id="stats">
-  <div class="section-header centered reveal">
-    <div class="section-label">Datos</div>
-    <h2>Más de <span style="color:var(--accent)">300</span> brechas monitorizadas</h2>
-    <p class="section-sub">Nuestra base de datos crece cada día con nuevas filtraciones de fuentes públicas y OSINT.</p>
-  </div>
-  <div class="stats-grid">
-    <div class="stat-item reveal">
-      <div class="stat-value"><span class="stat-counter" data-target="300">0</span>+</div>
-      <div class="stat-label">Brechas registradas</div>
-    </div>
-    <div class="stat-item reveal reveal-delay-1">
-      <div class="stat-value"><span class="stat-counter" data-target="4">0</span>B+</div>
-      <div class="stat-label">Registros indexados</div>
-    </div>
-    <div class="stat-item reveal reveal-delay-2">
-      <div class="stat-value"><span class="stat-counter" data-target="99">0</span>%</div>
-      <div class="stat-label">Cobertura de datos</div>
-    </div>
-    <div class="stat-item reveal reveal-delay-3">
-      <div class="stat-value"><span class="stat-counter" data-target="24">0</span>/7</div>
-      <div class="stat-label">Monitorización</div>
-    </div>
-  </div>
-</section>
+<div class="hero-scroll" aria-hidden="true">
+  <div class="hero-scroll__line"><div class="hero-scroll__mark"></div></div>
+  <span class="hero-scroll__label">Descubre</span>
+</div>
 
-<section class="section" id="servicios">
-  <div class="section-header reveal">
-    <div class="section-label">Servicios</div>
-    <h2>Todo lo que necesitas<br>para proteger tu identidad</h2>
-    <p class="section-sub">Monitorizamos dominios y emails en busca de filtraciones con inteligencia de múltiples fuentes.</p>
-  </div>
-  <div class="services-list">
-    <div class="service-row reveal">
-      <div class="service-num">01</div>
-      <h3>Monitor de brechas</h3>
-      <p>Comprobamos tus dominios y emails contra nuestra base de datos de más de 300 filtraciones conocidas. Detectamos credenciales expuestas, datos personales y más.</p>
+<!-- ABOUT -->
+<section id="about" aria-label="Quiénes somos">
+  <div class="about-inner">
+    <div class="about-text">
+      <span class="section-label gl-charreveal">Monitorización de brechas</span>
+      <h2 class="about-heading gl-reveal">
+        Detectamos si tus <strong style="font-weight:700">dominios, emails</strong> o datos personales aparecen en <span style="font-style:italic">filtraciones y brechas de seguridad</span> conocidas.
+      </h2>
+      <div class="about-cta gl-reveal">
+        <div class="about-cta-line"></div>
+        <a href="/monitor" class="about-cta-link nav-link gl-nav-link cursor-target">Comprobar ahora</a>
+      </div>
     </div>
-    <div class="service-row reveal reveal-delay-1">
-      <div class="service-num">02</div>
-      <h3>Inteligencia OSINT</h3>
-      <p>Analizamos GitHub, paste sites, dark web y registros DNS para detectar exposición de datos que no aparecen en bases de brechas tradicionales.</p>
-    </div>
-    <div class="service-row reveal reveal-delay-2">
-      <div class="service-num">03</div>
-      <h3>Alertas en tiempo real</h3>
-      <p>Recibe notificaciones inmediatas cuando detectemos una nueva filtración que afecte a tus activos monitorizados.</p>
-    </div>
-    <div class="service-row reveal reveal-delay-3">
-      <div class="service-num">04</div>
-      <h3>Escáner de seguridad</h3>
-      <p>Analiza SSL, cabeceras de seguridad, DNS y puertos abiertos de cualquier dominio para identificar vulnerabilidades.</p>
-    </div>
-    <div class="service-row reveal reveal-delay-4">
-      <div class="service-num">05</div>
-      <h3>Typosquatting</h3>
-      <p>Detecta dominios sospechosos similares al tuyo que podrían usarse para phishing o suplantación de identidad.</p>
+    <div class="about-3d gl-reveal">
+      <svg viewBox="0 0 360 360" fill="none" style="width:100%;height:100%">
+        <rect x="40" y="40" width="280" height="280" rx="8" stroke="#212121" stroke-width="1" stroke-dasharray="4 4" fill="none"/>
+        <circle cx="180" cy="180" r="80" stroke="#212121" stroke-width="1" fill="none"/>
+        <path d="M180 100 L180 260 M100 180 L260 180" stroke="#212121" stroke-width="0.5" opacity=".3"/>
+        <circle cx="180" cy="180" r="8" fill="#212121"/>
+      </svg>
     </div>
   </div>
 </section>
 
-<section class="section" id="proceso">
-  <div class="section-header centered reveal">
-    <div class="section-label">Proceso</div>
-    <h2>Cómo funciona</h2>
-    <p class="section-sub">En tres pasos puedes saber si tus datos están expuestos y empezar a protegerte.</p>
-  </div>
-  <div class="process-steps">
-    <div class="process-step reveal">
-      <div class="process-step-num"></div>
-      <h3>Añade tu activo</h3>
-      <p>Registra el dominio o email que quieres monitorizar. Tarda segundos.</p>
+<!-- STATS -->
+<section id="studio-stats" aria-label="El servicio en números">
+  <div class="studio-stats__grid">
+    <div class="studio-stats__item gl-reveal">
+      <span class="studio-stats__label gl-charreveal">Brechas indexadas</span>
+      <span class="studio-stats__value gl-charreveal"><strong id="stats-breaches">+300</strong></span>
     </div>
-    <div class="process-step reveal reveal-delay-1">
-      <div class="process-step-num"></div>
-      <h3>Analizamos</h3>
-      <p>Comprobamos contra brechas conocidas, fuentes OSINT y datos públicos.</p>
+    <div class="studio-stats__item gl-reveal">
+      <span class="studio-stats__label gl-charreveal">Registros</span>
+      <span class="studio-stats__value gl-charreveal"><strong id="stats-records">+4B</strong> <em>indexados</em></span>
     </div>
-    <div class="process-step reveal reveal-delay-2">
-      <div class="process-step-num"></div>
-      <h3>Recibe alertas</h3>
-      <p>Te notificamos al instante si detectamos alguna filtración que te afecte.</p>
-    </div>
-    <div class="process-step reveal reveal-delay-3">
-      <div class="process-step-num"></div>
-      <h3>Actúa</h3>
-      <p>Con la información detallada, puedes tomar medidas para proteger tus datos.</p>
+    <div class="studio-stats__item gl-reveal">
+      <span class="studio-stats__label gl-charreveal">Cobertura</span>
+      <span class="studio-stats__value gl-charreveal"><strong id="stats-coverage">99%</strong></span>
     </div>
   </div>
 </section>
 
-<section class="section" id="precios">
-  <div class="section-header centered reveal">
-    <div class="section-label">Planes</div>
-    <h2>Precios transparentes</h2>
-    <p class="section-sub">Empieza gratis y escala cuando lo necesites. Sin permanencia.</p>
+<!-- TICKER -->
+<section id="home-ticker" aria-label="Últimas brechas detectadas">
+  <div class="home-ticker__label gl-reveal">
+    <span class="section-label gl-charreveal">Últimas filtraciones</span>
   </div>
-  <div style="display:flex;justify-content:center">
-    <div class="bill-toggle" id="bill-toggle">
-      <button class="bill-btn active" data-interval="month">Mensual</button>
-      <button class="bill-btn" data-interval="year">Anual</button>
+  <ul class="ticker-list" id="home-ticker-list">
+    <li class="ticker-item cursor-target" data-index="0" data-img="">
+      <div class="ticker-item__row">
+        <span class="ticker-item__num">01</span>
+        <h3 class="ticker-item__name gl-scramble">LinkedIn</h3>
+        <div class="ticker-item__meta">
+          <span class="ticker-item__tags">Credenciales · 2024</span>
+          <span class="ticker-item__year">700M</span>
+          <span class="ticker-item__arrow">→</span>
+        </div>
+      </div>
+    </li>
+    <li class="ticker-item cursor-target" data-index="1" data-img="">
+      <div class="ticker-item__row">
+        <span class="ticker-item__num">02</span>
+        <h3 class="ticker-item__name gl-scramble">Dropbox</h3>
+        <div class="ticker-item__meta">
+          <span class="ticker-item__tags">Emails · Hashes</span>
+          <span class="ticker-item__year">68M</span>
+          <span class="ticker-item__arrow">→</span>
+        </div>
+      </div>
+    </li>
+    <li class="ticker-item cursor-target" data-index="2" data-img="">
+      <div class="ticker-item__row">
+        <span class="ticker-item__num">03</span>
+        <h3 class="ticker-item__name gl-scramble">Adobe</h3>
+        <div class="ticker-item__meta">
+          <span class="ticker-item__tags">Emails · Contraseñas</span>
+          <span class="ticker-item__year">153M</span>
+          <span class="ticker-item__arrow">→</span>
+        </div>
+      </div>
+    </li>
+  </ul>
+</section>
+<div id="home-ticker-preview" aria-hidden="true">
+  <div class="preview-shape"><img src="" alt=""></div>
+</div>
+
+<!-- PROCESS -->
+<section id="process" aria-label="Nuestro método">
+  <div class="process__curtain-area">
+    <div class="process__curtain" aria-hidden="true"></div>
+    <div class="process__header">
+      <div class="process__label gl-reveal"><span class="section-label gl-charreveal">Método</span></div>
+      <p class="process__intro gl-charreveal"><strong>Cuatro pasos.</strong> Para saber si tus datos están expuestos y empezar a protegerte.</p>
     </div>
   </div>
-  <div class="pricing-grid" id="pricing-grid-home"></div>
+  <div class="practice-list-wrap">
+    <div class="practice-list">
+      <article class="practice-item gl-reveal">
+        <div class="practice-title-col">
+          <span class="practice-num">01 / Añade</span>
+          <h3 class="practice-title gl-scramble">Añade</h3>
+        </div>
+        <div class="practice-part">
+          <p class="practice-part-text gl-charreveal">Registra el dominio o email que quieres monitorizar. Tarda segundos y no requiere configuración técnica.</p>
+        </div>
+      </article>
+      <article class="practice-item gl-reveal">
+        <div class="practice-title-col">
+          <span class="practice-num">02 / Analiza</span>
+          <h3 class="practice-title gl-scramble">Analiza</h3>
+        </div>
+        <div class="practice-part">
+          <p class="practice-part-text gl-charreveal">Comprobamos contra nuestra base de datos de más de 300 brechas conocidas, fuentes OSINT y datos públicos.</p>
+        </div>
+      </article>
+      <article class="practice-item gl-reveal">
+        <div class="practice-title-col">
+          <span class="practice-num">03 / Alerta</span>
+          <h3 class="practice-title gl-scramble">Alerta</h3>
+        </div>
+        <div class="practice-part">
+          <p class="practice-part-text gl-charreveal">Te notificamos al instante si detectamos una filtración que afecte a tus activos. Alertas por severidad.</p>
+        </div>
+      </article>
+      <article class="practice-item gl-reveal">
+        <div class="practice-title-col">
+          <span class="practice-num">04 / Actúa</span>
+          <h3 class="practice-title gl-scramble">Actúa</h3>
+        </div>
+        <div class="practice-part">
+          <p class="practice-part-text gl-charreveal">Con la información detallada, toma medidas para proteger tus datos. Te guiamos en cada paso.</p>
+        </div>
+      </article>
+    </div>
+    <div class="practice-progress" aria-hidden="true">
+      <div class="practice-progress__icons">
+        <svg class="practice-progress__icon is-active" data-idx="0" viewBox="0 0 24 24" fill="#f2f2f2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <svg class="practice-progress__icon" data-idx="1" viewBox="0 0 24 24" fill="#f2f2f2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <svg class="practice-progress__icon" data-idx="2" viewBox="0 0 24 24" fill="#f2f2f2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        <svg class="practice-progress__icon" data-idx="3" viewBox="0 0 24 24" fill="#f2f2f2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="practice-progress__bar"><div class="practice-progress__fill"></div></div>
+      <span class="practice-progress__count"><span class="practice-progress__current">01</span> / 04</span>
+    </div>
+  </div>
 </section>
 
-<section class="section" id="faq">
-  <div class="section-header centered reveal">
-    <div class="section-label">FAQ</div>
-    <h2>Preguntas frecuentes</h2>
-    <p class="section-sub">Resolvemos tus dudas sobre la monitorización de brechas.</p>
+<!-- SERVICES ROTATOR -->
+<section id="servicios" aria-label="Lo que hacemos">
+  <div class="gl-reveal" style="text-align:center">
+    <span class="section-label gl-charreveal">Especialistas en</span>
   </div>
-  <div class="faq-list">
-    <div class="faq-item reveal">
-      <button class="faq-question" onclick="toggleFaq(this)">¿Qué tipos de activos puedo monitorizar? <span class="faq-arrow">+</span></button>
-      <div class="faq-answer">Puedes monitorizar dominios y direcciones de email. Comprobamos si aparecen en nuestra base de datos de brechas conocidas y realizamos inteligencia adicional.</div>
-    </div>
-    <div class="faq-item reveal reveal-delay-1">
-      <button class="faq-question" onclick="toggleFaq(this)">¿De dónde obtenéis los datos de brechas? <span class="faq-arrow">+</span></button>
-      <div class="faq-answer">Mantenemos una base de datos actualizada con las filtraciones más conocidas: LinkedIn, Dropbox, Adobe, Facebook, y cientos más. También consultamos fuentes OSINT.</div>
-    </div>
-    <div class="faq-item reveal reveal-delay-2">
-      <button class="faq-question" onclick="toggleFaq(this)">¿Es necesario registrarse para comprobar un dominio? <span class="faq-arrow">+</span></button>
-      <div class="faq-answer">No. Puedes hacer comprobaciones rápidas sin registro desde la página de Monitor. Para activar alertas y monitorización continua, necesitas una cuenta gratuita.</div>
-    </div>
-    <div class="faq-item reveal reveal-delay-3">
-      <button class="faq-question" onclick="toggleFaq(this)">¿Puedo cancelar mi suscripción? <span class="faq-arrow">+</span></button>
-      <div class="faq-answer">Sí, en cualquier momento desde tu dashboard. Sin permanencia ni penalización.</div>
+  <div class="services-rotator gl-reveal">
+    <div class="services-rotator-phrase">
+      <span>Monitorizamos</span>
+      <span class="rotator-slot" aria-live="polite">
+        <span class="rotator-word">dominios</span>
+      </span>
     </div>
   </div>
 </section>
 
-<section class="cta-section" id="contacto">
-  <div class="reveal">
-    <div class="section-label" style="text-align:center">Empieza ahora</div>
-    <h2>Protege tu reputación digital</h2>
-    <p>Descubre si tus datos están expuestos en filtraciones y recibe alertas en tiempo real.</p>
-    <a href="/monitor" class="btn btn-primary btn-lg">Comprobar ahora</a>
+<!-- CLIENTS MARQUEE -->
+<section id="clients-strip" aria-label="Brechas monitorizadas">
+  <div class="clients-marquee" aria-hidden="true">
+    <div class="clients-marquee__track">
+      <span class="clients-marquee__logo" style="font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:28px;color:#212121;opacity:.4;white-space:nowrap;height:52px;display:flex;align-items:center">LinkedIn</span>
+      <span class="clients-marquee__logo" style="font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:28px;color:#212121;opacity:.4;white-space:nowrap;height:52px;display:flex;align-items:center">Dropbox</span>
+      <span class="clients-marquee__logo" style="font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:28px;color:#212121;opacity:.4;white-space:nowrap;height:52px;display:flex;align-items:center">Adobe</span>
+      <span class="clients-marquee__logo" style="font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:28px;color:#212121;opacity:.4;white-space:nowrap;height:52px;display:flex;align-items:center">Facebook</span>
+      <span class="clients-marquee__logo" style="font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:28px;color:#212121;opacity:.4;white-space:nowrap;height:52px;display:flex;align-items:center">Twitter</span>
+      <span class="clients-marquee__logo" style="font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:28px;color:#212121;opacity:.4;white-space:nowrap;height:52px;display:flex;align-items:center">Canva</span>
+    </div>
+    <div class="clients-marquee__track">
+      <span class="clients-marquee__logo" style="font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:28px;color:#212121;opacity:.4;white-space:nowrap;height:52px;display:flex;align-items:center">LinkedIn</span>
+      <span class="clients-marquee__logo" style="font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:28px;color:#212121;opacity:.4;white-space:nowrap;height:52px;display:flex;align-items:center">Dropbox</span>
+      <span class="clients-marquee__logo" style="font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:28px;color:#212121;opacity:.4;white-space:nowrap;height:52px;display:flex;align-items:center">Adobe</span>
+      <span class="clients-marquee__logo" style="font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:28px;color:#212121;opacity:.4;white-space:nowrap;height:52px;display:flex;align-items:center">Facebook</span>
+      <span class="clients-marquee__logo" style="font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:28px;color:#212121;opacity:.4;white-space:nowrap;height:52px;display:flex;align-items:center">Twitter</span>
+      <span class="clients-marquee__logo" style="font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:28px;color:#212121;opacity:.4;white-space:nowrap;height:52px;display:flex;align-items:center">Canva</span>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="home-faq" aria-label="Preguntas frecuentes">
+  <header class="home-faq__head gl-reveal">
+    <span class="section-label">FAQ</span>
+    <h2 class="home-faq__title">Preguntas <em>frecuentes</em>.</h2>
+  </header>
+  <div class="home-faq__list">
+    <details class="home-faq__item gl-reveal">
+      <summary><span class="home-faq__num">[01]</span><span class="home-faq__q">¿Qué tipos de activos puedo monitorizar?</span><span class="home-faq__plus" aria-hidden="true"></span></summary>
+      <div class="home-faq__answer"><p>Puedes monitorizar dominios y direcciones de email. Comprobamos si aparecen en nuestra base de datos de brechas conocidas y realizamos inteligencia adicional.</p></div>
+    </details>
+    <details class="home-faq__item gl-reveal">
+      <summary><span class="home-faq__num">[02]</span><span class="home-faq__q">¿De dónde obtenéis los datos de brechas?</span><span class="home-faq__plus" aria-hidden="true"></span></summary>
+      <div class="home-faq__answer"><p>Mantenemos una base de datos actualizada con las filtraciones más conocidas: LinkedIn, Dropbox, Adobe, Facebook, y cientos más. También consultamos fuentes OSINT.</p></div>
+    </details>
+    <details class="home-faq__item gl-reveal">
+      <summary><span class="home-faq__num">[03]</span><span class="home-faq__q">¿Es necesario registrarse para comprobar un dominio?</span><span class="home-faq__plus" aria-hidden="true"></span></summary>
+      <div class="home-faq__answer"><p>No. Puedes hacer comprobaciones rápidas sin registro desde la página de Monitor. Para activar alertas y monitorización continua, necesitas una cuenta gratuita.</p></div>
+    </details>
+    <details class="home-faq__item gl-reveal">
+      <summary><span class="home-faq__num">[04]</span><span class="home-faq__q">¿Puedo cancelar mi suscripción?</span><span class="home-faq__plus" aria-hidden="true"></span></summary>
+      <div class="home-faq__answer"><p>Sí, en cualquier momento desde tu dashboard. Sin permanencia ni penalización.</p></div>
+    </details>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="home-cta" aria-label="Empieza ahora">
+  <canvas id="cta-particles"></canvas>
+  <div class="home-cta__inner">
+    <span class="home-cta__label gl-charreveal">Empieza ahora</span>
+    <h2 class="home-cta__title gl-charreveal">Protege tu<br>reputación <em>digital</em></h2>
+    <p class="home-cta__desc gl-charreveal">Descubre si tus datos están expuestos en filtraciones y recibe alertas en tiempo real.</p>
+    <div class="home-cta__actions gl-charreveal">
+      <a href="/monitor" class="home-cta__btn cursor-target">Comprobar ahora <span style="font-size:16px">→</span></a>
+      <a href="mailto:hola@vulnify.es" class="home-cta__mail cursor-target">hola@vulnify.es</a>
+    </div>
   </div>
 </section>
 
 {% endblock %}
+
 {% block scripts %}
 <script>
-let plans = [];
-let interval = 'month';
-
-document.querySelectorAll('.bill-btn').forEach(b => {
-  b.addEventListener('click', () => {
-    document.querySelectorAll('.bill-btn').forEach(x => x.classList.remove('active'));
-    b.classList.add('active');
-    interval = b.dataset.interval;
-    renderPlans();
-  });
-});
-
-function renderPlans() {
-  const grid = document.getElementById('pricing-grid-home');
-  if (!grid) return;
-  grid.innerHTML = plans.slice(0, 3).map((plan, i) => {
-    const p = interval === 'month' ? plan.price_monthly : (plan.price_yearly || plan.price_monthly);
-    const pt = p === 0 ? '0€' : p + '€';
-    const per = p === 0 ? 'siempre gratis' : (interval === 'month' ? 'al mes' : 'al año');
-    const feat = i === 1 ? ' featured' : '';
-    const bc = i === 1 ? 'primary' : 'ghost';
-    const bt = plan.name === 'Gratis' ? 'Probar ahora' : 'Elegir ' + plan.name;
-    const isFree = plan.name === 'Gratis';
-    return '<div class="plan-card' + feat + '"><div class="plan-name">' + plan.name + '</div><div class="plan-price">' + pt + '</div><div class="plan-period">' + per + '</div><div class="plan-desc">' + plan.description + '</div><ul class="plan-features">' + plan.features.map(f => '<li>' + f + '</li>').join('') + '</ul>' + (isFree ? '<a href="/monitor" class="plan-btn primary">' + bt + '</a>' : '<button class="plan-btn ' + bc + '" onclick="window.location.href=\'/register?plan=' + plan.id + '\'">' + bt + '</button>') + '</div>';
-  });
-}
-
-async function loadPlans() {
-  try { const r = await fetch('/api/plans'); plans = await r.json(); renderPlans(); } catch {}
-}
-
-loadPlans();
+// Rotator words
+(function(){var w=[["dominios"],["emails"],["brechas"],["filtraciones"],["seguridad"]],i=0,s=document.querySelector('.rotator-slot .rotator-word');if(s)setInterval(function(){i=(i+1)%w.length;s.textContent=w[i][0]},2500)})();
 </script>
 {% endblock %}
