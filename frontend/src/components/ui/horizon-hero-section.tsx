@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { GLSLHills } from '@/components/ui/glsl-hills';
 import { MorphingText } from '@/components/ui/liquid-text';
 import RadialOrbitalTimeline from '@/components/ui/radial-orbital-timeline';
+import { BentoPricing } from '@/components/ui/bento-pricing';
 import { Calendar, FileText, Code, Cpu, Rocket } from 'lucide-react';
 
 
@@ -129,6 +130,15 @@ export const Component = () => {
             { id: 5, title: "Lanzamiento", date: "Semana 8", content: "Despliegue en producción, testing final y puesta en marcha de tu nueva web.", category: "Launch", icon: Rocket, relatedIds: [4], status: "pending", energy: 10 },
           ]}
         />
+      </section>
+
+      <section id="precios" className="py-24 bg-[#0a0a0a]">
+        <div className="text-center mb-12">
+          <p className="text-xs uppercase tracking-[0.3em] text-zinc-500 mb-3">Precios</p>
+          <h2 className="text-3xl md:text-5xl font-bold text-white">Inversión transparente</h2>
+          <p className="text-zinc-500 text-sm mt-2">Un precio único y claro, sin sorpresas</p>
+        </div>
+        <BentoPricing />
       </section>
 
       <section id="contacto" className="cta-section">
