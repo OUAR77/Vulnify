@@ -1,14 +1,8 @@
 import './App.css'
-import { HeroSection } from './components/hero-section'
-import { ServicesSection } from './components/services-section'
+import { GlowyWavesHero } from './components/ui/glowy-waves-hero-shadcnui'
 
 function App() {
-  return (
-    <div className="min-h-screen">
-      <HeroSection />
-      <ServicesSection />
-    </div>
-  )
+  return <GlowyWavesHero />
 }
 
 export default App

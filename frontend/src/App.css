@@ -3,4 +3,17 @@
 @theme {
   --color-background: #f2f2f2;
   --color-foreground: #212121;
+  --color-primary: #6366f1;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #8b5cf6;
+  --color-secondary-foreground: #ffffff;
+  --color-accent: #a78bfa;
+  --color-muted: #e5e5e5;
+  --color-muted-foreground: #737373;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #d4d4d4;
+  --color-input: #d4d4d4;
+  --color-ring: #818cf8;
+  --radius: 0.5rem;
 }
