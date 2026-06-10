@@ -216,7 +216,7 @@ const HeroSection = () => (
   <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden">
     <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-black/50 to-[#050505]" />
 
-    <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-5xl pt-32 pb-20 w-full">
+    <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-5xl pt-16 pb-16 w-full">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
