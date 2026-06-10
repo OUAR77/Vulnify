@@ -157,10 +157,9 @@ export default function RadialOrbitalTimeline({
       ref={containerRef}
       onClick={handleContainerClick}
     >
-      <div className="absolute top-16 left-1/2 -translate-x-1/2 z-20 text-center">
+      <div className="absolute top-16 left-1/2 -translate-x-1/2 z-20 text-center pointer-events-none">
         <p className="text-xs uppercase tracking-[0.3em] text-zinc-500 mb-3">Nuestro proceso</p>
         <h2 className="text-3xl md:text-5xl font-bold text-white">Cómo trabajamos</h2>
-        <p className="text-zinc-500 text-sm mt-2 max-w-md mx-auto">Haz clic en cada nodo para explorar cada etapa</p>
       </div>
 
       <div className="relative w-full max-w-4xl h-full flex items-center justify-center">
