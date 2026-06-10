@@ -616,3 +616,150 @@ body {
   .scroll-progress { gap: 10px; }
   .spline-card { height: 400px; }
 }
+
+html.light body {
+  background: #f5f5f5;
+  color: #111;
+}
+
+html.light .hero-container {
+  background: #fafafa;
+}
+
+html.light .hero-title {
+  color: #111;
+}
+
+html.light .hero-content p {
+  color: #555;
+}
+
+html.light .cta-primary {
+  background: #111;
+  color: #fff;
+}
+
+html.light .cta-primary:hover {
+  background: #333;
+}
+
+html.light .cta-secondary {
+  border-color: #ccc;
+  color: #555;
+}
+
+html.light .cta-secondary:hover {
+  border-color: #888;
+  color: #111;
+}
+
+html.light .services-section {
+  background: #fff;
+}
+
+html.light .service-card {
+  background: #fafafa;
+  border-color: #e5e5e5;
+}
+
+html.light .service-card:hover {
+  border-color: #ccc;
+}
+
+html.light .service-card-title {
+  color: #111;
+}
+
+html.light .service-card-desc {
+  color: #666;
+}
+
+html.light .services-title {
+  color: #111;
+}
+
+html.light .services-desc {
+  color: #666;
+}
+
+html.light .services-label {
+  color: #999;
+}
+
+html.light .cta-section {
+  background: #fafafa;
+}
+
+html.light .cta-title {
+  color: #111;
+}
+
+html.light .cta-desc {
+  color: #666;
+}
+
+html.light .cta-label {
+  color: #999;
+}
+
+html.light .cta-button {
+  background: #111;
+  color: #fff;
+}
+
+html.light .cta-button:hover {
+  background: #333;
+}
+
+html.light .site-footer {
+  background: #fff;
+  border-top-color: #e5e5e5;
+}
+
+html.light .footer-logo {
+  color: #111;
+}
+
+html.light .footer-tagline {
+  color: #888;
+}
+
+html.light .footer-links a {
+  color: #888;
+}
+
+html.light .footer-links a:hover {
+  color: #111;
+}
+
+html.light .footer-copy {
+  color: #bbb;
+}
+
+html.light .section-title {
+  color: #111;
+}
+
+html.light .section-subtitle {
+  color: #555;
+}
+
+html.light .scroll-text {
+  color: #bbb;
+}
+
+html.light .section-counter {
+  color: #bbb;
+}
+
+html.light .progress-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+html.light .progress-fill {
+  background: #555;
+}
+
+html.light .content-section {
+  background: #fafafa;
+}
