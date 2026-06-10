@@ -4,6 +4,7 @@ import { GLSLHills } from '@/components/ui/glsl-hills';
 import RadialOrbitalTimeline from '@/components/ui/radial-orbital-timeline';
 import { Calendar, FileText, Code, Cpu, Rocket, Mail, Globe, Bot, ShieldCheck, TrendingUp, Menu, X } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import Footer_03 from '@/components/ui/ruixen-footer03';
 
 const services = [
   { icon: Globe, title: 'Desarrollo Web', desc: 'Páginas corporativas, tiendas online y aplicaciones web con React, Next.js y diseño responsive.' },
@@ -253,20 +254,7 @@ export const Component = () => {
         </div>
       </section>
 
-      <footer className="site-footer">
-        <div className="footer-inner">
-          <div className="footer-brand">
-            <span className="footer-logo">VULNIFY</span>
-            <p className="footer-tagline">Desarrollo web & inteligencia artificial</p>
-          </div>
-          <div className="footer-links">
-            {navLinks.map((link) => (
-              <a key={link.href} href={link.href}>{link.label}</a>
-            ))}
-          </div>
-          <p className="footer-copy">&copy; {new Date().getFullYear()} Vulnify.</p>
-        </div>
-      </footer>
+      <Footer_03 />
     </div>
   );
 };
