@@ -1,21 +1,9 @@
 // @ts-nocheck
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Canvas } from '@react-three/fiber';
-import { GLSLHills } from '@/components/ui/glsl-hills';
 import { Menu, X, ArrowUpRight, Globe, Bot, Code, Cpu, Rocket, Sparkles, Zap, Quote, ChevronRight, Plus } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { ShaderPlane, EnergyRing } from '@/components/ui/background-paper-shaders';
-
-const ShaderBackground = () => (
-  <div className="fixed inset-0 z-0 pointer-events-none" style={{ background: '#050505' }}>
-    <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
-      <ShaderPlane position={[0, 0, 0]} color1="#06b6d4" color2="#050505" />
-      <ShaderPlane position={[2.5, -1.5, -2]} color1="#06b6d4" color2="#0e1a1a" />
-      <ShaderPlane position={[-2.5, 1.5, -3]} color1="#0891b2" color2="#050505" />
-    </Canvas>
-  </div>
-);
+import { NeuralNoise } from '@/components/ui/neural-noise';
 
 const ScrollProgress = () => {
   const [progress, setProgress] = useState(0);
@@ -225,11 +213,8 @@ const Nav = ({ menuOpen, setMenuOpen, isDark, onToggle }: any) => {
 
 // ─── Hero ────────────────────────────────────────────────────────
 const HeroSection = () => (
-  <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-[#050505]">
-    <div className="absolute inset-0 w-full h-full">
-      <GLSLHills cameraZ={120} planeSize={256} speed={0.2} />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#050505]/60 via-transparent to-[#050505]" />
-    </div>
+  <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden">
+    <div className="absolute inset-0 bg-gradient-to-b from-[#050505]/80 via-cyan-950/20 to-[#050505]/80" />
 
     <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-5xl pt-32 pb-20 w-full">
       <motion.div
@@ -244,16 +229,11 @@ const HeroSection = () => (
         </span>
       </motion.div>
 
-      <motion.h1
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.1, 0.1, 1] }}
-        className="text-[clamp(3rem,10vw,8rem)] font-bold leading-[0.85] tracking-[-0.04em] text-white mb-6 max-w-4xl"
-      >
+      <h1 className="text-[clamp(3rem,10vw,8rem)] font-bold leading-[0.85] tracking-[-0.04em] text-white mb-6 max-w-4xl">
         <SplitText text="Arquitectura" delay={0.6} />
         <br />
         <SplitText text="Digital Inteligente" delay={1.1} />
-      </motion.h1>
+      </h1>
 
       <motion.p
         initial={{ opacity: 0, y: 20 }}
@@ -346,8 +326,8 @@ export const Component = () => {
   ];
 
   return (
-    <div className="bg-[#050505] text-[#f5f0e8] antialiased selection:bg-cyan-500/30 selection:text-white relative z-10">
-      <ShaderBackground />
+    <div className="text-[#f5f0e8] antialiased selection:bg-cyan-500/30 selection:text-white">
+      <NeuralNoise color={[0.02, 0.55, 0.65]} opacity={0.9} speed={0.0008} />
       <ScrollProgress />
       <Nav menuOpen={menuOpen} setMenuOpen={setMenuOpen} isDark={isDark} onToggle={() => setIsDark(!isDark)} />
 
