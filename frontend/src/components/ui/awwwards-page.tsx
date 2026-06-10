@@ -5,6 +5,37 @@ import { GLSLHills } from '@/components/ui/glsl-hills';
 import { Menu, X, ArrowUpRight, Globe, Bot, Code, Cpu, Rocket, Sparkles, Zap, Quote, ChevronRight, Plus } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 
+const ScrollProgress = () => {
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    const onScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(docHeight > 0 ? Math.min(scrollTop / docHeight, 1) : 0);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  return (
+    <motion.div
+      className="fixed top-0 left-0 right-0 z-[60] h-[2px] origin-left bg-gradient-to-r from-cyan-500 via-amber-500 to-cyan-500"
+      style={{ scaleX: progress }}
+    />
+  );
+};
+
+const ScaleIn = ({ children, delay = 0, className = '' }: any) => (
+  <motion.div
+    initial={{ opacity: 0, y: 30, scale: 0.95 }}
+    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+    viewport={{ once: true, margin: '-60px' }}
+    transition={{ duration: 0.7, delay, ease: [0.25, 0.1, 0.1, 1] }}
+    className={className}
+  >
+    {children}
+  </motion.div>
+);
+
 // ─── Helpers ────────────────────────────────────────────────────
 const Label = ({ children }: any) => (
   <span className="inline-block text-[11px] tracking-[0.25em] uppercase text-zinc-600 mb-5 font-mono">{children}</span>
@@ -33,7 +64,7 @@ const SplitText = ({ text, className = '', delay = 0 }: any) => (
 const CTAButton = ({ href, children, primary = true }: any) => (
   <motion.a
     href={href}
-    whileHover={{ scale: 1.04 }}
+    whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(6,182,212,0.15)' }}
     whileTap={{ scale: 0.97 }}
     className={`inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-medium transition-all duration-300 ${
       primary
@@ -201,11 +232,22 @@ const HeroSection = () => (
         </span>
       </motion.div>
 
-      <h1 className="text-[clamp(3rem,10vw,8rem)] font-bold leading-[0.85] tracking-[-0.04em] text-white mb-6 max-w-4xl">
+      <motion.h1
+        className="text-[clamp(3rem,10vw,8rem)] font-bold leading-[0.85] tracking-[-0.04em] mb-6 max-w-4xl"
+        initial={{ backgroundPosition: '0% 50%' }}
+        animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+        style={{
+          backgroundImage: 'linear-gradient(90deg, #ffffff, #06b6d4, #ffffff, #06b6d4)',
+          backgroundSize: '300% 100%',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+        }}
+      >
         <SplitText text="Arquitectura" delay={0.4} />
         <br />
         <SplitText text="Digital Inteligente" delay={0.9} />
-      </h1>
+      </motion.h1>
 
       <motion.p
         initial={{ opacity: 0, y: 20 }}
@@ -299,6 +341,7 @@ export const Component = () => {
 
   return (
     <div className="bg-[#050505] text-[#f5f0e8] antialiased selection:bg-cyan-500/30 selection:text-white">
+      <ScrollProgress />
       <Nav menuOpen={menuOpen} setMenuOpen={setMenuOpen} isDark={isDark} onToggle={() => setIsDark(!isDark)} />
 
       <motion.a
@@ -307,6 +350,7 @@ export const Component = () => {
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 2, duration: 0.4, type: 'spring' }}
         className="fixed bottom-6 right-6 z-40 size-14 rounded-full bg-white text-black flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+        whileHover={{ rotate: -12 }}
         aria-label="Contacto"
       >
         <ArrowUpRight className="size-5" />
@@ -398,12 +442,8 @@ export const Component = () => {
               { icon: Bot, title: 'IA integrada', desc: 'Chatbots inteligentes, automatización de procesos y análisis predictivo para tu negocio.' },
               { icon: Zap, title: 'Crecimiento continuo', desc: 'No es un proyecto finito. Iteramos, mejoramos y escalamos tu presencia digital.' },
             ].map((item, i) => (
+              <ScaleIn key={item.title} delay={i * 0.12}>
               <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.12, duration: 0.5 }}
                 whileHover={{ y: -6 }}
                 className="group p-8 md:p-10 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500"
               >
@@ -413,6 +453,7 @@ export const Component = () => {
                 <h3 className="text-xl font-semibold text-white mb-3">{item.title}</h3>
                 <p className="text-sm text-zinc-500 leading-relaxed">{item.desc}</p>
               </motion.div>
+              </ScaleIn>
             ))}
           </div>
         </div>
@@ -429,12 +470,8 @@ export const Component = () => {
           </FadeIn>
           <div className="grid md:grid-cols-2 gap-6">
             {services.map((s, i) => (
+              <ScaleIn key={s.title} delay={i * 0.1}>
               <motion.div
-                key={s.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
                 whileHover={{ y: -4 }}
                 className="group p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/15 transition-all duration-500"
               >
@@ -447,6 +484,7 @@ export const Component = () => {
                 <h3 className="text-xl font-semibold text-white mb-3">{s.title}</h3>
                 <p className="text-sm text-zinc-500 leading-relaxed">{s.desc}</p>
               </motion.div>
+              </ScaleIn>
             ))}
           </div>
         </div>
@@ -462,14 +500,15 @@ export const Component = () => {
             </h2>
           </FadeIn>
           <div className="flex flex-wrap justify-center gap-4 md:gap-6">
-            {['React', 'Next.js', 'TypeScript', 'Tailwind', 'Three.js', 'Python', 'FastAPI', 'PostgreSQL', 'Docker', 'Cloudflare'].map((tech) => (
+            {['React', 'Next.js', 'TypeScript', 'Tailwind', 'Three.js', 'Python', 'FastAPI', 'PostgreSQL', 'Docker', 'Cloudflare'].map((tech, i) => (
+              <ScaleIn key={tech} delay={i * 0.05}>
               <motion.span
-                key={tech}
                 whileHover={{ y: -4, scale: 1.05 }}
-                className="px-5 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] text-sm text-zinc-400 font-mono hover:text-white hover:border-white/20 transition-colors"
+                className="px-5 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] text-sm text-zinc-400 font-mono hover:text-white hover:border-white/20 transition-colors block"
               >
                 {tech}
               </motion.span>
+              </ScaleIn>
             ))}
           </div>
         </div>
@@ -508,12 +547,8 @@ export const Component = () => {
           </FadeIn>
           <div className="grid md:grid-cols-3 gap-6">
             {projects.map((p, i) => (
+              <ScaleIn key={p.title} delay={i * 0.1}>
               <motion.div
-                key={p.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
                 whileHover={{ y: -6 }}
                 className="group p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/15 transition-all duration-500"
               >
@@ -524,6 +559,7 @@ export const Component = () => {
                 <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-cyan-400 transition-colors">{p.title}</h3>
                 <p className="text-sm text-zinc-500">{p.desc}</p>
               </motion.div>
+              </ScaleIn>
             ))}
           </div>
         </div>
@@ -607,13 +643,10 @@ export const Component = () => {
           </FadeIn>
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
+              <ScaleIn key={t.name} delay={i * 0.1}>
               <motion.div
-                key={t.name}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06]"
+                whileHover={{ y: -6 }}
+                className="p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500"
               >
                 <Quote className="size-6 text-cyan-500/30 mb-4" />
                 <p className="text-sm text-zinc-400 leading-relaxed mb-6">&ldquo;{t.text}&rdquo;</p>
@@ -622,6 +655,7 @@ export const Component = () => {
                   <div className="text-xs text-zinc-600">{t.role}</div>
                 </div>
               </motion.div>
+              </ScaleIn>
             ))}
           </div>
         </div>
