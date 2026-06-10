@@ -235,6 +235,7 @@ app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/app/assets", StaticFiles(directory="frontend/dist/assets"), name="frontend_assets")
 app.include_router(auth_router)
 app.include_router(assets_router)
 app.include_router(alerts_router)
@@ -348,6 +349,10 @@ async def contact_form(request: Request):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+
+@app.get("/app/{full_path:path}")
+async def react_app(request: Request, full_path: str):
+    return FileResponse("frontend/dist/index.html")
 
 @app.get("/health")
 async def health():
