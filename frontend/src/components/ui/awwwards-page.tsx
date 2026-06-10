@@ -23,9 +23,11 @@ const Section = ({ children, className = '', id, delay = 0 }: any) => (
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, margin: '-80px' }}
     transition={{ duration: 0.7, delay, ease: [0.25, 0.1, 0.1, 1] }}
-    className={`relative z-10 px-6 md:px-12 lg:px-20 ${className}`}
+    className={`relative z-10 w-full flex flex-col items-center px-6 md:px-12 lg:px-20 ${className}`}
   >
-    {children}
+    <div className="w-full max-w-6xl">
+      {children}
+    </div>
   </motion.section>
 );
 
