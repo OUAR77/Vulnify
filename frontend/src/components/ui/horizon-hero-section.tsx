@@ -2,8 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { GLSLHills } from '@/components/ui/glsl-hills';
 import RadialOrbitalTimeline from '@/components/ui/radial-orbital-timeline';
-import PricingSection4 from '@/components/ui/pricing-section-4';
-import { Calendar, FileText, Code, Cpu, Rocket } from 'lucide-react';
+import { Calendar, FileText, Code, Cpu, Rocket, Mail } from 'lucide-react';
 
 
 export const Component = () => {
@@ -128,14 +127,18 @@ export const Component = () => {
         </div>
       </section>
 
-      <PricingSection4 />
-
       <section id="contacto" className="cta-section">
         <div className="cta-inner">
           <p className="cta-label">Empieza ahora</p>
           <h2 className="cta-title">Transforma tu negocio<br/>con tecnología que <em>impacta</em></h2>
           <p className="cta-desc">Cuéntanos tu proyecto y te enviaremos un presupuesto personalizado en 24h.</p>
-          <a href="mailto:hola@vulnify.es" className="cta-button">hola@vulnify.es</a>
+          <div className="flex flex-col items-center gap-3">
+            <a href="mailto:hola@vulnify.es" className="cta-button">hola@vulnify.es</a>
+            <span className="inline-flex items-center gap-1.5 text-xs text-zinc-600">
+              <Mail className="size-3" />
+              Precio personalizado · Sin compromiso
+            </span>
+          </div>
         </div>
       </section>
 
