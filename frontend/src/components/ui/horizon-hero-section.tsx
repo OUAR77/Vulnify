@@ -4,6 +4,7 @@ import { GLSLHills } from '@/components/ui/glsl-hills';
 import { SplineScene } from '@/components/ui/splite';
 import { Spotlight } from '@/components/ui/spotlight';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
+import { Card } from '@/components/ui/card';
 
 
 export const Component = () => {
@@ -87,38 +88,40 @@ export const Component = () => {
         ))}
       </div>
 
-      <section className="spline-section">
-        <div className="spline-inner">
-          <div className="spline-header">
-            <p className="spline-label">Tecnología 3D</p>
-            <h2 className="spline-title">Experiencias digitales inmersivas</h2>
-            <p className="spline-desc">Integramos gráficos 3D interactivos en tu web.</p>
+      <section className="py-16 md:py-32 bg-black">
+        <div className="mx-auto max-w-5xl px-6">
+          <div className="text-center mb-16">
+            <p className="text-xs uppercase tracking-[0.2em] text-zinc-600 mb-4">Tecnología 3D</p>
+            <h2 className="text-3xl md:text-5xl font-bold text-white">Experiencias digitales inmersivas</h2>
+            <p className="text-zinc-400 max-w-xl mx-auto mt-4 text-lg">Integramos gráficos 3D interactivos en tu web.</p>
           </div>
-          <div className="spline-card-wrapper">
-            <div className="spline-card">
-              <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
-              <div className="spline-card-inner">
-                <div className="spline-text-side">
-                  <h3 className="spline-heading">Web + IA</h3>
-                  <p className="spline-text">
-                    Creamos tu web con integraciones de inteligencia artificial,
-                    diseño 3D interactivo y automatizaciones que transforman tu negocio.
-                  </p>
-                  <div className="spline-cta">
-                    <a href="#contacto" className="spline-button">Solicitar presupuesto</a>
-                  </div>
+          <Card className="w-full h-[500px] bg-black/[0.96] relative overflow-hidden border-zinc-800">
+            <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
+            <div className="flex h-full flex-col md:flex-row">
+              <div className="flex-1 p-8 relative z-10 flex flex-col justify-center">
+                <h3 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400">
+                  Web + IA
+                </h3>
+                <p className="mt-4 text-neutral-300 max-w-lg">
+                  Creamos tu web con integraciones de inteligencia artificial,
+                  diseño 3D interactivo y automatizaciones que transforman tu negocio.
+                </p>
+                <div className="mt-6">
+                  <a href="#contacto" className="inline-flex h-11 items-center justify-center rounded-md bg-white px-6 text-sm font-medium text-black transition hover:bg-neutral-200">
+                    Solicitar presupuesto
+                  </a>
                 </div>
-                <ErrorBoundary fallback={<div className="spline-scene-side flex items-center justify-center"><p className="text-zinc-500 text-sm">3D no disponible</p></div>}>
-                  <div className="spline-scene-side">
-                    <SplineScene
-                      scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-                      className="w-full h-full"
-                    />
-                  </div>
-                </ErrorBoundary>
               </div>
+              <ErrorBoundary fallback={<div className="flex-1 relative flex items-center justify-center"><p className="text-zinc-500 text-sm">3D no disponible</p></div>}>
+                <div className="flex-1 relative min-h-[250px]">
+                  <SplineScene
+                    scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
+                    className="w-full h-full"
+                  />
+                </div>
+              </ErrorBoundary>
             </div>
-          </div>
+          </Card>
         </div>
       </section>
 
