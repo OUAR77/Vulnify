@@ -2,7 +2,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GLSLHills } from '@/components/ui/glsl-hills';
-import { Menu, X, ArrowUpRight, Globe, Bot, Code, Cpu, Rocket, Sparkles, Zap, Quote, ChevronRight } from 'lucide-react';
+import { Menu, X, ArrowUpRight, Globe, Bot, Code, Cpu, Rocket, Sparkles, Zap, Quote, ChevronRight, Plus } from 'lucide-react';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 // ─── Helpers ────────────────────────────────────────────────────
 const Label = ({ children }: any) => (
@@ -56,8 +57,42 @@ const FadeIn = ({ children, delay = 0, className = '' }: any) => (
   </motion.div>
 );
 
+const FAQItem = ({ question, answer }: any) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] overflow-hidden">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between p-6 text-left"
+      >
+        <span className="text-sm font-medium text-white">{question}</span>
+        <motion.span
+          animate={{ rotate: open ? 45 : 0 }}
+          transition={{ duration: 0.2 }}
+          className="text-zinc-600 shrink-0 ml-4"
+        >
+          <Plus className="size-4" />
+        </motion.span>
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            <div className="px-6 pb-6 text-sm text-zinc-500 leading-relaxed">{answer}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 // ─── Nav ────────────────────────────────────────────────────────
-const Nav = ({ menuOpen, setMenuOpen }: any) => {
+const Nav = ({ menuOpen, setMenuOpen, isDark, onToggle }: any) => {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -84,6 +119,8 @@ const Nav = ({ menuOpen, setMenuOpen }: any) => {
               <span className="absolute -bottom-1 left-0 w-0 h-px bg-white/40 group-hover:w-full transition-all duration-300" />
             </a>
           ))}
+          <div className="w-px h-5 bg-white/[0.06]" />
+          <ThemeToggle isDark={isDark} onToggle={onToggle} />
           <motion.a
             href="mailto:hola@vulnify.es"
             whileHover={{ scale: 1.04 }}
@@ -210,6 +247,11 @@ const HeroSection = () => (
 
 export const Component = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isDark, setIsDark] = useState(true);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('light', !isDark);
+  }, [isDark]);
 
   useEffect(() => {
     if (menuOpen) {
@@ -257,7 +299,18 @@ export const Component = () => {
 
   return (
     <div className="bg-[#050505] text-[#f5f0e8] antialiased selection:bg-cyan-500/30 selection:text-white">
-      <Nav menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <Nav menuOpen={menuOpen} setMenuOpen={setMenuOpen} isDark={isDark} onToggle={() => setIsDark(!isDark)} />
+
+      <motion.a
+        href="mailto:hola@vulnify.es"
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 2, duration: 0.4, type: 'spring' }}
+        className="fixed bottom-6 right-6 z-40 size-14 rounded-full bg-white text-black flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+        aria-label="Contacto"
+      >
+        <ArrowUpRight className="size-5" />
+      </motion.a>
 
       {/* ─── HERO ─── */}
       <HeroSection />
@@ -272,6 +325,29 @@ export const Component = () => {
                 <div className="text-sm text-zinc-600">{s.label}</div>
               </FadeIn>
             ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ─── CLIENT LOGOS ─── */}
+      <div className="w-full border-b border-white/[0.04] overflow-hidden">
+        <div className="py-16 md:py-20">
+          <FadeIn className="text-center mb-10">
+            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">Confían en nosotros</span>
+          </FadeIn>
+          <div className="flex overflow-hidden">
+            <motion.div
+              animate={{ x: ['0%', '-50%'] }}
+              transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+              className="flex gap-16 md:gap-24 items-center flex-shrink-0"
+            >
+              {['TechFlow', 'InnovaCorp', 'DataSmart', 'NexusDigital', 'CloudBase', 'AIForge', 'WebCraft', 'PixelPerfect'].map((name) => (
+                <span key={name} className="text-lg md:text-xl font-semibold text-zinc-700 whitespace-nowrap tracking-wide">{name}</span>
+              ))}
+              {['TechFlow', 'InnovaCorp', 'DataSmart', 'NexusDigital', 'CloudBase', 'AIForge', 'WebCraft', 'PixelPerfect'].map((name) => (
+                <span key={`dup-${name}`} className="text-lg md:text-xl font-semibold text-zinc-700 whitespace-nowrap tracking-wide">{name}</span>
+              ))}
+            </motion.div>
           </div>
         </div>
       </div>
@@ -376,6 +452,29 @@ export const Component = () => {
         </div>
       </div>
 
+      {/* ─── TECH STACK ─── */}
+      <div className="w-full border-b border-white/[0.04]">
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
+          <FadeIn className="text-center mb-16">
+            <Label>Tecnología</Label>
+            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">
+              Stack moderno, resultados reales.
+            </h2>
+          </FadeIn>
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+            {['React', 'Next.js', 'TypeScript', 'Tailwind', 'Three.js', 'Python', 'FastAPI', 'PostgreSQL', 'Docker', 'Cloudflare'].map((tech) => (
+              <motion.span
+                key={tech}
+                whileHover={{ y: -4, scale: 1.05 }}
+                className="px-5 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] text-sm text-zinc-400 font-mono hover:text-white hover:border-white/20 transition-colors"
+              >
+                {tech}
+              </motion.span>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* ─── PROCESS ─── */}
       <div id="proceso" className="w-full border-b border-white/[0.04]">
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
@@ -426,6 +525,46 @@ export const Component = () => {
                 <p className="text-sm text-zinc-500">{p.desc}</p>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ─── BEFORE/AFTER ─── */}
+      <div className="w-full border-b border-white/[0.04]">
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
+          <FadeIn className="mb-16 text-center">
+            <Label>Casos reales</Label>
+            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">
+              De estar invisible a dominar el mercado.
+            </h2>
+          </FadeIn>
+          <div className="grid md:grid-cols-2 gap-8">
+            <FadeIn>
+              <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
+                <div className="text-xs tracking-[0.2em] uppercase text-zinc-600 mb-6">Antes</div>
+                <div className="space-y-4">
+                  {['Web estática sin mantenimiento', '0 leads orgánicos al mes', 'Procesos 100% manuales'].map((item) => (
+                    <div key={item} className="flex items-center gap-3 p-4 rounded-xl bg-red-500/5 border border-red-500/10">
+                      <span className="size-2 rounded-full bg-red-400/60" />
+                      <span className="text-sm text-zinc-400">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </FadeIn>
+            <FadeIn delay={0.2}>
+              <div className="p-8 rounded-2xl bg-white/[0.02] border border-cyan-500/20">
+                <div className="text-xs tracking-[0.2em] uppercase text-cyan-500/70 mb-6">Después</div>
+                <div className="space-y-4">
+                  {['Web con IA integrada y chatbot', '150+ leads cualificados al mes', 'Automatización 24/7'].map((item) => (
+                    <div key={item} className="flex items-center gap-3 p-4 rounded-xl bg-cyan-500/5 border border-cyan-500/10">
+                      <span className="size-2 rounded-full bg-cyan-400/60" />
+                      <span className="text-sm text-zinc-400">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </FadeIn>
           </div>
         </div>
       </div>
@@ -483,6 +622,28 @@ export const Component = () => {
                   <div className="text-xs text-zinc-600">{t.role}</div>
                 </div>
               </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ─── FAQ ─── */}
+      <div className="w-full border-b border-white/[0.04]">
+        <div className="mx-auto max-w-3xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
+          <FadeIn className="text-center mb-16">
+            <Label>FAQ</Label>
+            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">
+              Respuestas rápidas.
+            </h2>
+          </FadeIn>
+          <div className="space-y-3">
+            {[
+              { q: '¿Cuánto tiempo lleva desarrollar una web?', a: 'Depende de la complejidad. Una web corporativa puede estar lista en 2-3 semanas. Proyectos con IA integrada suelen requerir 4-6 semanas.' },
+              { q: '¿Necesito tener claro todo antes de empezar?', a: 'No. Te guiamos desde la idea. Nuestro proceso incluye una fase de auditoría y estrategia donde definimos juntos el alcance.' },
+              { q: '¿Ofrecen mantenimiento después del lanzamiento?', a: 'Sí. Todos nuestros proyectos incluyen soporte post-lanzamiento y planes de mantenimiento continuo para mantener tu web actualizada.' },
+              { q: '¿Cómo integran la inteligencia artificial?', a: 'Desde chatbots personalizados hasta automatización de procesos y análisis predictivo. Evaluamos tu caso y proponemos la solución óptima.' },
+            ].map((item) => (
+              <FAQItem key={item.q} question={item.q} answer={item.a} />
             ))}
           </div>
         </div>
