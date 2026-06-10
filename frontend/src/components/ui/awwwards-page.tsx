@@ -18,7 +18,7 @@ const ScrollProgress = () => {
   }, []);
   return (
     <motion.div
-      className="fixed top-0 left-0 right-0 z-[60] h-[2px] origin-left bg-gradient-to-r from-fuchsia-500 via-fuchsia-300 to-fuchsia-500"
+      className="fixed top-0 left-0 right-0 z-[60] h-[2px] origin-left bg-gradient-to-r from-zinc-500 via-zinc-300 to-zinc-500"
       style={{ scaleX: progress }}
     />
   );
@@ -69,7 +69,7 @@ const CTAButton = ({ href, children, primary = true }: any) => (
     className={`inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-medium transition-all duration-300 ${
       primary
         ? 'bg-white text-black hover:bg-zinc-200'
-        : 'border border-white/15 text-zinc-400 hover:text-white hover:border-white/40'
+        : 'border border-white/15 text-zinc-400 hover:text-zinc-200 hover:border-white/40'
     }`}
   >
     {children} {primary && <ArrowUpRight className="size-4" />}
@@ -96,7 +96,7 @@ const FAQItem = ({ question, answer }: any) => {
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between p-6 text-left"
       >
-        <span className="text-sm font-medium text-white">{question}</span>
+        <span className="text-sm font-medium text-zinc-200">{question}</span>
         <motion.span
           animate={{ rotate: open ? 45 : 0 }}
           transition={{ duration: 0.2 }}
@@ -142,10 +142,10 @@ const Nav = ({ menuOpen, setMenuOpen, isDark, onToggle }: any) => {
         }`}
         style={{ borderBottom: scrolled ? '1px solid rgba(255,255,255,0.04)' : '1px solid transparent' }}
       >
-        <span className="text-base font-bold tracking-[0.3em] text-white/90">VULNIFY</span>
+        <span className="text-base font-bold tracking-[0.3em] text-zinc-200/90">VULNIFY</span>
         <div className="hidden md:flex items-center gap-8">
           {['Servicios', 'Trabajo', 'Proceso', 'Contacto'].map((l) => (
-            <a key={l} href={`#${l.toLowerCase()}`} className="text-sm text-zinc-500 hover:text-white transition-colors relative group">
+            <a key={l} href={`#${l.toLowerCase()}`} className="text-sm text-zinc-500 hover:text-zinc-200 transition-colors relative group">
               {l}
               <span className="absolute -bottom-1 left-0 w-0 h-px bg-white/40 group-hover:w-full transition-all duration-300" />
             </a>
@@ -161,7 +161,7 @@ const Nav = ({ menuOpen, setMenuOpen, isDark, onToggle }: any) => {
             Presupuesto <ArrowUpRight className="size-3.5" />
           </motion.a>
         </div>
-        <button onClick={() => setMenuOpen(true)} className="md:hidden text-white/80 p-2" aria-label="Menú">
+        <button onClick={() => setMenuOpen(true)} className="md:hidden text-zinc-200/80 p-2" aria-label="Menú">
           <Menu className="size-5" />
         </button>
       </motion.nav>
@@ -175,8 +175,8 @@ const Nav = ({ menuOpen, setMenuOpen, isDark, onToggle }: any) => {
             className="fixed inset-0 z-50 bg-[#050505]/98 backdrop-blur-2xl flex flex-col"
           >
             <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.04]">
-              <span className="text-base font-bold tracking-[0.3em] text-white/90">VULNIFY</span>
-              <button onClick={() => setMenuOpen(false)} className="text-white/60 p-2">
+              <span className="text-base font-bold tracking-[0.3em] text-zinc-200/90">VULNIFY</span>
+              <button onClick={() => setMenuOpen(false)} className="text-zinc-200/60 p-2">
                 <X className="size-5" />
               </button>
             </div>
@@ -189,7 +189,7 @@ const Nav = ({ menuOpen, setMenuOpen, isDark, onToggle }: any) => {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.08 }}
-                  className="text-4xl md:text-5xl tracking-tight text-zinc-500 hover:text-white transition-colors"
+                  className="text-4xl md:text-5xl tracking-tight text-zinc-500 hover:text-zinc-200 transition-colors"
                 >
                   {l}
                 </motion.a>
@@ -224,12 +224,12 @@ const HeroSection = () => (
         className="mb-8"
       >
         <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 text-[11px] tracking-[0.2em] uppercase text-zinc-500">
-          <span className="size-1.5 rounded-full bg-fuchsia-400 animate-pulse" />
+          <span className="size-1.5 rounded-full bg-zinc-400 animate-pulse" />
           Desarrollo Web + Inteligencia Artificial
         </span>
       </motion.div>
 
-      <h1 className="text-[clamp(3rem,10vw,8rem)] font-bold leading-[0.85] tracking-[-0.04em] text-white mb-6 max-w-4xl">
+      <h1 className="text-[clamp(3rem,10vw,8rem)] font-bold leading-[0.85] tracking-[-0.04em] text-zinc-200 mb-6 max-w-4xl">
         <SplitText text="Arquitectura" delay={0.6} />
         <br />
         <SplitText text="Digital Inteligente" delay={1.1} />
@@ -326,9 +326,9 @@ export const Component = () => {
   ];
 
   return (
-    <div className="text-[#f5f0e8] antialiased selection:bg-fuchsia-500/30 selection:text-white">
-      <NeuralNoise color={[0.85, 0.12, 0.58]} opacity={0.4} speed={0.0008} />
-      <div className="fixed inset-0 bg-black/60 pointer-events-none z-0" />
+    <div className="text-zinc-400 antialiased selection:bg-zinc-500/30 selection:text-zinc-200">
+      <NeuralNoise color={[0.2, 0.2, 0.22]} opacity={0.5} speed={0.0008} />
+      <div className="fixed inset-0 bg-black/35 pointer-events-none z-0" />
       <ScrollProgress />
       <Nav menuOpen={menuOpen} setMenuOpen={setMenuOpen} isDark={isDark} onToggle={() => setIsDark(!isDark)} />
 
@@ -353,7 +353,7 @@ export const Component = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-12 md:gap-8">
             {stats.map((s, i) => (
               <FadeIn key={s.label} delay={i * 0.1} className="text-center">
-                <div className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-2">{s.number}</div>
+                <div className="text-4xl md:text-5xl font-bold text-zinc-200 tracking-tight mb-2">{s.number}</div>
                 <div className="text-sm text-zinc-600">{s.label}</div>
               </FadeIn>
             ))}
@@ -390,7 +390,7 @@ export const Component = () => {
           <div className="grid md:grid-cols-2 gap-16 md:gap-24 items-center">
             <FadeIn>
               <Label>El Problema</Label>
-              <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mb-6">
+              <h2 className="text-3xl md:text-5xl font-bold text-zinc-200 leading-[1.05] tracking-tight mb-6">
                 Tu web no está trabajando<br />para ti. Debería.
               </h2>
               <div className="space-y-4 text-zinc-500 leading-relaxed">
@@ -419,7 +419,7 @@ export const Component = () => {
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
           <FadeIn className="text-center mb-16 md:mb-24">
             <Label>La Solución</Label>
-            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight max-w-3xl mx-auto">
+            <h2 className="text-3xl md:text-5xl font-bold text-zinc-200 leading-[1.05] tracking-tight max-w-3xl mx-auto">
               Una web que piensa, aprende y convierte por ti.
             </h2>
           </FadeIn>
@@ -435,10 +435,10 @@ export const Component = () => {
                 whileHover={{ y: -6 }}
                 className="group p-8 md:p-10 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500"
               >
-                <div className="size-12 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/20 flex items-center justify-center mb-6 group-hover:bg-fuchsia-500/20 transition-colors">
-                  <item.icon className="size-5 text-fuchsia-400" />
+                <div className="size-12 rounded-xl bg-zinc-500/10 border border-zinc-500/20 flex items-center justify-center mb-6 group-hover:bg-zinc-500/20 transition-colors">
+                  <item.icon className="size-5 text-zinc-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-3">{item.title}</h3>
+                <h3 className="text-xl font-semibold text-zinc-200 mb-3">{item.title}</h3>
                 <p className="text-sm text-zinc-500 leading-relaxed">{item.desc}</p>
               </motion.div>
               </ScaleIn>
@@ -452,7 +452,7 @@ export const Component = () => {
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
           <FadeIn className="mb-16">
             <Label>Servicios</Label>
-            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight max-w-2xl">
+            <h2 className="text-3xl md:text-5xl font-bold text-zinc-200 leading-[1.05] tracking-tight max-w-2xl">
               Todo lo que necesitas para dominar el espacio digital.
             </h2>
           </FadeIn>
@@ -465,11 +465,11 @@ export const Component = () => {
               >
                 <div className="flex items-center gap-4 mb-6">
                   <span className="text-3xl font-bold text-zinc-700 group-hover:text-zinc-500 transition-colors">{String(i + 1).padStart(2, '0')}</span>
-                  <div className="size-10 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-fuchsia-500/10 transition-colors">
-                    <s.icon className="size-4 text-zinc-400 group-hover:text-fuchsia-400 transition-colors" />
+                  <div className="size-10 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-zinc-500/10 transition-colors">
+                    <s.icon className="size-4 text-zinc-400 group-hover:text-zinc-400 transition-colors" />
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-3">{s.title}</h3>
+                <h3 className="text-xl font-semibold text-zinc-200 mb-3">{s.title}</h3>
                 <p className="text-sm text-zinc-500 leading-relaxed">{s.desc}</p>
               </motion.div>
               </ScaleIn>
@@ -483,7 +483,7 @@ export const Component = () => {
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
           <FadeIn className="text-center mb-16">
             <Label>Tecnología</Label>
-            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">
+            <h2 className="text-3xl md:text-5xl font-bold text-zinc-200 leading-[1.05] tracking-tight">
               Stack moderno, resultados reales.
             </h2>
           </FadeIn>
@@ -492,7 +492,7 @@ export const Component = () => {
               <ScaleIn key={tech} delay={i * 0.05}>
               <motion.span
                 whileHover={{ y: -4, scale: 1.05 }}
-                className="px-5 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] text-sm text-zinc-400 font-mono hover:text-white hover:border-white/20 transition-colors block"
+                className="px-5 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] text-sm text-zinc-400 font-mono hover:text-zinc-200 hover:border-white/20 transition-colors block"
               >
                 {tech}
               </motion.span>
@@ -507,13 +507,13 @@ export const Component = () => {
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
           <FadeIn className="mb-16">
             <Label>Proceso</Label>
-            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">De la idea al impacto.</h2>
+            <h2 className="text-3xl md:text-5xl font-bold text-zinc-200 leading-[1.05] tracking-tight">De la idea al impacto.</h2>
           </FadeIn>
           <div className="grid md:grid-cols-4 gap-8">
             {steps.map((s, i) => (
               <FadeIn key={s.num} delay={i * 0.12} className="relative">
-                <span className="text-6xl md:text-7xl font-bold text-white/[0.04] block mb-4 leading-none">{s.num}</span>
-                <h3 className="text-lg font-semibold text-white mb-2">{s.title}</h3>
+                <span className="text-6xl md:text-7xl font-bold text-zinc-200/[0.04] block mb-4 leading-none">{s.num}</span>
+                <h3 className="text-lg font-semibold text-zinc-200 mb-2">{s.title}</h3>
                 <p className="text-sm text-zinc-500 leading-relaxed">{s.desc}</p>
                 {i < steps.length - 1 && (
                   <div className="hidden md:block absolute top-8 -right-6 text-zinc-700">
@@ -531,7 +531,7 @@ export const Component = () => {
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
           <FadeIn className="mb-16">
             <Label>Proyectos</Label>
-            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">Trabajo que habla.</h2>
+            <h2 className="text-3xl md:text-5xl font-bold text-zinc-200 leading-[1.05] tracking-tight">Trabajo que habla.</h2>
           </FadeIn>
           <div className="grid md:grid-cols-3 gap-6">
             {projects.map((p, i) => (
@@ -541,10 +541,10 @@ export const Component = () => {
                 className="group p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/15 transition-all duration-500"
               >
                 <div className="aspect-[16/10] rounded-xl bg-white/[0.03] mb-6 flex items-center justify-center border border-white/[0.04]">
-                  <span className="text-5xl font-bold text-white/[0.06]">{i + 1}</span>
+                  <span className="text-5xl font-bold text-zinc-200/[0.06]">{i + 1}</span>
                 </div>
-                <span className="text-[11px] tracking-[0.2em] uppercase text-fuchsia-500/70 mb-2 block">{p.cat}</span>
-                <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-fuchsia-400 transition-colors">{p.title}</h3>
+                <span className="text-[11px] tracking-[0.2em] uppercase text-zinc-500/70 mb-2 block">{p.cat}</span>
+                <h3 className="text-lg font-semibold text-zinc-200 mb-2 group-hover:text-zinc-400 transition-colors">{p.title}</h3>
                 <p className="text-sm text-zinc-500">{p.desc}</p>
               </motion.div>
               </ScaleIn>
@@ -558,7 +558,7 @@ export const Component = () => {
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
           <FadeIn className="mb-16 text-center">
             <Label>Casos reales</Label>
-            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">
+            <h2 className="text-3xl md:text-5xl font-bold text-zinc-200 leading-[1.05] tracking-tight">
               De estar invisible a dominar el mercado.
             </h2>
           </FadeIn>
@@ -577,12 +577,12 @@ export const Component = () => {
               </div>
             </FadeIn>
             <FadeIn delay={0.2}>
-              <div className="p-8 rounded-2xl bg-white/[0.02] border border-fuchsia-500/20">
-                <div className="text-xs tracking-[0.2em] uppercase text-fuchsia-500/70 mb-6">Después</div>
+              <div className="p-8 rounded-2xl bg-white/[0.02] border border-zinc-500/20">
+                <div className="text-xs tracking-[0.2em] uppercase text-zinc-500/70 mb-6">Después</div>
                 <div className="space-y-4">
                   {['Web con IA integrada y chatbot', '150+ leads cualificados al mes', 'Automatización 24/7'].map((item) => (
-                    <div key={item} className="flex items-center gap-3 p-4 rounded-xl bg-fuchsia-500/5 border border-fuchsia-500/10">
-                      <span className="size-2 rounded-full bg-fuchsia-400/60" />
+                    <div key={item} className="flex items-center gap-3 p-4 rounded-xl bg-zinc-500/5 border border-zinc-500/10">
+                      <span className="size-2 rounded-full bg-zinc-400/60" />
                       <span className="text-sm text-zinc-400">{item}</span>
                     </div>
                   ))}
@@ -608,7 +608,7 @@ export const Component = () => {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.15, duration: 0.8, ease: [0.25, 0.1, 0.1, 1] }}
               >
-                <span className="text-[clamp(3rem,12vw,8rem)] font-bold text-white leading-[0.9] tracking-[-0.05em] block">
+                <span className="text-[clamp(3rem,12vw,8rem)] font-bold text-zinc-200 leading-[0.9] tracking-[-0.05em] block">
                   {word}
                 </span>
               </motion.div>
@@ -627,7 +627,7 @@ export const Component = () => {
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
           <FadeIn className="mb-16 text-center">
             <Label>Testimonios</Label>
-            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">Lo que dicen nuestros clientes.</h2>
+            <h2 className="text-3xl md:text-5xl font-bold text-zinc-200 leading-[1.05] tracking-tight">Lo que dicen nuestros clientes.</h2>
           </FadeIn>
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
@@ -636,10 +636,10 @@ export const Component = () => {
                 whileHover={{ y: -6 }}
                 className="p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500"
               >
-                <Quote className="size-6 text-fuchsia-500/30 mb-4" />
+                <Quote className="size-6 text-zinc-500/30 mb-4" />
                 <p className="text-sm text-zinc-400 leading-relaxed mb-6">&ldquo;{t.text}&rdquo;</p>
                 <div>
-                  <div className="text-sm font-medium text-white">{t.name}</div>
+                  <div className="text-sm font-medium text-zinc-200">{t.name}</div>
                   <div className="text-xs text-zinc-600">{t.role}</div>
                 </div>
               </motion.div>
@@ -654,7 +654,7 @@ export const Component = () => {
         <div className="mx-auto max-w-3xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
           <FadeIn className="text-center mb-16">
             <Label>FAQ</Label>
-            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">
+            <h2 className="text-3xl md:text-5xl font-bold text-zinc-200 leading-[1.05] tracking-tight">
               Respuestas rápidas.
             </h2>
           </FadeIn>
@@ -676,9 +676,9 @@ export const Component = () => {
         <div className="mx-auto max-w-4xl px-6 md:px-12 lg:px-20 py-28 md:py-36 text-center">
           <FadeIn>
             <Label>Empieza hoy</Label>
-            <h2 className="text-3xl md:text-6xl font-bold text-white leading-[1.05] tracking-tight mb-6">
+            <h2 className="text-3xl md:text-6xl font-bold text-zinc-200 leading-[1.05] tracking-tight mb-6">
               Hablemos de tu<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 to-fuchsia-200">próximo proyecto</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-400 to-zinc-200">próximo proyecto</span>
             </h2>
             <p className="text-lg text-zinc-500 max-w-lg mx-auto mb-10 leading-relaxed">
               Cuéntanos qué necesitas y te enviaremos un presupuesto personalizado en 24 horas. Sin compromiso.
@@ -696,7 +696,7 @@ export const Component = () => {
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-16 md:py-20">
           <div className="grid md:grid-cols-4 gap-12 mb-16">
             <div>
-              <span className="text-base font-bold tracking-[0.3em] text-white/80">VULNIFY</span>
+              <span className="text-base font-bold tracking-[0.3em] text-zinc-200/80">VULNIFY</span>
               <p className="text-sm text-zinc-600 mt-4 max-w-[200px] leading-relaxed">Desarrollo web e inteligencia artificial para impulsar tu negocio.</p>
             </div>
             {[
@@ -709,7 +709,7 @@ export const Component = () => {
                 <ul className="space-y-3">
                   {col.links.map((link) => (
                     <li key={link}>
-                      <a href="#" className="text-sm text-zinc-600 hover:text-white transition-colors">{link}</a>
+                      <a href="#" className="text-sm text-zinc-600 hover:text-zinc-200 transition-colors">{link}</a>
                     </li>
                   ))}
                 </ul>
@@ -720,7 +720,7 @@ export const Component = () => {
             <p className="text-xs text-zinc-700">&copy; {new Date().getFullYear()} Vulnify. Todos los derechos reservados.</p>
             <div className="flex items-center gap-4">
               {['Twitter', 'LinkedIn', 'GitHub'].map((s) => (
-                <a key={s} href="#" className="text-xs text-zinc-600 hover:text-white transition-colors">{s}</a>
+                <a key={s} href="#" className="text-xs text-zinc-600 hover:text-zinc-200 transition-colors">{s}</a>
               ))}
             </div>
           </div>
