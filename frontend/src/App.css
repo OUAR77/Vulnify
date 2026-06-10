@@ -214,11 +214,13 @@ body {
   display: grid;
   grid-template-columns: 1fr;
   gap: 0;
+  padding-top: 40px;
 }
 
 @media (min-width: 768px) {
   .scroll-sections {
     grid-template-columns: repeat(2, 1fr);
+    padding-top: 60px;
   }
 }
 
