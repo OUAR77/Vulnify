@@ -595,6 +595,22 @@ body {
   to { transform: rotate(360deg); }
 }
 
+@keyframes flip {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes rotate {
+  to { transform: rotate(90deg); }
+}
+
+.animate-flip {
+  animation: flip 6s infinite steps(2, end);
+}
+
+.animate-rotate {
+  animation: rotate 3s linear infinite both;
+}
+
 @keyframes spotlight {
   0% {
     opacity: 0;

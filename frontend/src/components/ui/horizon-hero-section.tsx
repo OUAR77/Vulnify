@@ -4,6 +4,7 @@ import { GLSLHills } from '@/components/ui/glsl-hills';
 import RadialOrbitalTimeline from '@/components/ui/radial-orbital-timeline';
 import { Calendar, FileText, Code, Cpu, Rocket, Mail, Globe, Bot, ShieldCheck, TrendingUp, Menu, X } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { SaveButton } from '@/components/ui/save-button';
 
 const services = [
   { icon: Globe, title: 'Desarrollo Web', desc: 'Páginas corporativas, tiendas online y aplicaciones web con React, Next.js y diseño responsive.' },
@@ -87,7 +88,10 @@ export const Component = () => {
             <a key={link.href} href={link.href} className="text-sm text-zinc-500 hover:text-white transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-white after:transition-all hover:after:w-full">{link.label}</a>
           ))}
           <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
-          <a href="#contacto" className="text-sm font-medium text-black bg-white/90 hover:bg-white px-5 py-2.5 rounded-lg transition-all">Solicitar presupuesto</a>
+          <SaveButton
+            href="mailto:hola@vulnify.es"
+            text={{ idle: "Solicitar presupuesto", saving: "Enviando...", saved: "¡Listo!" }}
+          />
         </div>
         <button onClick={() => setMenuOpen(true)} className="md:hidden text-white/80 hover:text-white p-2 transition-colors" aria-label="Abrir menú">
           <Menu className="size-5" />
@@ -113,13 +117,11 @@ export const Component = () => {
                 {link.label}
               </a>
             ))}
-            <a
-              href="#contacto"
-              onClick={() => setMenuOpen(false)}
-              className="mt-4 text-base font-medium text-black bg-white/90 hover:bg-white px-10 py-3.5 rounded-lg transition-all"
-            >
-              Solicitar presupuesto
-            </a>
+            <SaveButton
+              href="mailto:hola@vulnify.es"
+              text={{ idle: "Solicitar presupuesto", saving: "Enviando...", saved: "¡Listo!" }}
+              className="mt-4 scale-110"
+            />
           </div>
         </div>
       )}
@@ -133,7 +135,10 @@ export const Component = () => {
           Desarrollo web, inteligencia artificial y automatización para impulsar tu negocio.
         </p>
         <div className="hero-ctas">
-          <a href="#contacto" className="cta-primary">Solicitar presupuesto</a>
+          <SaveButton
+            href="mailto:hola@vulnify.es"
+            text={{ idle: "Solicitar presupuesto", saving: "Enviando...", saved: "¡Listo!" }}
+          />
           <a href="#servicios" className="cta-secondary">Ver servicios</a>
         </div>
       </div>
@@ -204,7 +209,11 @@ export const Component = () => {
           <h2 className="cta-title">Transforma tu negocio<br/>con tecnología que <em>impacta</em></h2>
           <p className="cta-desc">Cuéntanos tu proyecto y te enviaremos un presupuesto personalizado en 24h.</p>
           <div className="flex flex-col items-center gap-3">
-            <a href="mailto:hola@vulnify.es" className="cta-button">Solicitar presupuesto</a>
+            <SaveButton
+              href="mailto:hola@vulnify.es"
+              text={{ idle: "Solicitar presupuesto", saving: "Enviando...", saved: "¡Listo!" }}
+              className="px-8 py-3 text-base"
+            />
             <span className="text-xs text-zinc-600">Precio personalizado · Sin compromiso</span>
           </div>
         </div>
