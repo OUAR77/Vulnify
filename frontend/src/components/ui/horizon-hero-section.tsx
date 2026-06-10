@@ -42,6 +42,12 @@ export const Component = () => {
   useEffect(() => {
     const initThree = () => {
       const { current: refs } = threeRefs;
+
+      if (!canvasRef.current) {
+        console.warn('Canvas ref not available, skipping Three.js');
+        setIsReady(true);
+        return;
+      }
       
       refs.scene = new THREE.Scene();
       refs.scene.fog = new THREE.FogExp2(0x000000, 0.00025);
@@ -87,6 +93,13 @@ export const Component = () => {
       
       setIsReady(true);
     };
+
+    try {
+      initThree();
+    } catch (err) {
+      console.error('Three.js initialization failed:', err);
+      setIsReady(true);
+    }
 
     const createStarField = () => {
       const { current: refs } = threeRefs;
@@ -360,8 +373,6 @@ export const Component = () => {
         refs.composer.render();
       }
     };
-
-    initThree();
 
     const handleResize = () => {
       const { current: refs } = threeRefs;
