@@ -31,7 +31,7 @@ html {
 }
 
 body {
-    background: #000;
+    background: #0a0a0a;
     color: #fff;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     overflow-x: hidden;
@@ -41,7 +41,7 @@ body {
     position: relative;
     width: 100%;
     min-height: 100vh;
-    background: #000;
+    background: radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a0a 70%);
 }
 
 .hero-canvas {
