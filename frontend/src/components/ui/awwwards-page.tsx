@@ -11,10 +11,8 @@ const ShaderBackground = () => (
   <div className="fixed inset-0 z-0 pointer-events-none" style={{ background: '#050505' }}>
     <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
       <ShaderPlane position={[0, 0, 0]} color1="#06b6d4" color2="#050505" />
-      <ShaderPlane position={[2, -1, -2]} color1="#f59e0b" color2="#050505" />
-      <ShaderPlane position={[-2, 1, -3]} color1="#06b6d4" color2="#050505" />
-      <EnergyRing radius={1.5} position={[0, 0, -1]} />
-      <EnergyRing radius={2.0} position={[0, 0, -2]} />
+      <ShaderPlane position={[2.5, -1.5, -2]} color1="#06b6d4" color2="#0e1a1a" />
+      <ShaderPlane position={[-2.5, 1.5, -3]} color1="#0891b2" color2="#050505" />
     </Canvas>
   </div>
 );
