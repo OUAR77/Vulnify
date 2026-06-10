@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { GLSLHills } from '@/components/ui/glsl-hills';
 import { SplineScene } from '@/components/ui/splite';
 import { Spotlight } from '@/components/ui/spotlight';
+import { ErrorBoundary } from '@/components/ui/error-boundary';
 
 export const Component = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -106,12 +107,14 @@ export const Component = () => {
                     <a href="#contacto" className="spline-button">Solicitar presupuesto</a>
                   </div>
                 </div>
-                <div className="spline-scene-side">
-                  <SplineScene
-                    scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-                    className="w-full h-full"
-                  />
-                </div>
+                <ErrorBoundary fallback={<div className="spline-scene-side flex items-center justify-center"><p className="text-zinc-500 text-sm">3D no disponible</p></div>}>
+                  <div className="spline-scene-side">
+                    <SplineScene
+                      scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
+                      className="w-full h-full"
+                    />
+                  </div>
+                </ErrorBoundary>
               </div>
             </div>
           </div>
