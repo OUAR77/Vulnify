@@ -33,7 +33,7 @@ body {
 .hero-container {
   position: relative;
   width: 100%;
-  min-height: 100vh;
+  min-height: 70vh;
   background: #000;
   overflow: hidden;
 }
@@ -84,13 +84,13 @@ body {
 .hero-content {
   position: relative;
   z-index: 10;
-  min-height: 100vh;
+  min-height: 70vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 20px;
+  padding: 100px 20px 60px;
 }
 
 .hero-title {
@@ -100,7 +100,7 @@ body {
   line-height: 0.9;
   text-transform: uppercase;
   color: #fff;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .title-char {
@@ -122,7 +122,7 @@ body {
 .hero-ctas {
   position: relative;
   z-index: 10;
-  margin-top: 40px;
+  margin-top: 30px;
   display: flex;
   gap: 16px;
   justify-content: center;
@@ -211,32 +211,41 @@ body {
 .scroll-sections {
   position: relative;
   z-index: 10;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+@media (min-width: 768px) {
+  .scroll-sections {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .content-section {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 20px;
+  padding: 60px 24px;
+  min-height: 50vh;
 }
 
 .section-title {
-  font-size: clamp(2.5rem, 10vw, 8rem);
+  font-size: clamp(2rem, 5vw, 4rem);
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 0.9;
   text-transform: uppercase;
   color: #fff;
-  margin-bottom: 30px;
+  margin-bottom: 24px;
 }
 
 .section-subtitle {
-  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-size: clamp(0.875rem, 1.5vw, 1.125rem);
   opacity: 0.6;
-  max-width: 800px;
+  max-width: 400px;
   line-height: 1.6;
   color: #aaa;
 }
@@ -249,7 +258,7 @@ body {
   position: relative;
   z-index: 10;
   background: #000;
-  padding: 120px 24px;
+  padding: 80px 24px;
 }
 
 .spline-inner {
@@ -376,7 +385,7 @@ body {
   position: relative;
   z-index: 10;
   background: #0a0a0a;
-  padding: 120px 24px;
+  padding: 80px 24px;
 }
 
 .services-inner {
@@ -386,7 +395,7 @@ body {
 
 .services-header {
   text-align: center;
-  margin-bottom: 80px;
+  margin-bottom: 48px;
 }
 
 .services-label {
@@ -469,7 +478,7 @@ body {
   position: relative;
   z-index: 10;
   background: #000;
-  padding: 120px 24px;
+  padding: 80px 24px;
   text-align: center;
 }
 
