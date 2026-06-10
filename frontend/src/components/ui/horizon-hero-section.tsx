@@ -18,26 +18,14 @@ export const Component = () => {
   const menuRef = useRef(null);
 
   const smoothCameraPos = useRef({ x: 0, y: 30, z: 100 });
+  const cameraVelocity = useRef({ x: 0, y: 0, z: 0 });
   
   const [scrollProgress, setScrollProgress] = useState(0);
   const [currentSection, setCurrentSection] = useState(1);
   const [isReady, setIsReady] = useState(false);
   const totalSections = 2;
   
-  const threeRefs = useRef<{
-    scene: THREE.Scene | null;
-    camera: THREE.PerspectiveCamera | null;
-    renderer: THREE.WebGLRenderer | null;
-    composer: EffectComposer | null;
-    stars: THREE.Points[];
-    nebula: THREE.Mesh | null;
-    mountains: THREE.Mesh[];
-    animationId: number | null;
-    targetCameraX: number;
-    targetCameraY: number;
-    targetCameraZ: number;
-    locations: number[];
-  }>({
+  const threeRefs = useRef({
     scene: null,
     camera: null,
     renderer: null,
@@ -45,13 +33,10 @@ export const Component = () => {
     stars: [],
     nebula: null,
     mountains: [],
-    animationId: null,
-    targetCameraX: 0,
-    targetCameraY: 0,
-    targetCameraZ: 0,
-    locations: [],
+    animationId: null
   });
 
+  // Initialize Three.js
   useEffect(() => {
     const initThree = () => {
       const { current: refs } = threeRefs;
@@ -256,7 +241,7 @@ export const Component = () => {
         { distance: -200, height: 120, color: 0x0a4668, opacity: 0.4 }
       ];
 
-      layers.forEach((layer) => {
+      layers.forEach((layer, index) => {
         const points = [];
         const segments = 50;
         
@@ -283,7 +268,7 @@ export const Component = () => {
         const mountain = new THREE.Mesh(geometry, material);
         mountain.position.z = layer.distance;
         mountain.position.y = layer.distance;
-        mountain.userData = { baseZ: layer.distance, index: 0 };
+        mountain.userData = { baseZ: layer.distance, index };
         refs.scene.add(mountain);
         refs.mountains.push(mountain);
       });
@@ -337,7 +322,7 @@ export const Component = () => {
       
       const time = Date.now() * 0.001;
 
-      refs.stars.forEach((starField) => {
+      refs.stars.forEach((starField, i) => {
         if (starField.material.uniforms) {
           starField.material.uniforms.time.value = time;
         }
@@ -420,13 +405,14 @@ export const Component = () => {
 
   const getLocation = () => {
     const { current: refs } = threeRefs;
-    const locations: number[] = [];
-    refs.mountains.forEach((mountain) => {
-      locations.push(mountain.position.z);
+    const locations = [];
+    refs.mountains.forEach( (mountain, i) => {
+      locations[i] = mountain.position.z;
     });
     refs.locations = locations;
   };
 
+  // GSAP Animations - Run after component is ready
   useEffect(() => {
     if (!isReady) return;
     
@@ -481,6 +467,7 @@ export const Component = () => {
     };
   }, [isReady]);
 
+  // Scroll handling
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
@@ -517,7 +504,9 @@ export const Component = () => {
         if (refs.nebula) {
           refs.nebula.position.z = (targetZ + progress * speed * 0.01) - 100;
         }
+        
         mountain.userData.targetZ = targetZ;
+        const location = mountain.position.z;
         if (progress > 0.7) {
           mountain.position.z = 600000;
         }
@@ -525,8 +514,8 @@ export const Component = () => {
           mountain.position.z = refs.locations[i];
         }
       });
-      if (refs.nebula) {
-        refs.nebula.position.z = refs.mountains[3]?.position.z ?? -200;
+      if (refs.nebula && refs.mountains[3]) {
+        refs.nebula.position.z = refs.mountains[3].position.z;
       }
     };
 
@@ -536,7 +525,8 @@ export const Component = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [totalSections]);
 
-  const splitTitle = (text: string) => {
+
+  const splitTitle = (text) => {
     return text.split('').map((char, i) => (
       <span key={i} className="title-char">
         {char}
@@ -548,7 +538,6 @@ export const Component = () => {
     <div ref={containerRef} className="hero-container cosmos-style">
       <canvas ref={canvasRef} className="hero-canvas" />
       
-      {/* Side menu */}
       <div ref={menuRef} className="side-menu" style={{ visibility: 'hidden' }}>
         <div className="menu-icon">
           <span></span>
@@ -558,7 +547,6 @@ export const Component = () => {
         <div className="vertical-text">VULNIFY</div>
       </div>
 
-      {/* Main content */}
       <div className="hero-content cosmos-content">
         <h1 ref={titleRef} className="hero-title">
           {splitTitle('CREAMOS TU WEB')}
@@ -574,7 +562,6 @@ export const Component = () => {
         </div>
       </div>
 
-      {/* Scroll progress indicator */}
       <div ref={scrollProgressRef} className="scroll-progress" style={{ visibility: 'hidden' }}>
         <div className="scroll-text">DESCUBRE</div>
         <div className="progress-track">
@@ -588,15 +575,15 @@ export const Component = () => {
         </div>
       </div>
 
-      {/* Additional scroll sections */}
       <div className="scroll-sections">
-        {[0, 1].map((i) => {
-          const titles: Record<number, string> = {
+        {[...Array(2)].map((_, i) => {
+          const titles = {
             0: 'DESARROLLO WEB',
             1: 'INTELIGENCIA ARTIFICIAL',
+            2: 'TRANSFORMA TU NEGOCIO'
           };
           
-          const subtitles: Record<number, { line1: string; line2: string }> = {
+          const subtitles = {
             0: {
               line1: 'Creamos experiencias digitales únicas',
               line2: 'con React, Next.js y diseño responsive'
@@ -605,19 +592,24 @@ export const Component = () => {
               line1: 'Integramos IA en tu negocio',
               line2: 'chatbots, automatización y análisis predictivo'
             },
+            2: {
+              line1: 'Lleva tu empresa al siguiente nivel',
+              line2: 'con tecnología que marca la diferencia'
+            }
           };
           
           return (
             <section key={i} className="content-section">
               <h1 className="hero-title">
-                {titles[i] || ''}
+                {titles[i + 1] || 'DEFAULT'}
               </h1>
+          
               <div className="hero-subtitle cosmos-subtitle">
                 <p className="subtitle-line">
-                  {subtitles[i]?.line1}
+                  {subtitles[i + 1]?.line1}
                 </p>
                 <p className="subtitle-line">
-                  {subtitles[i]?.line2}
+                  {subtitles[i + 1]?.line2}
                 </p>
               </div>
             </section>
