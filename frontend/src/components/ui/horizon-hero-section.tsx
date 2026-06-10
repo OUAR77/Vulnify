@@ -1,8 +1,7 @@
 // @ts-nocheck
 import React, { useEffect, useRef, useState } from 'react';
 import { GLSLHills } from '@/components/ui/glsl-hills';
-import { ErrorBoundary } from '@/components/ui/error-boundary';
-import { SplineSceneBasic } from '@/components/ui/spline-scene-basic';
+import { MorphingText } from '@/components/ui/liquid-text';
 
 
 export const Component = () => {
@@ -54,10 +53,10 @@ export const Component = () => {
         <h1 className="hero-title">
           {splitTitle('VULNIFY')}
         </h1>
-        <div className="hero-subtitle">
-          <p>Sitios web modernos con inteligencia artificial,</p>
-          <p>automatización y diseño que convierte</p>
+        <div className="hero-subtitle -mt-8 mb-4">
+          <MorphingText texts={["Desarrollo Web", "Inteligencia Artificial", "Automatización", "Diseño 3D"]} />
         </div>
+        <p className="text-zinc-400 text-lg max-w-xl text-center">Creamos tu web con tecnología moderna y diseño que convierte.</p>
         <div className="hero-ctas">
           <a href="#contacto" className="cta-primary">Solicitar presupuesto</a>
           <a href="#servicios" className="cta-secondary">Ver servicios</a>
@@ -85,14 +84,6 @@ export const Component = () => {
           </section>
         ))}
       </div>
-
-      <section className="py-16 md:py-32 bg-black">
-        <div className="mx-auto max-w-5xl px-6">
-          <ErrorBoundary fallback={<div className="text-center py-20 text-zinc-500"><p>Componente 3D no disponible</p></div>}>
-            <SplineSceneBasic />
-          </ErrorBoundary>
-        </div>
-      </section>
 
       <section id="servicios" className="services-section">
         <div className="services-inner">
