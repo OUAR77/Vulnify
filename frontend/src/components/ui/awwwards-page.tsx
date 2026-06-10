@@ -230,7 +230,7 @@ const StatsSection = () => {
   ];
 
   return (
-    <Section className="py-24 md:py-32 border-b border-white/[0.04]">
+    <Section className="py-32 md:py-44 border-b border-white/[0.04]">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-12 md:gap-8">
           {stats.map((s, i) => (
@@ -254,7 +254,7 @@ const StatsSection = () => {
 
 // ─── Problem / Insight ────────────────────────────────────────────
 const ProblemSection = () => (
-  <Section className="py-24 md:py-32 border-b border-white/[0.04]" id="insight">
+  <Section className="py-32 md:py-44 border-b border-white/[0.04]" id="insight">
     <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 md:gap-24 items-center">
       <motion.div
         initial={{ opacity: 0, x: -40 }}
@@ -302,7 +302,7 @@ const ProblemSection = () => (
 
 // ─── Solution ──────────────────────────────────────────────────────
 const SolutionSection = () => (
-  <Section className="py-24 md:py-32 border-b border-white/[0.04]">
+  <Section className="py-32 md:py-44 border-b border-white/[0.04]">
     <div className="max-w-6xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -353,7 +353,7 @@ const ServicesSection = () => {
   ];
 
   return (
-    <Section className="py-24 md:py-32 border-b border-white/[0.04]" id="servicios">
+    <Section className="py-32 md:py-44 border-b border-white/[0.04]" id="servicios">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -405,7 +405,7 @@ const ProcessSection = () => {
   ];
 
   return (
-    <Section className="py-24 md:py-32 border-b border-white/[0.04]" id="proceso">
+    <Section className="py-32 md:py-44 border-b border-white/[0.04]" id="proceso">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -453,7 +453,7 @@ const PortfolioSection = () => {
   ];
 
   return (
-    <Section className="py-24 md:py-32 border-b border-white/[0.04]" id="trabajo">
+    <Section className="py-32 md:py-44 border-b border-white/[0.04]" id="trabajo">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -496,7 +496,7 @@ const StorySection = () => {
   const words = ['CREA', 'OPTIMIZA', 'ESCALA', 'DOMINA'];
 
   return (
-    <Section className="py-24 md:py-32 border-b border-white/[0.04] overflow-hidden">
+    <Section className="py-32 md:py-44 border-b border-white/[0.04] overflow-hidden">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -544,7 +544,7 @@ const TestimonialsSection = () => {
   ];
 
   return (
-    <Section className="py-24 md:py-32 border-b border-white/[0.04]">
+    <Section className="py-32 md:py-44 border-b border-white/[0.04]">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -583,7 +583,7 @@ const TestimonialsSection = () => {
 
 // ─── Final CTA ────────────────────────────────────────────────────
 const CTASection = () => (
-  <Section className="py-24 md:py-40 border-b border-white/[0.04]">
+  <Section className="py-32 md:py-44 border-b border-white/[0.04]">
     <div className="max-w-4xl mx-auto text-center">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
