@@ -5,7 +5,7 @@ import threading
 from contextlib import asynccontextmanager
 from datetime import datetime
 from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
-from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
@@ -236,7 +236,7 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 if os.path.isdir("frontend/dist/assets"):
-    app.mount("/app/assets", StaticFiles(directory="frontend/dist/assets"), name="frontend_assets")
+    app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="frontend_assets")
 app.include_router(auth_router)
 app.include_router(assets_router)
 app.include_router(alerts_router)
@@ -273,6 +273,10 @@ async def sitemap():
 
 @app.get("/", response_class=HTMLResponse, description="Home page")
 async def index(request: Request):
+    index_path = "frontend/dist/index.html"
+    if os.path.isfile(index_path):
+        with open(index_path, encoding="utf-8") as f:
+            return HTMLResponse(f.read())
     return templates.TemplateResponse(request, "index.html")
 
 
@@ -351,12 +355,13 @@ async def contact_form(request: Request):
         raise HTTPException(status_code=400, detail=str(e))
 
 
+@app.get("/app")
+async def react_app_redirect():
+    return RedirectResponse(url="/")
+
 @app.get("/app/{full_path:path}")
-async def react_app(request: Request, full_path: str):
-    index_path = "frontend/dist/index.html"
-    if os.path.isfile(index_path):
-        return FileResponse(index_path)
-    return HTMLResponse("<h1>Frontend not built yet</h1><p>Run <code>cd frontend && npm install && npm run build</code></p>", status_code=200)
+async def react_app_old(full_path: str):
+    return RedirectResponse(url="/")
 
 @app.get("/health")
 async def health():
