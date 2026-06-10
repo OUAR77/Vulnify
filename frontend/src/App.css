@@ -451,6 +451,150 @@ body {
     color: #525252;
 }
 
+.spline-section {
+    position: relative;
+    z-index: 10;
+    background: #f2f2f2;
+    padding: 120px 24px;
+}
+
+.spline-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.spline-header {
+    text-align: center;
+    margin-bottom: 80px;
+}
+
+.spline-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #a3a3a3;
+    margin-bottom: 16px;
+}
+
+.spline-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #212121;
+    margin-bottom: 16px;
+}
+
+@media (min-width: 768px) {
+    .spline-title {
+        font-size: 3rem;
+    }
+}
+
+.spline-desc {
+    color: #737373;
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: 1.125rem;
+    line-height: 1.6;
+}
+
+.spline-card-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.spline-card {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    background: rgba(0, 0, 0, 0.96);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.spline-card-inner {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+}
+
+@media (min-width: 768px) {
+    .spline-card-inner {
+        flex-direction: row;
+    }
+}
+
+.spline-text-side {
+    flex: 1;
+    padding: 32px;
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.spline-heading {
+    font-size: 2.25rem;
+    font-weight: 700;
+    background: linear-gradient(to bottom, #fafafa, #a3a3a3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+@media (min-width: 768px) {
+    .spline-heading {
+        font-size: 3rem;
+    }
+}
+
+.spline-text {
+    margin-top: 16px;
+    color: #d4d4d4;
+    max-width: 400px;
+    line-height: 1.625;
+}
+
+.spline-cta {
+    margin-top: 24px;
+}
+
+.spline-button {
+    display: inline-flex;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    background: #fff;
+    padding: 0 24px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #000;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.spline-button:hover {
+    background: #e5e5e5;
+}
+
+.spline-scene-side {
+    flex: 1;
+    position: relative;
+    min-height: 250px;
+}
+
+@media (min-width: 768px) {
+    .spline-scene-side {
+        min-height: auto;
+    }
+}
+
+.spline-container {
+    width: 100%;
+    height: 100%;
+}
+
 .loader {
     width: 24px;
     height: 24px;

@@ -6,6 +6,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
+import { SplineScene } from '@/components/ui/splite';
+import { Spotlight } from '@/components/ui/spotlight';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -624,6 +626,42 @@ export const Component = () => {
           );
         })}
       </div>
+
+      {/* Spline Scene Section */}
+      <section className="spline-section">
+        <div className="spline-inner">
+          <div className="spline-header">
+            <p className="spline-label">Tecnología 3D</p>
+            <h2 className="spline-title">Experiencias digitales inmersivas</h2>
+            <p className="spline-desc">
+              Integramos gráficos 3D interactivos en tu web para captar la atención y diferenciar tu marca.
+            </p>
+          </div>
+          <div className="spline-card-wrapper">
+            <div className="spline-card">
+              <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
+              <div className="spline-card-inner">
+                <div className="spline-text-side">
+                  <h3 className="spline-heading">Web + IA</h3>
+                  <p className="spline-text">
+                    Creamos tu web con integraciones de inteligencia artificial,
+                    diseño 3D interactivo y automatizaciones que transforman tu negocio.
+                  </p>
+                  <div className="spline-cta">
+                    <a href="#contacto" className="spline-button">Solicitar presupuesto</a>
+                  </div>
+                </div>
+                <div className="spline-scene-side">
+                  <SplineScene
+                    scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
+                    className="w-full h-full"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Services Section */}
       <section id="servicios" className="services-section">
