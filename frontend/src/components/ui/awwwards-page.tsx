@@ -326,9 +326,8 @@ export const Component = () => {
   ];
 
   return (
-    <div className="text-zinc-300 antialiased selection:bg-zinc-500/30 selection:text-white">
-      <NeuralNoise color={[0.2, 0.2, 0.22]} opacity={0.35} speed={0.0008} />
-      <div className="fixed inset-0 bg-black/75 pointer-events-none z-0" />
+    <div className="relative bg-black text-zinc-300 antialiased selection:bg-zinc-500/30 selection:text-white">
+      <NeuralNoise color={[0.15, 0.15, 0.18]} opacity={0.3} speed={0.0008} />
       <ScrollProgress />
       <Nav menuOpen={menuOpen} setMenuOpen={setMenuOpen} isDark={isDark} onToggle={() => setIsDark(!isDark)} />
 

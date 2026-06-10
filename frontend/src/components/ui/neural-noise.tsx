@@ -185,6 +185,7 @@ export function NeuralNoise({ color = [0.9, 0.2, 0.4], opacity = 0.95, speed = 0
         height: '100%',
         pointerEvents: 'none',
         opacity,
+        zIndex: -1,
       }}
     />
   );
