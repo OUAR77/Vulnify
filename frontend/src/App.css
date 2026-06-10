@@ -624,6 +624,7 @@ body {
 }
 
 @media (max-width: 768px) {
+    .spline-card { height: 400px; }
     .side-menu {
         left: 15px;
     }
