@@ -12,7 +12,7 @@ export default function PricingSection4() {
         </div>
 
         <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-8 md:p-10 relative overflow-hidden">
-          <BorderBeam lightWidth={300} duration={12} lightColor="#FAFAFA" borderWidth={1} />
+          <BorderBeam duration={12} lightColor="#FAFAFA" borderWidth={1} />
           <div className="flex flex-col items-center text-center">
             <span className="inline-flex items-center rounded-full border border-zinc-700 bg-zinc-800/60 px-3 py-1 text-xs font-medium text-zinc-300 mb-6">
               PLAN ÚNICO

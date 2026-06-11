@@ -106,7 +106,7 @@ const FAQItem = ({ question, answer }: any) => {
   const [open, setOpen] = useState(false);
   return (
     <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] overflow-hidden relative">
-      <BorderBeam lightWidth={200} duration={10} lightColor="#FAFAFA" borderWidth={1} />
+      <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between p-6 text-left"
@@ -416,7 +416,7 @@ export const Component = () => {
             </FadeIn>
             <FadeIn delay={0.2}>
               <div className="aspect-[4/3] rounded-2xl bg-white/[0.02] border border-white/[0.06] flex items-center justify-center p-8 relative overflow-hidden">
-                <BorderBeam lightWidth={200} duration={10} lightColor="#FAFAFA" borderWidth={1} />
+                <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
                 <div className="space-y-4 w-full max-w-sm">
                   {['Sin leads en 30 días', 'Procesos manuales que agotan', 'Web que no convierte'].map((item, i) => (
                     <div key={item} className="flex items-center gap-3 p-4 rounded-xl bg-red-500/5 border border-red-500/10">
@@ -452,7 +452,7 @@ export const Component = () => {
                 whileHover={{ y: -6 }}
                 className="group p-8 md:p-10 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500 relative overflow-hidden"
               >
-                <BorderBeam lightWidth={200} duration={10} lightColor="#FAFAFA" borderWidth={1} />
+                <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
                 <div className="size-12 rounded-xl bg-zinc-500/10 border border-zinc-500/20 flex items-center justify-center mb-6 group-hover:bg-zinc-500/20 transition-colors">
                   <item.icon className="size-5 text-zinc-400" />
                 </div>
@@ -481,7 +481,7 @@ export const Component = () => {
                 whileHover={{ y: -4 }}
                 className="group p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/15 transition-all duration-500 relative overflow-hidden"
               >
-                <BorderBeam lightWidth={200} duration={10} lightColor="#FAFAFA" borderWidth={1} />
+                <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
                 <div className="flex items-center gap-4 mb-6">
                   <span className="text-3xl font-bold text-zinc-700 group-hover:text-zinc-500 transition-colors">{String(i + 1).padStart(2, '0')}</span>
                   <div className="size-10 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-zinc-500/10 transition-colors">
@@ -559,7 +559,7 @@ export const Component = () => {
                 whileHover={{ y: -6 }}
                 className="group p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/15 transition-all duration-500 relative overflow-hidden"
               >
-                <BorderBeam lightWidth={200} duration={10} lightColor="#FAFAFA" borderWidth={1} />
+                <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
                 <div className="aspect-[16/10] rounded-xl bg-white/[0.03] mb-6 flex items-center justify-center border border-white/[0.04]">
                   <span className="text-5xl font-bold text-white/[0.06]">{i + 1}</span>
                 </div>
@@ -585,7 +585,7 @@ export const Component = () => {
           <div className="grid md:grid-cols-2 gap-8">
             <FadeIn>
               <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] relative overflow-hidden">
-                <BorderBeam lightWidth={200} duration={10} lightColor="#FAFAFA" borderWidth={1} />
+                <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
                 <div className="text-xs tracking-[0.2em] uppercase text-zinc-600 mb-6">Antes</div>
                 <div className="space-y-4">
                   {['Web estática sin mantenimiento', '0 leads orgánicos al mes', 'Procesos 100% manuales'].map((item) => (
@@ -599,7 +599,7 @@ export const Component = () => {
             </FadeIn>
             <FadeIn delay={0.2}>
               <div className="p-8 rounded-2xl bg-white/[0.02] border border-zinc-500/20 relative overflow-hidden">
-                <BorderBeam lightWidth={200} duration={10} lightColor="#FAFAFA" borderWidth={1} />
+                <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
                 <div className="text-xs tracking-[0.2em] uppercase text-zinc-500/70 mb-6">Después</div>
                 <div className="space-y-4">
                   {['Web con IA integrada y chatbot', '150+ leads cualificados al mes', 'Automatización 24/7'].map((item) => (
@@ -658,7 +658,7 @@ export const Component = () => {
                 whileHover={{ y: -6 }}
                 className="p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500 relative overflow-hidden"
               >
-                <BorderBeam lightWidth={200} duration={10} lightColor="#FAFAFA" borderWidth={1} />
+                <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
                 <Quote className="size-6 text-zinc-500/30 mb-4" />
                 <p className="text-sm text-zinc-400 leading-relaxed mb-6">&ldquo;{t.text}&rdquo;</p>
                 <div>
