@@ -64,6 +64,16 @@ const SplitText = ({ text, className = '', delay = 0 }: any) => (
   </span>
 );
 
+const CodePattern = () => {
+  const [lines] = useState(() => {
+    const tokens = ['{', '}', ';', '(', ')', '=>', 'const', 'let', 'function', 'return', 'if', 'try', 'async', 'await', 'import', 'from', 'export', 'class', 'new', 'this'];
+    return Array.from({ length: 40 }, () =>
+      Array.from({ length: 20 }, () => tokens[Math.floor(Math.random() * tokens.length)]).join(' ')
+    );
+  });
+  return <div className="code-pattern">{lines.join('\n')}</div>;
+};
+
 const CTAButton = ({ href, children, primary = true }: any) => (
   <motion.a
     href={href}
@@ -328,7 +338,8 @@ export const Component = () => {
 
   return (
     <div className="relative bg-black text-zinc-300 antialiased selection:bg-zinc-500/30 selection:text-white">
-      <div className="fixed inset-0 z-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(120,119,198,0.15),rgba(255,255,255,0))]" />
+      <div className="fixed inset-0 z-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(0,255,0,0.06),rgba(255,255,255,0))]" />
+      <CodePattern />
       <div className="grain" />
 
       <div className="relative z-10">
