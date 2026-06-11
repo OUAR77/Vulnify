@@ -135,11 +135,13 @@ export const ScrambledTitle: React.FC = () => {
 
 export const RainingLettersBackground: React.FC = () => {
   const [characters, setCharacters] = useState<Character[]>([])
+  const activeIndicesRef = useRef<Set<number>>(new Set())
   const [activeIndices, setActiveIndices] = useState<Set<number>>(new Set())
 
   const createCharacters = useCallback(() => {
     const allChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?"
-    const charCount = 300
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+    const charCount = isMobile ? 50 : 300
     const newCharacters: Character[] = []
 
     for (let i = 0; i < charCount; i++) {
@@ -147,7 +149,7 @@ export const RainingLettersBackground: React.FC = () => {
         char: allChars[Math.floor(Math.random() * allChars.length)],
         x: Math.random() * 100,
         y: Math.random() * 100,
-        speed: 0.1 + Math.random() * 0.3,
+        speed: 0.05 + Math.random() * 0.15,
       })
     }
 
@@ -161,39 +163,45 @@ export const RainingLettersBackground: React.FC = () => {
   useEffect(() => {
     const updateActiveIndices = () => {
       const newActiveIndices = new Set<number>()
-      const numActive = Math.floor(Math.random() * 3) + 3
+      const numActive = Math.floor(Math.random() * 2) + 2
       for (let i = 0; i < numActive; i++) {
         newActiveIndices.add(Math.floor(Math.random() * characters.length))
       }
+      activeIndicesRef.current = newActiveIndices
       setActiveIndices(newActiveIndices)
     }
 
-    const flickerInterval = setInterval(updateActiveIndices, 50)
+    const flickerInterval = setInterval(updateActiveIndices, 150)
     return () => clearInterval(flickerInterval)
   }, [characters.length])
 
   useEffect(() => {
-    let animationFrameId: number
+    let rafId: number
+    const positions = characters.map(c => ({ ...c }))
 
     const updatePositions = () => {
-      setCharacters(prevChars => 
-        prevChars.map(char => ({
-          ...char,
-          y: char.y + char.speed,
-          ...(char.y >= 100 && {
-            y: -5,
-            x: Math.random() * 100,
-            char: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?"[
-              Math.floor(Math.random() * "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?".length)
-            ],
-          }),
-        }))
-      )
-      animationFrameId = requestAnimationFrame(updatePositions)
+      const allChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?"
+      let changed = false
+
+      for (let i = 0; i < positions.length; i++) {
+        const c = positions[i]
+        c.y += c.speed
+        if (c.y >= 100) {
+          c.y = -5
+          c.x = Math.random() * 100
+          c.char = allChars[Math.floor(Math.random() * allChars.length)]
+          changed = true
+        }
+      }
+
+      if (changed) {
+        setCharacters(positions.map(c => ({ ...c })))
+      }
+      rafId = requestAnimationFrame(updatePositions)
     }
 
-    animationFrameId = requestAnimationFrame(updatePositions)
-    return () => cancelAnimationFrame(animationFrameId)
+    rafId = requestAnimationFrame(updatePositions)
+    return () => cancelAnimationFrame(rafId)
   }, [])
 
   return (
@@ -201,21 +209,15 @@ export const RainingLettersBackground: React.FC = () => {
       {characters.map((char, index) => (
         <span
           key={index}
-          className={`absolute text-xs transition-colors duration-100 ${
+          className={`absolute ${
             activeIndices.has(index)
-              ? "text-[#00ff00] text-base scale-125 z-10 font-bold animate-pulse"
+              ? "text-[#00ff00] z-10 font-bold"
               : "text-slate-600 font-light"
           }`}
           style={{
             left: `${char.x}%`,
             top: `${char.y}%`,
-            transform: `translate(-50%, -50%) ${activeIndices.has(index) ? 'scale(1.25)' : 'scale(1)'}`,
-            textShadow: activeIndices.has(index) 
-              ? '0 0 8px rgba(255,255,255,0.8), 0 0 12px rgba(255,255,255,0.4)' 
-              : 'none',
             opacity: activeIndices.has(index) ? 1 : 0.4,
-            transition: 'color 0.1s, transform 0.1s, text-shadow 0.1s',
-            willChange: 'transform, top',
             fontSize: '1.8rem'
           }}
         >
