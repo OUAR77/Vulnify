@@ -1,11 +1,12 @@
 // @ts-nocheck
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ArrowUpRight, Globe, Bot, Code, Cpu, Rocket, Sparkles, Zap, Quote, ChevronRight, Plus } from 'lucide-react';
+import { ArrowUpRight, Globe, Bot, Code, Cpu, Rocket, Sparkles, Zap, Quote, ChevronRight, Plus } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { ScrambledTitle } from '@/components/ui/modern-animated-hero-section';
 import { BorderBeam } from '@/components/ui/border-beam';
 import { HoverBorderGradient } from '@/components/ui/hover-border-gradient';
+import { MenuToggleIcon } from '@/components/ui/menu-toggle-icon';
 import { Features } from '@/components/ui/features-8';
 import { BentoPricing } from '@/components/ui/bento-pricing';
 
@@ -157,8 +158,8 @@ const Nav = ({ menuOpen, setMenuOpen, isDark, onToggle }: any) => {
             Presupuesto <ArrowUpRight className="size-3.5" />
           </HoverBorderGradient>
         </div>
-        <button onClick={() => setMenuOpen(true)} className="md:hidden text-white/80 p-2" aria-label="Menú">
-          <Menu className="size-5" />
+        <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-white/80 p-2" aria-label="Menú">
+          <MenuToggleIcon open={menuOpen} className="size-5" duration={500} />
         </button>
       </motion.nav>
 
@@ -173,7 +174,7 @@ const Nav = ({ menuOpen, setMenuOpen, isDark, onToggle }: any) => {
             <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.04]">
               <span className="text-base font-bold tracking-[0.3em] text-white/90">VULNIFY</span>
               <button onClick={() => setMenuOpen(false)} className="text-white/60 p-2">
-                <X className="size-5" />
+                <MenuToggleIcon open={true} className="size-5" duration={500} />
               </button>
             </div>
             <div className="flex-1 flex flex-col items-center justify-center gap-10">
