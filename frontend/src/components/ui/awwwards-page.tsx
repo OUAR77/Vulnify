@@ -9,6 +9,7 @@ import { HoverBorderGradient } from '@/components/ui/hover-border-gradient';
 import { MenuToggleIcon } from '@/components/ui/menu-toggle-icon';
 import { Features } from '@/components/ui/features-8';
 import { BentoPricing } from '@/components/ui/bento-pricing';
+import { BentoGrid } from '@/components/ui/bento-grid';
 
 
 const ScrollProgress = () => {
@@ -553,45 +554,16 @@ export const Component = () => {
         </div>
       </div>
 
-      {/* ─── BEFORE/AFTER ─── */}
+      {/* ─── BENTO GRID ─── */}
       <div className="w-full border-b border-white/[0.04]">
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
           <FadeIn className="mb-16 text-center">
-            <Label>Casos reales</Label>
+            <Label>Lo que hacemos</Label>
             <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">
-              De estar invisible a dominar el mercado.
+              Tecnología que transforma.
             </h2>
           </FadeIn>
-          <div className="grid md:grid-cols-2 gap-8">
-            <FadeIn>
-              <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] relative overflow-hidden">
-                <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
-                <div className="text-xs tracking-[0.2em] uppercase text-zinc-600 mb-6">Antes</div>
-                <div className="space-y-4">
-                  {['Web estática sin mantenimiento', '0 leads orgánicos al mes', 'Procesos 100% manuales'].map((item) => (
-                    <div key={item} className="flex items-center gap-3 p-4 rounded-xl bg-red-500/5 border border-red-500/10">
-                      <span className="size-2 rounded-full bg-red-400/60" />
-                      <span className="text-sm text-zinc-400">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </FadeIn>
-            <FadeIn delay={0.2}>
-              <div className="p-8 rounded-2xl bg-white/[0.02] border border-zinc-500/20 relative overflow-hidden">
-                <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
-                <div className="text-xs tracking-[0.2em] uppercase text-zinc-500/70 mb-6">Después</div>
-                <div className="space-y-4">
-                  {['Web con IA integrada y chatbot', '150+ leads cualificados al mes', 'Automatización 24/7'].map((item) => (
-                    <div key={item} className="flex items-center gap-3 p-4 rounded-xl bg-zinc-500/5 border border-zinc-500/10">
-                      <span className="size-2 rounded-full bg-zinc-400/60" />
-                      <span className="text-sm text-zinc-400">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </FadeIn>
-          </div>
+          <BentoGrid />
         </div>
       </div>
 
