@@ -4,6 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ArrowUpRight, Globe, Bot, Code, Cpu, Rocket, Sparkles, Zap, Quote, ChevronRight, Plus } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { RainingLettersBackground, ScrambledTitle } from '@/components/ui/modern-animated-hero-section';
+import { Features } from '@/components/ui/features-8';
+import { BentoPricing } from '@/components/ui/bento-pricing';
+import PricingSection4 from '@/components/ui/pricing-section-4';
 
 const ScrollProgress = () => {
   const [progress, setProgress] = useState(0);
@@ -648,6 +651,23 @@ export const Component = () => {
             ))}
           </div>
         </div>
+      </div>
+
+      {/* ─── FEATURES ─── */}
+      <div className="w-full border-b border-white/[0.04]">
+        <Features />
+      </div>
+
+      {/* ─── PRICING V1 ─── */}
+      <div className="w-full border-b border-white/[0.04]">
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
+          <BentoPricing />
+        </div>
+      </div>
+
+      {/* ─── PRICING V2 ─── */}
+      <div className="w-full border-b border-white/[0.04]">
+        <PricingSection4 />
       </div>
 
       {/* ─── FAQ ─── */}
