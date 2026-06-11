@@ -1,5 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { Shield, Users } from 'lucide-react'
+import { BorderBeam } from '@/components/ui/border-beam'
 
 export function Features() {
   return (
@@ -8,6 +9,7 @@ export function Features() {
         <div className="relative">
           <div className="relative z-10 grid grid-cols-6 gap-3">
             <Card className="relative col-span-full flex overflow-hidden lg:col-span-2">
+              <BorderBeam lightWidth={200} duration={10} lightColor="#FAFAFA" borderWidth={1} />
               <CardContent className="relative m-auto size-fit pt-6">
                 <div className="relative flex h-24 w-56 items-center">
                   <svg className="text-white/5 absolute inset-0 size-full" viewBox="0 0 254 104" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -55,6 +57,7 @@ export function Features() {
               </CardContent>
             </Card>
             <Card className="relative col-span-full overflow-hidden sm:col-span-3 lg:col-span-2">
+              <BorderBeam lightWidth={200} duration={10} lightColor="#FAFAFA" borderWidth={1} />
               <CardContent className="pt-6">
                 <div className="pt-6 lg:px-6">
                   <svg className="w-full text-zinc-600" viewBox="0 0 386 123" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -102,6 +105,7 @@ export function Features() {
               </CardContent>
             </Card>
             <Card className="relative col-span-full overflow-hidden lg:col-span-3">
+              <BorderBeam lightWidth={200} duration={10} lightColor="#FAFAFA" borderWidth={1} />
               <CardContent className="grid pt-6 sm:grid-cols-2">
                 <div className="relative z-10 flex flex-col justify-between space-y-12 lg:space-y-6">
                   <div className="relative flex aspect-square size-12 rounded-full border before:absolute before:-inset-2 before:rounded-full before:border border-white/10 before:border-white/5">
@@ -142,6 +146,7 @@ export function Features() {
               </CardContent>
             </Card>
             <Card className="relative col-span-full overflow-hidden lg:col-span-3">
+              <BorderBeam lightWidth={200} duration={10} lightColor="#FAFAFA" borderWidth={1} />
               <CardContent className="grid h-full pt-6 sm:grid-cols-2">
                 <div className="relative z-10 flex flex-col justify-between space-y-12 lg:space-y-6">
                   <div className="relative flex aspect-square size-12 rounded-full border before:absolute before:-inset-2 before:rounded-full before:border border-white/10 before:border-white/5">

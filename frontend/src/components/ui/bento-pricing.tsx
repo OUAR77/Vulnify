@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Mail, Zap, Shield } from 'lucide-react';
+import { BorderBeam } from '@/components/ui/border-beam';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -34,6 +35,7 @@ export function BentoPricing() {
       className="mx-auto w-full max-w-4xl px-4"
     >
       <div className="relative overflow-hidden rounded-2xl border border-zinc-800 bg-gradient-to-b from-zinc-900/80 to-zinc-950/80 backdrop-blur-xl">
+        <BorderBeam lightWidth={300} duration={12} lightColor="#FAFAFA" borderWidth={1} />
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -top-40 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-white/5 blur-3xl" />
           <div className="absolute -bottom-20 -right-20 h-60 w-60 rounded-full bg-blue-500/5 blur-3xl" />
