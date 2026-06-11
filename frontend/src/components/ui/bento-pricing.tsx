@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Mail, Zap, Shield } from 'lucide-react';
 import { BorderBeam } from '@/components/ui/border-beam';
+import { HoverBorderGradient } from '@/components/ui/hover-border-gradient';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -60,13 +61,10 @@ export function BentoPricing() {
                 Cada proyecto es único. Te enviamos un presupuesto transparente y detallado sin compromiso.
               </p>
             </div>
-            <a
-              href="mailto:hola@vulnify.es"
-              className="group inline-flex h-12 shrink-0 items-center gap-2 rounded-xl bg-white px-6 text-sm font-semibold text-black transition-all hover:bg-zinc-200 hover:scale-105 active:scale-95"
-            >
+            <HoverBorderGradient as="a" href="mailto:hola@vulnify.es" className="flex items-center gap-2 px-6 py-3 text-sm font-semibold">
               Solicitar presupuesto
-              <Mail className="size-4 transition-transform group-hover:translate-x-0.5" />
-            </a>
+              <Mail className="size-4" />
+            </HoverBorderGradient>
           </motion.div>
 
           <motion.div variants={itemVariants} className="mt-8 grid gap-3 sm:grid-cols-2">

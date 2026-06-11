@@ -5,6 +5,7 @@ import { Menu, X, ArrowUpRight, Globe, Bot, Code, Cpu, Rocket, Sparkles, Zap, Qu
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { ScrambledTitle } from '@/components/ui/modern-animated-hero-section';
 import { BorderBeam } from '@/components/ui/border-beam';
+import { HoverBorderGradient } from '@/components/ui/hover-border-gradient';
 import { Features } from '@/components/ui/features-8';
 import { BentoPricing } from '@/components/ui/bento-pricing';
 
@@ -74,21 +75,6 @@ const CodePattern = () => {
   });
   return <div className="code-pattern">{lines.join('\n')}</div>;
 };
-
-const CTAButton = ({ href, children, primary = true }: any) => (
-  <motion.a
-    href={href}
-    whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(6,182,212,0.15)' }}
-    whileTap={{ scale: 0.97 }}
-    className={`inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-medium transition-all duration-300 ${
-      primary
-        ? 'bg-white text-black hover:bg-zinc-200'
-        : 'border border-white/15 text-zinc-400 hover:text-white hover:border-white/40'
-    }`}
-  >
-    {children} {primary && <ArrowUpRight className="size-4" />}
-  </motion.a>
-);
 
 const FadeIn = ({ children, delay = 0, className = '' }: any) => (
   <motion.div
@@ -167,14 +153,9 @@ const Nav = ({ menuOpen, setMenuOpen, isDark, onToggle }: any) => {
           ))}
           <div className="w-px h-5 bg-white/[0.06]" />
           <ThemeToggle isDark={isDark} onToggle={onToggle} />
-          <motion.a
-            href="mailto:hola@vulnify.es"
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-black text-sm font-medium hover:bg-zinc-200 transition-colors"
-          >
+          <HoverBorderGradient as="a" href="mailto:hola@vulnify.es" className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium">
             Presupuesto <ArrowUpRight className="size-3.5" />
-          </motion.a>
+          </HoverBorderGradient>
         </div>
         <button onClick={() => setMenuOpen(true)} className="md:hidden text-white/80 p-2" aria-label="Menú">
           <Menu className="size-5" />
@@ -209,15 +190,9 @@ const Nav = ({ menuOpen, setMenuOpen, isDark, onToggle }: any) => {
                   {l}
                 </motion.a>
               ))}
-              <motion.a
-                href="mailto:hola@vulnify.es"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="mt-6 inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white text-black text-base font-medium"
-              >
+              <HoverBorderGradient as="a" href="mailto:hola@vulnify.es" className="flex items-center gap-2 px-8 py-4 text-base font-medium">
                 Solicitar presupuesto <ArrowUpRight className="size-4" />
-              </motion.a>
+              </HoverBorderGradient>
             </div>
           </motion.div>
         )}
@@ -263,8 +238,12 @@ const HeroSection = () => (
         transition={{ delay: 1.6, duration: 0.6 }}
         className="flex flex-wrap items-center gap-4"
       >
-        <CTAButton href="mailto:hola@vulnify.es">Solicitar presupuesto</CTAButton>
-        <CTAButton href="#trabajo" primary={false}>Ver proyectos</CTAButton>
+        <HoverBorderGradient as="a" href="mailto:hola@vulnify.es" containerClassName="rounded-full" className="flex items-center gap-2 px-7 py-3.5 text-sm font-medium">
+          Solicitar presupuesto <ArrowUpRight className="size-4" />
+        </HoverBorderGradient>
+        <HoverBorderGradient as="a" href="#trabajo" containerClassName="rounded-full" className="flex items-center gap-2 px-7 py-3.5 text-sm font-medium text-zinc-400">
+          Ver proyectos
+        </HoverBorderGradient>
       </motion.div>
 
       <motion.div
