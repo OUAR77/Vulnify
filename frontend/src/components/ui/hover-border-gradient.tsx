@@ -1,27 +1,14 @@
 "use client"
-import React, { useState, useEffect } from "react"
+import { useState } from "react"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
-
-type Direction = "TOP" | "LEFT" | "BOTTOM" | "RIGHT"
-
-const movingMap: Record<Direction, string> = {
-  TOP: "radial-gradient(20.7% 50% at 50% 0%, hsl(0, 0%, 100%) 0%, rgba(255, 255, 255, 0) 100%)",
-  LEFT: "radial-gradient(16.6% 43.1% at 0% 50%, hsl(0, 0%, 100%) 0%, rgba(255, 255, 255, 0) 100%)",
-  BOTTOM: "radial-gradient(20.7% 50% at 50% 100%, hsl(0, 0%, 100%) 0%, rgba(255, 255, 255, 0) 100%)",
-  RIGHT: "radial-gradient(16.2% 41.2% at 100% 50%, hsl(0, 0%, 100%) 0%, rgba(255, 255, 255, 0) 100%)",
-}
-
-const highlight =
-  "radial-gradient(75% 181.16% at 50% 50%, #3275F8 0%, rgba(255, 255, 255, 0) 100%)"
 
 export function HoverBorderGradient({
   children,
   containerClassName,
   className,
   as: Element = "button",
-  duration = 1,
-  clockwise = true,
+  duration = 4,
   ...props
 }: {
   children: React.ReactNode
@@ -29,30 +16,9 @@ export function HoverBorderGradient({
   containerClassName?: string
   className?: string
   duration?: number
-  clockwise?: boolean
   [key: string]: any
 }) {
   const [hovered, setHovered] = useState(false)
-  const [direction, setDirection] = useState<Direction>("BOTTOM")
-
-  const rotateDirection = (currentDirection: Direction): Direction => {
-    const directions: Direction[] = ["TOP", "LEFT", "BOTTOM", "RIGHT"]
-    const currentIndex = directions.indexOf(currentDirection)
-    const nextIndex = clockwise
-      ? (currentIndex - 1 + directions.length) % directions.length
-      : (currentIndex + 1) % directions.length
-    return directions[nextIndex]
-  }
-
-  useEffect(() => {
-    if (!hovered) {
-      const interval = setInterval(() => {
-        setDirection((prevState) => rotateDirection(prevState))
-      }, duration * 1000)
-      return () => clearInterval(interval)
-    }
-  }, [hovered])
-
   const Tag = Element as any
 
   return (
@@ -60,36 +26,29 @@ export function HoverBorderGradient({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       className={cn(
-        "relative flex h-min w-fit flex-col flex-nowrap content-center items-center justify-center gap-10 overflow-visible rounded-full border bg-black/40 box-decoration-clone p-px backdrop-blur-sm transition duration-500 hover:bg-black/60",
+        "group relative inline-flex items-center justify-center rounded-full p-[1px] overflow-hidden transition-all duration-500",
         containerClassName
       )}
       {...props}
     >
-      <div
+      <motion.span
+        className="absolute inset-[-100%]"
+        animate={{ rotate: [0, 360] }}
+        transition={{ duration, repeat: Infinity, ease: "linear" }}
+        style={{
+          background: hovered
+            ? "conic-gradient(from 0deg, transparent 10%, #fff 30%, #3275F8 50%, #fff 70%, transparent 90%)"
+            : "conic-gradient(from 0deg, transparent 20%, rgba(255,255,255,0.5) 40%, rgba(255,255,255,0.1) 60%, transparent 80%)",
+        }}
+      />
+      <span
         className={cn(
-          "z-10 w-auto rounded-[inherit] bg-black px-4 py-2 text-white",
+          "relative z-10 inline-flex items-center justify-center rounded-[inherit] bg-black px-5 py-2.5 text-sm text-white transition-colors",
           className
         )}
       >
         {children}
-      </div>
-      <motion.div
-        className="absolute inset-0 z-0 flex-none overflow-hidden rounded-[inherit]"
-        style={{
-          filter: "blur(2px)",
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-        }}
-        initial={{ background: movingMap[direction] }}
-        animate={{
-          background: hovered
-            ? [movingMap[direction], highlight]
-            : movingMap[direction],
-        }}
-        transition={{ ease: "linear", duration: duration ?? 1 }}
-      />
-      <div className="absolute inset-0.5 z-1 flex-none rounded-[inherit] bg-black" />
+      </span>
     </Tag>
   )
 }
