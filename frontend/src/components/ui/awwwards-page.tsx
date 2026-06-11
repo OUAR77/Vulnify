@@ -706,26 +706,6 @@ export const Component = () => {
         </div>
       </div>
 
-      {/* ─── CTA ─── */}
-      <div className="w-full border-b border-white/[0.04]">
-        <div className="mx-auto max-w-4xl px-6 md:px-12 lg:px-20 py-28 md:py-36 text-center">
-          <FadeIn>
-            <Label>Empieza hoy</Label>
-            <h2 className="text-3xl md:text-6xl font-bold text-white leading-[1.05] tracking-tight mb-6">
-              Hablemos de tu<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-400 to-zinc-200">próximo proyecto</span>
-            </h2>
-            <p className="text-lg text-zinc-500 max-w-lg mx-auto mb-10 leading-relaxed">
-              Cuéntanos qué necesitas y te enviaremos un presupuesto personalizado en 24 horas. Sin compromiso.
-            </p>
-            <div className="flex flex-col items-center gap-4">
-              <CTAButton href="mailto:hola@vulnify.es">Solicitar presupuesto</CTAButton>
-              <span className="text-xs text-zinc-700">Precio personalizado · Sin compromiso</span>
-            </div>
-          </FadeIn>
-        </div>
-      </div>
-
       {/* ─── FOOTER ─── */}
       <footer className="w-full">
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-16 md:py-20">
