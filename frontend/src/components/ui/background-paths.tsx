@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
+import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
+import { ArrowUpRight } from "lucide-react";
 
 export function BackgroundPaths({
     title = "Background Paths",
@@ -12,7 +13,7 @@ export function BackgroundPaths({
 
     return (
         <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden">
-            <div className="relative z-10 container mx-auto px-4 md:px-6 text-center">
+            <div className="relative z-10 mx-auto max-w-6xl px-6 md:px-12 lg:px-20 text-center">
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -38,8 +39,7 @@ export function BackgroundPaths({
                                             stiffness: 150,
                                             damping: 25,
                                         }}
-                                        className="inline-block text-transparent bg-clip-text 
-                                        bg-gradient-to-r from-zinc-100 via-white to-zinc-300"
+                                        className="inline-block text-white"
                                     >
                                         {letter}
                                     </motion.span>
@@ -57,30 +57,19 @@ export function BackgroundPaths({
                         No construimos páginas. Diseñamos ecosistemas digitales con inteligencia artificial integrada para que tu negocio crezca.
                     </motion.p>
 
-                    <div
-                        className="inline-block group relative bg-gradient-to-b from-white/10 to-white/5 
-                        p-px rounded-2xl backdrop-blur-lg 
-                        overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1.8, duration: 0.6 }}
                     >
-                        <Button
-                            variant="ghost"
-                            className="rounded-[1.15rem] px-8 py-6 text-lg font-semibold backdrop-blur-md 
-                            bg-white/95 hover:bg-white/100 dark:bg-black/95 dark:hover:bg-black/100 
-                            text-black dark:text-white transition-all duration-300 
-                            group-hover:-translate-y-0.5 border border-white/10
-                            hover:shadow-md dark:hover:shadow-neutral-800/50"
+                        <HoverBorderGradient
+                            as="a"
+                            href="mailto:hola@vulnify.es"
+                            className="inline-flex items-center gap-2 px-8 py-4 text-base font-medium"
                         >
-                            <span className="opacity-90 group-hover:opacity-100 transition-opacity">
-                                Solicitar presupuesto
-                            </span>
-                            <span
-                                className="ml-3 opacity-70 group-hover:opacity-100 group-hover:translate-x-1.5 
-                                transition-all duration-300"
-                            >
-                                →
-                            </span>
-                        </Button>
-                    </div>
+                            Solicitar presupuesto <ArrowUpRight className="size-4" />
+                        </HoverBorderGradient>
+                    </motion.div>
                 </motion.div>
             </div>
 
@@ -93,7 +82,7 @@ export function BackgroundPaths({
                 <motion.div
                     animate={{ y: [0, 6, 0] }}
                     transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                    className="w-px h-10 bg-white/10"
+                    className="w-px h-10 bg-white/[0.06]"
                 />
             </motion.div>
         </div>
