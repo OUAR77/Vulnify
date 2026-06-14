@@ -1,7 +1,7 @@
 // @ts-nocheck
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUpRight, Globe, Bot, Code, Cpu, Rocket, Sparkles, Zap, Quote, ChevronRight, Plus } from 'lucide-react';
+import { ArrowUpRight, Globe, Bot, Code, Cpu, Rocket, Sparkles, Zap, Quote, ChevronRight, Plus, MessageCircle, Download, Mail, Phone, FileText } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { BackgroundPaths } from '@/components/ui/background-paths';
 import { BorderBeam } from '@/components/ui/border-beam';
@@ -63,6 +63,41 @@ const FloatingPaths = ({ position = 1, opacity = 0.5 }: { position?: number; opa
         ))}
       </svg>
     </div>
+  );
+};
+
+const CookieBanner = () => {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const accepted = localStorage.getItem('cookies-accepted');
+    if (!accepted) setVisible(true);
+  }, []);
+  const accept = () => {
+    localStorage.setItem('cookies-accepted', 'true');
+    setVisible(false);
+  };
+  if (!visible) return null;
+  return (
+    <motion.div
+      initial={{ y: 100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      className="fixed bottom-0 left-0 right-0 z-50 bg-[#0a0a0a] border-t border-white/[0.04] py-4 px-6"
+    >
+      <div className="mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p className="text-xs text-zinc-600 leading-relaxed">
+          Usamos cookies para mejorar tu experiencia. Al continuar navegando, aceptas nuestra{' '}
+          <a href="#" className="underline hover:text-white transition-colors">política de cookies</a>.
+        </p>
+        <div className="flex items-center gap-3 shrink-0">
+          <button onClick={accept} className="px-5 py-2 text-xs font-medium rounded-lg bg-white text-black hover:bg-zinc-200 transition-colors">
+            Aceptar
+          </button>
+          <button onClick={accept} className="px-5 py-2 text-xs font-medium rounded-lg border border-white/[0.06] text-zinc-500 hover:text-white transition-colors">
+            Rechazar
+          </button>
+        </div>
+      </div>
+    </motion.div>
   );
 };
 
@@ -295,17 +330,32 @@ export const Component = () => {
         <ScrollProgress />
         <Nav menuOpen={menuOpen} setMenuOpen={setMenuOpen} isDark={isDark} onToggle={() => setIsDark(!isDark)} />
 
-        <motion.a
-          href="mailto:hola@vulnify.es"
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 2, duration: 0.4, type: 'spring' }}
-          className="fixed bottom-6 right-6 z-40 size-14 rounded-full bg-white text-black flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
-          whileHover={{ rotate: -12 }}
-          aria-label="Contacto"
-        >
-          <ArrowUpRight className="size-5" />
-        </motion.a>
+        <div className="fixed bottom-6 right-6 z-40 flex flex-col gap-3">
+          <motion.a
+            href="https://wa.me/34600000000"
+            target="_blank"
+            rel="noopener noreferrer"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 2.2, duration: 0.4, type: 'spring' }}
+            className="size-14 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-lg hover:scale-110 hover:bg-emerald-400 transition-all"
+            whileHover={{ rotate: -8 }}
+            aria-label="WhatsApp"
+          >
+            <MessageCircle className="size-5" />
+          </motion.a>
+          <motion.a
+            href="mailto:hola@vulnify.es"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 2, duration: 0.4, type: 'spring' }}
+            className="size-14 rounded-full bg-white text-black flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+            whileHover={{ rotate: -12 }}
+            aria-label="Contacto"
+          >
+            <ArrowUpRight className="size-5" />
+          </motion.a>
+        </div>
 
         {/* ─── HERO ─── */}
         <HeroSection />
@@ -562,6 +612,49 @@ export const Component = () => {
         </div>
       </div>
 
+      {/* ─── LEAD MAGNET ─── */}
+      <div className="w-full border-b border-white/[0.04]">
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
+          <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-white/[0.02] via-white/[0.01] to-transparent p-[1px]">
+            <div className="relative rounded-[inherit] bg-black/60 p-8 md:p-12">
+              <div className="grid md:grid-cols-2 gap-10 items-center">
+                <FadeIn>
+                  <Label>Recurso gratuito</Label>
+                  <h3 className="text-2xl md:text-4xl font-bold text-white leading-[1.1] tracking-tight mt-4 mb-4">
+                    Guía: El stack tecnológico ideal para tu negocio
+                  </h3>
+                  <p className="text-sm text-zinc-500 leading-relaxed mb-6">
+                    Aprende a elegir las herramientas adecuadas para tu proyecto. Desde frameworks web hasta integraciones de IA, sin tecnicismos innecesarios.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                        <Mail className="size-4 text-zinc-600 shrink-0" />
+                        <input
+                          type="email"
+                          placeholder="tu@email.com"
+                          className="bg-transparent text-sm text-white placeholder-zinc-600 w-full outline-none"
+                        />
+                      </div>
+                    </div>
+                    <HoverBorderGradient as="button" className="flex items-center gap-2 px-6 py-3 text-sm font-medium whitespace-nowrap">
+                      <Download className="size-4" />
+                      Descargar gratis
+                    </HoverBorderGradient>
+                  </div>
+                  <p className="text-xs text-zinc-700 mt-3">Sin spam. Solo contenido útil.</p>
+                </FadeIn>
+                <FadeIn delay={0.2} className="hidden md:flex items-center justify-center">
+                  <div className="size-48 rounded-2xl bg-gradient-to-br from-zinc-800/40 to-zinc-900/40 border border-white/[0.06] flex items-center justify-center">
+                    <FileText className="size-16 text-zinc-700" />
+                  </div>
+                </FadeIn>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* ─── FEATURES ─── */}
       <div className="w-full border-b border-white/[0.04]">
         <Features />
@@ -596,6 +689,117 @@ export const Component = () => {
         </div>
       </div>
 
+      {/* ─── CONTACT FORM ─── */}
+      <div id="contacto" className="w-full border-b border-white/[0.04]">
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
+          <div className="grid md:grid-cols-2 gap-16 md:gap-20">
+            <FadeIn>
+              <Label>Contacto</Label>
+              <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mt-4 mb-6">
+                Cuéntanos tu proyecto.
+              </h2>
+              <p className="text-sm text-zinc-500 leading-relaxed mb-8">
+                Sin compromiso. Te respondemos en menos de 24 horas con una propuesta personalizada.
+              </p>
+              <div className="hidden md:flex flex-col gap-5">
+                {[
+                  { icon: Mail, label: 'Email', value: 'hola@vulnify.es' },
+                  { icon: MessageCircle, label: 'WhatsApp', value: '+34 600 000 000' },
+                  { icon: Phone, label: 'Teléfono', value: '+34 900 000 000' },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-center gap-4">
+                    <div className="size-10 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center justify-center">
+                      <item.icon className="size-4 text-zinc-600" />
+                    </div>
+                    <div>
+                      <div className="text-xs text-zinc-700">{item.label}</div>
+                      <div className="text-sm text-zinc-400">{item.value}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </FadeIn>
+            <FadeIn delay={0.15}>
+              <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 relative overflow-hidden">
+                <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
+                <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+                  <div>
+                    <label className="text-xs text-zinc-600 mb-2 block">Nombre completo *</label>
+                    <input
+                      type="text"
+                      placeholder="Tu nombre"
+                      className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors"
+                      required
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs text-zinc-600 mb-2 block">Email *</label>
+                      <input
+                        type="email"
+                        placeholder="tu@email.com"
+                        className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-zinc-600 mb-2 block">Teléfono</label>
+                      <input
+                        type="tel"
+                        placeholder="+34 600 000 000"
+                        className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-xs text-zinc-600 mb-2 block">Mensaje *</label>
+                    <textarea
+                      rows={4}
+                      placeholder="Cuéntanos en qué podemos ayudarte..."
+                      className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors resize-none"
+                      required
+                    />
+                  </div>
+                  <HoverBorderGradient as="button" type="submit" className="w-full flex items-center justify-center gap-2 py-3.5 text-sm font-medium">
+                    Enviar mensaje <ArrowUpRight className="size-4" />
+                  </HoverBorderGradient>
+                  <p className="text-xs text-zinc-700 text-center">Te respondemos en menos de 24h.</p>
+                </form>
+              </div>
+            </FadeIn>
+          </div>
+        </div>
+      </div>
+
+      {/* ─── CLOSING CTA ─── */}
+      <div className="w-full border-b border-white/[0.04]">
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
+          <FadeIn className="text-center max-w-3xl mx-auto">
+            <Label>Empieza hoy</Label>
+            <h2 className="text-3xl md:text-6xl font-bold text-white leading-[1.05] tracking-tight mt-4 mb-6">
+              ¿Listo para dominar <br className="hidden md:block" />el espacio digital?
+            </h2>
+            <p className="text-base md:text-lg text-zinc-500 leading-relaxed mb-10 max-w-xl mx-auto">
+              Solicita una auditoría gratuita de tu presencia digital y descubre cómo podemos ayudarte a crecer.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <HoverBorderGradient as="a" href="mailto:hola@vulnify.es" className="flex items-center gap-2 px-8 py-4 text-base font-medium">
+                Solicitar auditoría gratis <ArrowUpRight className="size-4" />
+              </HoverBorderGradient>
+              <a
+                href="https://wa.me/34600000000"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-8 py-4 text-base font-medium text-zinc-400 hover:text-white border border-white/[0.06] rounded-xl hover:border-white/20 transition-all"
+              >
+                <MessageCircle className="size-4" />
+                Escribir por WhatsApp
+              </a>
+            </div>
+          </FadeIn>
+        </div>
+      </div>
+
       {/* ─── FOOTER ─── */}
       <footer className="w-full">
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-16 md:py-20">
@@ -623,14 +827,17 @@ export const Component = () => {
           </div>
           <div className="pt-8 border-t border-white/[0.04] flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-xs text-zinc-700">&copy; {new Date().getFullYear()} Vulnify. Todos los derechos reservados.</p>
-            <div className="flex items-center gap-4">
-              {['Twitter', 'LinkedIn', 'GitHub'].map((s) => (
-                <a key={s} href="#" className="text-xs text-zinc-600 hover:text-white transition-colors">{s}</a>
-              ))}
+            <div className="flex items-center gap-5">
+              <a href="https://twitter.com/vulnify" target="_blank" rel="noopener noreferrer" className="text-xs text-zinc-600 hover:text-white transition-colors">Twitter</a>
+              <a href="https://linkedin.com/company/vulnify" target="_blank" rel="noopener noreferrer" className="text-xs text-zinc-600 hover:text-white transition-colors">LinkedIn</a>
+              <a href="https://github.com/vulnify" target="_blank" rel="noopener noreferrer" className="text-xs text-zinc-600 hover:text-white transition-colors">GitHub</a>
+              <span className="text-zinc-700/50">|</span>
+              <a href="mailto:hola@vulnify.es" className="text-xs text-zinc-600 hover:text-white transition-colors">hola@vulnify.es</a>
             </div>
           </div>
         </div>
       </footer>
+      <CookieBanner />
       </div>
     </div>
   );
