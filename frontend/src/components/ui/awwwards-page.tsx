@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight, Globe, Bot, Code, Cpu, Rocket, Sparkles, Zap, Quote, ChevronRight, Plus } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { ScrambledTitle } from '@/components/ui/modern-animated-hero-section';
+import { GooeyText } from '@/components/ui/gooey-text-morphing';
 import { BorderBeam } from '@/components/ui/border-beam';
 import { HoverBorderGradient } from '@/components/ui/hover-border-gradient';
 import { MenuToggleIcon } from '@/components/ui/menu-toggle-icon';
@@ -221,8 +221,14 @@ const HeroSection = () => (
         </span>
       </motion.div>
 
-      <div className="mb-8 max-w-4xl">
-        <ScrambledTitle />
+      <div className="mb-8 max-w-4xl flex justify-center min-h-[80px] md:min-h-[100px] items-center">
+        <GooeyText
+          texts={["Arquitectura", "Digital", "Inteligente", "Web + IA", "Innovación", "Sin Límites"]}
+          morphTime={1}
+          cooldownTime={0.25}
+          className="font-bold"
+          textClassName="bg-gradient-to-r from-zinc-100 via-white to-zinc-300 bg-clip-text text-transparent text-4xl md:text-6xl lg:text-7xl"
+        />
       </div>
 
       <motion.p
