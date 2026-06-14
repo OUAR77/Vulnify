@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUpRight, Globe, Bot, Code, Cpu, Rocket, Sparkles, Zap, Quote, ChevronRight, Plus, MessageCircle, Download, Mail, Phone, FileText } from 'lucide-react';
+import { ArrowUpRight, Globe, Bot, Code, Cpu, Rocket, Sparkles, Zap, ChevronRight, Plus, MessageCircle, Download, Mail } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { BackgroundPaths } from '@/components/ui/background-paths';
 import { BorderBeam } from '@/components/ui/border-beam';
@@ -311,10 +311,10 @@ export const Component = () => {
 
   const words = ['CREA', 'OPTIMIZA', 'ESCALA', 'DOMINA'];
 
-  const testimonials = [
-    { name: 'Carlos Mendoza', role: 'CEO, TechFlow', text: 'Transformaron nuestra web en una máquina de ventas. El chatbot IA nos ahorra 20h semanales.' },
-    { name: 'María García', role: 'Directora Marketing, InnovaCorp', text: 'El proceso fue increíblemente fluido. Entregaron antes de tiempo y los resultados superaron expectativas.' },
-    { name: 'Javier Ruiz', role: 'Fundador, DataSmart', text: 'Buscábamos algo más que una web bonita. Conseguimos un ecosistema digital completo con IA integrada.' },
+  const caseStudies = [
+    { metric: '+300%', label: 'leads orgánicos', company: 'TechFlow', sector: 'SaaS', desc: 'Rediseñamos su web con IA conversacional. Pasaron de 10 a 40 leads/mes sin invertir en anuncios.' },
+    { metric: '20h', label: 'semanales ahorradas', company: 'InnovaCorp', sector: 'Consultoría', desc: 'Automatizamos su proceso de reporting con un dashboard predictivo. Su equipo recuperó tiempo estratégico.' },
+    { metric: '2.5x', label: 'conversión', company: 'DataSmart', sector: 'E-commerce', desc: 'Integramos recomendaciones inteligentes y chatbots. Su ticket medio creció un 150% en 90 días.' },
   ];
 
   return (
@@ -518,6 +518,33 @@ export const Component = () => {
         </div>
       </div>
 
+      {/* ─── TRUST BADGES ─── */}
+      <div className="w-full border-b border-white/[0.04]">
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-16 md:py-20">
+          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
+            {[
+              { label: 'SSL 256-bit', desc: 'Cifrado seguro' },
+              { label: 'RGPD', desc: 'Cumplimiento UE' },
+              { label: 'uptime 99.9%', desc: 'Sin caídas' },
+              { label: 'Cloudflare', desc: 'CDN Global' },
+              { label: 'PageSpeed A', desc: 'Rendimiento' },
+            ].map((b) => (
+              <div key={b.label} className="flex items-center gap-3">
+                <div className="size-9 rounded-full bg-white/[0.03] border border-white/[0.06] flex items-center justify-center">
+                  <svg viewBox="0 0 20 20" fill="none" className="size-4 text-zinc-600">
+                    <path d="M10 1L12.5 7L18 7.5L13.5 11.5L15 18L10 14.5L5 18L6.5 11.5L2 7.5L7.5 7L10 1Z" fill="currentColor" />
+                  </svg>
+                </div>
+                <div>
+                  <div className="text-xs font-medium text-zinc-400">{b.label}</div>
+                  <div className="text-[10px] text-zinc-700">{b.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* ─── PROCESS ─── */}
       <div id="proceso" className="w-full border-b border-white/[0.04]">
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
@@ -584,28 +611,33 @@ export const Component = () => {
         </div>
       </div>
 
-      {/* ─── TESTIMONIALS ─── */}
+      {/* ─── CASE STUDIES ─── */}
       <div className="w-full border-b border-white/[0.04]">
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
           <FadeIn className="mb-16 text-center">
-            <Label>Testimonios</Label>
-            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">Lo que dicen nuestros clientes.</h2>
+            <Label>Casos de éxito</Label>
+            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">Resultados que hablan.</h2>
           </FadeIn>
           <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((t, i) => (
-              <ScaleIn key={t.name} delay={i * 0.1}>
-              <motion.div
-                whileHover={{ y: -6 }}
-                className="p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500 relative overflow-hidden"
-              >
+            {caseStudies.map((c, i) => (
+              <ScaleIn key={c.company} delay={i * 0.1}>
+              <div className="group p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500 relative overflow-hidden h-full flex flex-col">
                 <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
-                <Quote className="size-6 text-zinc-500/30 mb-4" />
-                <p className="text-sm text-zinc-400 leading-relaxed mb-6">&ldquo;{t.text}&rdquo;</p>
-                <div>
-                  <div className="text-sm font-medium text-white">{t.name}</div>
-                  <div className="text-xs text-zinc-600">{t.role}</div>
+                <div className="mb-5">
+                  <span className="text-5xl md:text-6xl font-bold text-white tracking-tight">{c.metric}</span>
+                  <span className="block text-sm text-zinc-600 mt-1">{c.label}</span>
                 </div>
-              </motion.div>
+                <p className="text-sm text-zinc-400 leading-relaxed mb-6 flex-1">&ldquo;{c.desc}&rdquo;</p>
+                <div className="pt-5 border-t border-white/[0.04] flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-medium text-white">{c.company}</div>
+                    <div className="text-xs text-zinc-600">{c.sector}</div>
+                  </div>
+                  <span className="text-xs text-zinc-600 group-hover:text-zinc-400 transition-colors flex items-center gap-1">
+                    Ver caso <ArrowUpRight className="size-3" />
+                  </span>
+                </div>
+              </div>
               </ScaleIn>
             ))}
           </div>
@@ -756,6 +788,38 @@ export const Component = () => {
         </div>
       </div>
 
+      {/* ─── BLOG PREVIEW ─── */}
+      <div className="w-full border-b border-white/[0.04]">
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
+          <FadeIn className="mb-16 text-center">
+            <Label>Blog</Label>
+            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">Recursos para crecer.</h2>
+          </FadeIn>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              { tag: 'Desarrollo', title: 'Next.js vs Astro: cuál elegir según tu proyecto', date: '12 Jun 2026', read: '5 min' },
+              { tag: 'IA', title: 'Cómo integrar un chatbot en tu web sin saber programar', date: '28 May 2026', read: '7 min' },
+              { tag: 'SEO', title: 'Los 5 errores técnicos que están matando tu posicionamiento', date: '15 May 2026', read: '4 min' },
+            ].map((post, i) => (
+              <ScaleIn key={post.title} delay={i * 0.1}>
+              <a href="#" className="group block p-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500 relative overflow-hidden h-full">
+                <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
+                <span className="text-[10px] tracking-[0.2em] uppercase text-zinc-600 bg-white/[0.03] px-2.5 py-1 rounded-md border border-white/[0.04] inline-block mb-4">
+                  {post.tag}
+                </span>
+                <h3 className="text-base font-semibold text-white mb-3 leading-snug group-hover:text-zinc-300 transition-colors">{post.title}</h3>
+                <div className="flex items-center gap-3 text-xs text-zinc-700 mt-auto">
+                  <span>{post.date}</span>
+                  <span className="w-1 h-1 rounded-full bg-zinc-700/50" />
+                  <span>{post.read}</span>
+                </div>
+              </a>
+              </ScaleIn>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* ─── FAQ ─── */}
       <div className="w-full border-b border-white/[0.04]">
         <div className="mx-auto max-w-3xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
@@ -793,43 +857,47 @@ export const Component = () => {
           <FadeIn delay={0.15}>
             <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 relative overflow-hidden">
               <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
-              <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+              <form className="space-y-5" action="https://formspree.io/f/xpznqjqr" method="POST">
                 <div>
                   <label className="text-xs text-zinc-600 mb-2 block">Nombre completo *</label>
-                  <input
-                    type="text"
-                    placeholder="Tu nombre"
-                    className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors"
-                    required
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-xs text-zinc-600 mb-2 block">Email *</label>
                     <input
-                      type="email"
-                      placeholder="tu@email.com"
+                      type="text"
+                      name="name"
+                      placeholder="Tu nombre"
                       className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors"
                       required
                     />
                   </div>
-                  <div>
-                    <label className="text-xs text-zinc-600 mb-2 block">Teléfono</label>
-                    <input
-                      type="tel"
-                      placeholder="+34 600 000 000"
-                      className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors"
-                    />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs text-zinc-600 mb-2 block">Email *</label>
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder="tu@email.com"
+                        className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-zinc-600 mb-2 block">Teléfono</label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        placeholder="+34 600 000 000"
+                        className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors"
+                      />
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <label className="text-xs text-zinc-600 mb-2 block">Mensaje *</label>
-                  <textarea
-                    rows={4}
-                    placeholder="Cuéntanos en qué podemos ayudarte..."
-                    className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors resize-none"
-                    required
-                  />
+                  <div>
+                    <label className="text-xs text-zinc-600 mb-2 block">Mensaje *</label>
+                    <textarea
+                      rows={4}
+                      name="message"
+                      placeholder="Cuéntanos en qué podemos ayudarte..."
+                      className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors resize-none"
+                      required
+                    />
                 </div>
                 <HoverBorderGradient as="button" type="submit" className="w-full flex items-center justify-center gap-2 py-3.5 text-sm font-medium">
                   Enviar mensaje <ArrowUpRight className="size-4" />
@@ -852,7 +920,7 @@ export const Component = () => {
             <p className="text-base md:text-lg text-zinc-500 leading-relaxed mb-10 max-w-xl mx-auto">
               Solicita una auditoría gratuita de tu presencia digital y descubre cómo podemos ayudarte a crecer.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
               <HoverBorderGradient as="a" href="mailto:hola@vulnify.es" className="flex items-center gap-2 px-8 py-4 text-base font-medium">
                 Solicitar auditoría gratis <ArrowUpRight className="size-4" />
               </HoverBorderGradient>
@@ -865,6 +933,10 @@ export const Component = () => {
                 <MessageCircle className="size-4" />
                 Escribir por WhatsApp
               </a>
+            </div>
+            <div className="flex items-center justify-center gap-2 text-xs text-zinc-700">
+              <span className="size-1.5 rounded-full bg-amber-400/60 animate-pulse" />
+              Solo 3 proyectos este mes — auditoría gratuita
             </div>
           </FadeIn>
         </div>
