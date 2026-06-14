@@ -831,6 +831,7 @@ html.light .content-section {
 /* ─── Light Mode ─── */
 html.light {
   color-scheme: light;
+  --glow-color: rgba(59,130,246,0.06);
 }
 html.light body {
   background: #fafafa;
@@ -975,9 +976,6 @@ html.light .placeholder-zinc-600::placeholder {
 }
 html.light .placeholder-zinc-700::placeholder {
   color: #e4e4e7 !important;
-}
-html.light .bg-\[radial-gradient\(ellipse_80%_50%_at_50%_-20\%\,rgba\(0\,255\,0\,0\.06\)\,rgba\(255\,255\,255\,0\)\)\] {
-  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59,130,246,0.06), rgba(255,255,255,0)) !important;
 }
 html.light .text-white\/20 {
   color: rgba(0,0,0,0.15) !important;

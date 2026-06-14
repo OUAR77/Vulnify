@@ -319,7 +319,7 @@ export const Component = () => {
 
   return (
     <div className="relative bg-black text-zinc-300 antialiased selection:bg-zinc-500/30 selection:text-white">
-      <div className="fixed inset-0 z-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(0,255,0,0.06),rgba(255,255,255,0))]" />
+      <div className="fixed inset-0 z-0" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% -20%, var(--glow-color, rgba(0,255,0,0.06)), rgba(255,255,255,0))' }} />
       <div className="fixed inset-0 z-0">
         <FloatingPaths position={1} opacity={0.4} />
         <FloatingPaths position={-1} opacity={0.4} />
