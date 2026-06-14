@@ -666,7 +666,20 @@ export const Component = () => {
                         />
                       </div>
                     </div>
-                    <HoverBorderGradient as="button" className="flex items-center gap-2 px-6 py-3 text-sm font-medium whitespace-nowrap">
+                    <HoverBorderGradient
+                      as="button"
+                      onClick={() => {
+                        const content = `GUÍA: EL STACK TECNOLÓGICO IDEAL PARA TU NEGOCIO\n\nEscrito por Dani Ramirez — Vulnify\n\n---\n\n1. ELEGIR EL FRAMEWORK ADECUADO\n- React: ideal para aplicaciones interactivas y dashboards\n- Next.js: perfecto para SEO y páginas que necesitan rendimiento\n- Astro: óptimo para landing pages y sitios de contenido\n\n2. IA SIN COMPLICACIONES\n- ChatGPT API: chatbots personalizados en días\n- Automatización: reduce tareas repetitivas con IA\n- Análisis predictivo: anticipa tendencias de tus clientes\n\n3. ERRORES QUE CUESTAN DINERO\n- Ignorar el rendimiento mobile\n- Stack sobreingenierizado para proyectos pequeños\n- No planificar escalabilidad desde el inicio\n\n---\n\nDescarga completa disponible en vulnify.es/guia`;
+                        const blob = new Blob([content], { type: 'text/plain' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'guia-stack-tecnologico-vulnify.txt';
+                        a.click();
+                        URL.revokeObjectURL(url);
+                      }}
+                      className="flex items-center gap-2 px-6 py-3 text-sm font-medium whitespace-nowrap"
+                    >
                       <Download className="size-4" />
                       Descargar gratis
                     </HoverBorderGradient>
@@ -686,7 +699,7 @@ export const Component = () => {
                       DR
                     </div>
                     <div>
-                      <div className="text-xs font-medium text-zinc-400">Daniel Ramos</div>
+                      <div className="text-xs font-medium text-zinc-400">Dani Ramirez</div>
                       <div className="text-[11px] text-zinc-700">CTO & Fundador de Vulnify</div>
                     </div>
                   </div>
