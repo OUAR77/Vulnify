@@ -282,13 +282,13 @@ export const Component = () => {
   }, [isDark]);
 
   useEffect(() => {
-    if (menuOpen) {
+    if (menuOpen || aboutOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
     }
     return () => { document.body.style.overflow = ''; };
-  }, [menuOpen]);
+  }, [menuOpen, aboutOpen]);
 
   const stats = [
     { number: '40+', label: 'Proyectos entregados' },
@@ -982,8 +982,8 @@ export const Component = () => {
         </div>
       </footer>
       <CookieBanner />
-      <AboutModal open={aboutOpen} onClose={() => setAboutOpen(false)} />
       </div>
+      <AboutModal open={aboutOpen} onClose={() => setAboutOpen(false)} />
     </div>
   );
 };

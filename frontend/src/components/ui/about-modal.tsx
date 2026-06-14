@@ -19,7 +19,7 @@ export function AboutModal({ open, onClose }: { open: boolean; onClose: () => vo
           transition={{ duration: 0.3 }}
           className="fixed inset-0 z-[70] flex items-center justify-center p-4 md:p-8 overflow-y-auto"
         >
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
+          <div className="fixed inset-0 bg-black/90 backdrop-blur-md" onClick={onClose} />
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 30 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
