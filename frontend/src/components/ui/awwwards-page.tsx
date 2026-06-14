@@ -103,16 +103,6 @@ const SplitText = ({ text, className = '', delay = 0 }: any) => (
   </span>
 );
 
-const CodePattern = () => {
-  const [lines] = useState(() => {
-    const tokens = ['{', '}', ';', '(', ')', '=>', 'const', 'let', 'function', 'return', 'if', 'try', 'async', 'await', 'import', 'from', 'export', 'class', 'new', 'this'];
-    return Array.from({ length: 40 }, () =>
-      Array.from({ length: 20 }, () => tokens[Math.floor(Math.random() * tokens.length)]).join(' ')
-    );
-  });
-  return <div className="code-pattern">{lines.join('\n')}</div>;
-};
-
 const FadeIn = ({ children, delay = 0, className = '' }: any) => (
   <motion.div
     initial={{ opacity: 0, y: 40 }}
@@ -305,7 +295,6 @@ export const Component = () => {
         <FloatingPaths position={1} opacity={0.4} />
         <FloatingPaths position={-1} opacity={0.4} />
       </div>
-      <CodePattern />
       <div className="grain" />
 
       <div className="relative z-10">
