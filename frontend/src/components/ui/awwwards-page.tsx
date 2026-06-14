@@ -617,15 +617,44 @@ export const Component = () => {
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
           <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-white/[0.02] via-white/[0.01] to-transparent p-[1px]">
             <div className="relative rounded-[inherit] bg-black/60 p-8 md:p-12">
-              <div className="grid md:grid-cols-2 gap-10 items-center">
-                <FadeIn>
+              <div className="grid md:grid-cols-5 gap-10 items-center">
+                <FadeIn className="md:col-span-3">
                   <Label>Recurso gratuito</Label>
                   <h3 className="text-2xl md:text-4xl font-bold text-white leading-[1.1] tracking-tight mt-4 mb-4">
                     Guía: El stack tecnológico ideal para tu negocio
                   </h3>
-                  <p className="text-sm text-zinc-500 leading-relaxed mb-6">
+                  <p className="text-sm text-zinc-500 leading-relaxed mb-5">
                     Aprende a elegir las herramientas adecuadas para tu proyecto. Desde frameworks web hasta integraciones de IA, sin tecnicismos innecesarios.
                   </p>
+
+                  <div className="space-y-2.5 mb-6">
+                    {[
+                      { icon: Globe, text: 'Elegir entre React, Next.js o Astro según tu negocio' },
+                      { icon: Bot, text: 'IA sin complicaciones: chatbots y automatización al alcance' },
+                      { icon: Zap, text: 'Errores técnicos que cuestan dinero al escalar' },
+                    ].map((item) => (
+                      <div key={item.text} className="flex items-start gap-3">
+                        <div className="size-6 rounded-md bg-white/[0.03] border border-white/[0.06] flex items-center justify-center mt-0.5 shrink-0">
+                          <item.icon className="size-3 text-zinc-500" />
+                        </div>
+                        <span className="text-sm text-zinc-400">{item.text}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="flex -space-x-2">
+                      {['bg-blue-500', 'bg-emerald-500', 'bg-amber-500', 'bg-violet-500', 'bg-rose-500'].map((c) => (
+                        <div key={c} className={`size-7 rounded-full ${c} border-2 border-black flex items-center justify-center text-[9px] font-bold text-white`}>
+                          {String.fromCharCode(65 + Math.floor(Math.random() * 26))}
+                        </div>
+                      ))}
+                    </div>
+                    <span className="text-xs text-zinc-600">
+                      Ya lo han descargado <span className="text-zinc-400 font-medium">+130</span> emprendedores
+                    </span>
+                  </div>
+
                   <div className="flex flex-col sm:flex-row gap-3">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
@@ -642,11 +671,58 @@ export const Component = () => {
                       Descargar gratis
                     </HoverBorderGradient>
                   </div>
-                  <p className="text-xs text-zinc-700 mt-3">Sin spam. Solo contenido útil.</p>
+
+                  <label className="flex items-center gap-2 mt-3 cursor-pointer group">
+                    <div className="size-4 rounded border border-white/[0.08] bg-white/[0.02] flex items-center justify-center group-hover:border-white/20 transition-colors">
+                      <div className="size-2 rounded-sm bg-white opacity-0 group-hover:opacity-30 transition-opacity" />
+                    </div>
+                    <span className="text-xs text-zinc-700 group-hover:text-zinc-600 transition-colors">
+                      Quiero recibir consejos semanales (sin spam)
+                    </span>
+                  </label>
+
+                  <div className="flex items-center gap-3 mt-5 pt-5 border-t border-white/[0.04]">
+                    <div className="size-9 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-800 border border-white/[0.06] flex items-center justify-center text-xs font-bold text-zinc-400">
+                      DR
+                    </div>
+                    <div>
+                      <div className="text-xs font-medium text-zinc-400">Daniel Ramos</div>
+                      <div className="text-[11px] text-zinc-700">CTO & Fundador de Vulnify</div>
+                    </div>
+                  </div>
                 </FadeIn>
-                <FadeIn delay={0.2} className="hidden md:flex items-center justify-center">
-                  <div className="size-48 rounded-2xl bg-gradient-to-br from-zinc-800/40 to-zinc-900/40 border border-white/[0.06] flex items-center justify-center">
-                    <FileText className="size-16 text-zinc-700" />
+                <FadeIn delay={0.2} className="hidden md:flex md:col-span-2 items-center justify-center">
+                  <div className="relative w-full max-w-[240px] aspect-[3/4] mx-auto">
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-zinc-800/60 via-zinc-900/40 to-black border border-white/[0.06] overflow-hidden">
+                      <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-zinc-600 via-zinc-500 to-zinc-600" />
+                      <div className="p-6 pt-8">
+                        <div className="w-10 h-1 rounded-full bg-zinc-700 mb-6" />
+                        <div className="space-y-2 mb-6">
+                          <div className="h-2 rounded bg-white/[0.04]" />
+                          <div className="h-2 rounded bg-white/[0.04] w-3/4" />
+                          <div className="h-2 rounded bg-white/[0.04] w-1/2" />
+                        </div>
+                        <div className="space-y-2 mb-6">
+                          <div className="h-2 rounded bg-white/[0.03]" />
+                          <div className="h-2 rounded bg-white/[0.03] w-5/6" />
+                          <div className="h-2 rounded bg-white/[0.03] w-2/3" />
+                          <div className="h-2 rounded bg-white/[0.03] w-3/4" />
+                        </div>
+                        <div className="flex gap-2 mb-6">
+                          <div className="h-6 w-16 rounded bg-white/[0.04]" />
+                          <div className="h-6 w-12 rounded bg-white/[0.04]" />
+                        </div>
+                        <div className="absolute bottom-4 left-6 right-6">
+                          <div className="h-px bg-white/[0.04] mb-3" />
+                          <div className="flex items-center gap-2">
+                            <div className="size-5 rounded-full bg-zinc-700" />
+                            <div className="h-2 w-20 rounded bg-white/[0.04]" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="absolute top-2 right-3 text-[9px] text-zinc-700 font-mono tracking-wider">VULNIFY</div>
+                    </div>
+                    <div className="absolute -inset-1 rounded-[inherit] bg-gradient-to-br from-zinc-600/10 via-transparent to-zinc-400/5 blur-sm" />
                   </div>
                 </FadeIn>
               </div>
