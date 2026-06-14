@@ -827,3 +827,164 @@ html.light .content-section {
   background-repeat: repeat;
   background-size: 256px 256px;
 }
+
+/* ─── Light Mode ─── */
+html.light {
+  color-scheme: light;
+}
+html.light body {
+  background: #fafafa;
+}
+html.light .bg-black {
+  background-color: #fafafa !important;
+}
+html.light .bg-\[\#050505\] {
+  background-color: #fafafa !important;
+}
+html.light .bg-\[\#050505\]\/90 {
+  background-color: rgba(250,250,250,0.9) !important;
+}
+html.light .text-white {
+  color: #09090b !important;
+}
+html.light .text-zinc-300 {
+  color: #27272a !important;
+}
+html.light .text-zinc-400 {
+  color: #52525b !important;
+}
+html.light .text-zinc-500 {
+  color: #71717a !important;
+}
+html.light .text-zinc-600 {
+  color: #a1a1aa !important;
+}
+html.light .text-zinc-700 {
+  color: #d4d4d8 !important;
+}
+html.light .border-white {
+  border-color: rgba(0,0,0,0.1) !important;
+}
+html.light .border-white\/\[0\.04\] {
+  border-color: rgba(0,0,0,0.06) !important;
+}
+html.light .border-white\/\[0\.06\] {
+  border-color: rgba(0,0,0,0.08) !important;
+}
+html.light .border-white\/\[0\.08\] {
+  border-color: rgba(0,0,0,0.12) !important;
+}
+html.light .border-white\/\[0\.12\] {
+  border-color: rgba(0,0,0,0.15) !important;
+}
+html.light .border-white\/10 {
+  border-color: rgba(0,0,0,0.1) !important;
+}
+html.light .border-white\/15 {
+  border-color: rgba(0,0,0,0.15) !important;
+}
+html.light .border-white\/20 {
+  border-color: rgba(0,0,0,0.2) !important;
+}
+html.light .bg-white\/\[0\.02\] {
+  background-color: rgba(0,0,0,0.02) !important;
+}
+html.light .bg-white\/\[0\.03\] {
+  background-color: rgba(0,0,0,0.03) !important;
+}
+html.light .bg-white\/\[0\.04\] {
+  background-color: rgba(0,0,0,0.04) !important;
+}
+html.light .bg-white\/\[0\.05\] {
+  background-color: rgba(0,0,0,0.05) !important;
+}
+html.light .bg-white\/\[0\.06\] {
+  background-color: rgba(0,0,0,0.06) !important;
+}
+html.light .bg-white\/\[0\.10\] {
+  background-color: rgba(0,0,0,0.1) !important;
+}
+html.light .bg-white\/5 {
+  background-color: rgba(0,0,0,0.05) !important;
+}
+html.light .bg-white\/10 {
+  background-color: rgba(0,0,0,0.1) !important;
+}
+html.light .bg-white\/95 {
+  background-color: rgba(250,250,250,0.95) !important;
+}
+html.light .bg-black\/60 {
+  background-color: rgba(255,255,255,0.8) !important;
+}
+html.light .bg-black\/70 {
+  background-color: rgba(255,255,255,0.85) !important;
+}
+html.light .from-zinc-800\/40 {
+  --tw-gradient-from: rgba(250,250,250,0.4) !important;
+}
+html.light .to-zinc-900\/40 {
+  --tw-gradient-to: rgba(255,255,255,0.4) !important;
+}
+html.light .via-white\/\[0\.01\] {
+  --tw-gradient-via: rgba(0,0,0,0.01) !important;
+}
+html.light .from-white\/\[0\.02\] {
+  --tw-gradient-from: rgba(0,0,0,0.02) !important;
+}
+html.light .from-white\/\[0\.04\] {
+  --tw-gradient-from: rgba(0,0,0,0.04) !important;
+}
+html.light .to-transparent {
+  --tw-gradient-to: transparent !important;
+}
+html.light .text-white\/5 {
+  color: rgba(0,0,0,0.05) !important;
+}
+html.light .text-white\/10 {
+  color: rgba(0,0,0,0.1) !important;
+}
+html.light .text-white\/\[0\.06\] {
+  color: rgba(0,0,0,0.06) !important;
+}
+html.light .text-white\/\[0\.04\] {
+  color: rgba(0,0,0,0.04) !important;
+}
+html.light .bg-zinc-500\/10 {
+  background-color: rgba(0,0,0,0.05) !important;
+}
+html.light .fill-white\/\[0\.02\] {
+  fill: rgba(0,0,0,0.02) !important;
+}
+html.light .from-black\/60 {
+  --tw-gradient-from: rgba(250,250,250,0.9) !important;
+}
+html.light .from-black\/70 {
+  --tw-gradient-from: rgba(250,250,250,0.95) !important;
+}
+html.light .text-white\/90 {
+  color: rgba(0,0,0,0.9) !important;
+}
+html.light .text-white\/80 {
+  color: rgba(0,0,0,0.8) !important;
+}
+html.light .text-white\/60 {
+  color: rgba(0,0,0,0.6) !important;
+}
+html.light .placeholder-zinc-600::placeholder {
+  color: #d4d4d8 !important;
+}
+html.light .placeholder-zinc-700::placeholder {
+  color: #e4e4e7 !important;
+}
+html.light .bg-\[radial-gradient\(ellipse_80%_50%_at_50%_-20\%\,rgba\(0\,255\,0\,0\.06\)\,rgba\(255\,255\,255\,0\)\)\] {
+  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59,130,246,0.06), rgba(255,255,255,0)) !important;
+}
+html.light .text-white\/20 {
+  color: rgba(0,0,0,0.15) !important;
+}
+html.light .text-white\/30 {
+  color: rgba(0,0,0,0.25) !important;
+}
+html.light .text-black {
+  color: #09090b !important;
+}
