@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight, Globe, Bot, Code, Cpu, Rocket, Sparkles, Zap, Quote, ChevronRight, Plus } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { GooeyText } from '@/components/ui/gooey-text-morphing';
+import { BackgroundPaths } from '@/components/ui/background-paths';
 import { BorderBeam } from '@/components/ui/border-beam';
 import { HoverBorderGradient } from '@/components/ui/hover-border-gradient';
 import { MenuToggleIcon } from '@/components/ui/menu-toggle-icon';
@@ -205,69 +205,7 @@ const Nav = ({ menuOpen, setMenuOpen, isDark, onToggle }: any) => {
 
 // ─── Hero ────────────────────────────────────────────────────────
 const HeroSection = () => (
-  <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden">
-    <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-black/50 to-[#050505]" />
-
-    <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-5xl pt-16 pb-16 w-full">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.6 }}
-        className="mb-8"
-      >
-        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 text-[11px] tracking-[0.2em] uppercase text-zinc-500">
-          <span className="size-1.5 rounded-full bg-zinc-400 animate-pulse" />
-          Desarrollo Web + Inteligencia Artificial
-        </span>
-      </motion.div>
-
-      <div className="mb-8 max-w-4xl flex justify-center min-h-[80px] md:min-h-[100px] items-center">
-        <GooeyText
-          texts={["Arquitectura", "Digital", "Inteligente", "Web + IA", "Innovación", "Sin Límites"]}
-          morphTime={1}
-          cooldownTime={0.25}
-          className="font-bold"
-          textClassName="bg-gradient-to-r from-zinc-100 via-white to-zinc-300 bg-clip-text text-transparent text-4xl md:text-6xl lg:text-7xl"
-        />
-      </div>
-
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.4, duration: 0.6 }}
-        className="text-lg md:text-xl text-zinc-500 max-w-xl leading-relaxed mb-10"
-      >
-        No construimos páginas. Diseñamos ecosistemas digitales con inteligencia artificial integrada para que tu negocio crezca.
-      </motion.p>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.6, duration: 0.6 }}
-        className="flex flex-wrap items-center gap-4"
-      >
-        <HoverBorderGradient as="a" href="mailto:hola@vulnify.es" containerClassName="rounded-full" className="flex items-center gap-2 px-7 py-3.5 text-sm font-medium">
-          Solicitar presupuesto <ArrowUpRight className="size-4" />
-        </HoverBorderGradient>
-        <HoverBorderGradient as="a" href="#trabajo" containerClassName="rounded-full" className="flex items-center gap-2 px-7 py-3.5 text-sm font-medium text-zinc-400">
-          Ver proyectos
-        </HoverBorderGradient>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 0.8 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2"
-      >
-        <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          className="w-px h-10 bg-white/10"
-        />
-      </motion.div>
-    </div>
-  </div>
+  <BackgroundPaths title="Arquitectura Digital Inteligente" />
 );
 
 // ─── Sections ────────────────────────────────────────────────────
