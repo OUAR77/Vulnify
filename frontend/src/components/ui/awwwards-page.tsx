@@ -10,6 +10,7 @@ import { MenuToggleIcon } from '@/components/ui/menu-toggle-icon';
 import { Features } from '@/components/ui/features-8';
 import { BentoPricing } from '@/components/ui/bento-pricing';
 import { BentoGrid } from '@/components/ui/bento-grid';
+import { AboutModal } from '@/components/ui/about-modal';
 
 
 const ScrollProgress = () => {
@@ -264,8 +265,8 @@ const Nav = ({ menuOpen, setMenuOpen, isDark, onToggle }: any) => {
 };
 
 // ─── Hero ────────────────────────────────────────────────────────
-const HeroSection = () => (
-  <BackgroundPaths title="Arquitectura Digital Inteligente" />
+const HeroSection = ({ onAboutOpen }: any) => (
+  <BackgroundPaths title="Arquitectura Digital Inteligente" onAboutOpen={onAboutOpen} />
 );
 
 // ─── Sections ────────────────────────────────────────────────────
@@ -274,6 +275,7 @@ const HeroSection = () => (
 export const Component = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState(true);
+  const [aboutOpen, setAboutOpen] = useState(false);
 
   useEffect(() => {
     document.documentElement.classList.toggle('light', !isDark);
@@ -358,7 +360,7 @@ export const Component = () => {
         </div>
 
         {/* ─── HERO ─── */}
-        <HeroSection />
+        <HeroSection onAboutOpen={() => setAboutOpen(true)} />
 
       {/* ─── STATS ─── */}
       <div className="w-full border-b border-white/[0.04]">
@@ -980,6 +982,7 @@ export const Component = () => {
         </div>
       </footer>
       <CookieBanner />
+      <AboutModal open={aboutOpen} onClose={() => setAboutOpen(false)} />
       </div>
     </div>
   );

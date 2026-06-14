@@ -6,8 +6,10 @@ import { ArrowUpRight } from "lucide-react";
 
 export function BackgroundPaths({
     title = "Background Paths",
+    onAboutOpen,
 }: {
     title?: string;
+    onAboutOpen?: () => void;
 }) {
     const words = title.split(" ");
 
@@ -69,6 +71,14 @@ export function BackgroundPaths({
                         >
                             Solicitar presupuesto <ArrowUpRight className="size-4" />
                         </HoverBorderGradient>
+                        <div className="mt-6">
+                            <button
+                                onClick={onAboutOpen}
+                                className="text-xs text-zinc-600 hover:text-white transition-colors tracking-wide underline underline-offset-4 decoration-white/[0.06] hover:decoration-white/30"
+                            >
+                                Conócenos →
+                            </button>
+                        </div>
                     </motion.div>
                 </motion.div>
             </div>
