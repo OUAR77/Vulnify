@@ -780,83 +780,64 @@ export const Component = () => {
 
       {/* ─── CONTACT FORM ─── */}
       <div id="contacto" className="w-full border-b border-white/[0.04]">
-        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
-          <div className="grid md:grid-cols-2 gap-16 md:gap-20">
-            <FadeIn>
-              <Label>Contacto</Label>
-              <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mt-4 mb-6">
-                Cuéntanos tu proyecto.
-              </h2>
-              <p className="text-sm text-zinc-500 leading-relaxed mb-8">
-                Sin compromiso. Te respondemos en menos de 24 horas con una propuesta personalizada.
-              </p>
-              <div className="hidden md:flex flex-col gap-5">
-                {[
-                  { icon: Mail, label: 'Email', value: 'hola@vulnify.es' },
-                  { icon: MessageCircle, label: 'WhatsApp', value: '+34 600 000 000' },
-                  { icon: Phone, label: 'Teléfono', value: '+34 900 000 000' },
-                ].map((item) => (
-                  <div key={item.label} className="flex items-center gap-4">
-                    <div className="size-10 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center justify-center">
-                      <item.icon className="size-4 text-zinc-600" />
-                    </div>
-                    <div>
-                      <div className="text-xs text-zinc-700">{item.label}</div>
-                      <div className="text-sm text-zinc-400">{item.value}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </FadeIn>
-            <FadeIn delay={0.15}>
-              <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 relative overflow-hidden">
-                <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
-                <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+        <div className="mx-auto max-w-3xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
+          <FadeIn className="text-center mb-14">
+            <Label>Contacto</Label>
+            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mt-4 mb-4">
+              Cuéntanos tu proyecto.
+            </h2>
+            <p className="text-sm text-zinc-500 leading-relaxed max-w-md mx-auto">
+              Sin compromiso. Te respondemos en menos de 24 horas con una propuesta personalizada.
+            </p>
+          </FadeIn>
+          <FadeIn delay={0.15}>
+            <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 relative overflow-hidden">
+              <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
+              <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+                <div>
+                  <label className="text-xs text-zinc-600 mb-2 block">Nombre completo *</label>
+                  <input
+                    type="text"
+                    placeholder="Tu nombre"
+                    className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors"
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs text-zinc-600 mb-2 block">Nombre completo *</label>
+                    <label className="text-xs text-zinc-600 mb-2 block">Email *</label>
                     <input
-                      type="text"
-                      placeholder="Tu nombre"
+                      type="email"
+                      placeholder="tu@email.com"
                       className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors"
                       required
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-xs text-zinc-600 mb-2 block">Email *</label>
-                      <input
-                        type="email"
-                        placeholder="tu@email.com"
-                        className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs text-zinc-600 mb-2 block">Teléfono</label>
-                      <input
-                        type="tel"
-                        placeholder="+34 600 000 000"
-                        className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors"
-                      />
-                    </div>
-                  </div>
                   <div>
-                    <label className="text-xs text-zinc-600 mb-2 block">Mensaje *</label>
-                    <textarea
-                      rows={4}
-                      placeholder="Cuéntanos en qué podemos ayudarte..."
-                      className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors resize-none"
-                      required
+                    <label className="text-xs text-zinc-600 mb-2 block">Teléfono</label>
+                    <input
+                      type="tel"
+                      placeholder="+34 600 000 000"
+                      className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors"
                     />
                   </div>
-                  <HoverBorderGradient as="button" type="submit" className="w-full flex items-center justify-center gap-2 py-3.5 text-sm font-medium">
-                    Enviar mensaje <ArrowUpRight className="size-4" />
-                  </HoverBorderGradient>
-                  <p className="text-xs text-zinc-700 text-center">Te respondemos en menos de 24h.</p>
-                </form>
-              </div>
-            </FadeIn>
-          </div>
+                </div>
+                <div>
+                  <label className="text-xs text-zinc-600 mb-2 block">Mensaje *</label>
+                  <textarea
+                    rows={4}
+                    placeholder="Cuéntanos en qué podemos ayudarte..."
+                    className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors resize-none"
+                    required
+                  />
+                </div>
+                <HoverBorderGradient as="button" type="submit" className="w-full flex items-center justify-center gap-2 py-3.5 text-sm font-medium">
+                  Enviar mensaje <ArrowUpRight className="size-4" />
+                </HoverBorderGradient>
+                <p className="text-xs text-zinc-700 text-center">Te respondemos en menos de 24h.</p>
+              </form>
+            </div>
+          </FadeIn>
         </div>
       </div>
 
