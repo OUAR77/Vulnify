@@ -315,26 +315,6 @@ async def admin_panel(request: Request):
     return templates.TemplateResponse(request, "admin.html")
 
 
-@app.get("/terminos", response_class=HTMLResponse, description="Terms and conditions")
-async def terminos(request: Request):
-    return templates.TemplateResponse(request, "terms.html")
-
-
-@app.get("/contacto", response_class=HTMLResponse, description="Contact page")
-async def contacto(request: Request):
-    return templates.TemplateResponse(request, "contact.html")
-
-
-@app.get("/sobre-nosotros", response_class=HTMLResponse, description="About us")
-async def sobre_nosotros(request: Request):
-    return templates.TemplateResponse(request, "about.html")
-
-
-@app.get("/privacidad", response_class=HTMLResponse, description="Privacy policy")
-async def privacidad(request: Request):
-    return templates.TemplateResponse(request, "privacy.html")
-
-
 @app.get("/settings", response_class=HTMLResponse, description="User settings")
 async def settings_page(request: Request):
     return templates.TemplateResponse(request, "settings.html")
@@ -400,6 +380,18 @@ async def db_tables():
         return {"tables": tables, "counts": counts}
     except Exception as e:
         return {"error": str(e)}
+
+
+# --- SPA catch-all ---
+@app.get("/{path:path}", response_class=HTMLResponse, include_in_schema=False)
+async def spa_fallback(request: Request, path: str):
+    if path.startswith(("api/", "ws/", "static/", "assets/")) or path in ("health", "db-tables", "robots.txt", "sitemap.xml"):
+        raise HTTPException(status_code=404)
+    index_path = "frontend/dist/index.html"
+    if os.path.isfile(index_path):
+        with open(index_path, encoding="utf-8") as f:
+            return HTMLResponse(f.read())
+    return templates.TemplateResponse(request, "index.html")
 
 
 # --- WebSocket ---
