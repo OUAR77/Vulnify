@@ -274,12 +274,6 @@ export const Component = () => {
     { num: '04', title: 'Lanzamiento', desc: 'Despliegue, testing y puesta en marcha. No paramos hasta que funcione.' },
   ];
 
-  const projects = [
-    { title: 'E-commerce IA', cat: 'Desarrollo Web + IA', desc: 'Tienda online con recomendaciones inteligentes y chatbot predictivo.' },
-    { title: 'Dashboard Financiero', cat: 'Backend + APIs', desc: 'Panel de control con análisis predictivo y automatización de reportes.' },
-    { title: 'Landing Corporativa', cat: 'Desarrollo Web', desc: 'Web institucional con diseño editorial y sistema de gestión de contenido.' },
-  ];
-
   const words = ['CREA', 'OPTIMIZA', 'ESCALA', 'DOMINA'];
 
   const testimonials = [
@@ -493,34 +487,6 @@ export const Component = () => {
                   </div>
                 )}
               </FadeIn>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ─── PORTFOLIO ─── */}
-      <div id="trabajo" className="w-full border-b border-white/[0.04]">
-        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
-          <FadeIn className="mb-16">
-            <Label>Proyectos</Label>
-            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">Trabajo que habla.</h2>
-          </FadeIn>
-          <div className="grid md:grid-cols-3 gap-6">
-            {projects.map((p, i) => (
-              <ScaleIn key={p.title} delay={i * 0.1}>
-              <motion.div
-                whileHover={{ y: -6 }}
-                className="group p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/15 transition-all duration-500 relative overflow-hidden"
-              >
-                <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
-                <div className="aspect-[16/10] rounded-xl bg-white/[0.03] mb-6 flex items-center justify-center border border-white/[0.04]">
-                  <span className="text-5xl font-bold text-white/[0.06]">{i + 1}</span>
-                </div>
-                <span className="text-[11px] tracking-[0.2em] uppercase text-zinc-500/70 mb-2 block">{p.cat}</span>
-                <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-zinc-400 transition-colors">{p.title}</h3>
-                <p className="text-sm text-zinc-500">{p.desc}</p>
-              </motion.div>
-              </ScaleIn>
             ))}
           </div>
         </div>
