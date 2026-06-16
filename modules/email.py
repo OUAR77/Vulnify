@@ -107,6 +107,34 @@ def send_admin_login_alert(email: str, name: str, ip: str) -> bool:
     ))
 
 
+def send_verification_email(email: str, token: str, name: str) -> bool:
+    if not SG:
+        logger.warning("SendGrid no configurado, verification token: %s", token)
+        return False
+    verify_link = f"{settings.SITE_URL}/verify-email?token={token}"
+    body = f"""
+    <p style="margin:0 0 16px">Hola <strong style="color:#fff">{name}</strong>,</p>
+    <p style="margin:0 0 24px;color:#999">Confirma tu dirección de correo para activar tu cuenta:</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 32px">
+      <tr>
+        <td align="center" style="background:#fff;border-radius:999px;padding:14px 36px;font-size:15px;font-weight:600">
+          <a href="{verify_link}" style="color:#000;text-decoration:none;display:block">Verificar email</a>
+        </td>
+      </tr>
+    </table>
+    <p style="margin:0 0 4px;font-size:13px;color:#666">O copia este enlace en tu navegador:</p>
+    <p style="margin:0;font-size:12px;color:#555;word-break:break-all">{verify_link}</p>
+    <p style="margin:24px 0 0;font-size:13px;color:#666;border-top:1px solid #222;padding-top:20px">Si no creaste una cuenta, ignora este mensaje.</p>
+    """
+    return _send(Mail(
+        from_email=Email("noreply@vulnify.es"),
+        to_emails=To(email),
+        subject="Verifica tu email — Vulnify",
+        plain_text_content=f"Hola {name},\n\nConfirma tu email:\n\n{verify_link}\n\nSi no creaste una cuenta, ignora este mensaje.",
+        html_content=_html_wrapper(body),
+    ))
+
+
 def send_breach_alert(email: str, name: str, asset: str, breach_count: int, severity: str) -> bool:
     if not SG:
         logger.warning("SendGrid no configurado, breach alert for %s", asset)

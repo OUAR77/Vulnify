@@ -5,8 +5,12 @@ export interface User {
   name: string
   email: string
   role: string
-  verified?: boolean
+  company?: string
+  bio?: string
+  is_verified?: boolean
   totp_enabled?: boolean
+  dark_mode?: boolean
+  created_at?: string
 }
 
 export interface AuthResponse {
@@ -116,11 +120,22 @@ export async function apiGet<T>(path: string): Promise<T> {
 }
 
 export async function login(email: string, password: string): Promise<AuthResponse | TotpRequiredResponse> {
-  return apiPost<AuthResponse | TotpRequiredResponse>('/api/auth/login', { email, password })
+  const res: any = await apiPost('/api/auth/login', { email, password })
+  if (res.totp_required) return res as TotpRequiredResponse
+  return {
+    token: res.token,
+    refresh_token: res.refresh_token,
+    user: { ...res.user, is_verified: res.user.verified ?? res.user.is_verified },
+  }
 }
 
 export async function register(name: string, email: string, password: string): Promise<AuthResponse> {
-  return apiPost<AuthResponse>('/api/auth/register', { name, email, password })
+  const res: any = await apiPost('/api/auth/register', { name, email, password })
+  return {
+    token: res.token,
+    refresh_token: res.refresh_token,
+    user: { ...res.user, is_verified: res.user.verified ?? res.user.is_verified },
+  }
 }
 
 // TOTP / 2FA
@@ -265,6 +280,85 @@ export async function adminUpdateOrder(orderId: number, data: Partial<{ client_n
 
 export async function adminDeleteOrder(orderId: number, password: string): Promise<{ ok: boolean }> {
   return apiDelete<{ ok: boolean }>(`/api/admin/orders/${orderId}?password=${encodeURIComponent(password)}`)
+}
+
+// Profile & Notifications
+export interface ProfileBody {
+  name?: string
+  company?: string
+  bio?: string
+}
+
+export async function updateProfile(data: ProfileBody): Promise<{ ok: boolean }> {
+  return apiPut<{ ok: boolean }>('/api/auth/profile', data)
+}
+
+export interface NotificationPrefs {
+  notify_critical: boolean
+  notify_high: boolean
+  notify_medium: boolean
+  notify_low: boolean
+  notify_email: boolean
+  dark_mode: boolean
+}
+
+export async function getNotificationPrefs(): Promise<NotificationPrefs> {
+  return apiGet<NotificationPrefs>('/api/auth/notifications')
+}
+
+export async function updateNotificationPrefs(data: Partial<NotificationPrefs>): Promise<{ ok: boolean }> {
+  return apiPut<{ ok: boolean }>('/api/auth/notifications', data)
+}
+
+// Email verification
+export async function sendVerification(): Promise<{ ok: boolean; message: string; sent: boolean }> {
+  return apiPost<{ ok: boolean; message: string; sent: boolean }>('/api/auth/send-verification', {})
+}
+
+export async function verifyEmail(token: string): Promise<{ ok: boolean; message: string }> {
+  return apiPost<{ ok: boolean; message: string }>('/api/auth/verify-email', { token })
+}
+
+// API Keys
+export interface ApiKey {
+  id: number
+  name: string
+  created_at: string
+}
+
+export async function getApiKeys(): Promise<ApiKey[]> {
+  return apiGet<ApiKey[]>('/api/auth/api-keys')
+}
+
+export async function createApiKey(name: string): Promise<{ ok: boolean; key: string; name: string; id: number }> {
+  return apiPost<{ ok: boolean; key: string; name: string; id: number }>('/api/auth/api-keys', { name })
+}
+
+export async function deleteApiKey(keyId: number): Promise<{ ok: boolean }> {
+  return apiDelete<{ ok: boolean }>(`/api/auth/api-keys/${keyId}`)
+}
+
+// User orders
+export async function getMyOrders(page = 1): Promise<{ total: number; page: number; per_page: number; items: Order[] }> {
+  return apiGet(`/api/orders?page=${page}&per_page=20`)
+}
+
+export async function createMyOrder(data: { description?: string; service: string; amount?: number }): Promise<{ id: number; status: string; message: string }> {
+  return apiPost('/api/orders', data)
+}
+
+// Admin CSV export
+export async function downloadAdminCSV(path: string, filename: string): Promise<void> {
+  const token = getToken()
+  const res = await fetch(`${BASE}${path}`, {
+    headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+  })
+  if (!res.ok) throw new Error('Error al descargar')
+  const blob = await res.blob()
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url; a.download = filename; a.click()
+  URL.revokeObjectURL(url)
 }
 
 export async function apiForgotPassword(email: string): Promise<{ ok: boolean; message: string }> {

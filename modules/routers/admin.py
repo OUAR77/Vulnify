@@ -1,5 +1,8 @@
+import csv
+import io
 import logging
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
 from database import get_db
@@ -113,3 +116,29 @@ def admin_activity_logs(
 @limiter.limit("10/minute")
 def admin_verify_password(request: Request, admin: User = Depends(require_admin_totp)):
     return {"ok": True}
+
+
+@router.get("/messages/export", description="Export messages as CSV (admin only)")
+def admin_export_messages(request: Request, admin: User = Depends(require_admin_totp), db: Session = Depends(get_db)):
+    from models.message import Message
+    items = db.query(Message).order_by(Message.created_at.desc()).all()
+    output = io.StringIO()
+    w = csv.writer(output)
+    w.writerow(["ID", "Nombre", "Email", "Mensaje", "Leído", "Creado"])
+    for m in items:
+        w.writerow([m.id, m.name, m.email, m.message, "Sí" if m.read else "No", str(m.created_at)[:19]])
+    output.seek(0)
+    return StreamingResponse(iter([output.getvalue()]), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=messages.csv"})
+
+
+@router.get("/orders/export", description="Export orders as CSV (admin only)")
+def admin_export_orders(request: Request, admin: User = Depends(require_admin_totp), db: Session = Depends(get_db)):
+    from models.order import Order
+    items = db.query(Order).order_by(Order.created_at.desc()).all()
+    output = io.StringIO()
+    w = csv.writer(output)
+    w.writerow(["ID", "Cliente", "Email", "Servicio", "Descripción", "Importe", "Estado", "Creado"])
+    for o in items:
+        w.writerow([o.id, o.client_name, o.client_email, o.service, o.description, o.amount, o.status, str(o.created_at)[:19]])
+    output.seek(0)
+    return StreamingResponse(iter([output.getvalue()]), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=orders.csv"})

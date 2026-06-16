@@ -28,7 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           })
           if (res.ok) {
             const fresh = await res.json()
-            const freshUser: User = { id: fresh.id, name: fresh.name, email: fresh.email, role: fresh.role, verified: fresh.is_verified, totp_enabled: fresh.totp_enabled }
+            const freshUser: User = { id: fresh.id, name: fresh.name, email: fresh.email, role: fresh.role, is_verified: fresh.is_verified, totp_enabled: fresh.totp_enabled, company: fresh.company, bio: fresh.bio, dark_mode: fresh.dark_mode, created_at: fresh.created_at }
             storeUser(freshUser)
             setUserState(freshUser)
             setLoading(false)

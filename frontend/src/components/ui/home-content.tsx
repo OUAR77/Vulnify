@@ -54,6 +54,59 @@ const FAQItem = ({ question, answer }: any) => {
 
 import { useState } from 'react'
 
+function ContactForm() {
+  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' })
+  const [sent, setSent] = useState(false)
+  const [error, setError] = useState('')
+  const BASE = import.meta.env.VITE_API_URL || ''
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    try {
+      const res = await fetch(`${BASE}/api/contact`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (res.ok) setSent(true)
+      else setError('Error al enviar. Intenta de nuevo.')
+    } catch {
+      setError('Error al enviar. Intenta de nuevo.')
+    }
+  }
+  if (sent) return <p className="text-sm text-zinc-400 text-center py-8">Mensaje enviado. Te responderemos en menos de 24h.</p>
+  return (
+    <form className="space-y-5" onSubmit={handleSubmit}>
+      <div>
+        <label className="text-xs text-zinc-600 mb-2 block">Nombre completo *</label>
+        <input type="text" placeholder="Tu nombre" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
+          className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-600 outline-none focus:border-white/20 transition-colors" required />
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="text-xs text-zinc-600 mb-2 block">Email *</label>
+          <input type="email" placeholder="tu@email.com" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
+            className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-600 outline-none focus:border-white/20 transition-colors" required />
+        </div>
+        <div>
+          <label className="text-xs text-zinc-600 mb-2 block">Teléfono</label>
+          <input type="tel" placeholder="+34 600 000 000" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })}
+            className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors" />
+        </div>
+      </div>
+      <div>
+        <label className="text-xs text-zinc-600 mb-2 block">Mensaje *</label>
+        <textarea rows={4} placeholder="Cuéntanos en qué podemos ayudarte..." value={form.message} onChange={e => setForm({ ...form, message: e.target.value })}
+          className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors resize-none" required />
+      </div>
+      {error && <p className="text-xs text-red-400">{error}</p>}
+      <HoverBorderGradient as="button" type="submit" className="w-full flex items-center justify-center gap-2 py-3.5 text-sm font-medium">
+        Enviar mensaje <ArrowUpRight className="size-4" />
+      </HoverBorderGradient>
+      <p className="text-xs text-zinc-700 text-center">Te respondemos en menos de 24h.</p>
+    </form>
+  )
+}
+
 export function HomeContent() {
   const stats = [
     { number: '40+', label: 'Proyectos entregados' },
@@ -275,30 +328,7 @@ export function HomeContent() {
           </div>
           <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 relative overflow-hidden">
             <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
-            <form className="space-y-5" action="https://formspree.io/f/xpznqjqr" method="POST">
-              <div>
-                <label className="text-xs text-zinc-600 mb-2 block">Nombre completo *</label>
-                <input type="text" name="name" placeholder="Tu nombre" className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-600 outline-none focus:border-white/20 transition-colors" required />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs text-zinc-600 mb-2 block">Email *</label>
-                  <input type="email" name="email" placeholder="tu@email.com" className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-600 outline-none focus:border-white/20 transition-colors" required />
-                </div>
-                <div>
-                  <label className="text-xs text-zinc-600 mb-2 block">Teléfono</label>
-                  <input type="tel" name="phone" placeholder="+34 600 000 000" className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors" />
-                </div>
-              </div>
-              <div>
-                <label className="text-xs text-zinc-600 mb-2 block">Mensaje *</label>
-                <textarea rows={4} name="message" placeholder="Cuéntanos en qué podemos ayudarte..." className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors resize-none" required />
-              </div>
-              <HoverBorderGradient as="button" type="submit" className="w-full flex items-center justify-center gap-2 py-3.5 text-sm font-medium">
-                Enviar mensaje <ArrowUpRight className="size-4" />
-              </HoverBorderGradient>
-              <p className="text-xs text-zinc-700 text-center">Te respondemos en menos de 24h.</p>
-            </form>
+            <ContactForm />
           </div>
           <div className="text-center mt-20">
             <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">Empieza hoy</span>

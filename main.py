@@ -17,7 +17,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from jose import JWTError, jwt
 from config import limiter, settings
 from database import Base, engine
-from modules.routers import auth_router, assets_router, alerts_router, plans_router, admin_router, search_router, reports_router, scan_router, batch_router, messages_router, orders_router
+from modules.routers import auth_router, assets_router, alerts_router, plans_router, admin_router, search_router, reports_router, scan_router, batch_router, messages_router, orders_router, user_orders_router
 from models.user import User
 from models.message import Message
 
@@ -174,6 +174,13 @@ async def lifespan(app: FastAPI):
             db.add(admin)
             db.commit()
             logger.info("Admin user created")
+        # Migrate orders table
+        try:
+            db.execute(text("ALTER TABLE orders ADD COLUMN user_id INTEGER REFERENCES users(id)"))
+            db.commit()
+            logger.info("Added user_id column to orders")
+        except Exception:
+            db.rollback()
         db.close()
     except Exception as e:
         logger.warning("Could not seed data: %s", e)
@@ -249,6 +256,7 @@ app.include_router(scan_router)
 app.include_router(batch_router)
 app.include_router(messages_router)
 app.include_router(orders_router)
+app.include_router(user_orders_router)
 
 templates = Jinja2Templates(directory="templates")
 

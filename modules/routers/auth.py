@@ -15,6 +15,7 @@ from modules.auth import (
     hash_api_key,
 )
 from config import limiter, settings
+from modules.email import send_verification_email
 from modules.activity_logger import log_activity, get_client_ip
 from modules.totp import generate_totp_secret, generate_qr_b64, verify_totp
 
@@ -235,13 +236,14 @@ def refresh_access_token(request: Request, body: RefreshBody, db: Session = Depe
 
 @router.post("/send-verification", description="Send email verification token")
 @limiter.limit("3/hour")
-def send_verification(request: Request, user: User = Depends(get_current_user)):
+def send_verification(request: Request, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     if user.is_verified:
         return {"ok": True, "message": "Email ya verificado"}
     token = create_verification_token(user.id)
+    sent = send_verification_email(user.email, token, user.name)
     ip = get_client_ip(request)
     log_activity("user.send_verification", user.id, user.email, {}, ip)
-    return {"ok": True, "message": "Token de verificación generado", "token": token}
+    return {"ok": True, "message": "Email de verificación enviado", "sent": sent}
 
 
 class VerifyEmailBody(BaseModel):
@@ -273,6 +275,7 @@ def me(request: Request, user: User = Depends(get_current_user)):
         "created_at": str(user.created_at),
         "totp_enabled": user.totp_enabled,
         "dark_mode": user.dark_mode,
+        "is_verified": bool(user.is_verified),
     }
 
 

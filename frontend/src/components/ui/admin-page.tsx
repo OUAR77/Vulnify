@@ -6,6 +6,7 @@ import {
   adminGetActivityLogs, adminGetActivityActions,
   adminGetMessages, adminMarkMessageRead, adminDeleteMessage,
   adminGetOrders, adminCreateOrder, adminUpdateOrder, adminDeleteOrder,
+  downloadAdminCSV,
   type AdminStats, type AdminUser, type ActivityLog,
   type ContactMessage, type Order,
 } from '@/lib/api'
@@ -327,9 +328,15 @@ export function AdminPage() {
         {/* Messages Tab */}
         {tab === 'messages' && (
           <div>
-            <div className="flex items-center gap-3 mb-6">
-              <MessageSquare className="size-5 text-zinc-500" />
-              <span className="text-sm text-zinc-500">{messagesTotal} mensajes</span>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <MessageSquare className="size-5 text-zinc-500" />
+                <span className="text-sm text-zinc-500">{messagesTotal} mensajes</span>
+              </div>
+              <button onClick={() => downloadAdminCSV('/api/admin/messages/export', 'messages.csv')}
+                className="flex items-center gap-2 text-xs bg-white/5 rounded-lg px-3 py-1.5 hover:bg-white/10 transition-colors cursor-pointer border-none text-zinc-400 hover:text-white">
+                CSV
+              </button>
             </div>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="rounded-xl border border-white/[0.06] overflow-y-auto max-h-[600px]">
@@ -393,11 +400,17 @@ export function AdminPage() {
                 <ShoppingCart className="size-5 text-zinc-500" />
                 <span className="text-sm text-zinc-500">{ordersTotal} pedidos</span>
               </div>
-              <button onClick={() => { setEditingOrder(null); setOrderForm({ client_name: '', client_email: '', service: '', description: '', amount: 0, status: 'pending' }); setShowOrderForm(true) }}
-                className="flex items-center gap-2 text-sm bg-white/10 rounded-lg px-4 py-2 hover:bg-white/20 transition-colors cursor-pointer border-none text-white">
-                <Plus className="size-4" /> Nuevo pedido
-              </button>
+              <div className="flex items-center gap-2">
+                <button onClick={() => downloadAdminCSV('/api/admin/orders/export', 'orders.csv')}
+                  className="flex items-center gap-2 text-xs bg-white/5 rounded-lg px-3 py-1.5 hover:bg-white/10 transition-colors cursor-pointer border-none text-zinc-400 hover:text-white">
+                  CSV
+                </button>
+                <button onClick={() => { setEditingOrder(null); setOrderForm({ client_name: '', client_email: '', service: '', description: '', amount: 0, status: 'pending' }); setShowOrderForm(true) }}
+                  className="flex items-center gap-2 text-sm bg-white/10 rounded-lg px-4 py-2 hover:bg-white/20 transition-colors cursor-pointer border-none text-white">
+                  <Plus className="size-4" /> Nuevo pedido
+                </button>
             </div>
+          </div>
 
             {showOrderForm && (
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => setShowOrderForm(false)}>
