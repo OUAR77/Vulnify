@@ -1,6 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight, Globe, Bot, Code, Cpu, Zap, ChevronRight, Plus, MessageCircle } from 'lucide-react'
-import { CursorDrivenParticleTypography } from './cursor-driven-particles-typography'
 import { ArtificialHero } from '@/components/ui/artificial-hero'
 import { BorderBeam } from '@/components/ui/border-beam'
 import { HoverBorderGradient } from '@/components/ui/hover-border-gradient'
@@ -87,15 +86,9 @@ export function HomeContent() {
           </div>
           <hr className="border-none border-t border-white/20 my-[2vw]" />
           <div className="flex flex-col justify-center min-h-[30vh]">
-            <div className="w-full">
-              <CursorDrivenParticleTypography
-                text={"Crear\nOptimizar\nEscalar"}
-                fontSize={130}
-                particleDensity={4}
-                dispersionStrength={18}
-                color="#FAFAFA"
-              />
-            </div>
+            <h1 className="text-[clamp(3.5rem,12vw,14rem)] font-bold leading-[0.85] uppercase tracking-tight text-white">
+              Crear<br />Optimizar<br />Escalar
+            </h1>
             <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mt-6 leading-relaxed">
               No construimos páginas. Diseñamos ecosistemas digitales con inteligencia artificial integrada para que tu negocio crezca.
             </p>
