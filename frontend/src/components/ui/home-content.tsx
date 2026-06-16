@@ -7,7 +7,7 @@ import { BentoPricing } from '@/components/ui/bento-pricing'
 import { MeshGradient } from '@paper-design/shaders-react'
 import FlowArt, { FlowSection } from './story-scroll'
 import Testimonials from './twitter-testimonial-cards'
-import { GooeyText } from './gooey-text-morphing'
+import { AnimatedHeroText } from './animated-hero-text'
 
 export function FloatingPathsEffect() {
   return (
@@ -87,12 +87,7 @@ export function HomeContent() {
           </div>
           <hr className="border-none border-t border-white/20 my-[2vw]" />
           <div className="flex flex-col justify-center min-h-[30vh]">
-            <GooeyText
-              texts={["VULNIFY", "CREAR", "OPTIMIZAR", "ESCALAR"]}
-              morphTime={1.5}
-              cooldownTime={1.5}
-              textClassName="text-[clamp(3.5rem,12vw,14rem)] font-bold leading-[0.85] uppercase tracking-tight text-white"
-            />
+            <AnimatedHeroText />
             <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mt-6 leading-relaxed">
               No construimos páginas. Diseñamos ecosistemas digitales con inteligencia artificial integrada para que tu negocio crezca.
             </p>
