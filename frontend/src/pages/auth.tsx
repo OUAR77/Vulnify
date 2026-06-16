@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AuthPage } from '@/components/ui/auth-page'
+import { SignInPage } from '@/components/ui/sign-in-flow-1'
 import { useAuth } from '@/lib/auth-context'
 import { login as apiLogin, register as apiRegister } from '@/lib/api'
 
@@ -25,11 +25,10 @@ export function LoginPage() {
   }
 
   return (
-    <AuthPage
+    <SignInPage
       mode="login"
       onSubmit={handleLogin}
       onSwitchMode={() => navigate('/register')}
-      onBack={() => navigate('/')}
       loading={loading}
       error={error}
     />
@@ -58,11 +57,10 @@ export function RegisterPage() {
   }
 
   return (
-    <AuthPage
+    <SignInPage
       mode="register"
       onSubmit={handleRegister}
       onSwitchMode={() => navigate('/login')}
-      onBack={() => navigate('/')}
       loading={loading}
       error={error}
     />
