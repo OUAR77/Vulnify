@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowUpRight, Globe, Bot, Code, Cpu, Rocket, Sparkles, Zap, ChevronRight, Plus, Download, Mail, MessageCircle, Shield, Users } from 'lucide-react'
+import { ArrowUpRight, Globe, Bot, Code, Cpu, Rocket, Sparkles, Zap, ChevronRight, Plus, Download, Mail, MessageCircle } from 'lucide-react'
+import { ArtificialHero } from '@/components/ui/artificial-hero'
 import { BackgroundPaths } from '@/components/ui/background-paths'
 import { BorderBeam } from '@/components/ui/border-beam'
 import { HoverBorderGradient } from '@/components/ui/hover-border-gradient'
@@ -7,52 +8,8 @@ import { Features } from '@/components/ui/features-8'
 import { BentoPricing } from '@/components/ui/bento-pricing'
 import { BentoGrid } from '@/components/ui/bento-grid'
 
-const FloatingPaths = ({ position = 1, opacity = 0.5 }: { position?: number; opacity?: number }) => {
-  const paths = Array.from({ length: 36 }, (_, i) => ({
-    id: i,
-    d: `M-${380 - i * 5 * position} -${189 + i * 6}C-${380 - i * 5 * position} -${189 + i * 6} -${312 - i * 5 * position} ${216 - i * 6} ${152 - i * 5 * position} ${343 - i * 6}C${616 - i * 5 * position} ${470 - i * 6} ${684 - i * 5 * position} ${875 - i * 6} ${684 - i * 5 * position} ${875 - i * 6}`,
-    width: 0.5 + i * 0.03,
-  }))
-  return (
-    <div className="absolute inset-0 pointer-events-none" style={{ opacity }}>
-      <svg className="w-full h-full text-white/20" viewBox="0 0 696 316" fill="none" preserveAspectRatio="none">
-        <title>Background Paths</title>
-        {paths.map((path) => (
-          <motion.path
-            key={path.id}
-            d={path.d}
-            stroke="currentColor"
-            strokeWidth={path.width}
-            strokeOpacity={0.04 + path.id * 0.008}
-            initial={{ pathLength: 0.3, opacity: 0.4 }}
-            animate={{
-              pathLength: 1,
-              opacity: [0.2, 0.6, 0.2],
-              pathOffset: [0, 1, 0],
-            }}
-            transition={{
-              duration: 20 + Math.random() * 15,
-              repeat: Number.POSITIVE_INFINITY,
-              ease: "linear",
-            }}
-          />
-        ))}
-      </svg>
-    </div>
-  )
-}
-
 export function FloatingPathsEffect() {
-  return (
-    <>
-      <div className="fixed inset-0 z-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% -20%, var(--glow-color, rgba(0,255,0,0.06)), rgba(255,255,255,0))' }} />
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <FloatingPaths position={1} opacity={0.4} />
-        <FloatingPaths position={-1} opacity={0.4} />
-      </div>
-      <div className="grain" />
-    </>
-  )
+  return <ArtificialHero />
 }
 
 const ScaleIn = ({ children, delay = 0, className = '' }: any) => (
