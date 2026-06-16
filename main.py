@@ -280,14 +280,7 @@ async def index(request: Request):
     return templates.TemplateResponse(request, "index.html")
 
 
-@app.get("/login", response_class=HTMLResponse, description="Login")
-async def login_page(request: Request):
-    return templates.TemplateResponse(request, "login.html")
 
-
-@app.get("/register", response_class=HTMLResponse, description="Register")
-async def register_page(request: Request):
-    return templates.TemplateResponse(request, "register.html")
 
 
 @app.get("/monitor", response_class=HTMLResponse, description="Reputation monitor")
