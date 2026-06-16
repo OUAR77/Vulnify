@@ -12,7 +12,6 @@ import {
   Loader2,
 } from 'lucide-react';
 import { Input } from './input';
-import { cn } from '@/lib/utils';
 
 export interface AuthPageProps {
   mode: 'login' | 'register';
@@ -114,10 +113,10 @@ export function AuthPage({ mode, onSubmit, onSwitchMode, onBack, loading, error 
           <div className="bg-[radial-gradient(50%_50%_at_50%_50%,rgba(255,255,255,0.04)_0,rgba(255,255,255,0.01)_80%,transparent_100%)] absolute top-0 right-0 h-320 w-60 -translate-y-87.5 rounded-full" />
         </div>
         {onBack && (
-          <Button variant="ghost" className="absolute top-7 left-5" onClick={onBack}>
-            <ArrowLeft className="size-4 me-2" />
-            Volver
-          </Button>
+          <button onClick={onBack} className="absolute top-7 left-5 flex items-center gap-2 text-sm text-zinc-500 hover:text-white transition-colors bg-transparent border border-white/[0.08] rounded-lg px-4 py-2 cursor-pointer">
+            <ArrowLeft className="size-4" />
+            Volver a la web
+          </button>
         )}
         <div className="mx-auto w-full max-w-sm space-y-6">
           <div className="flex items-center gap-2 lg:hidden">
