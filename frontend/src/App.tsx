@@ -8,6 +8,7 @@ import { ForgotPasswordPage } from '@/pages/forgot-password'
 import { ResetPasswordPage } from '@/pages/reset-password'
 import { DashboardPage } from '@/components/ui/dashboard-page'
 import { AdminPage } from '@/components/ui/admin-page'
+import { VerifyEmailPage } from '@/components/ui/verify-email-page'
 import { ErrorBoundary } from '@/components/ui/error-boundary'
 import { AuthProvider } from '@/lib/auth-context'
 
@@ -32,6 +33,7 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/verify-email" element={<VerifyEmailPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route element={<SiteLayout />}>

@@ -16,22 +16,22 @@ def _html_wrapper(body: str) -> str:
     return f"""<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background-color:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#0a0a0a;padding:40px 20px">
+<body style="margin:0;padding:0;background-color:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f5f5;padding:40px 20px">
 <tr><td align="center">
-  <table role="presentation" width="100%" style="max-width:560px;background:#111;border-radius:16px;border:1px solid #222;overflow:hidden">
-    <tr><td style="padding:40px 32px 32px;text-align:center;border-bottom:1px solid #222">
-      <span style="display:inline-block;width:40px;height:40px;border-radius:50%;border:2px solid #333;margin-bottom:12px"></span>
-      <h1 style="margin:0;font-size:20px;font-weight:600;color:#fff;letter-spacing:-0.3px">Vulnify</h1>
-      <p style="margin:4px 0 0;font-size:13px;color:#666">Ecosistemas Digitales con IA</p>
+  <table role="presentation" width="100%" style="max-width:560px;background:#ffffff;border-radius:16px;border:1px solid #e0e0e0;overflow:hidden">
+    <tr><td style="padding:40px 32px 32px;text-align:center;border-bottom:1px solid #eee">
+      <span style="display:inline-block;width:40px;height:40px;border-radius:50%;border:2px solid #ddd;margin-bottom:12px"></span>
+      <h1 style="margin:0;font-size:20px;font-weight:600;color:#111;letter-spacing:-0.3px">Vulnify</h1>
+      <p style="margin:4px 0 0;font-size:13px;color:#888">Ecosistemas Digitales con IA</p>
     </td></tr>
-    <tr><td style="padding:32px;color:#ccc;font-size:15px;line-height:1.6">
+    <tr><td style="padding:32px;color:#333;font-size:15px;line-height:1.6">
       {body}
     </td></tr>
-    <tr><td style="padding:24px 32px;background:#0d0d0d;text-align:center;border-top:1px solid #222">
-      <p style="margin:0;font-size:12px;color:#555">
+    <tr><td style="padding:24px 32px;background:#fafafa;text-align:center;border-top:1px solid #eee">
+      <p style="margin:0;font-size:12px;color:#999">
         Vulnify &mdash; Ecosistemas Digitales con IA<br>
-        <a href="{settings.SITE_URL}" style="color:#888;text-decoration:underline">vulnify.es</a>
+        <a href="{settings.SITE_URL}" style="color:#666;text-decoration:underline">vulnify.es</a>
       </p>
     </td></tr>
   </table>
@@ -61,17 +61,17 @@ def send_password_reset(email: str, token: str) -> bool:
     reset_link = f"{settings.SITE_URL}/reset-password?token={token}"
     body = f"""
     <p style="margin:0 0 16px">Recibimos una solicitud para restablecer tu contraseña.</p>
-    <p style="margin:0 0 24px;color:#999">Haz clic en el botón para crear una nueva:</p>
+    <p style="margin:0 0 24px;color:#666">Haz clic en el botón para crear una nueva:</p>
     <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 32px">
       <tr>
-        <td align="center" style="background:#fff;border-radius:999px;padding:14px 36px;font-size:15px;font-weight:600">
-          <a href="{reset_link}" style="color:#000;text-decoration:none;display:block">Restablecer contraseña</a>
+        <td align="center" style="background:#111;border-radius:999px;padding:14px 36px;font-size:15px;font-weight:600">
+          <a href="{reset_link}" style="color:#fff;text-decoration:none;display:block">Restablecer contraseña</a>
         </td>
       </tr>
     </table>
-    <p style="margin:0 0 4px;font-size:13px;color:#666">O copia este enlace en tu navegador:</p>
-    <p style="margin:0;font-size:12px;color:#555;word-break:break-all">{reset_link}</p>
-    <p style="margin:24px 0 0;font-size:13px;color:#666;border-top:1px solid #222;padding-top:20px">Si no solicitaste esto, ignora este mensaje.</p>
+    <p style="margin:0 0 4px;font-size:13px;color:#888">O copia este enlace en tu navegador:</p>
+    <p style="margin:0;font-size:12px;color:#999;word-break:break-all">{reset_link}</p>
+    <p style="margin:24px 0 0;font-size:13px;color:#888;border-top:1px solid #eee;padding-top:20px">Si no solicitaste esto, ignora este mensaje.</p>
     """
     return _send(Mail(
         from_email=Email("noreply@vulnify.es"),
@@ -87,15 +87,15 @@ def send_admin_login_alert(email: str, name: str, ip: str) -> bool:
         logger.warning("SendGrid no configurado, admin login alert for %s from %s", email, ip)
         return False
     body = f"""
-    <p style="margin:0 0 16px">Hola <strong style="color:#fff">{name}</strong>,</p>
-    <p style="margin:0 0 24px;color:#999">Se detectó un inicio de sesión en tu cuenta de administrador:</p>
-    <table role="presentation" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:12px;padding:16px 20px;margin:0 0 24px;width:100%">
-      <tr><td style="padding:6px 0"><span style="color:#666;font-size:13px">IP</span></td><td style="padding:6px 0;text-align:right;color:#ccc;font-size:13px">{ip}</td></tr>
-      <tr><td style="padding:6px 0"><span style="color:#666;font-size:13px">Fecha</span></td><td style="padding:6px 0;text-align:right;color:#ccc;font-size:13px">{datetime.now().strftime("%d/%m/%Y %H:%M")}</td></tr>
+    <p style="margin:0 0 16px">Hola <strong style="color:#111">{name}</strong>,</p>
+    <p style="margin:0 0 24px;color:#666">Se detectó un inicio de sesión en tu cuenta de administrador:</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="background:#f5f5f5;border-radius:12px;padding:16px 20px;margin:0 0 24px;width:100%">
+      <tr><td style="padding:6px 0"><span style="color:#888;font-size:13px">IP</span></td><td style="padding:6px 0;text-align:right;color:#333;font-size:13px">{ip}</td></tr>
+      <tr><td style="padding:6px 0"><span style="color:#888;font-size:13px">Fecha</span></td><td style="padding:6px 0;text-align:right;color:#333;font-size:13px">{datetime.now().strftime("%d/%m/%Y %H:%M")}</td></tr>
     </table>
-    <p style="margin:0 0 4px;color:#f44336;font-size:14px;font-weight:600">¿No fuiste tú?</p>
-    <p style="margin:0;color:#999;font-size:14px">
-      <a href="{settings.SITE_URL}/login" style="color:#fff;text-decoration:underline">Cambia tu contraseña</a> inmediatamente.
+    <p style="margin:0 0 4px;color:#d32f2f;font-size:14px;font-weight:600">¿No fuiste tú?</p>
+    <p style="margin:0;color:#666;font-size:14px">
+      <a href="{settings.SITE_URL}/login" style="color:#111;text-decoration:underline">Cambia tu contraseña</a> inmediatamente.
     </p>
     """
     return _send(Mail(
@@ -113,18 +113,18 @@ def send_verification_email(email: str, token: str, name: str) -> bool:
         return False
     verify_link = f"{settings.SITE_URL}/verify-email?token={token}"
     body = f"""
-    <p style="margin:0 0 16px">Hola <strong style="color:#fff">{name}</strong>,</p>
-    <p style="margin:0 0 24px;color:#999">Confirma tu dirección de correo para activar tu cuenta:</p>
+    <p style="margin:0 0 16px">Hola <strong style="color:#111">{name}</strong>,</p>
+    <p style="margin:0 0 24px;color:#666">Confirma tu dirección de correo para activar tu cuenta:</p>
     <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 32px">
       <tr>
-        <td align="center" style="background:#fff;border-radius:999px;padding:14px 36px;font-size:15px;font-weight:600">
-          <a href="{verify_link}" style="color:#000;text-decoration:none;display:block">Verificar email</a>
+        <td align="center" style="background:#111;border-radius:999px;padding:14px 36px;font-size:15px;font-weight:600">
+          <a href="{verify_link}" style="color:#fff;text-decoration:none;display:block">Verificar email</a>
         </td>
       </tr>
     </table>
-    <p style="margin:0 0 4px;font-size:13px;color:#666">O copia este enlace en tu navegador:</p>
-    <p style="margin:0;font-size:12px;color:#555;word-break:break-all">{verify_link}</p>
-    <p style="margin:24px 0 0;font-size:13px;color:#666;border-top:1px solid #222;padding-top:20px">Si no creaste una cuenta, ignora este mensaje.</p>
+    <p style="margin:0 0 4px;font-size:13px;color:#888">O copia este enlace en tu navegador:</p>
+    <p style="margin:0;font-size:12px;color:#999;word-break:break-all">{verify_link}</p>
+    <p style="margin:24px 0 0;font-size:13px;color:#888;border-top:1px solid #eee;padding-top:20px">Si no creaste una cuenta, ignora este mensaje.</p>
     """
     return _send(Mail(
         from_email=Email("noreply@vulnify.es"),
@@ -144,16 +144,16 @@ def send_breach_alert(email: str, name: str, asset: str, breach_count: int, seve
     sev_colors = {"critical": "#f44336", "high": "#ff9800", "medium": "#ffc107", "low": "#4caf50"}
     sev_color = sev_colors.get(severity, "#999")
     body = f"""
-    <p style="margin:0 0 16px">Hola <strong style="color:#fff">{name}</strong>,</p>
-    <p style="margin:0 0 20px;color:#999">Se detectaron <strong style="color:#fff">{breach_count} brecha(s)</strong> en tu activo:</p>
-    <div style="background:#1a1a1a;border-radius:12px;padding:20px;margin:0 0 24px;text-align:center">
-      <p style="margin:0 0 8px;font-size:18px;font-weight:600;color:#fff">{asset}</p>
-      <span style="display:inline-block;background:{sev_color};color:#000;font-size:12px;font-weight:700;padding:4px 14px;border-radius:999px;text-transform:uppercase">{sev_label}</span>
+    <p style="margin:0 0 16px">Hola <strong style="color:#111">{name}</strong>,</p>
+    <p style="margin:0 0 20px;color:#666">Se detectaron <strong style="color:#111">{breach_count} brecha(s)</strong> en tu activo:</p>
+    <div style="background:#f5f5f5;border-radius:12px;padding:20px;margin:0 0 24px;text-align:center">
+      <p style="margin:0 0 8px;font-size:18px;font-weight:600;color:#111">{asset}</p>
+      <span style="display:inline-block;background:{sev_color};color:#fff;font-size:12px;font-weight:700;padding:4px 14px;border-radius:999px;text-transform:uppercase">{sev_label}</span>
     </div>
     <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 24px">
       <tr>
-        <td align="center" style="background:#fff;border-radius:999px;padding:14px 36px;font-size:15px;font-weight:600">
-          <a href="{settings.SITE_URL}/dashboard" style="color:#000;text-decoration:none;display:block">Revisar dashboard</a>
+        <td align="center" style="background:#111;border-radius:999px;padding:14px 36px;font-size:15px;font-weight:600">
+          <a href="{settings.SITE_URL}/dashboard" style="color:#fff;text-decoration:none;display:block">Revisar dashboard</a>
         </td>
       </tr>
     </table>
