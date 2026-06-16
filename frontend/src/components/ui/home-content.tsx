@@ -7,9 +7,21 @@ import { HoverBorderGradient } from '@/components/ui/hover-border-gradient'
 import { Features } from '@/components/ui/features-8'
 import { BentoPricing } from '@/components/ui/bento-pricing'
 import { BentoGrid } from '@/components/ui/bento-grid'
+import { MeshGradient } from '@paper-design/shaders-react'
 
 export function FloatingPathsEffect() {
-  return <ArtificialHero />
+  return (
+    <>
+      <ArtificialHero />
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-30">
+        <MeshGradient
+          className="w-full h-full"
+          colors={["#000000", "#1a1a1a", "#333333", "#ffffff"]}
+          speed={0.5}
+        />
+      </div>
+    </>
+  )
 }
 
 const ScaleIn = ({ children, delay = 0, className = '' }: any) => (
