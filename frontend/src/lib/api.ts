@@ -293,21 +293,12 @@ export async function updateProfile(data: ProfileBody): Promise<{ ok: boolean }>
   return apiPut<{ ok: boolean }>('/api/auth/profile', data)
 }
 
-export interface NotificationPrefs {
-  notify_critical: boolean
-  notify_high: boolean
-  notify_medium: boolean
-  notify_low: boolean
-  notify_email: boolean
-  dark_mode: boolean
+export async function getDarkMode(): Promise<{ dark_mode: boolean }> {
+  return apiGet<{ dark_mode: boolean }>('/api/auth/dark-mode')
 }
 
-export async function getNotificationPrefs(): Promise<NotificationPrefs> {
-  return apiGet<NotificationPrefs>('/api/auth/notifications')
-}
-
-export async function updateNotificationPrefs(data: Partial<NotificationPrefs>): Promise<{ ok: boolean }> {
-  return apiPut<{ ok: boolean }>('/api/auth/notifications', data)
+export async function setDarkMode(enabled: boolean): Promise<{ ok: boolean }> {
+  return apiPut<{ ok: boolean }>('/api/auth/dark-mode', { dark_mode: enabled })
 }
 
 // Email verification

@@ -358,37 +358,20 @@ def delete_api_key(key_id: int, user: User = Depends(get_current_user), db: Sess
     return {"ok": True}
 
 
-# --- Notification preferences ---
+# --- Dark mode preference ---
 
-class NotificationPrefsBody(BaseModel):
-    notify_critical: bool | None = None
-    notify_high: bool | None = None
-    notify_medium: bool | None = None
-    notify_low: bool | None = None
-    notify_email: bool | None = None
-    dark_mode: bool | None = None
+class DarkModeBody(BaseModel):
+    dark_mode: bool
 
 
-@router.get("/notifications", description="Get notification preferences")
-def get_notification_prefs(user: User = Depends(get_current_user)):
-    return {
-        "notify_critical": user.notify_critical,
-        "notify_high": user.notify_high,
-        "notify_medium": user.notify_medium,
-        "notify_low": user.notify_low,
-        "notify_email": user.notify_email,
-        "dark_mode": user.dark_mode,
-    }
+@router.get("/dark-mode", description="Get dark mode preference")
+def get_dark_mode(user: User = Depends(get_current_user)):
+    return {"dark_mode": user.dark_mode}
 
 
-@router.put("/notifications", description="Update notification preferences")
-def update_notification_prefs(body: NotificationPrefsBody, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    if body.notify_critical is not None: user.notify_critical = body.notify_critical
-    if body.notify_high is not None: user.notify_high = body.notify_high
-    if body.notify_medium is not None: user.notify_medium = body.notify_medium
-    if body.notify_low is not None: user.notify_low = body.notify_low
-    if body.notify_email is not None: user.notify_email = body.notify_email
-    if body.dark_mode is not None: user.dark_mode = body.dark_mode
+@router.put("/dark-mode", description="Set dark mode preference")
+def set_dark_mode(body: DarkModeBody, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    user.dark_mode = body.dark_mode
     db.commit()
-    log_activity("user.update_notifications", user.id, user.email, body.model_dump(exclude_none=True))
+    log_activity("user.dark_mode", user.id, user.email, {"dark_mode": body.dark_mode})
     return {"ok": True}

@@ -181,6 +181,14 @@ async def lifespan(app: FastAPI):
             logger.info("Added user_id column to orders")
         except Exception:
             db.rollback()
+        # Drop notify columns from users (legacy)
+        for col in ["notify_critical", "notify_high", "notify_medium", "notify_low", "notify_email"]:
+            try:
+                db.execute(text(f"ALTER TABLE users DROP COLUMN {col}"))
+                db.commit()
+                logger.info("Dropped column %s from users", col)
+            except Exception:
+                db.rollback()
         db.close()
     except Exception as e:
         logger.warning("Could not seed data: %s", e)

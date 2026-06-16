@@ -9,7 +9,7 @@ import {
 } from 'lucide-react'
 import {
   updateProfile, sendVerification, verifyEmail, getApiKeys, createApiKey, deleteApiKey,
-  getMyOrders, getNotificationPrefs, updateNotificationPrefs, downloadAdminCSV,
+  getMyOrders, getDarkMode, setDarkMode as apiSetDarkMode,
   type ApiKey, type Order,
 } from '@/lib/api'
 
@@ -45,11 +45,8 @@ export function DashboardPage() {
   // Dark mode
   const [darkMode, setDarkMode] = useState(true)
 
-  // Notifications
-  const [notif, setNotif] = useState({ notify_critical: true, notify_high: true, notify_medium: true, notify_low: false, notify_email: true })
-
   useEffect(() => {
-    getNotificationPrefs().then(p => { setDarkMode(p.dark_mode); setNotif(p) }).catch(() => {})
+    getDarkMode().then(p => setDarkMode(p.dark_mode)).catch(() => {})
     getApiKeys().then(setApiKeys).catch(() => {})
     getMyOrders().then(r => setOrders(r.items)).catch(() => {})
   }, [])
@@ -144,7 +141,7 @@ export function DashboardPage() {
   const handleDarkModeToggle = async () => {
     const next = !darkMode
     setDarkMode(next)
-    try { await updateNotificationPrefs({ dark_mode: next }) } catch {}
+    try { await apiSetDarkMode(next) } catch {}
   }
 
   return (
@@ -407,46 +404,18 @@ export function DashboardPage() {
         {/* Preferences */}
         <section id="prefs" className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 mb-8">
           <h2 className="text-lg font-semibold mb-6">Preferencias</h2>
-          <div className="space-y-4">
-            {/* Dark mode */}
-            <div className="flex items-center justify-between p-4 rounded-xl bg-white/[0.02] border border-white/[0.04]">
-              <div className="flex items-center gap-3">
-                {darkMode ? <Moon className="size-5 text-zinc-400" /> : <Sun className="size-5 text-zinc-400" />}
-                <div>
-                  <p className="text-sm font-medium text-white">Modo oscuro</p>
-                  <p className="text-xs text-zinc-500">Sincronizado con tu cuenta</p>
-                </div>
+          <div className="flex items-center justify-between p-4 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+            <div className="flex items-center gap-3">
+              {darkMode ? <Moon className="size-5 text-zinc-400" /> : <Sun className="size-5 text-zinc-400" />}
+              <div>
+                <p className="text-sm font-medium text-white">Modo oscuro</p>
+                <p className="text-xs text-zinc-500">Sincronizado con tu cuenta</p>
               </div>
-              <button onClick={handleDarkModeToggle}
-                className={`relative w-11 h-6 rounded-full transition-colors cursor-pointer border-none ${darkMode ? 'bg-white' : 'bg-zinc-700'}`}>
-                <span className={`absolute top-0.5 left-0.5 size-5 rounded-full bg-black transition-transform ${darkMode ? 'translate-x-5' : ''}`} />
-              </button>
             </div>
-
-            {/* Notification preferences */}
-            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.04]">
-              <p className="text-sm font-medium text-white mb-3">Notificaciones por email</p>
-              {([
-                { key: 'notify_critical', label: 'Alertas críticas' },
-                { key: 'notify_high', label: 'Alertas altas' },
-                { key: 'notify_medium', label: 'Alertas medias' },
-                { key: 'notify_low', label: 'Alertas bajas' },
-                { key: 'notify_email', label: 'Resúmenes periódicos' },
-              ] as const).map(({ key, label }) => (
-                <div key={key} className="flex items-center justify-between py-2">
-                  <span className="text-sm text-zinc-400">{label}</span>
-                  <button
-                    onClick={() => {
-                      const next = { ...notif, [key]: !(notif as any)[key] }
-                      setNotif(next)
-                      updateNotificationPrefs(next)
-                    }}
-                    className={`relative w-9 h-5 rounded-full transition-colors cursor-pointer border-none ${(notif as any)[key] ? 'bg-white' : 'bg-zinc-700'}`}>
-                    <span className={`absolute top-0.5 left-0.5 size-4 rounded-full bg-black transition-transform ${(notif as any)[key] ? 'translate-x-4' : ''}`} />
-                  </button>
-                </div>
-              ))}
-            </div>
+            <button onClick={handleDarkModeToggle}
+              className={`relative w-11 h-6 rounded-full transition-colors cursor-pointer border-none ${darkMode ? 'bg-white' : 'bg-zinc-700'}`}>
+              <span className={`absolute top-0.5 left-0.5 size-5 rounded-full bg-black transition-transform ${darkMode ? 'translate-x-5' : ''}`} />
+            </button>
           </div>
         </section>
       </div>
