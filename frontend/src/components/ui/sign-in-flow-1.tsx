@@ -431,11 +431,12 @@ interface SignInPageProps {
   mode: 'login' | 'register';
   onSubmit: (data: { name?: string; email: string; password: string }) => void;
   onSwitchMode: () => void;
+  onForgotPassword?: () => void;
   loading?: boolean;
   error?: string;
 }
 
-export const SignInPage = ({ mode, onSubmit, onSwitchMode, loading, error }: SignInPageProps) => {
+export const SignInPage = ({ mode, onSubmit, onSwitchMode, onForgotPassword, loading, error }: SignInPageProps) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -524,6 +525,17 @@ export const SignInPage = ({ mode, onSubmit, onSwitchMode, loading, error }: Sig
                     {showPassword ? 'Ocultar' : 'Mostrar'}
                   </button>
                 </div>
+                {mode === 'login' && onForgotPassword && (
+                  <div className="text-center -mt-2">
+                    <button
+                      type="button"
+                      onClick={onForgotPassword}
+                      className="text-xs text-white/40 hover:text-white/70 underline cursor-pointer bg-transparent border-none"
+                    >
+                      ¿Olvidaste tu contraseña?
+                    </button>
+                  </div>
+                )}
                 <button
                   type="submit"
                   disabled={loading}

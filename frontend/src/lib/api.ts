@@ -266,3 +266,23 @@ export async function adminUpdateOrder(orderId: number, data: Partial<{ client_n
 export async function adminDeleteOrder(orderId: number, password: string): Promise<{ ok: boolean }> {
   return apiDelete<{ ok: boolean }>(`/api/admin/orders/${orderId}?password=${encodeURIComponent(password)}`)
 }
+
+export async function apiForgotPassword(email: string): Promise<{ ok: boolean; message: string }> {
+  const res = await fetch(`${BASE}/api/auth/forgot-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  })
+  if (!res.ok) throw new Error('Error al solicitar restablecimiento')
+  return res.json()
+}
+
+export async function apiResetPassword(token: string, password: string): Promise<{ ok: boolean; message?: string }> {
+  const res = await fetch(`${BASE}/api/auth/reset-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, password }),
+  })
+  if (!res.ok) throw new Error('Error al restablecer la contraseña')
+  return res.json()
+}

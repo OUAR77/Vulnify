@@ -4,6 +4,8 @@ import { SiteLayout } from '@/components/ui/site-layout'
 import { FloatingPathsEffect, HomeContent } from '@/components/ui/home-content'
 import { BlogPage, PrivacidadPage, TerminosPage, CookiesPage, CasosExitoPage, ServicioPage } from '@/pages/pages'
 import { LoginPage, RegisterPage } from '@/pages/auth'
+import { ForgotPasswordPage } from '@/pages/forgot-password'
+import { ResetPasswordPage } from '@/pages/reset-password'
 import { DashboardPage } from '@/components/ui/dashboard-page'
 import { AdminPage } from '@/components/ui/admin-page'
 import { ErrorBoundary } from '@/components/ui/error-boundary'
@@ -28,6 +30,8 @@ function App() {
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route element={<SiteLayout />}>

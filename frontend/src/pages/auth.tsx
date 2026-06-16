@@ -92,6 +92,7 @@ export function LoginPage() {
       mode="login"
       onSubmit={handleLogin}
       onSwitchMode={() => navigate('/register')}
+      onForgotPassword={() => navigate('/forgot-password')}
       loading={loading}
       error={error}
     />
