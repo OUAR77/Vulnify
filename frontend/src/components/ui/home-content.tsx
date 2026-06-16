@@ -8,6 +8,7 @@ import { BentoPricing } from '@/components/ui/bento-pricing'
 import { BentoGrid } from '@/components/ui/bento-grid'
 import { MeshGradient } from '@paper-design/shaders-react'
 import FlowArt, { FlowSection } from './story-scroll'
+import Testimonials from './twitter-testimonial-cards'
 
 export function FloatingPathsEffect() {
   return (
@@ -105,12 +106,6 @@ export function HomeContent({ onAboutOpen }: { onAboutOpen?: () => void }) {
   ]
 
   const words = ['CREA', 'OPTIMIZA', 'ESCALA', 'DOMINA']
-
-  const caseStudies = [
-    { metric: '+300%', label: 'leads orgánicos', company: 'TechFlow', sector: 'SaaS', desc: 'Rediseñamos su web con IA conversacional. Pasaron de 10 a 40 leads/mes sin invertir en anuncios.' },
-    { metric: '20h', label: 'semanales ahorradas', company: 'InnovaCorp', sector: 'Consultoría', desc: 'Automatizamos su proceso de reporting con un dashboard predictivo. Su equipo recuperó tiempo estratégico.' },
-    { metric: '2.5x', label: 'conversión', company: 'DataSmart', sector: 'E-commerce', desc: 'Integramos recomendaciones inteligentes y chatbots. Su ticket medio creció un 150% en 90 días.' },
-  ]
 
   return (
     <>
@@ -335,33 +330,15 @@ export function HomeContent({ onAboutOpen }: { onAboutOpen?: () => void }) {
         </div>
       </div>
 
-      {/* Case Studies */}
+      {/* Testimonials */}
       <div className="w-full border-b border-white/[0.04]">
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
           <div className="mb-16 text-center">
-            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">Casos de éxito</span>
-            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mt-5">Resultados que hablan.</h2>
+            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">Reseñas</span>
+            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mt-5">Lo que dicen nuestros clientes.</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {caseStudies.map((c) => (
-              <div key={c.company} className="group p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500 relative overflow-hidden h-full flex flex-col">
-                <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
-                <div className="mb-5">
-                  <span className="text-5xl md:text-6xl font-bold text-white tracking-tight">{c.metric}</span>
-                  <span className="block text-sm text-zinc-600 mt-1">{c.label}</span>
-                </div>
-                <p className="text-sm text-zinc-400 leading-relaxed mb-6 flex-1">&ldquo;{c.desc}&rdquo;</p>
-                <div className="pt-5 border-t border-white/[0.04] flex items-center justify-between">
-                  <div>
-                    <div className="text-sm font-medium text-white">{c.company}</div>
-                    <div className="text-xs text-zinc-600">{c.sector}</div>
-                  </div>
-                  <span className="text-xs text-zinc-600 group-hover:text-zinc-400 transition-colors flex items-center gap-1">
-                    Ver caso <ArrowUpRight className="size-3" />
-                  </span>
-                </div>
-              </div>
-            ))}
+          <div className="flex justify-center">
+            <Testimonials />
           </div>
         </div>
       </div>
