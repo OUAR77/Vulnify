@@ -1,5 +1,5 @@
 import logging
-import os
+from datetime import datetime
 from config import settings
 
 logger = logging.getLogger("vulnify.email")
@@ -30,6 +30,26 @@ def send_password_reset(email: str, token: str) -> bool:
         return True
     except Exception as e:
         logger.error("Failed to send email to %s: %s", email, e)
+        return False
+
+
+def send_admin_login_alert(email: str, name: str, ip: str) -> bool:
+    if not SG:
+        logger.warning("SendGrid no configurado, admin login alert for %s from %s", email, ip)
+        return False
+    try:
+        mail = Mail(
+            from_email=Email("noreply@vulnify.es"),
+            to_emails=To(email),
+            subject="[Vulnify] Inicio de sesión admin detectado",
+            plain_text_content=f"Hola {name},\n\nSe ha detectado un inicio de sesión en tu cuenta de administrador de Vulnify.\n\nIP: {ip}\nFecha: {datetime.now()}\n\nSi no fuiste tú, cambia tu contraseña inmediatamente.",
+            html_content=f"<h2>Inicio de sesión admin</h2><p>Hola {name},</p><p>Se ha detectado un inicio de sesión en tu cuenta de administrador.</p><table><tr><td><strong>IP:</strong></td><td>{ip}</td></tr><tr><td><strong>Fecha:</strong></td><td>{datetime.now()}</td></tr></table><p style='color: #dc3545;'>Si no fuiste tú, <strong><a href='{settings.SITE_URL}/login'>cambia tu contraseña</a></strong> inmediatamente.</p><hr><p style='color: #6c757d;'>Vulnify - Monitorización de Reputación Digital</p>",
+        )
+        response = SG.send(mail)
+        logger.info("Admin login alert sent to %s (status %s)", email, response.status_code)
+        return True
+    except Exception as e:
+        logger.error("Failed to send admin login alert to %s: %s", email, e)
         return False
 
 

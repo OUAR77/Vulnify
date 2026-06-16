@@ -146,6 +146,12 @@ def login(request: Request, body: LoginBody, db: Session = Depends(get_db)):
     token = create_access_token({"sub": str(user.id)})
     refresh_token = create_refresh_token(user.id)
     log_activity("user.login", user.id, user.email, {}, ip)
+    if user.role == "admin":
+        try:
+            from modules.email import send_admin_login_alert
+            send_admin_login_alert(user.email, user.name, ip)
+        except Exception as e:
+            logger.warning("Admin login alert not sent: %s", e)
     return {
         "token": token, "refresh_token": refresh_token,
         "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role, "verified": bool(user.is_verified)},

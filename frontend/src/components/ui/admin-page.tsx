@@ -51,6 +51,11 @@ export function AdminPage() {
   const [orderForm, setOrderForm] = useState({ client_name: '', client_email: '', service: '', description: '', amount: 0, status: 'pending' })
   const [editingOrder, setEditingOrder] = useState<Order | null>(null)
 
+  // Password confirmation for destructive actions
+  const [passwordModal, setPasswordModal] = useState<{ action: string; id: number; extra?: string } | null>(null)
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [passwordError, setPasswordError] = useState('')
+
   const [tab, setTab] = useState<'stats' | 'users' | 'logs' | 'messages' | 'orders'>('stats')
 
   const loadStats = useCallback(async () => {
@@ -101,19 +106,22 @@ export function AdminPage() {
   }, [isAuthenticated, isAdmin])
 
   const handleDeleteUser = async (userId: number) => {
-    if (!confirm('¿Seguro que quieres eliminar este usuario?')) return
+    if (!confirmPassword) return
     setUserActionLoading(userId)
-    try { await adminDeleteUser(userId); loadUsers(usersPage, searchQuery || undefined) }
-    catch (e: any) { alert(e.message) }
+    try { await adminDeleteUser(userId, confirmPassword); loadUsers(usersPage, searchQuery || undefined) }
+    catch (e: any) { setPasswordError(e.message); setUserActionLoading(null); return }
     finally { setUserActionLoading(null) }
+    setPasswordModal(null); setConfirmPassword(''); setPasswordError('')
   }
 
   const handleToggleRole = async (userId: number, currentRole: string) => {
+    if (!confirmPassword) return
     const newRole = currentRole === 'admin' ? 'user' : 'admin'
     setUserActionLoading(userId)
-    try { await adminChangeRole(userId, newRole); loadUsers(usersPage, searchQuery || undefined) }
-    catch (e: any) { alert(e.message) }
+    try { await adminChangeRole(userId, newRole, confirmPassword); loadUsers(usersPage, searchQuery || undefined) }
+    catch (e: any) { setPasswordError(e.message); setUserActionLoading(null); return }
     finally { setUserActionLoading(null) }
+    setPasswordModal(null); setConfirmPassword(''); setPasswordError('')
   }
 
   const handleSearch = (e: React.FormEvent) => {
@@ -136,9 +144,10 @@ export function AdminPage() {
   }
 
   const handleDeleteMessage = async (id: number) => {
-    if (!confirm('¿Eliminar este mensaje?')) return
-    try { await adminDeleteMessage(id); loadMessages(messagesPage); if (selectedMessage?.id === id) setSelectedMessage(null) }
-    catch { /* ignore */ }
+    if (!confirmPassword) return
+    try { await adminDeleteMessage(id, confirmPassword); loadMessages(messagesPage); if (selectedMessage?.id === id) setSelectedMessage(null) }
+    catch (e: any) { setPasswordError(e.message); return }
+    setPasswordModal(null); setConfirmPassword(''); setPasswordError('')
   }
 
   const handleOrderSubmit = async (e: React.FormEvent) => {
@@ -170,9 +179,10 @@ export function AdminPage() {
   }
 
   const handleDeleteOrder = async (id: number) => {
-    if (!confirm('¿Eliminar este pedido?')) return
-    try { await adminDeleteOrder(id); loadOrders(ordersPage) }
-    catch (e: any) { alert(e.message) }
+    if (!confirmPassword) return
+    try { await adminDeleteOrder(id, confirmPassword); loadOrders(ordersPage) }
+    catch (e: any) { setPasswordError(e.message); return }
+    setPasswordModal(null); setConfirmPassword(''); setPasswordError('')
   }
 
   const pages = Math.ceil(usersTotal / 50)
@@ -285,12 +295,12 @@ export function AdminPage() {
                       <td className="py-3 px-4 text-zinc-500 text-xs">{u.created_at?.slice(0, 10)}</td>
                       <td className="py-3 px-4 text-right">
                         <div className="flex items-center justify-end gap-2">
-                          <button onClick={() => handleToggleRole(u.id, u.role)} disabled={userActionLoading === u.id}
+                          <button onClick={() => setPasswordModal({ action: 'role', id: u.id, extra: u.role })} disabled={userActionLoading === u.id}
                             className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors disabled:opacity-50 cursor-pointer bg-transparent">
                             {u.role === 'admin' ? 'Quitar admin' : 'Hacer admin'}
                           </button>
                           {u.id !== user?.id && (
-                            <button onClick={() => handleDeleteUser(u.id)} disabled={userActionLoading === u.id}
+                            <button onClick={() => setPasswordModal({ action: 'delete_user', id: u.id })} disabled={userActionLoading === u.id}
                               className="text-xs px-2 py-1 rounded border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-50 cursor-pointer bg-transparent">
                               <Trash2 className="size-3.5" />
                             </button>
@@ -349,7 +359,7 @@ export function AdminPage() {
                       </div>
                       <div className="flex gap-2">
                         <a href={`mailto:${selectedMessage.email}`} className="text-xs px-3 py-1.5 rounded border border-white/[0.1] text-zinc-400 hover:text-white transition-colors no-underline">Responder</a>
-                        <button onClick={() => handleDeleteMessage(selectedMessage.id)}
+                        <button onClick={() => setPasswordModal({ action: 'delete_message', id: selectedMessage.id })}
                           className="text-xs px-3 py-1.5 rounded border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer bg-transparent">
                           <Trash2 className="size-3.5" />
                         </button>
@@ -479,7 +489,7 @@ export function AdminPage() {
                         <div className="flex items-center justify-end gap-2">
                           <button onClick={() => handleEditOrder(o)}
                             className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent">Editar</button>
-                          <button onClick={() => handleDeleteOrder(o.id)}
+                          <button onClick={() => setPasswordModal({ action: 'delete_order', id: o.id })}
                             className="text-xs px-2 py-1 rounded border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer bg-transparent">
                             <Trash2 className="size-3.5" />
                           </button>
@@ -554,6 +564,30 @@ export function AdminPage() {
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {/* Password confirmation modal */}
+        {passwordModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => { setPasswordModal(null); setConfirmPassword(''); setPasswordError('') }}>
+            <div className="bg-zinc-900 border border-white/[0.1] rounded-xl p-6 w-full max-w-sm mx-4" onClick={(e) => e.stopPropagation()}>
+              <h3 className="text-lg font-semibold mb-2">Confirmar contraseña</h3>
+              <p className="text-sm text-zinc-400 mb-4">Ingresa tu contraseña para continuar con esta acción.</p>
+              {passwordError && <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400 mb-4">{passwordError}</div>}
+              <input type="password" placeholder="Tu contraseña" value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30 mb-4" autoFocus
+                onKeyDown={(e) => { if (e.key === 'Enter') { const pm = passwordModal; if (pm?.action === 'delete_user') handleDeleteUser(pm.id); else if (pm?.action === 'role') handleToggleRole(pm.id, pm.extra || 'user'); else if (pm?.action === 'delete_message') handleDeleteMessage(pm.id); else if (pm?.action === 'delete_order') handleDeleteOrder(pm.id) } }} />
+              <div className="flex gap-3">
+                <button onClick={() => { const pm = passwordModal; if (pm?.action === 'delete_user') handleDeleteUser(pm.id); else if (pm?.action === 'role') handleToggleRole(pm.id, pm.extra || 'user'); else if (pm?.action === 'delete_message') handleDeleteMessage(pm.id); else if (pm?.action === 'delete_order') handleDeleteOrder(pm.id) }}
+                  disabled={!confirmPassword || userActionLoading !== null}
+                  className="flex-1 py-2.5 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors disabled:opacity-50 cursor-pointer border-none">
+                  {userActionLoading !== null ? 'Verificando...' : 'Confirmar'}
+                </button>
+                <button onClick={() => { setPasswordModal(null); setConfirmPassword(''); setPasswordError('') }}
+                  className="px-4 py-2.5 rounded-lg border border-white/[0.1] text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer bg-transparent">Cancelar</button>
+              </div>
+            </div>
           </div>
         )}
       </div>

@@ -1,11 +1,12 @@
 import logging
-from fastapi import APIRouter, Depends, Query, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from database import get_db
 from models.order import Order
 from models.user import User
-from modules.auth import require_admin
+from modules.auth import require_admin_totp, verify_password
+from config import limiter
 
 router = APIRouter(prefix="/api/admin")
 logger = logging.getLogger("vulnify.api.orders")
@@ -30,10 +31,12 @@ class OrderUpdate(BaseModel):
 
 
 @router.get("/orders", description="List orders (admin only)")
+@limiter.limit("30/minute")
 def admin_list_orders(
+    request: Request,
     page: int = Query(1, ge=1),
     per_page: int = Query(50, ge=1, le=100),
-    admin: User = Depends(require_admin),
+    admin: User = Depends(require_admin_totp),
     db: Session = Depends(get_db),
 ):
     q = db.query(Order).order_by(Order.created_at.desc())
@@ -60,9 +63,11 @@ def admin_list_orders(
 
 
 @router.post("/orders", description="Create an order (admin only)")
+@limiter.limit("20/minute")
 def admin_create_order(
+    request: Request,
     data: OrderCreate,
-    admin: User = Depends(require_admin),
+    admin: User = Depends(require_admin_totp),
     db: Session = Depends(get_db),
 ):
     order = Order(
@@ -89,10 +94,12 @@ def admin_create_order(
 
 
 @router.put("/orders/{order_id}", description="Update an order (admin only)")
+@limiter.limit("20/minute")
 def admin_update_order(
+    request: Request,
     order_id: int,
     data: OrderUpdate,
-    admin: User = Depends(require_admin),
+    admin: User = Depends(require_admin_totp),
     db: Session = Depends(get_db),
 ):
     order = db.query(Order).filter(Order.id == order_id).first()
@@ -115,11 +122,16 @@ def admin_update_order(
 
 
 @router.delete("/orders/{order_id}", description="Delete an order (admin only)")
+@limiter.limit("10/minute")
 def admin_delete_order(
+    request: Request,
     order_id: int,
-    admin: User = Depends(require_admin),
+    password: str | None = Query(None),
+    admin: User = Depends(require_admin_totp),
     db: Session = Depends(get_db),
 ):
+    if not password or not verify_password(password, admin.password):
+        raise HTTPException(status_code=403, detail="Contraseña incorrecta")
     order = db.query(Order).filter(Order.id == order_id).first()
     if not order:
         raise HTTPException(status_code=404, detail="Pedido no encontrado")

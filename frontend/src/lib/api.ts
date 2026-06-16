@@ -14,6 +14,12 @@ export interface AuthResponse {
   user: User
 }
 
+export interface TotpRequiredResponse {
+  totp_required: true
+  user_id: number
+  message: string
+}
+
 function getToken(): string | null {
   return localStorage.getItem('vulnify_token')
 }
@@ -108,13 +114,38 @@ export async function apiGet<T>(path: string): Promise<T> {
   return res.json()
 }
 
-export async function login(email: string, password: string): Promise<AuthResponse> {
-  return apiPost<AuthResponse>('/api/auth/login', { email, password })
+export async function login(email: string, password: string): Promise<AuthResponse | TotpRequiredResponse> {
+  return apiPost<AuthResponse | TotpRequiredResponse>('/api/auth/login', { email, password })
 }
 
 export async function register(name: string, email: string, password: string): Promise<AuthResponse> {
   return apiPost<AuthResponse>('/api/auth/register', { name, email, password })
 }
+
+// TOTP / 2FA
+export interface TotpSetupResponse {
+  secret: string
+  qr_b64: string
+}
+
+export async function totpSetup(): Promise<TotpSetupResponse> {
+  return apiPost<TotpSetupResponse>('/api/auth/totp/setup', {})
+}
+
+export async function totpEnable(code: string): Promise<{ ok: boolean; message: string }> {
+  return apiPost<{ ok: boolean; message: string }>('/api/auth/totp/enable', { code })
+}
+
+export async function totpDisable(code: string): Promise<{ ok: boolean; message: string }> {
+  return apiPost<{ ok: boolean; message: string }>('/api/auth/totp/disable', { code })
+}
+
+export async function totpVerifyLogin(userId: number, code: string): Promise<AuthResponse> {
+  return apiPost<AuthResponse>('/api/auth/totp/verify-login', { user_id: userId, code })
+}
+
+export async function adminVerifyPassword(): Promise<{ ok: boolean }> {
+  return apiPost<{ ok: boolean }>('/api/admin/verify-password', {})}
 
 export async function getMe(): Promise<User> {
   return apiGet<User>('/api/auth/me')
@@ -166,12 +197,12 @@ export async function adminGetUsers(page = 1, search?: string): Promise<AdminUse
   return apiGet<AdminUsersResponse>(path)
 }
 
-export async function adminDeleteUser(userId: number): Promise<{ ok: boolean }> {
-  return apiDelete<{ ok: boolean }>(`/api/admin/users/${userId}`)
+export async function adminDeleteUser(userId: number, password: string): Promise<{ ok: boolean }> {
+  return apiDelete<{ ok: boolean }>(`/api/admin/users/${userId}?password=${encodeURIComponent(password)}`)
 }
 
-export async function adminChangeRole(userId: number, role: string): Promise<{ ok: boolean }> {
-  return apiPut<{ ok: boolean }>(`/api/admin/users/${userId}/role?role=${encodeURIComponent(role)}`, {})
+export async function adminChangeRole(userId: number, role: string, password: string): Promise<{ ok: boolean }> {
+  return apiPut<{ ok: boolean }>(`/api/admin/users/${userId}/role?role=${encodeURIComponent(role)}&password=${encodeURIComponent(password)}`, {})
 }
 
 export async function adminGetActivityLogs(page = 1, action?: string): Promise<{ total: number; page: number; per_page: number; items: ActivityLog[] }> {
@@ -204,8 +235,8 @@ export async function adminMarkMessageRead(messageId: number): Promise<{ ok: boo
   return apiPut<{ ok: boolean }>(`/api/admin/messages/${messageId}/read`, {})
 }
 
-export async function adminDeleteMessage(messageId: number): Promise<{ ok: boolean }> {
-  return apiDelete<{ ok: boolean }>(`/api/admin/messages/${messageId}`)
+export async function adminDeleteMessage(messageId: number, password: string): Promise<{ ok: boolean }> {
+  return apiDelete<{ ok: boolean }>(`/api/admin/messages/${messageId}?password=${encodeURIComponent(password)}`)
 }
 
 // Orders
@@ -232,6 +263,6 @@ export async function adminUpdateOrder(orderId: number, data: Partial<{ client_n
   return apiPut<{ ok: boolean }>(`/api/admin/orders/${orderId}`, data)
 }
 
-export async function adminDeleteOrder(orderId: number): Promise<{ ok: boolean }> {
-  return apiDelete<{ ok: boolean }>(`/api/admin/orders/${orderId}`)
+export async function adminDeleteOrder(orderId: number, password: string): Promise<{ ok: boolean }> {
+  return apiDelete<{ ok: boolean }>(`/api/admin/orders/${orderId}?password=${encodeURIComponent(password)}`)
 }
