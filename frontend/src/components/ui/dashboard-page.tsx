@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useAuth } from '@/lib/auth-context'
 import { useNavigate } from 'react-router-dom'
-import { totpSetup, totpEnable, totpDisable } from '@/lib/api'
+import { totpSetup, totpEnable, totpDisable, setUser as storeUser, getStoredUser } from '@/lib/api'
 import { User, LogOut, Mail, Calendar, ArrowLeft, ShieldAlert, Smartphone, Check, X } from 'lucide-react'
 
 export function DashboardPage() {
@@ -40,6 +40,8 @@ export function DashboardPage() {
     setTotpError('')
     try {
       await totpEnable(totpCode)
+      const currentUser = getStoredUser()
+      if (currentUser) storeUser({ ...currentUser, totp_enabled: true })
       setTotpMode('idle')
       setTotpQr('')
       setTotpCode('')
@@ -57,6 +59,8 @@ export function DashboardPage() {
     setTotpError('')
     try {
       await totpDisable(totpCode)
+      const currentUser = getStoredUser()
+      if (currentUser) storeUser({ ...currentUser, totp_enabled: false })
       setTotpMode('idle')
       setTotpCode('')
       window.location.reload()
