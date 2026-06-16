@@ -240,8 +240,8 @@ export function AdminPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
                 { label: 'Usuarios', value: stats?.total_users ?? '-', icon: Users },
-                { label: 'Activos monitoreados', value: stats?.total_assets ?? '-', icon: ShieldAlert },
-                { label: 'Alertas', value: stats?.total_alerts ?? '-', icon: Activity },
+                { label: 'Mensajes', value: stats?.total_messages ?? '-', icon: MessageSquare },
+                { label: 'Pedidos', value: stats?.total_orders ?? '-', icon: ShoppingCart },
                 { label: 'Registros de actividad', value: stats?.total_logs ?? '-', icon: Activity },
               ].map((card) => (
                 <div key={card.label} className="rounded-xl bg-white/[0.02] border border-white/[0.06] p-6">

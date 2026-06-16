@@ -165,10 +165,9 @@ export interface AdminUser {
 
 export interface AdminStats {
   total_users: number
-  total_assets: number
-  total_alerts: number
+  total_messages: number
+  total_orders: number
   total_logs: number
-  assets_by_type: { domain: number; email: number }
 }
 
 export interface AdminUsersResponse {

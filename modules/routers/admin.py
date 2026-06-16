@@ -4,8 +4,6 @@ from sqlalchemy.orm import Session
 from sqlalchemy import desc
 from database import get_db
 from models.user import User
-from models.asset import MonitoredAsset
-from models.alert import BreachAlert
 from models.activity_log import ActivityLog
 from modules.auth import require_admin, require_admin_totp, verify_password
 from modules.activity_logger import log_activity, get_client_ip
@@ -70,15 +68,13 @@ def admin_change_role(request: Request, user_id: int, role: str = Query(...), pa
 @router.get("/stats", description="Global platform stats (admin only)")
 @limiter.limit("30/minute")
 def admin_stats(request: Request, admin: User = Depends(require_admin_totp), db: Session = Depends(get_db)):
+    from models.message import Message
+    from models.order import Order
     return {
         "total_users": db.query(User).count(),
-        "total_assets": db.query(MonitoredAsset).count(),
-        "total_alerts": db.query(BreachAlert).count(),
+        "total_messages": db.query(Message).count(),
+        "total_orders": db.query(Order).count(),
         "total_logs": db.query(ActivityLog).count(),
-        "assets_by_type": {
-            "domain": db.query(MonitoredAsset).filter(MonitoredAsset.type == "domain").count(),
-            "email": db.query(MonitoredAsset).filter(MonitoredAsset.type == "email").count(),
-        }
     }
 
 
