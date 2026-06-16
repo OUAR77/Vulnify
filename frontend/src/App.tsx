@@ -6,12 +6,11 @@ import { BlogPage, PrivacidadPage, TerminosPage, CookiesPage, CasosExitoPage, Se
 import { ErrorBoundary } from '@/components/ui/error-boundary'
 
 function HomePage() {
-  const { setAboutOpen } = useOutletContext<{ setAboutOpen: (v: boolean) => void }>()
   return (
     <>
       <FloatingPathsEffect />
       <div className="relative z-10">
-        <HomeContent onAboutOpen={() => setAboutOpen(true)} />
+        <HomeContent />
       </div>
     </>
   )
