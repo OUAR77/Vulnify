@@ -45,8 +45,8 @@ const FloatingPaths = ({ position = 1, opacity = 0.5 }: { position?: number; opa
 export function FloatingPathsEffect() {
   return (
     <>
-      <div className="fixed inset-0 z-0" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% -20%, var(--glow-color, rgba(0,255,0,0.06)), rgba(255,255,255,0))' }} />
-      <div className="fixed inset-0 z-0">
+      <div className="fixed inset-0 z-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% -20%, var(--glow-color, rgba(0,255,0,0.06)), rgba(255,255,255,0))' }} />
+      <div className="fixed inset-0 z-0 pointer-events-none">
         <FloatingPaths position={1} opacity={0.4} />
         <FloatingPaths position={-1} opacity={0.4} />
       </div>

@@ -95,6 +95,8 @@ export function SiteLayout() {
         const el = document.getElementById(location.hash.replace('#', ''))
         el?.scrollIntoView({ behavior: 'smooth' })
       }, 100)
+    } else {
+      window.scrollTo(0, 0)
     }
   }, [location.pathname, location.hash])
 
