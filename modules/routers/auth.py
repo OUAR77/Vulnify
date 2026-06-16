@@ -182,50 +182,38 @@ def verify_totp_login(request: Request, body: TotpVerifyBody, db: Session = Depe
 
 
 @router.post("/totp/setup", description="Enable 2FA and get QR code")
-def setup_totp(user: User = Depends(get_current_user)):
+def setup_totp(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     if user.totp_secret and user.totp_enabled:
         raise HTTPException(status_code=400, detail="2FA ya está habilitado")
     secret = user.totp_secret or generate_totp_secret()
     if not user.totp_secret:
         user.totp_secret = secret
-        from database import SessionLocal
-        db = SessionLocal()
-        db.add(user)
         db.commit()
-        db.close()
     qr_b64 = generate_qr_b64(secret, user.email)
     return {"secret": secret, "qr_b64": qr_b64}
 
 
 @router.post("/totp/enable", description="Confirm and enable 2FA")
-def enable_totp(code: str = Body(embed=True), user: User = Depends(get_current_user)):
+def enable_totp(code: str = Body(embed=True), user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     if not user.totp_secret:
         raise HTTPException(status_code=400, detail="Primero haz setup de 2FA")
     if not verify_totp(user.totp_secret, code):
         raise HTTPException(status_code=400, detail="Código inválido")
     user.totp_enabled = True
-    from database import SessionLocal
-    db = SessionLocal()
-    db.add(user)
     db.commit()
-    db.close()
     log_activity("user.totp_enabled", user.id, user.email, {})
     return {"ok": True, "message": "2FA activado correctamente"}
 
 
 @router.post("/totp/disable", description="Disable 2FA")
-def disable_totp(code: str = Body(embed=True), user: User = Depends(get_current_user)):
+def disable_totp(code: str = Body(embed=True), user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     if not user.totp_enabled:
         raise HTTPException(status_code=400, detail="2FA no está activado")
     if not verify_totp(user.totp_secret, code):
         raise HTTPException(status_code=400, detail="Código inválido")
     user.totp_secret = None
     user.totp_enabled = False
-    from database import SessionLocal
-    db = SessionLocal()
-    db.add(user)
     db.commit()
-    db.close()
     log_activity("user.totp_disabled", user.id, user.email, {})
     return {"ok": True, "message": "2FA desactivado"}
 
