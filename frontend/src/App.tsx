@@ -5,6 +5,7 @@ import { FloatingPathsEffect, HomeContent } from '@/components/ui/home-content'
 import { BlogPage, PrivacidadPage, TerminosPage, CookiesPage, CasosExitoPage, ServicioPage } from '@/pages/pages'
 import { LoginPage, RegisterPage } from '@/pages/auth'
 import { DashboardPage } from '@/components/ui/dashboard-page'
+import { AdminPage } from '@/components/ui/admin-page'
 import { ErrorBoundary } from '@/components/ui/error-boundary'
 import { AuthProvider } from '@/lib/auth-context'
 
@@ -28,6 +29,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/admin" element={<AdminPage />} />
             <Route element={<SiteLayout />}>
               <Route path="/" element={<HomePage />} />
               <Route path="/blog" element={<BlogPage />} />
