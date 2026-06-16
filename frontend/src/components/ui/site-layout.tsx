@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Outlet, useNavigate, useLocation, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowUpRight, MessageCircle, User } from 'lucide-react'
+import { ArrowUpRight, MessageCircle, User, ShieldAlert } from 'lucide-react'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { HoverBorderGradient } from '@/components/ui/hover-border-gradient'
 import { MenuToggleIcon } from '@/components/ui/menu-toggle-icon'
@@ -73,12 +73,20 @@ const footerLinks = [
 ]
 
 function AuthButtons() {
-  const { user, isAuthenticated, logout } = useAuth()
+  const { user, isAuthenticated, isAdmin, logout } = useAuth()
   const navigate = useNavigate()
 
   if (isAuthenticated) {
     return (
       <div className="flex items-center gap-2">
+        {isAdmin && (
+          <button
+            onClick={() => navigate('/admin')}
+            className="text-xs text-blue-400 hover:text-blue-300 transition-colors bg-transparent border-none cursor-pointer"
+          >
+            Admin
+          </button>
+        )}
         <button
           onClick={() => navigate('/dashboard')}
           className="flex items-center gap-1.5 text-sm text-zinc-500 hover:text-white transition-colors bg-transparent border-none cursor-pointer"
@@ -109,12 +117,21 @@ function AuthButtons() {
 }
 
 function MobileAuthButtons() {
-  const { user, isAuthenticated, logout } = useAuth()
+  const { user, isAuthenticated, isAdmin, logout } = useAuth()
   const navigate = useNavigate()
 
   if (isAuthenticated) {
     return (
       <div className="flex flex-col items-center gap-4 mt-4">
+        {isAdmin && (
+          <button
+            onClick={() => navigate('/admin')}
+            className="text-lg text-blue-400 hover:text-blue-300 transition-colors bg-transparent border-none cursor-pointer"
+          >
+            <ShieldAlert className="size-5 inline me-2" />
+            Panel Admin
+          </button>
+        )}
         <button
           onClick={() => navigate('/dashboard')}
           className="text-xl text-zinc-400 hover:text-white transition-colors bg-transparent border-none cursor-pointer"

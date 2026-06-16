@@ -1,9 +1,9 @@
 import { useAuth } from '@/lib/auth-context'
 import { useNavigate } from 'react-router-dom'
-import { User, LogOut, Mail, Calendar, ArrowLeft } from 'lucide-react'
+import { User, LogOut, Mail, Calendar, ArrowLeft, ShieldAlert } from 'lucide-react'
 
 export function DashboardPage() {
-  const { user, logout, isAuthenticated } = useAuth()
+  const { user, logout, isAuthenticated, isAdmin } = useAuth()
   const navigate = useNavigate()
 
   if (!isAuthenticated) {
@@ -24,6 +24,15 @@ export function DashboardPage() {
               <ArrowLeft className="size-4" />
               Volver a la web
             </button>
+            {isAdmin && (
+              <button
+                onClick={() => navigate('/admin')}
+                className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors bg-transparent border border-blue-500/20 rounded-lg px-4 py-2 cursor-pointer"
+              >
+                <ShieldAlert className="size-4" />
+                Panel Admin
+              </button>
+            )}
             <button
               onClick={() => { logout(); navigate('/') }}
               className="flex items-center gap-2 text-sm text-zinc-500 hover:text-white transition-colors bg-transparent border border-white/[0.06] rounded-lg px-4 py-2 cursor-pointer"
