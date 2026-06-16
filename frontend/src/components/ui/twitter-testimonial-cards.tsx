@@ -13,11 +13,8 @@ interface TestimonialCardProps {
   verified?: boolean;
   likes?: number;
   retweets?: number;
-  tweetUrl?: string;
   onHover?: () => void;
   onLeave?: () => void;
-  isActive?: boolean;
-  onTap?: () => void;
 }
 
 function TwitterIcon({ className }: { className?: string }) {
@@ -55,34 +52,16 @@ function TestimonialCard({
   verified = true,
   likes = 142,
   retweets = 23,
-  tweetUrl,
   onHover,
   onLeave,
-  isActive,
-  onTap,
 }: TestimonialCardProps) {
-  const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
-    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    if (isTouchDevice) {
-      if (!isActive) {
-        e.preventDefault();
-        onTap?.();
-      }
-    }
-  };
-
   return (
-    <a
-      href={tweetUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={handleClick}
+    <div
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
       className={cn(
-        "relative flex h-auto min-h-[140px] sm:min-h-[180px] w-[260px] sm:w-[380px] -skew-y-[8deg] select-none flex-col rounded-2xl border border-border bg-card/90 backdrop-blur-sm px-3 sm:px-4 py-3 sm:py-4 transition-all duration-500 hover:border-border/80 hover:bg-card cursor-pointer",
-        "dark:after:absolute dark:after:-right-1 dark:after:top-[-5%] dark:after:h-[110%] dark:after:w-[20rem] dark:after:bg-gradient-to-l dark:after:from-background dark:after:to-transparent dark:after:content-[''] dark:after:pointer-events-none",
-        isActive && "ring-2 ring-primary/50",
+        "relative flex h-auto min-h-[140px] sm:min-h-[180px] w-[260px] sm:w-[380px] -skew-y-[8deg] select-none flex-col rounded-2xl border border-border bg-card/90 backdrop-blur-sm px-3 sm:px-4 py-3 sm:py-4 transition-all duration-500 hover:border-border/80 hover:bg-card",
+        "dark:after:hidden",
         className
       )}
     >
@@ -125,7 +104,7 @@ function TestimonialCard({
           </div>
         </div>
       </div>
-    </a>
+    </div>
   );
 }
 
@@ -135,25 +114,18 @@ interface TestimonialsProps {
 
 export default function Testimonials({ cards }: TestimonialsProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const getCardClassName = (index: number, baseClassName: string) => {
-    const focusedIndex = hoveredIndex ?? activeIndex;
-    if (focusedIndex === 0 && index === 1) {
+    if (hoveredIndex === 0 && index === 1) {
       return baseClassName + " !translate-y-20 sm:!translate-y-32 !translate-x-14 sm:!translate-x-24";
     }
-    if (focusedIndex === 0 && index === 2) {
+    if (hoveredIndex === 0 && index === 2) {
       return baseClassName + " !translate-y-28 sm:!translate-y-44 !translate-x-24 sm:!translate-x-40";
     }
-    if (focusedIndex === 1 && index === 2) {
+    if (hoveredIndex === 1 && index === 2) {
       return baseClassName + " !translate-y-24 sm:!translate-y-40 !translate-x-24 sm:!translate-x-40";
     }
     return baseClassName;
-  };
-
-  const handleTap = (index: number) => {
-    if (activeIndex === index) return;
-    setActiveIndex(index);
   };
 
   const defaultCards: TestimonialCardProps[] = [
@@ -167,7 +139,6 @@ export default function Testimonials({ cards }: TestimonialsProps) {
       verified: true,
       likes: 89,
       retweets: 12,
-      tweetUrl: "https://x.com",
     },
     {
       className:
@@ -179,7 +150,6 @@ export default function Testimonials({ cards }: TestimonialsProps) {
       verified: true,
       likes: 62,
       retweets: 8,
-      tweetUrl: "https://x.com",
     },
     {
       className: "[grid-area:stack] translate-x-16 sm:translate-x-32 translate-y-12 sm:translate-y-20 hover:translate-y-6 sm:hover:translate-y-10",
@@ -190,7 +160,6 @@ export default function Testimonials({ cards }: TestimonialsProps) {
       verified: true,
       likes: 234,
       retweets: 45,
-      tweetUrl: "https://x.com",
     },
   ];
 
@@ -205,8 +174,6 @@ export default function Testimonials({ cards }: TestimonialsProps) {
           className={getCardClassName(index, cardProps.className || "")}
           onHover={() => setHoveredIndex(index)}
           onLeave={() => setHoveredIndex(null)}
-          isActive={activeIndex === index}
-          onTap={() => handleTap(index)}
         />
       ))}
     </div>
