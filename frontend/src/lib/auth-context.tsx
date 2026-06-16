@@ -18,11 +18,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const stored = getStoredUser()
-    if (stored) {
-      setUserState(stored)
-    }
-    setLoading(false)
+    (async () => {
+      setLoading(true)
+      const stored = getStoredUser()
+      if (stored) {
+        try {
+          const res = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/auth/me`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('vulnify_token')}` },
+          })
+          if (res.ok) {
+            const fresh = await res.json()
+            const freshUser: User = { id: fresh.id, name: fresh.name, email: fresh.email, role: fresh.role, verified: fresh.is_verified, totp_enabled: fresh.totp_enabled }
+            storeUser(freshUser)
+            setUserState(freshUser)
+            setLoading(false)
+            return
+          }
+        } catch {}
+        setUserState(stored)
+      }
+      setLoading(false)
+    })()
   }, [])
 
   const login = (token: string, refreshToken: string, user: User) => {
