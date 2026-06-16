@@ -1,13 +1,13 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight, Globe, Bot, Code, Cpu, Rocket, Sparkles, Zap, ChevronRight, Plus, Download, Mail, MessageCircle } from 'lucide-react'
 import { ArtificialHero } from '@/components/ui/artificial-hero'
-import { BackgroundPaths } from '@/components/ui/background-paths'
 import { BorderBeam } from '@/components/ui/border-beam'
 import { HoverBorderGradient } from '@/components/ui/hover-border-gradient'
 import { Features } from '@/components/ui/features-8'
 import { BentoPricing } from '@/components/ui/bento-pricing'
 import { BentoGrid } from '@/components/ui/bento-grid'
 import { MeshGradient } from '@paper-design/shaders-react'
+import FlowArt, { FlowSection } from './story-scroll'
 
 export function FloatingPathsEffect() {
   return (
@@ -114,161 +114,89 @@ export function HomeContent({ onAboutOpen }: { onAboutOpen?: () => void }) {
 
   return (
     <>
-      <BackgroundPaths title="Arquitectura Digital Inteligente" onAboutOpen={onAboutOpen} />
+      <FlowArt className="relative z-10">
 
-      <div className="w-full border-b border-white/[0.04]">
-        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 md:gap-8">
-            {stats.map((s, i) => (
-              <FadeIn key={s.label} delay={i * 0.1} className="text-center">
+        {/* SECTION 1: Hero + Stats + CTA */}
+        <FlowSection aria-label="Arquitectura Digital" style={{ backgroundColor: 'rgba(0,0,0,0.82)' }}>
+          <div className="flex items-center gap-2">
+            <p className="text-xs font-bold uppercase tracking-[0.2em]">01 — Arquitectura Digital</p>
+          </div>
+          <hr className="border-none border-t border-white/20 my-[2vw]" />
+          <div className="flex flex-col justify-center min-h-[30vh]">
+            <h1 className="text-[clamp(3.5rem,12vw,14rem)] font-bold leading-[0.85] uppercase tracking-tight text-white">
+              Crear<br />Optimizar<br />Escalar
+            </h1>
+            <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mt-6 leading-relaxed">
+              No construimos páginas. Diseñamos ecosistemas digitales con inteligencia artificial integrada para que tu negocio crezca.
+            </p>
+            <div className="flex flex-wrap gap-4 mt-8">
+              <HoverBorderGradient as="a" href="mailto:hola@vulnify.es" className="flex items-center gap-2 px-8 py-4 text-base font-medium">
+                Solicitar auditoría gratis <ArrowUpRight className="size-4" />
+              </HoverBorderGradient>
+              <a href="https://wa.me/34600000000" target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-2 px-8 py-4 text-base font-medium text-zinc-400 hover:text-white border border-white/[0.06] rounded-xl hover:border-white/20 transition-all"
+              >
+                <MessageCircle className="size-4" />
+                Escribir por WhatsApp
+              </a>
+            </div>
+          </div>
+          <hr className="border-none border-t border-white/20 my-[2vw]" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {stats.map((s) => (
+              <div key={s.label} className="text-center">
                 <div className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-2">{s.number}</div>
                 <div className="text-sm text-zinc-600">{s.label}</div>
-              </FadeIn>
+              </div>
             ))}
           </div>
-        </div>
-      </div>
+        </FlowSection>
 
-      <div className="w-full border-b border-white/[0.04] overflow-hidden">
-        <div className="py-16 md:py-20">
-          <FadeIn className="text-center mb-10">
-            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">Confían en nosotros</span>
-          </FadeIn>
-          <div className="flex overflow-hidden">
-            <motion.div
-              animate={{ x: ['0%', '-50%'] }}
-              transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-              className="flex gap-16 md:gap-24 items-center flex-shrink-0"
-            >
-              {['TechFlow', 'InnovaCorp', 'DataSmart', 'NexusDigital', 'CloudBase', 'AIForge', 'WebCraft', 'PixelPerfect'].map((name) => (
-                <span key={name} className="text-lg md:text-xl font-semibold text-zinc-700 whitespace-nowrap tracking-wide">{name}</span>
-              ))}
-              {['TechFlow', 'InnovaCorp', 'DataSmart', 'NexusDigital', 'CloudBase', 'AIForge', 'WebCraft', 'PixelPerfect'].map((name) => (
-                <span key={`dup-${name}`} className="text-lg md:text-xl font-semibold text-zinc-700 whitespace-nowrap tracking-wide">{name}</span>
-              ))}
-            </motion.div>
+        {/* SECTION 2: Problem → Solution */}
+        <FlowSection aria-label="El Problema" style={{ backgroundColor: 'rgba(0,0,0,0.85)' }}>
+          <div className="flex items-center gap-2">
+            <p className="text-xs font-bold uppercase tracking-[0.2em]">02 — De Problema a Solución</p>
           </div>
-        </div>
-      </div>
-
-      <div id="insight" className="w-full border-b border-white/[0.04]">
-        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
-          <div className="grid md:grid-cols-2 gap-16 md:gap-24 items-center">
-            <FadeIn>
-              <Label>El Problema</Label>
-              <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mb-6">
-                Tu web no está trabajando<br />para ti. Debería.
-              </h2>
-              <div className="space-y-4 text-zinc-500 leading-relaxed">
-                <p>La mayoría de las webs son folletos digitales estáticos. No generan leads, no automatizan procesos, no se adaptan a tus clientes.</p>
-                <p>Mientras tu competencia avanza, tu página sigue siendo un gasto en lugar de una máquina de crecimiento.</p>
-              </div>
-            </FadeIn>
-            <FadeIn delay={0.2}>
-              <div className="aspect-[4/3] rounded-2xl bg-white/[0.02] border border-white/[0.06] flex items-center justify-center p-8 relative overflow-hidden">
-                <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
-                <div className="space-y-4 w-full max-w-sm">
+          <hr className="border-none border-t border-white/20 my-[2vw]" />
+          <div className="flex flex-col justify-center min-h-[25vh]">
+            <h2 className="text-[clamp(2.5rem,8vw,10rem)] font-bold leading-[0.9] uppercase tracking-tight text-white mb-8">
+              Tu web no está<br />trabajando para ti.
+            </h2>
+            <div className="grid md:grid-cols-2 gap-10 items-start">
+              <div className="space-y-4">
+                <p className="text-zinc-400 leading-relaxed">La mayoría de las webs son folletos digitales estáticos. No generan leads, no automatizan procesos, no se adaptan a tus clientes.</p>
+                <div className="space-y-2">
                   {['Sin leads en 30 días', 'Procesos manuales que agotan', 'Web que no convierte'].map((item) => (
-                    <div key={item} className="flex items-center gap-3 p-4 rounded-xl bg-red-500/5 border border-red-500/10">
+                    <div key={item} className="flex items-center gap-3 p-3 rounded-xl bg-red-500/5 border border-red-500/10">
                       <span className="size-2 rounded-full bg-red-400/60" />
                       <span className="text-sm text-zinc-400">{item}</span>
                     </div>
                   ))}
                 </div>
               </div>
-            </FadeIn>
-          </div>
-        </div>
-      </div>
-
-      <div className="w-full border-b border-white/[0.04]">
-        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
-          <FadeIn className="text-center mb-16 md:mb-24">
-            <Label>La Solución</Label>
-            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight max-w-3xl mx-auto">
-              Una web que piensa, aprende y convierte por ti.
-            </h2>
-          </FadeIn>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { icon: Globe, title: 'Diseño que convierte', desc: 'Interfaces ultrarrápidas construidas con React, optimizadas para conversión y SEO.' },
-              { icon: Bot, title: 'IA integrada', desc: 'Chatbots inteligentes, automatización de procesos y análisis predictivo para tu negocio.' },
-              { icon: Zap, title: 'Crecimiento continuo', desc: 'No es un proyecto finito. Iteramos, mejoramos y escalamos tu presencia digital.' },
-            ].map((item, i) => (
-              <ScaleIn key={item.title} delay={i * 0.12}>
-                <motion.div
-                  whileHover={{ y: -6 }}
-                  className="group p-8 md:p-10 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500 relative overflow-hidden"
-                >
-                  <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
-                  <div className="size-12 rounded-xl bg-zinc-500/10 border border-zinc-500/20 flex items-center justify-center mb-6 group-hover:bg-zinc-500/20 transition-colors">
-                    <item.icon className="size-5 text-zinc-400" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-white mb-3">{item.title}</h3>
-                  <p className="text-sm text-zinc-500 leading-relaxed">{item.desc}</p>
-                </motion.div>
-              </ScaleIn>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div id="servicios" className="w-full border-b border-white/[0.04]">
-        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
-          <FadeIn className="mb-16">
-            <Label>Servicios</Label>
-            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight max-w-2xl">
-              Todo lo que necesitas para dominar el espacio digital.
-            </h2>
-          </FadeIn>
-          <div className="grid md:grid-cols-2 gap-6">
-            {services.map((s, i) => (
-              <ScaleIn key={s.title} delay={i * 0.1}>
-                <motion.div
-                  whileHover={{ y: -4 }}
-                  className="group p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/15 transition-all duration-500 relative overflow-hidden"
-                >
-                  <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
-                  <div className="flex items-center gap-4 mb-6">
-                    <span className="text-3xl font-bold text-zinc-700 group-hover:text-zinc-500 transition-colors">{String(i + 1).padStart(2, '0')}</span>
-                    <div className="size-10 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-zinc-500/10 transition-colors">
-                      <s.icon className="size-4 text-zinc-400 group-hover:text-zinc-400 transition-colors" />
+              <div>
+                <p className="text-zinc-500 leading-relaxed mb-6">Mientras tu competencia avanza, tu página sigue siendo un gasto en lugar de una máquina de crecimiento.</p>
+                <div className="grid grid-cols-1 gap-4">
+                  {[
+                    { icon: Globe, title: 'Diseño que convierte', desc: 'Interfaces ultrarrápidas construidas con React, optimizadas para conversión y SEO.' },
+                    { icon: Bot, title: 'IA integrada', desc: 'Chatbots inteligentes, automatización de procesos y análisis predictivo para tu negocio.' },
+                    { icon: Zap, title: 'Crecimiento continuo', desc: 'No es un proyecto finito. Iteramos, mejoramos y escalamos tu presencia digital.' },
+                  ].map((item) => (
+                    <div key={item.title} className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                      <div className="size-8 rounded-lg bg-zinc-500/10 border border-zinc-500/20 flex items-center justify-center shrink-0">
+                        <item.icon className="size-4 text-zinc-400" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium text-white mb-1">{item.title}</div>
+                        <p className="text-xs text-zinc-500">{item.desc}</p>
+                      </div>
                     </div>
-                  </div>
-                  <h3 className="text-xl font-semibold text-white mb-3">{s.title}</h3>
-                  <p className="text-sm text-zinc-500 leading-relaxed">{s.desc}</p>
-                </motion.div>
-              </ScaleIn>
-            ))}
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-
-      <div className="w-full border-b border-white/[0.04]">
-        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
-          <FadeIn className="text-center mb-16">
-            <Label>Tecnología</Label>
-            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">
-              Stack moderno, resultados reales.
-            </h2>
-          </FadeIn>
-          <div className="flex flex-wrap justify-center gap-4 md:gap-6">
-            {['React', 'Next.js', 'TypeScript', 'Tailwind', 'Three.js', 'Python', 'FastAPI', 'PostgreSQL', 'Docker', 'Cloudflare'].map((tech, i) => (
-              <ScaleIn key={tech} delay={i * 0.05}>
-                <motion.span
-                  whileHover={{ y: -4, scale: 1.05 }}
-                  className="px-5 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] text-sm text-zinc-400 font-mono hover:text-white hover:border-white/20 transition-colors block"
-                >
-                  {tech}
-                </motion.span>
-              </ScaleIn>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="w-full border-b border-white/[0.04]">
-        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-16 md:py-20">
+          <hr className="border-none border-t border-white/20 my-[2vw]" />
           <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
             {[
               { label: 'SSL 256-bit', desc: 'Cifrado seguro' },
@@ -290,49 +218,142 @@ export function HomeContent({ onAboutOpen }: { onAboutOpen?: () => void }) {
               </div>
             ))}
           </div>
-        </div>
-      </div>
+        </FlowSection>
 
-      <div id="proceso" className="w-full border-b border-white/[0.04]">
-        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
-          <FadeIn className="mb-16">
-            <Label>Proceso</Label>
-            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">De la idea al impacto.</h2>
-          </FadeIn>
-          <div className="grid md:grid-cols-4 gap-8">
-            {steps.map((s, i) => (
-              <FadeIn key={s.num} delay={i * 0.12} className="relative">
-                <span className="text-6xl md:text-7xl font-bold text-white/[0.04] block mb-4 leading-none">{s.num}</span>
-                <h3 className="text-lg font-semibold text-white mb-2">{s.title}</h3>
-                <p className="text-sm text-zinc-500 leading-relaxed">{s.desc}</p>
-                {i < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-8 -right-6 text-zinc-700">
-                    <ChevronRight className="size-5" />
+        {/* SECTION 3: Services + Process */}
+        <FlowSection aria-label="Servicios" style={{ backgroundColor: 'rgba(0,0,0,0.82)' }}>
+          <div className="flex items-center gap-2">
+            <p className="text-xs font-bold uppercase tracking-[0.2em]">03 — Servicios</p>
+          </div>
+          <hr className="border-none border-t border-white/20 my-[2vw]" />
+          <div className="flex flex-col justify-center min-h-[25vh]">
+            <h2 className="text-[clamp(2.5rem,8vw,10rem)] font-bold leading-[0.9] uppercase tracking-tight text-white mb-8">
+              Todo lo que necesitas.
+            </h2>
+            <div className="grid md:grid-cols-2 gap-4 mb-10">
+              {services.map((s, i) => (
+                <div key={s.title} className="group p-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/15 transition-all duration-500">
+                  <div className="flex items-center gap-4 mb-4">
+                    <span className="text-2xl font-bold text-zinc-700 group-hover:text-zinc-500 transition-colors">{String(i + 1).padStart(2, '0')}</span>
+                    <div className="size-8 rounded-lg bg-white/5 flex items-center justify-center">
+                      <s.icon className="size-4 text-zinc-400" />
+                    </div>
                   </div>
-                )}
-              </FadeIn>
+                  <h3 className="text-lg font-semibold text-white mb-2">{s.title}</h3>
+                  <p className="text-sm text-zinc-500 leading-relaxed">{s.desc}</p>
+                </div>
+              ))}
+            </div>
+            <div>
+              <p className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono mb-6">Cómo trabajamos</p>
+              <div className="grid md:grid-cols-4 gap-6">
+                {steps.map((s, i) => (
+                  <div key={s.num} className="relative">
+                    <span className="text-5xl font-bold text-white/[0.04] block mb-3 leading-none">{s.num}</span>
+                    <h3 className="text-base font-semibold text-white mb-1">{s.title}</h3>
+                    <p className="text-sm text-zinc-500 leading-relaxed">{s.desc}</p>
+                    {i < steps.length - 1 && (
+                      <div className="hidden md:block absolute top-8 -right-6 text-zinc-700">
+                        <ChevronRight className="size-5" />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <hr className="border-none border-t border-white/20 my-[2vw]" />
+          <div className="flex flex-wrap justify-center gap-3">
+            {['React', 'Next.js', 'TypeScript', 'Tailwind', 'Three.js', 'Python', 'FastAPI', 'PostgreSQL', 'Docker', 'Cloudflare'].map((tech) => (
+              <span key={tech} className="px-4 py-2 rounded-xl bg-white/[0.02] border border-white/[0.06] text-xs text-zinc-400 font-mono">
+                {tech}
+              </span>
             ))}
+          </div>
+        </FlowSection>
+
+        {/* SECTION 4: Results + Contact */}
+        <FlowSection aria-label="Resultados" style={{ backgroundColor: 'rgba(0,0,0,0.85)' }}>
+          <div className="flex items-center gap-2">
+            <p className="text-xs font-bold uppercase tracking-[0.2em]">04 — Casos de Éxito</p>
+          </div>
+          <hr className="border-none border-t border-white/20 my-[2vw]" />
+          <div className="flex flex-col justify-center min-h-[25vh]">
+            <h2 className="text-[clamp(2.5rem,8vw,10rem)] font-bold leading-[0.9] uppercase tracking-tight text-white mb-8">
+              Resultados que hablan.
+            </h2>
+            <div className="grid md:grid-cols-3 gap-4 mb-10">
+              {caseStudies.map((c) => (
+                <div key={c.company} className="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] h-full flex flex-col">
+                  <div className="mb-4">
+                    <span className="text-4xl font-bold text-white tracking-tight">{c.metric}</span>
+                    <span className="block text-sm text-zinc-600 mt-1">{c.label}</span>
+                  </div>
+                  <p className="text-sm text-zinc-400 leading-relaxed mb-4 flex-1">&ldquo;{c.desc}&rdquo;</p>
+                  <div className="pt-4 border-t border-white/[0.04] flex items-center justify-between">
+                    <div>
+                      <div className="text-sm font-medium text-white">{c.company}</div>
+                      <div className="text-xs text-zinc-600">{c.sector}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="text-center max-w-lg mx-auto">
+              <p className="text-lg text-zinc-400 mb-6">¿Listo para ser el próximo caso de éxito?</p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <HoverBorderGradient as="a" href="mailto:hola@vulnify.es" className="flex items-center gap-2 px-6 py-3 text-sm font-medium">
+                  Solicitar auditoría <ArrowUpRight className="size-4" />
+                </HoverBorderGradient>
+                <a href="https://wa.me/34600000000" target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-zinc-400 hover:text-white border border-white/[0.06] rounded-xl hover:border-white/20 transition-all"
+                >
+                  <MessageCircle className="size-4" />
+                  WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+          <hr className="border-none border-t border-white/20 my-[2vw]" />
+          <div className="flex items-center gap-2 text-xs text-zinc-700 justify-center">
+            <span className="size-1.5 rounded-full bg-amber-400/60 animate-pulse" />
+            Solo 3 proyectos este mes — auditoría gratuita
+          </div>
+        </FlowSection>
+
+      </FlowArt>
+
+      {/* ====== Content after FlowArt — standard scrollable sections ====== */}
+
+      {/* Trust badges marquee */}
+      <div className="w-full border-b border-white/[0.04] overflow-hidden">
+        <div className="py-16 md:py-20">
+          <div className="text-center mb-10">
+            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">Confían en nosotros</span>
+          </div>
+          <div className="flex overflow-hidden">
+            <motion.div
+              animate={{ x: ['0%', '-50%'] }}
+              transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+              className="flex gap-16 md:gap-24 items-center flex-shrink-0"
+            >
+              {['TechFlow', 'InnovaCorp', 'DataSmart', 'NexusDigital', 'CloudBase', 'AIForge', 'WebCraft', 'PixelPerfect'].map((name) => (
+                <span key={name} className="text-lg md:text-xl font-semibold text-zinc-700 whitespace-nowrap tracking-wide">{name}</span>
+              ))}
+              {['TechFlow', 'InnovaCorp', 'DataSmart', 'NexusDigital', 'CloudBase', 'AIForge', 'WebCraft', 'PixelPerfect'].map((name) => (
+                <span key={`dup-${name}`} className="text-lg md:text-xl font-semibold text-zinc-700 whitespace-nowrap tracking-wide">{name}</span>
+              ))}
+            </motion.div>
           </div>
         </div>
       </div>
 
-      <div className="w-full border-b border-white/[0.04]">
-        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
-          <FadeIn className="mb-16 text-center">
-            <Label>Lo que hacemos</Label>
-            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">
-              Tecnología que transforma.
-            </h2>
-          </FadeIn>
-          <BentoGrid />
-        </div>
-      </div>
-
+      {/* Manifesto */}
       <div className="w-full border-b border-white/[0.04] overflow-hidden">
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
-          <FadeIn className="mb-12">
-            <Label>Manifiesto</Label>
-          </FadeIn>
+          <div className="mb-12">
+            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">Manifiesto</span>
+          </div>
           <div className="space-y-6 md:space-y-8">
             {words.map((word, i) => (
               <motion.div
@@ -348,53 +369,99 @@ export function HomeContent({ onAboutOpen }: { onAboutOpen?: () => void }) {
               </motion.div>
             ))}
           </div>
-          <FadeIn delay={0.7}>
-            <p className="text-lg text-zinc-500 max-w-xl mt-10 leading-relaxed">
+          <div className="mt-10">
+            <p className="text-lg text-zinc-500 max-w-xl leading-relaxed">
               Tu negocio merece una presencia digital que no solo se vea bien, que trabaje mientras tú duermes.
             </p>
-          </FadeIn>
+          </div>
         </div>
       </div>
 
+      {/* BentoGrid */}
       <div className="w-full border-b border-white/[0.04]">
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
-          <FadeIn className="mb-16 text-center">
-            <Label>Casos de éxito</Label>
-            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">Resultados que hablan.</h2>
-          </FadeIn>
+          <div className="mb-16 text-center">
+            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">Lo que hacemos</span>
+            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mt-4">
+              Tecnología que transforma.
+            </h2>
+          </div>
+          <BentoGrid />
+        </div>
+      </div>
+
+      {/* Features */}
+      <div className="w-full border-b border-white/[0.04]">
+        <Features />
+      </div>
+
+      {/* Pricing */}
+      <div className="w-full border-b border-white/[0.04]">
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
+          <BentoPricing />
+        </div>
+      </div>
+
+      {/* Blog */}
+      <div className="w-full border-b border-white/[0.04]">
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
+          <div className="mb-16 text-center">
+            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">Blog</span>
+            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mt-4">Recursos para crecer.</h2>
+          </div>
           <div className="grid md:grid-cols-3 gap-6">
-            {caseStudies.map((c, i) => (
-              <ScaleIn key={c.company} delay={i * 0.1}>
-                <div className="group p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500 relative overflow-hidden h-full flex flex-col">
-                  <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
-                  <div className="mb-5">
-                    <span className="text-5xl md:text-6xl font-bold text-white tracking-tight">{c.metric}</span>
-                    <span className="block text-sm text-zinc-600 mt-1">{c.label}</span>
-                  </div>
-                  <p className="text-sm text-zinc-400 leading-relaxed mb-6 flex-1">&ldquo;{c.desc}&rdquo;</p>
-                  <div className="pt-5 border-t border-white/[0.04] flex items-center justify-between">
-                    <div>
-                      <div className="text-sm font-medium text-white">{c.company}</div>
-                      <div className="text-xs text-zinc-600">{c.sector}</div>
-                    </div>
-                    <span className="text-xs text-zinc-600 group-hover:text-zinc-400 transition-colors flex items-center gap-1">
-                      Ver caso <ArrowUpRight className="size-3" />
-                    </span>
-                  </div>
+            {[
+              { tag: 'Desarrollo', title: 'Next.js vs Astro: cuál elegir según tu proyecto', date: '12 Jun 2026', read: '5 min' },
+              { tag: 'IA', title: 'Cómo integrar un chatbot en tu web sin saber programar', date: '28 May 2026', read: '7 min' },
+              { tag: 'SEO', title: 'Los 5 errores técnicos que están matando tu posicionamiento', date: '15 May 2026', read: '4 min' },
+            ].map((post) => (
+              <div key={post.title} className="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500 relative overflow-hidden h-full group">
+                <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
+                <span className="text-[10px] tracking-[0.2em] uppercase text-zinc-600 bg-white/[0.03] px-2.5 py-1 rounded-md border border-white/[0.04] inline-block mb-4">
+                  {post.tag}
+                </span>
+                <h3 className="text-base font-semibold text-white mb-3 leading-snug group-hover:text-zinc-300 transition-colors">{post.title}</h3>
+                <div className="flex items-center gap-3 text-xs text-zinc-700">
+                  <span>{post.date}</span>
+                  <span className="w-1 h-1 rounded-full bg-zinc-700/50" />
+                  <span>{post.read}</span>
                 </div>
-              </ScaleIn>
+              </div>
             ))}
           </div>
         </div>
       </div>
 
+      {/* FAQ */}
+      <div className="w-full border-b border-white/[0.04]">
+        <div className="mx-auto max-w-3xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
+          <div className="text-center mb-16">
+            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">FAQ</span>
+            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mt-4">
+              Respuestas rápidas.
+            </h2>
+          </div>
+          <div className="space-y-3">
+            {[
+              { q: '¿Cuánto tiempo lleva desarrollar una web?', a: 'Depende de la complejidad. Una web corporativa puede estar lista en 2-3 semanas. Proyectos con IA integrada suelen requerir 4-6 semanas.' },
+              { q: '¿Necesito tener claro todo antes de empezar?', a: 'No. Te guiamos desde la idea. Nuestro proceso incluye una fase de auditoría y estrategia donde definimos juntos el alcance.' },
+              { q: '¿Ofrecen mantenimiento después del lanzamiento?', a: 'Sí. Todos nuestros proyectos incluyen soporte post-lanzamiento y planes de mantenimiento continuo para mantener tu web actualizada.' },
+              { q: '¿Cómo integran la inteligencia artificial?', a: 'Desde chatbots personalizados hasta automatización de procesos y análisis predictivo. Evaluamos tu caso y proponemos la solución óptima.' },
+            ].map((item) => (
+              <FAQItem key={item.q} question={item.q} answer={item.a} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Lead Magnet — Guía gratuita */}
       <div className="w-full border-b border-white/[0.04]">
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
           <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-white/[0.02] via-white/[0.01] to-transparent p-[1px]">
             <div className="relative rounded-[inherit] bg-black/60 p-8 md:p-12">
               <div className="grid md:grid-cols-5 gap-10 items-center">
-                <FadeIn className="md:col-span-3">
-                  <Label>Recurso gratuito</Label>
+                <div className="md:col-span-3">
+                  <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">Recurso gratuito</span>
                   <h3 className="text-2xl md:text-4xl font-bold text-white leading-[1.1] tracking-tight mt-4 mb-4">
                     Guía: El stack tecnológico ideal para tu negocio
                   </h3>
@@ -469,8 +536,8 @@ export function HomeContent({ onAboutOpen }: { onAboutOpen?: () => void }) {
                       <div className="text-[11px] text-zinc-700">CTO & Fundador de Vulnify</div>
                     </div>
                   </div>
-                </FadeIn>
-                <FadeIn delay={0.2} className="hidden md:flex md:col-span-2 items-center justify-center">
+                </div>
+                <div className="hidden md:flex md:col-span-2 items-center justify-center">
                   <div className="relative w-full max-w-[240px] aspect-[3/4] mx-auto">
                     <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-zinc-800/60 via-zinc-900/40 to-black border border-white/[0.06] overflow-hidden">
                       <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-zinc-600 via-zinc-500 to-zinc-600" />
@@ -503,122 +570,60 @@ export function HomeContent({ onAboutOpen }: { onAboutOpen?: () => void }) {
                     </div>
                     <div className="absolute -inset-1 rounded-[inherit] bg-gradient-to-br from-zinc-600/10 via-transparent to-zinc-400/5 blur-sm" />
                   </div>
-                </FadeIn>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="w-full border-b border-white/[0.04]">
-        <Features />
-      </div>
-
-      <div className="w-full border-b border-white/[0.04]">
-        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
-          <BentoPricing />
-        </div>
-      </div>
-
-      <div className="w-full border-b border-white/[0.04]">
-        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
-          <FadeIn className="mb-16 text-center">
-            <Label>Blog</Label>
-            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">Recursos para crecer.</h2>
-          </FadeIn>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { tag: 'Desarrollo', title: 'Next.js vs Astro: cuál elegir según tu proyecto', date: '12 Jun 2026', read: '5 min' },
-              { tag: 'IA', title: 'Cómo integrar un chatbot en tu web sin saber programar', date: '28 May 2026', read: '7 min' },
-              { tag: 'SEO', title: 'Los 5 errores técnicos que están matando tu posicionamiento', date: '15 May 2026', read: '4 min' },
-            ].map((post, i) => (
-              <ScaleIn key={post.title} delay={i * 0.1}>
-                <a href="/blog" className="group block p-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500 relative overflow-hidden h-full">
-                  <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
-                  <span className="text-[10px] tracking-[0.2em] uppercase text-zinc-600 bg-white/[0.03] px-2.5 py-1 rounded-md border border-white/[0.04] inline-block mb-4">
-                    {post.tag}
-                  </span>
-                  <h3 className="text-base font-semibold text-white mb-3 leading-snug group-hover:text-zinc-300 transition-colors">{post.title}</h3>
-                  <div className="flex items-center gap-3 text-xs text-zinc-700 mt-auto">
-                    <span>{post.date}</span>
-                    <span className="w-1 h-1 rounded-full bg-zinc-700/50" />
-                    <span>{post.read}</span>
-                  </div>
-                </a>
-              </ScaleIn>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="w-full border-b border-white/[0.04]">
-        <div className="mx-auto max-w-3xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
-          <FadeIn className="text-center mb-16">
-            <Label>FAQ</Label>
-            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">
-              Respuestas rápidas.
-            </h2>
-          </FadeIn>
-          <div className="space-y-3">
-            {[
-              { q: '¿Cuánto tiempo lleva desarrollar una web?', a: 'Depende de la complejidad. Una web corporativa puede estar lista en 2-3 semanas. Proyectos con IA integrada suelen requerir 4-6 semanas.' },
-              { q: '¿Necesito tener claro todo antes de empezar?', a: 'No. Te guiamos desde la idea. Nuestro proceso incluye una fase de auditoría y estrategia donde definimos juntos el alcance.' },
-              { q: '¿Ofrecen mantenimiento después del lanzamiento?', a: 'Sí. Todos nuestros proyectos incluyen soporte post-lanzamiento y planes de mantenimiento continuo para mantener tu web actualizada.' },
-              { q: '¿Cómo integran la inteligencia artificial?', a: 'Desde chatbots personalizados hasta automatización de procesos y análisis predictivo. Evaluamos tu caso y proponemos la solución óptima.' },
-            ].map((item) => (
-              <FAQItem key={item.q} question={item.q} answer={item.a} />
-            ))}
-          </div>
-        </div>
-      </div>
-
+      {/* Contact section */}
       <div id="contacto" className="w-full border-b border-white/[0.04]">
         <div className="mx-auto max-w-3xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
-          <FadeIn className="text-center mb-14">
-            <Label>Contacto</Label>
+          <div className="text-center mb-14">
+            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">Contacto</span>
             <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mt-4 mb-4">
               Cuéntanos tu proyecto.
             </h2>
             <p className="text-sm text-zinc-500 leading-relaxed max-w-md mx-auto">
               Sin compromiso. Te respondemos en menos de 24 horas con una propuesta personalizada.
             </p>
-          </FadeIn>
-          <FadeIn delay={0.15}>
-            <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 relative overflow-hidden">
-              <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
-              <form className="space-y-5" action="https://formspree.io/f/xpznqjqr" method="POST">
+          </div>
+          <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 relative overflow-hidden">
+            <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
+            <form className="space-y-5" action="https://formspree.io/f/xpznqjqr" method="POST">
+              <div>
+                <label className="text-xs text-zinc-600 mb-2 block">Nombre completo *</label>
+                <input type="text" name="name" placeholder="Tu nombre" className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-600 outline-none focus:border-white/20 transition-colors" required />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs text-zinc-600 mb-2 block">Nombre completo *</label>
-                  <input type="text" name="name" placeholder="Tu nombre" className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-600 outline-none focus:border-white/20 transition-colors" required />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-xs text-zinc-600 mb-2 block">Email *</label>
-                    <input type="email" name="email" placeholder="tu@email.com" className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-600 outline-none focus:border-white/20 transition-colors" required />
-                  </div>
-                  <div>
-                    <label className="text-xs text-zinc-600 mb-2 block">Teléfono</label>
-                    <input type="tel" name="phone" placeholder="+34 600 000 000" className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors" />
-                  </div>
+                  <label className="text-xs text-zinc-600 mb-2 block">Email *</label>
+                  <input type="email" name="email" placeholder="tu@email.com" className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-600 outline-none focus:border-white/20 transition-colors" required />
                 </div>
                 <div>
-                  <label className="text-xs text-zinc-600 mb-2 block">Mensaje *</label>
-                  <textarea rows={4} name="message" placeholder="Cuéntanos en qué podemos ayudarte..." className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors resize-none" required />
+                  <label className="text-xs text-zinc-600 mb-2 block">Teléfono</label>
+                  <input type="tel" name="phone" placeholder="+34 600 000 000" className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors" />
                 </div>
-                <HoverBorderGradient as="button" type="submit" className="w-full flex items-center justify-center gap-2 py-3.5 text-sm font-medium">
-                  Enviar mensaje <ArrowUpRight className="size-4" />
-                </HoverBorderGradient>
-                <p className="text-xs text-zinc-700 text-center">Te respondemos en menos de 24h.</p>
-              </form>
-            </div>
-          </FadeIn>
+              </div>
+              <div>
+                <label className="text-xs text-zinc-600 mb-2 block">Mensaje *</label>
+                <textarea rows={4} name="message" placeholder="Cuéntanos en qué podemos ayudarte..." className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors resize-none" required />
+              </div>
+              <HoverBorderGradient as="button" type="submit" className="w-full flex items-center justify-center gap-2 py-3.5 text-sm font-medium">
+                Enviar mensaje <ArrowUpRight className="size-4" />
+              </HoverBorderGradient>
+              <p className="text-xs text-zinc-700 text-center">Te respondemos en menos de 24h.</p>
+            </form>
+          </div>
         </div>
       </div>
 
-      <div className="w-full border-b border-white/[0.04]">
+      {/* Closing CTA */}
+      <div className="w-full">
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
-          <FadeIn className="text-center max-w-3xl mx-auto">
-            <Label>Empieza hoy</Label>
+          <div className="text-center max-w-3xl mx-auto">
+            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">Empieza hoy</span>
             <h2 className="text-3xl md:text-6xl font-bold text-white leading-[1.05] tracking-tight mt-4 mb-6">
               ¿Listo para dominar <br className="hidden md:block" />el espacio digital?
             </h2>
@@ -640,7 +645,7 @@ export function HomeContent({ onAboutOpen }: { onAboutOpen?: () => void }) {
               <span className="size-1.5 rounded-full bg-amber-400/60 animate-pulse" />
               Solo 3 proyectos este mes — auditoría gratuita
             </div>
-          </FadeIn>
+          </div>
         </div>
       </div>
     </>
