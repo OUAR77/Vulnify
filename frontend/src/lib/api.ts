@@ -257,6 +257,7 @@ export async function adminDeleteMessage(messageId: number, password: string): P
 // Orders
 export interface Order {
   id: number
+  user_id?: number | null
   client_name: string
   client_email: string
   description: string

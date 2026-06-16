@@ -49,6 +49,7 @@ def admin_list_orders(
         "items": [
             {
                 "id": o.id,
+                "user_id": o.user_id,
                 "client_name": o.client_name,
                 "client_email": o.client_email,
                 "description": o.description,
@@ -70,7 +71,9 @@ def admin_create_order(
     admin: User = Depends(require_admin_totp),
     db: Session = Depends(get_db),
 ):
+    user = db.query(User).filter(User.email == data.client_email).first()
     order = Order(
+        user_id=user.id if user else None,
         client_name=data.client_name,
         client_email=data.client_email,
         description=data.description,
@@ -83,6 +86,7 @@ def admin_create_order(
     db.refresh(order)
     return {
         "id": order.id,
+        "user_id": order.user_id,
         "client_name": order.client_name,
         "client_email": order.client_email,
         "description": order.description,
@@ -109,6 +113,8 @@ def admin_update_order(
         order.client_name = data.client_name
     if data.client_email is not None:
         order.client_email = data.client_email
+        user = db.query(User).filter(User.email == data.client_email).first()
+        order.user_id = user.id if user else None
     if data.description is not None:
         order.description = data.description
     if data.service is not None:
