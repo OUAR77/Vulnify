@@ -117,7 +117,7 @@ export function HomeContent({ onAboutOpen }: { onAboutOpen?: () => void }) {
       <FlowArt className="relative z-10">
 
         {/* SECTION 1: Hero + Stats + CTA */}
-        <FlowSection aria-label="Arquitectura Digital" style={{ backgroundColor: '#0a0a0a' }}>
+        <FlowSection aria-label="Arquitectura Digital" style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
           <div className="flex items-center gap-2">
             <p className="text-xs font-bold uppercase tracking-[0.2em]">01 — Arquitectura Digital</p>
           </div>
@@ -152,175 +152,6 @@ export function HomeContent({ onAboutOpen }: { onAboutOpen?: () => void }) {
           </div>
         </FlowSection>
 
-        {/* SECTION 2: Problem → Solution */}
-        <FlowSection aria-label="El Problema" style={{ backgroundColor: '#111111' }}>
-          <div className="flex items-center gap-2">
-            <p className="text-xs font-bold uppercase tracking-[0.2em]">02 — De Problema a Solución</p>
-          </div>
-          <hr className="border-none border-t border-white/20 my-[2vw]" />
-          <div className="flex flex-col justify-center min-h-[25vh]">
-            <h2 className="text-[clamp(2.5rem,8vw,10rem)] font-bold leading-[0.9] uppercase tracking-tight text-white mb-8">
-              Tu web no está<br />trabajando para ti.
-            </h2>
-            <div className="grid md:grid-cols-2 gap-10 items-start">
-              <div className="space-y-4">
-                <p className="text-zinc-400 leading-relaxed">La mayoría de las webs son folletos digitales estáticos. No generan leads, no automatizan procesos, no se adaptan a tus clientes.</p>
-                <div className="space-y-2">
-                  {['Sin leads en 30 días', 'Procesos manuales que agotan', 'Web que no convierte'].map((item) => (
-                    <div key={item} className="flex items-center gap-3 p-3 rounded-xl bg-red-500/5 border border-red-500/10">
-                      <span className="size-2 rounded-full bg-red-400/60" />
-                      <span className="text-sm text-zinc-400">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <p className="text-zinc-500 leading-relaxed mb-6">Mientras tu competencia avanza, tu página sigue siendo un gasto en lugar de una máquina de crecimiento.</p>
-                <div className="grid grid-cols-1 gap-4">
-                  {[
-                    { icon: Globe, title: 'Diseño que convierte', desc: 'Interfaces ultrarrápidas construidas con React, optimizadas para conversión y SEO.' },
-                    { icon: Bot, title: 'IA integrada', desc: 'Chatbots inteligentes, automatización de procesos y análisis predictivo para tu negocio.' },
-                    { icon: Zap, title: 'Crecimiento continuo', desc: 'No es un proyecto finito. Iteramos, mejoramos y escalamos tu presencia digital.' },
-                  ].map((item) => (
-                    <div key={item.title} className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-                      <div className="size-8 rounded-lg bg-zinc-500/10 border border-zinc-500/20 flex items-center justify-center shrink-0">
-                        <item.icon className="size-4 text-zinc-400" />
-                      </div>
-                      <div>
-                        <div className="text-sm font-medium text-white mb-1">{item.title}</div>
-                        <p className="text-xs text-zinc-500">{item.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-          <hr className="border-none border-t border-white/20 my-[2vw]" />
-          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
-            {[
-              { label: 'SSL 256-bit', desc: 'Cifrado seguro' },
-              { label: 'RGPD', desc: 'Cumplimiento UE' },
-              { label: 'uptime 99.9%', desc: 'Sin caídas' },
-              { label: 'Cloudflare', desc: 'CDN Global' },
-              { label: 'PageSpeed A', desc: 'Rendimiento' },
-            ].map((b) => (
-              <div key={b.label} className="flex items-center gap-3">
-                <div className="size-9 rounded-full bg-white/[0.03] border border-white/[0.06] flex items-center justify-center">
-                  <svg viewBox="0 0 20 20" fill="none" className="size-4 text-zinc-600">
-                    <path d="M10 1L12.5 7L18 7.5L13.5 11.5L15 18L10 14.5L5 18L6.5 11.5L2 7.5L7.5 7L10 1Z" fill="currentColor" />
-                  </svg>
-                </div>
-                <div>
-                  <div className="text-xs font-medium text-zinc-400">{b.label}</div>
-                  <div className="text-[10px] text-zinc-700">{b.desc}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </FlowSection>
-
-        {/* SECTION 3: Services + Process */}
-        <FlowSection aria-label="Servicios" style={{ backgroundColor: '#1a1a1a' }}>
-          <div className="flex items-center gap-2">
-            <p className="text-xs font-bold uppercase tracking-[0.2em]">03 — Servicios</p>
-          </div>
-          <hr className="border-none border-t border-white/20 my-[2vw]" />
-          <div className="flex flex-col justify-center min-h-[25vh]">
-            <h2 className="text-[clamp(2.5rem,8vw,10rem)] font-bold leading-[0.9] uppercase tracking-tight text-white mb-8">
-              Todo lo que necesitas.
-            </h2>
-            <div className="grid md:grid-cols-2 gap-4 mb-10">
-              {services.map((s, i) => (
-                <div key={s.title} className="group p-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/15 transition-all duration-500">
-                  <div className="flex items-center gap-4 mb-4">
-                    <span className="text-2xl font-bold text-zinc-700 group-hover:text-zinc-500 transition-colors">{String(i + 1).padStart(2, '0')}</span>
-                    <div className="size-8 rounded-lg bg-white/5 flex items-center justify-center">
-                      <s.icon className="size-4 text-zinc-400" />
-                    </div>
-                  </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">{s.title}</h3>
-                  <p className="text-sm text-zinc-500 leading-relaxed">{s.desc}</p>
-                </div>
-              ))}
-            </div>
-            <div>
-              <p className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono mb-6">Cómo trabajamos</p>
-              <div className="grid md:grid-cols-4 gap-6">
-                {steps.map((s, i) => (
-                  <div key={s.num} className="relative">
-                    <span className="text-5xl font-bold text-white/[0.04] block mb-3 leading-none">{s.num}</span>
-                    <h3 className="text-base font-semibold text-white mb-1">{s.title}</h3>
-                    <p className="text-sm text-zinc-500 leading-relaxed">{s.desc}</p>
-                    {i < steps.length - 1 && (
-                      <div className="hidden md:block absolute top-8 -right-6 text-zinc-700">
-                        <ChevronRight className="size-5" />
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          <hr className="border-none border-t border-white/20 my-[2vw]" />
-          <div className="flex flex-wrap justify-center gap-3">
-            {['React', 'Next.js', 'TypeScript', 'Tailwind', 'Three.js', 'Python', 'FastAPI', 'PostgreSQL', 'Docker', 'Cloudflare'].map((tech) => (
-              <span key={tech} className="px-4 py-2 rounded-xl bg-white/[0.02] border border-white/[0.06] text-xs text-zinc-400 font-mono">
-                {tech}
-              </span>
-            ))}
-          </div>
-        </FlowSection>
-
-        {/* SECTION 4: Results + Contact */}
-        <FlowSection aria-label="Resultados" style={{ backgroundColor: '#222222' }}>
-          <div className="flex items-center gap-2">
-            <p className="text-xs font-bold uppercase tracking-[0.2em]">04 — Casos de Éxito</p>
-          </div>
-          <hr className="border-none border-t border-white/20 my-[2vw]" />
-          <div className="flex flex-col justify-center min-h-[25vh]">
-            <h2 className="text-[clamp(2.5rem,8vw,10rem)] font-bold leading-[0.9] uppercase tracking-tight text-white mb-8">
-              Resultados que hablan.
-            </h2>
-            <div className="grid md:grid-cols-3 gap-4 mb-10">
-              {caseStudies.map((c) => (
-                <div key={c.company} className="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] h-full flex flex-col">
-                  <div className="mb-4">
-                    <span className="text-4xl font-bold text-white tracking-tight">{c.metric}</span>
-                    <span className="block text-sm text-zinc-600 mt-1">{c.label}</span>
-                  </div>
-                  <p className="text-sm text-zinc-400 leading-relaxed mb-4 flex-1">&ldquo;{c.desc}&rdquo;</p>
-                  <div className="pt-4 border-t border-white/[0.04] flex items-center justify-between">
-                    <div>
-                      <div className="text-sm font-medium text-white">{c.company}</div>
-                      <div className="text-xs text-zinc-600">{c.sector}</div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="text-center max-w-lg mx-auto">
-              <p className="text-lg text-zinc-400 mb-6">¿Listo para ser el próximo caso de éxito?</p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <HoverBorderGradient as="a" href="mailto:hola@vulnify.es" className="flex items-center gap-2 px-6 py-3 text-sm font-medium">
-                  Solicitar auditoría <ArrowUpRight className="size-4" />
-                </HoverBorderGradient>
-                <a href="https://wa.me/34600000000" target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-zinc-400 hover:text-white border border-white/[0.06] rounded-xl hover:border-white/20 transition-all"
-                >
-                  <MessageCircle className="size-4" />
-                  WhatsApp
-                </a>
-              </div>
-            </div>
-          </div>
-          <hr className="border-none border-t border-white/20 my-[2vw]" />
-          <div className="flex items-center gap-2 text-xs text-zinc-700 justify-center">
-            <span className="size-1.5 rounded-full bg-amber-400/60 animate-pulse" />
-            Solo 3 proyectos este mes — auditoría gratuita
-          </div>
-        </FlowSection>
-
       </FlowArt>
 
       {/* ====== Content after FlowArt — standard scrollable sections ====== */}
@@ -344,6 +175,193 @@ export function HomeContent({ onAboutOpen }: { onAboutOpen?: () => void }) {
                 <span key={`dup-${name}`} className="text-lg md:text-xl font-semibold text-zinc-700 whitespace-nowrap tracking-wide">{name}</span>
               ))}
             </motion.div>
+          </div>
+        </div>
+      </div>
+
+      {/* Problem */}
+      <div className="w-full border-b border-white/[0.04]">
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
+          <div className="grid md:grid-cols-2 gap-16 md:gap-24 items-center">
+            <div>
+              <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">El Problema</span>
+              <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mt-5 mb-6">
+                Tu web no está trabajando<br />para ti. Debería.
+              </h2>
+              <div className="space-y-4 text-zinc-500 leading-relaxed">
+                <p>La mayoría de las webs son folletos digitales estáticos. No generan leads, no automatizan procesos, no se adaptan a tus clientes.</p>
+                <p>Mientras tu competencia avanza, tu página sigue siendo un gasto en lugar de una máquina de crecimiento.</p>
+              </div>
+            </div>
+            <div>
+              <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 relative overflow-hidden">
+                <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
+                <div className="space-y-4 w-full max-w-sm mx-auto">
+                  {['Sin leads en 30 días', 'Procesos manuales que agotan', 'Web que no convierte'].map((item) => (
+                    <div key={item} className="flex items-center gap-3 p-4 rounded-xl bg-red-500/5 border border-red-500/10">
+                      <span className="size-2 rounded-full bg-red-400/60" />
+                      <span className="text-sm text-zinc-400">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Solution */}
+      <div className="w-full border-b border-white/[0.04]">
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
+          <div className="text-center mb-16 md:mb-24">
+            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">La Solución</span>
+            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight max-w-3xl mx-auto mt-5">
+              Una web que piensa, aprende y convierte por ti.
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              { icon: Globe, title: 'Diseño que convierte', desc: 'Interfaces ultrarrápidas construidas con React, optimizadas para conversión y SEO.' },
+              { icon: Bot, title: 'IA integrada', desc: 'Chatbots inteligentes, automatización de procesos y análisis predictivo para tu negocio.' },
+              { icon: Zap, title: 'Crecimiento continuo', desc: 'No es un proyecto finito. Iteramos, mejoramos y escalamos tu presencia digital.' },
+            ].map((item) => (
+              <div key={item.title} className="group p-8 md:p-10 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500 relative overflow-hidden">
+                <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
+                <div className="size-12 rounded-xl bg-zinc-500/10 border border-zinc-500/20 flex items-center justify-center mb-6 group-hover:bg-zinc-500/20 transition-colors">
+                  <item.icon className="size-5 text-zinc-400" />
+                </div>
+                <h3 className="text-xl font-semibold text-white mb-3">{item.title}</h3>
+                <p className="text-sm text-zinc-500 leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Services */}
+      <div id="servicios" className="w-full border-b border-white/[0.04]">
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
+          <div className="mb-16">
+            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">Servicios</span>
+            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight max-w-2xl mt-5">
+              Todo lo que necesitas para dominar el espacio digital.
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-2 gap-6">
+            {services.map((s, i) => (
+              <div key={s.title} className="group p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/15 transition-all duration-500 relative overflow-hidden">
+                <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
+                <div className="flex items-center gap-4 mb-6">
+                  <span className="text-3xl font-bold text-zinc-700 group-hover:text-zinc-500 transition-colors">{String(i + 1).padStart(2, '0')}</span>
+                  <div className="size-10 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-zinc-500/10 transition-colors">
+                    <s.icon className="size-4 text-zinc-400 group-hover:text-zinc-400 transition-colors" />
+                  </div>
+                </div>
+                <h3 className="text-xl font-semibold text-white mb-3">{s.title}</h3>
+                <p className="text-sm text-zinc-500 leading-relaxed">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Tech Stack */}
+      <div className="w-full border-b border-white/[0.04]">
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
+          <div className="text-center mb-16">
+            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">Tecnología</span>
+            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mt-5">
+              Stack moderno, resultados reales.
+            </h2>
+          </div>
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+            {['React', 'Next.js', 'TypeScript', 'Tailwind', 'Three.js', 'Python', 'FastAPI', 'PostgreSQL', 'Docker', 'Cloudflare'].map((tech) => (
+              <span key={tech} className="px-5 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] text-sm text-zinc-400 font-mono hover:text-white hover:border-white/20 transition-colors block">
+                {tech}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Trust badges static */}
+      <div className="w-full border-b border-white/[0.04]">
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-16 md:py-20">
+          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
+            {[
+              { label: 'SSL 256-bit', desc: 'Cifrado seguro' },
+              { label: 'RGPD', desc: 'Cumplimiento UE' },
+              { label: 'uptime 99.9%', desc: 'Sin caídas' },
+              { label: 'Cloudflare', desc: 'CDN Global' },
+              { label: 'PageSpeed A', desc: 'Rendimiento' },
+            ].map((b) => (
+              <div key={b.label} className="flex items-center gap-3">
+                <div className="size-9 rounded-full bg-white/[0.03] border border-white/[0.06] flex items-center justify-center">
+                  <svg viewBox="0 0 20 20" fill="none" className="size-4 text-zinc-600">
+                    <path d="M10 1L12.5 7L18 7.5L13.5 11.5L15 18L10 14.5L5 18L6.5 11.5L2 7.5L7.5 7L10 1Z" fill="currentColor" />
+                  </svg>
+                </div>
+                <div>
+                  <div className="text-xs font-medium text-zinc-400">{b.label}</div>
+                  <div className="text-[10px] text-zinc-700">{b.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Process */}
+      <div id="proceso" className="w-full border-b border-white/[0.04]">
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
+          <div className="mb-16">
+            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">Proceso</span>
+            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mt-5">De la idea al impacto.</h2>
+          </div>
+          <div className="grid md:grid-cols-4 gap-8">
+            {steps.map((s, i) => (
+              <div key={s.num} className="relative">
+                <span className="text-6xl md:text-7xl font-bold text-white/[0.04] block mb-4 leading-none">{s.num}</span>
+                <h3 className="text-lg font-semibold text-white mb-2">{s.title}</h3>
+                <p className="text-sm text-zinc-500 leading-relaxed">{s.desc}</p>
+                {i < steps.length - 1 && (
+                  <div className="hidden md:block absolute top-8 -right-6 text-zinc-700">
+                    <ChevronRight className="size-5" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Case Studies */}
+      <div className="w-full border-b border-white/[0.04]">
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
+          <div className="mb-16 text-center">
+            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">Casos de éxito</span>
+            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mt-5">Resultados que hablan.</h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {caseStudies.map((c) => (
+              <div key={c.company} className="group p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500 relative overflow-hidden h-full flex flex-col">
+                <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
+                <div className="mb-5">
+                  <span className="text-5xl md:text-6xl font-bold text-white tracking-tight">{c.metric}</span>
+                  <span className="block text-sm text-zinc-600 mt-1">{c.label}</span>
+                </div>
+                <p className="text-sm text-zinc-400 leading-relaxed mb-6 flex-1">&ldquo;{c.desc}&rdquo;</p>
+                <div className="pt-5 border-t border-white/[0.04] flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-medium text-white">{c.company}</div>
+                    <div className="text-xs text-zinc-600">{c.sector}</div>
+                  </div>
+                  <span className="text-xs text-zinc-600 group-hover:text-zinc-400 transition-colors flex items-center gap-1">
+                    Ver caso <ArrowUpRight className="size-3" />
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
