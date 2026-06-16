@@ -198,7 +198,7 @@ def setup_totp(user: User = Depends(get_current_user)):
 
 
 @router.post("/totp/enable", description="Confirm and enable 2FA")
-def enable_totp(code: str = Body(), user: User = Depends(get_current_user)):
+def enable_totp(code: str = Body(embed=True), user: User = Depends(get_current_user)):
     if not user.totp_secret:
         raise HTTPException(status_code=400, detail="Primero haz setup de 2FA")
     if not verify_totp(user.totp_secret, code):
@@ -214,7 +214,7 @@ def enable_totp(code: str = Body(), user: User = Depends(get_current_user)):
 
 
 @router.post("/totp/disable", description="Disable 2FA")
-def disable_totp(code: str = Body(), user: User = Depends(get_current_user)):
+def disable_totp(code: str = Body(embed=True), user: User = Depends(get_current_user)):
     if not user.totp_enabled:
         raise HTTPException(status_code=400, detail="2FA no está activado")
     if not verify_totp(user.totp_secret, code):
