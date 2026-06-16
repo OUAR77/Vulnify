@@ -1,5 +1,6 @@
 import logging
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+import base64
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from database import get_db
@@ -147,22 +148,20 @@ def admin_delete_order(
     return {"ok": True}
 
 
-class PhotoUpload(BaseModel):
-    image_data: str
-    caption: str = ""
-
-
 @router.post("/orders/{order_id}/photos", description="Upload a progress photo (admin only)")
 def admin_upload_photo(
     order_id: int,
-    body: PhotoUpload,
+    file: UploadFile = File(...),
+    caption: str = Form(""),
     admin: User = Depends(require_admin_totp),
     db: Session = Depends(get_db),
 ):
     order = db.query(Order).filter(Order.id == order_id).first()
     if not order:
         raise HTTPException(status_code=404, detail="Pedido no encontrado")
-    photo = OrderPhoto(order_id=order_id, image_data=body.image_data, caption=body.caption)
+    image_bytes = file.file.read()
+    image_data = "data:" + (file.content_type or "image/jpeg") + ";base64," + base64.b64encode(image_bytes).decode()
+    photo = OrderPhoto(order_id=order_id, image_data=image_data, caption=caption)
     db.add(photo)
     db.commit()
     db.refresh(photo)

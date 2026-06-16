@@ -202,29 +202,12 @@ export function AdminPage() {
   const handleUploadPhoto = async () => {
     const file = fileInputRef.current?.files?.[0]
     if (!file || !photoOrder) return
-    const maxW = 1200
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      const img = document.createElement('img')
-      img.onload = () => {
-        let w = img.width; let h = img.height
-        if (w > maxW) { h = h * maxW / w; w = maxW }
-        const c = document.createElement('canvas')
-        c.width = w; c.height = h
-        const ctx = c.getContext('2d')!
-        ctx.drawImage(img, 0, 0, w, h)
-        const b64 = c.toDataURL('image/jpeg', 0.8)
-        adminUploadPhoto(photoOrder.id, b64, photoCaption)
-          .then(async () => {
-            setPhotos(await getOrderPhotos(photoOrder.id))
-            setPhotoCaption('')
-            if (fileInputRef.current) fileInputRef.current.value = ''
-          })
-          .catch((err) => alert(err.message))
-      }
-      img.src = e.target?.result as string
-    }
-    reader.readAsDataURL(file)
+    try {
+      await adminUploadPhoto(photoOrder.id, file, photoCaption)
+      setPhotos(await getOrderPhotos(photoOrder.id))
+      setPhotoCaption('')
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    } catch (err: any) { alert(err.message) }
   }
 
   const handleDeletePhoto = async (photoId: number) => {
