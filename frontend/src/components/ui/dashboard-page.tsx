@@ -1,6 +1,6 @@
 import { useAuth } from '@/lib/auth-context'
 import { useNavigate } from 'react-router-dom'
-import { User, LogOut, Mail, Calendar } from 'lucide-react'
+import { User, LogOut, Mail, Calendar, ArrowLeft } from 'lucide-react'
 
 export function DashboardPage() {
   const { user, logout, isAuthenticated } = useAuth()
@@ -16,13 +16,22 @@ export function DashboardPage() {
       <div className="mx-auto max-w-4xl px-6 py-16">
         <div className="flex items-center justify-between mb-12">
           <h1 className="text-3xl font-bold tracking-tight">Mi panel</h1>
-          <button
-            onClick={() => { logout(); navigate('/') }}
-            className="flex items-center gap-2 text-sm text-zinc-500 hover:text-white transition-colors bg-transparent border border-white/[0.06] rounded-lg px-4 py-2 cursor-pointer"
-          >
-            <LogOut className="size-4" />
-            Cerrar sesión
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 text-sm text-zinc-500 hover:text-white transition-colors bg-transparent border border-white/[0.06] rounded-lg px-4 py-2 cursor-pointer"
+            >
+              <ArrowLeft className="size-4" />
+              Volver a la web
+            </button>
+            <button
+              onClick={() => { logout(); navigate('/') }}
+              className="flex items-center gap-2 text-sm text-zinc-500 hover:text-white transition-colors bg-transparent border border-white/[0.06] rounded-lg px-4 py-2 cursor-pointer"
+            >
+              <LogOut className="size-4" />
+              Cerrar sesión
+            </button>
+          </div>
         </div>
 
         <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 mb-8">
