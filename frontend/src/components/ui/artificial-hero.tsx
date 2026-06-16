@@ -101,98 +101,6 @@ export function ArtificialHero() {
       return imageData
     }
 
-    const drawGlitchedOrb = (cx: number, cy: number, r: number, bright: number, glitch: number) => {
-      c.save()
-
-      const shouldGlitch = Math.random() < 0.1 && glitch > 0.5
-      const glitchOffset = shouldGlitch ? (Math.random() - 0.5) * 20 * glitch : 0
-      const glitchScale = shouldGlitch ? 1 + (Math.random() - 0.5) * 0.3 * glitch : 1
-
-      if (shouldGlitch) {
-        c.translate(glitchOffset, glitchOffset * 0.8)
-        c.scale(glitchScale, 1 / glitchScale)
-      }
-
-      const orbGradient = c.createRadialGradient(cx, cy, 0, cx, cy, r * 1.5)
-      const a = 0.5 + bright * 0.4
-      orbGradient.addColorStop(0, `rgba(255, 255, 255, ${0.8 * a})`)
-      orbGradient.addColorStop(0.2, `rgba(220, 220, 220, ${0.5 * a})`)
-      orbGradient.addColorStop(0.5, `rgba(160, 160, 160, ${0.25 * a})`)
-      orbGradient.addColorStop(1, 'rgba(0, 0, 0, 0)')
-      c.fillStyle = orbGradient
-      c.fillRect(0, 0, cvs.width, cvs.height)
-
-      const centerR = r * 0.3
-      c.fillStyle = `rgba(255, 255, 255, ${0.6 * a})`
-      c.beginPath()
-      c.arc(cx, cy, centerR, 0, Math.PI * 2)
-      c.fill()
-
-      if (shouldGlitch) {
-        c.globalCompositeOperation = 'screen'
-
-        c.fillStyle = `rgba(255, 255, 255, ${0.3 * glitch})`
-        c.beginPath()
-        c.arc(cx + glitchOffset * 0.5, cy, centerR, 0, Math.PI * 2)
-        c.fill()
-
-        c.fillStyle = `rgba(200, 200, 255, ${0.25 * glitch})`
-        c.beginPath()
-        c.arc(cx - glitchOffset * 0.5, cy, centerR, 0, Math.PI * 2)
-        c.fill()
-
-        c.globalCompositeOperation = 'source-over'
-
-        c.strokeStyle = `rgba(255, 255, 255, ${0.5 * glitch})`
-        c.lineWidth = 1
-        for (let i = 0; i < 5; i++) {
-          const y = cy - r + Math.random() * r * 2
-          c.beginPath()
-          c.moveTo(cx - r + Math.random() * 20, y)
-          c.lineTo(cx + r - Math.random() * 20, y)
-          c.stroke()
-        }
-
-        c.fillStyle = `rgba(200, 200, 200, ${0.3 * glitch})`
-        for (let i = 0; i < 3; i++) {
-          const bx = cx - r + Math.random() * r * 2
-          const by = cy - r + Math.random() * r * 2
-          c.fillRect(bx, by, Math.random() * 10 + 2, Math.random() * 10 + 2)
-        }
-      }
-
-      c.strokeStyle = `rgba(255, 255, 255, ${0.3 + 0.2 * a})`
-      c.lineWidth = 2
-
-      if (shouldGlitch) {
-        const segments = 8
-        for (let i = 0; i < segments; i++) {
-          const startAngle = (i / segments) * Math.PI * 2
-          const endAngle = ((i + 1) / segments) * Math.PI * 2
-          const ringR = r * 1.2 + (Math.random() - 0.5) * 10 * glitch
-          c.beginPath()
-          c.arc(cx, cy, ringR, startAngle, endAngle)
-          c.stroke()
-        }
-      } else {
-        c.beginPath()
-        c.arc(cx, cy, r * 1.2, 0, Math.PI * 2)
-        c.stroke()
-      }
-
-      if (shouldGlitch && Math.random() < 0.3) {
-        c.globalCompositeOperation = 'difference'
-        c.fillStyle = `rgba(255, 255, 255, ${0.6 * glitch})`
-        for (let i = 0; i < 3; i++) {
-          const barY = cy - r + Math.random() * r * 2
-          c.fillRect(cx - r, barY, r * 2, Math.random() * 5 + 1)
-        }
-        c.globalCompositeOperation = 'source-over'
-      }
-
-      c.restore()
-    }
-
     function render() {
       timeRef.current += 0.016
       const time = timeRef.current
@@ -215,8 +123,6 @@ export function ArtificialHero() {
       bgGradient.addColorStop(1, 'rgba(0, 0, 0, 0.95)')
       c.fillStyle = bgGradient
       c.fillRect(0, 0, width, height)
-
-      drawGlitchedOrb(cx, cy, r, bright, params.glitchIntensity)
 
       c.font = '10px "JetBrains Mono", monospace'
       c.textAlign = 'center'
