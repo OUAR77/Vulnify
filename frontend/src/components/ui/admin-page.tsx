@@ -205,7 +205,7 @@ export function AdminPage() {
     const maxW = 1200
     const reader = new FileReader()
     reader.onload = (e) => {
-      const img = new Image()
+      const img = document.createElement('img')
       img.onload = () => {
         let w = img.width; let h = img.height
         if (w > maxW) { h = h * maxW / w; w = maxW }
