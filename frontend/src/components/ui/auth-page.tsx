@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from './button';
+import { HoverBorderGradient } from './hover-border-gradient';
 import {
   ArrowLeft,
   AtSign,
@@ -195,20 +196,20 @@ export function AuthPage({ mode, onSubmit, onSwitchMode, onBack, loading, error 
             </Button>
           </form>
 
-          <div className="text-center text-sm text-zinc-500">
+          <div className="text-center text-sm text-zinc-500 pt-2">
             {mode === 'login' ? (
               <span>
                 ¿No tienes cuenta?{' '}
-                <button onClick={onSwitchMode} className="inline-flex items-center gap-1.5 text-sm font-medium text-zinc-400 hover:text-white border border-white/[0.06] hover:border-white/20 rounded-lg px-4 py-2 transition-all bg-transparent cursor-pointer">
+                <HoverBorderGradient as="button" onClick={onSwitchMode} className="px-4 py-1.5 text-sm font-medium gap-1.5">
                   Registrarse <ArrowLeft className="size-3.5 rotate-180" />
-                </button>
+                </HoverBorderGradient>
               </span>
             ) : (
               <span>
                 ¿Ya tienes cuenta?{' '}
-                <button onClick={onSwitchMode} className="inline-flex items-center gap-1.5 text-sm font-medium text-zinc-400 hover:text-white border border-white/[0.06] hover:border-white/20 rounded-lg px-4 py-2 transition-all bg-transparent cursor-pointer">
+                <HoverBorderGradient as="button" onClick={onSwitchMode} className="px-4 py-1.5 text-sm font-medium gap-1.5">
                   Iniciar sesión <ArrowLeft className="size-3.5 rotate-180" />
-                </button>
+                </HoverBorderGradient>
               </span>
             )}
           </div>
