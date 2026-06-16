@@ -1,7 +1,7 @@
 import re
 import secrets
 import logging
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Body, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, field_validator
 from sqlalchemy.orm import Session
 from database import get_db
@@ -124,7 +124,7 @@ def register(request: Request, body: RegisterBody, db: Session = Depends(get_db)
     log_activity("user.register", user.id, user.email, {"name": user.name}, ip)
     return {
         "token": token, "refresh_token": refresh_token,
-        "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role},
+        "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role, "totp_enabled": bool(user.totp_enabled)},
     }
 
 
@@ -154,7 +154,7 @@ def login(request: Request, body: LoginBody, db: Session = Depends(get_db)):
             logger.warning("Admin login alert not sent: %s", e)
     return {
         "token": token, "refresh_token": refresh_token,
-        "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role, "verified": bool(user.is_verified)},
+        "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role, "verified": bool(user.is_verified), "totp_enabled": bool(user.totp_enabled)},
     }
 
 
@@ -177,7 +177,7 @@ def verify_totp_login(request: Request, body: TotpVerifyBody, db: Session = Depe
     log_activity("user.login_2fa", user.id, user.email, {}, get_client_ip(request))
     return {
         "token": token, "refresh_token": refresh_token,
-        "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role, "verified": bool(user.is_verified)},
+        "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role, "verified": bool(user.is_verified), "totp_enabled": bool(user.totp_enabled)},
     }
 
 
@@ -198,7 +198,7 @@ def setup_totp(user: User = Depends(get_current_user)):
 
 
 @router.post("/totp/enable", description="Confirm and enable 2FA")
-def enable_totp(code: str, user: User = Depends(get_current_user)):
+def enable_totp(code: str = Body(), user: User = Depends(get_current_user)):
     if not user.totp_secret:
         raise HTTPException(status_code=400, detail="Primero haz setup de 2FA")
     if not verify_totp(user.totp_secret, code):
@@ -214,7 +214,7 @@ def enable_totp(code: str, user: User = Depends(get_current_user)):
 
 
 @router.post("/totp/disable", description="Disable 2FA")
-def disable_totp(code: str, user: User = Depends(get_current_user)):
+def disable_totp(code: str = Body(), user: User = Depends(get_current_user)):
     if not user.totp_enabled:
         raise HTTPException(status_code=400, detail="2FA no está activado")
     if not verify_totp(user.totp_secret, code):

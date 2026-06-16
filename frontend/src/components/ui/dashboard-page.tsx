@@ -67,7 +67,7 @@ export function DashboardPage() {
     }
   }
 
-  const totpEnabled = (user as any)?.totp_enabled
+  const totpEnabled = user?.totp_enabled
 
   return (
     <div className="min-h-screen bg-black text-white">

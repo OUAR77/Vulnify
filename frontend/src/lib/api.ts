@@ -6,6 +6,7 @@ export interface User {
   email: string
   role: string
   verified?: boolean
+  totp_enabled?: boolean
 }
 
 export interface AuthResponse {
