@@ -5,3 +5,5 @@ from models.alert import BreachAlert
 from models.subscription import UserSubscription
 from models.apikey import ApiKey
 from models.activity_log import ActivityLog
+from models.message import Message
+from models.order import Order

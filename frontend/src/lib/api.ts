@@ -183,3 +183,55 @@ export async function adminGetActivityLogs(page = 1, action?: string): Promise<{
 export async function adminGetActivityActions(): Promise<string[]> {
   return apiGet<string[]>('/api/admin/activity-actions')
 }
+
+// Messages
+export interface ContactMessage {
+  id: number
+  name: string
+  email: string
+  company: string
+  subject: string
+  message: string
+  read: boolean
+  created_at: string
+}
+
+export async function adminGetMessages(page = 1): Promise<{ total: number; page: number; per_page: number; items: ContactMessage[] }> {
+  return apiGet(`/api/admin/messages?page=${page}&per_page=50`)
+}
+
+export async function adminMarkMessageRead(messageId: number): Promise<{ ok: boolean }> {
+  return apiPut<{ ok: boolean }>(`/api/admin/messages/${messageId}/read`, {})
+}
+
+export async function adminDeleteMessage(messageId: number): Promise<{ ok: boolean }> {
+  return apiDelete<{ ok: boolean }>(`/api/admin/messages/${messageId}`)
+}
+
+// Orders
+export interface Order {
+  id: number
+  client_name: string
+  client_email: string
+  description: string
+  service: string
+  amount: number
+  status: string
+  created_at: string
+}
+
+export async function adminGetOrders(page = 1): Promise<{ total: number; page: number; per_page: number; items: Order[] }> {
+  return apiGet(`/api/admin/orders?page=${page}&per_page=50`)
+}
+
+export async function adminCreateOrder(data: { client_name: string; client_email: string; description?: string; service: string; amount?: number; status?: string }): Promise<Order> {
+  return apiPost<Order>('/api/admin/orders', data)
+}
+
+export async function adminUpdateOrder(orderId: number, data: Partial<{ client_name: string; client_email: string; description: string; service: string; amount: number; status: string }>): Promise<{ ok: boolean }> {
+  return apiPut<{ ok: boolean }>(`/api/admin/orders/${orderId}`, data)
+}
+
+export async function adminDeleteOrder(orderId: number): Promise<{ ok: boolean }> {
+  return apiDelete<{ ok: boolean }>(`/api/admin/orders/${orderId}`)
+}

@@ -7,3 +7,5 @@ from modules.routers.search import router as search_router
 from modules.routers.reports import router as reports_router
 from modules.routers.scan import router as scan_router
 from modules.routers.batch import router as batch_router
+from modules.routers.messages import router as messages_router
+from modules.routers.orders import router as orders_router

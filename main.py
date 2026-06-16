@@ -17,8 +17,9 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from jose import JWTError, jwt
 from config import limiter, settings
 from database import Base, engine
-from modules.routers import auth_router, assets_router, alerts_router, plans_router, admin_router, search_router, reports_router, scan_router, batch_router
+from modules.routers import auth_router, assets_router, alerts_router, plans_router, admin_router, search_router, reports_router, scan_router, batch_router, messages_router, orders_router
 from models.user import User
+from models.message import Message
 
 os.makedirs("uploads", exist_ok=True)
 
@@ -246,6 +247,8 @@ app.include_router(search_router)
 app.include_router(reports_router)
 app.include_router(scan_router)
 app.include_router(batch_router)
+app.include_router(messages_router)
+app.include_router(orders_router)
 
 templates = Jinja2Templates(directory="templates")
 
@@ -294,8 +297,17 @@ async def contact_form(request: Request):
         email = data.get("email", "")
         company = data.get("company", "")
         service = data.get("service", "")
-        message = data.get("message", "")
+        message_text = data.get("message", "")
+        subject = data.get("subject", service or "Contacto web")
         logger.info("Contact form: %s (%s) - %s", name, email, service)
+        from database import SessionLocal
+        db = SessionLocal()
+        try:
+            msg = Message(name=name, email=email, company=company, subject=subject, message=message_text)
+            db.add(msg)
+            db.commit()
+        finally:
+            db.close()
         return {"ok": True}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
