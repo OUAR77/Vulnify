@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import { Outlet, useNavigate, useLocation, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowUpRight, MessageCircle, Plus, X } from 'lucide-react'
+import { ArrowUpRight, MessageCircle, User } from 'lucide-react'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { HoverBorderGradient } from '@/components/ui/hover-border-gradient'
 import { MenuToggleIcon } from '@/components/ui/menu-toggle-icon'
 import { AboutModal } from '@/components/ui/about-modal'
+import { useAuth } from '@/lib/auth-context'
 
 const ScrollProgress = () => {
   const [progress, setProgress] = useState(0)
@@ -70,6 +71,78 @@ const footerLinks = [
     ]
   },
 ]
+
+function AuthButtons() {
+  const { user, isAuthenticated, logout } = useAuth()
+  const navigate = useNavigate()
+
+  if (isAuthenticated) {
+    return (
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => navigate('/dashboard')}
+          className="flex items-center gap-1.5 text-sm text-zinc-500 hover:text-white transition-colors bg-transparent border-none cursor-pointer"
+        >
+          <User className="size-3.5" />
+          {user?.name}
+        </button>
+        <button
+          onClick={() => { logout(); navigate('/') }}
+          className="text-xs text-zinc-600 hover:text-zinc-400 transition-colors bg-transparent border-none cursor-pointer"
+        >
+          Salir
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex items-center gap-3">
+      <Link to="/login" className="text-sm text-zinc-500 hover:text-white transition-colors no-underline">
+        Iniciar sesión
+      </Link>
+      <Link to="/register" className="text-sm font-medium text-white hover:text-zinc-300 transition-colors no-underline">
+        Registrarse
+      </Link>
+    </div>
+  )
+}
+
+function MobileAuthButtons() {
+  const { user, isAuthenticated, logout } = useAuth()
+  const navigate = useNavigate()
+
+  if (isAuthenticated) {
+    return (
+      <div className="flex flex-col items-center gap-4 mt-4">
+        <button
+          onClick={() => navigate('/dashboard')}
+          className="text-xl text-zinc-400 hover:text-white transition-colors bg-transparent border-none cursor-pointer"
+        >
+          <User className="size-5 inline me-2" />
+          {user?.name}
+        </button>
+        <button
+          onClick={() => { logout(); navigate('/') }}
+          className="text-sm text-zinc-600 hover:text-zinc-400 transition-colors bg-transparent border-none cursor-pointer"
+        >
+          Cerrar sesión
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-4 mt-4">
+      <Link to="/login" className="text-xl text-zinc-400 hover:text-white transition-colors no-underline">
+        Iniciar sesión
+      </Link>
+      <Link to="/register" className="text-xl font-medium text-white hover:text-zinc-300 transition-colors no-underline">
+        Registrarse
+      </Link>
+    </div>
+  )
+}
 
 export function SiteLayout() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -158,6 +231,7 @@ export function SiteLayout() {
           ))}
           <div className="w-px h-5 bg-white/[0.06]" />
           <ThemeToggle isDark={isDark} onToggle={() => setIsDark(!isDark)} />
+          <AuthButtons />
           <HoverBorderGradient as="a" href="mailto:hola@vulnify.es" className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium">
             Presupuesto <ArrowUpRight className="size-3.5" />
           </HoverBorderGradient>
@@ -197,6 +271,7 @@ export function SiteLayout() {
               <HoverBorderGradient as="a" href="mailto:hola@vulnify.es" className="flex items-center gap-2 px-8 py-4 text-base font-medium">
                 Solicitar presupuesto <ArrowUpRight className="size-4" />
               </HoverBorderGradient>
+              <MobileAuthButtons />
             </div>
           </motion.div>
         )}
