@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.orm import Session
 from database import get_db
 from models.order import Order
+from models.order_photo import OrderPhoto
 from modules.auth import get_current_user
 from models.user import User
 
@@ -44,3 +45,24 @@ def create_order(
     db.commit()
     db.refresh(order)
     return {"id": order.id, "status": order.status, "message": "Pedido creado"}
+
+
+@router.get("/api/orders/{order_id}/photos", description="Get progress photos for an order")
+def get_order_photos(
+    order_id: int,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    order = db.query(Order).filter(Order.id == order_id, Order.user_id == user.id).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Pedido no encontrado")
+    photos = (
+        db.query(OrderPhoto)
+        .filter(OrderPhoto.order_id == order_id)
+        .order_by(OrderPhoto.created_at.asc())
+        .all()
+    )
+    return [
+        {"id": p.id, "image_data": p.image_data, "caption": p.caption, "created_at": str(p.created_at)[:19]}
+        for p in photos
+    ]

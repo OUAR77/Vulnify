@@ -5,12 +5,12 @@ import { totpSetup, totpEnable, totpDisable, setUser as storeUser, getStoredUser
 import {
   User, LogOut, Mail, Calendar, ArrowLeft, ShieldAlert, Smartphone, Check, X,
   Key, Copy, Eye, EyeOff, RefreshCw, Moon, Sun, FileText, Package, PenSquare,
-  Save, Trash2, Plus, ExternalLink,
+  Save, Trash2, Plus, ExternalLink, Image,
 } from 'lucide-react'
 import {
   updateProfile, sendVerification, verifyEmail, getApiKeys, createApiKey, deleteApiKey,
-  getMyOrders, getDarkMode, setDarkMode as apiSetDarkMode,
-  type ApiKey, type Order,
+  getMyOrders, getDarkMode, setDarkMode as apiSetDarkMode, getOrderPhotos,
+  type ApiKey, type Order, type OrderPhoto,
 } from '@/lib/api'
 
 export function DashboardPage() {
@@ -41,6 +41,8 @@ export function DashboardPage() {
 
   // Orders
   const [orders, setOrders] = useState<Order[]>([])
+  const [photosOrder, setPhotosOrder] = useState<Order | null>(null)
+  const [orderPhotos, setOrderPhotos] = useState<OrderPhoto[]>([])
 
   // Dark mode
   const [darkMode, setDarkMode] = useState(true)
@@ -141,6 +143,12 @@ export function DashboardPage() {
     const next = !darkMode
     setDarkMode(next)
     try { await apiSetDarkMode(next) } catch {}
+  }
+
+  const handleViewPhotos = async (order: Order) => {
+    setPhotosOrder(order)
+    try { setOrderPhotos(await getOrderPhotos(order.id)) }
+    catch { setOrderPhotos([]) }
   }
 
   return (
@@ -385,12 +393,17 @@ export function DashboardPage() {
                     <p className="text-xs text-zinc-600 mt-1">{o.created_at}</p>
                   </div>
                   <div className="flex items-center gap-3">
+                    <button onClick={() => handleViewPhotos(o)}
+                      className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent flex items-center gap-1">
+                      <Image className="size-3" /> Fotos
+                    </button>
                     <span className={`text-xs px-2 py-0.5 rounded-full ${
                       o.status === 'completed' ? 'bg-green-500/10 text-green-400' :
+                      o.status === 'in_progress' ? 'bg-blue-500/10 text-blue-400' :
                       o.status === 'pending' ? 'bg-amber-500/10 text-amber-400' :
                       'bg-zinc-500/10 text-zinc-400'
                     }`}>
-                      {o.status === 'completed' ? 'Completado' : o.status === 'pending' ? 'Pendiente' : o.status}
+                      {o.status === 'completed' ? 'Completado' : o.status === 'in_progress' ? 'En progreso' : o.status === 'pending' ? 'Pendiente' : o.status}
                     </span>
                     <span className="text-sm font-medium text-zinc-300">{o.amount}€</span>
                   </div>
@@ -399,6 +412,29 @@ export function DashboardPage() {
             </div>
           )}
         </section>
+
+        {/* Photo viewer modal */}
+        {photosOrder && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80" onClick={() => { setPhotosOrder(null); setOrderPhotos([]) }}>
+            <div className="bg-zinc-900 border border-white/[0.1] rounded-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">Progreso — {photosOrder.service}</h3>
+                <button onClick={() => { setPhotosOrder(null); setOrderPhotos([]) }}
+                  className="text-zinc-500 hover:text-white transition-colors cursor-pointer bg-transparent border-none text-lg">✕</button>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                {orderPhotos.map(p => (
+                  <div key={p.id} className="rounded-lg overflow-hidden border border-white/[0.06]">
+                    <img src={p.image_data} alt={p.caption || 'Progreso'} className="w-full h-48 object-cover" />
+                    {p.caption && <div className="p-2 text-xs text-zinc-400">{p.caption}</div>}
+                    <div className="px-2 pb-2 text-[10px] text-zinc-600">{p.created_at}</div>
+                  </div>
+                ))}
+                {orderPhotos.length === 0 && <div className="col-span-full text-center py-12 text-zinc-500 text-sm">No hay fotos de progreso aún</div>}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Preferences */}
         <section id="prefs" className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 mb-8">

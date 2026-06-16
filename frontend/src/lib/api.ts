@@ -353,6 +353,26 @@ export async function downloadAdminCSV(path: string, filename: string): Promise<
   URL.revokeObjectURL(url)
 }
 
+// Order Photos
+export interface OrderPhoto {
+  id: number
+  image_data: string
+  caption: string
+  created_at: string
+}
+
+export async function getOrderPhotos(orderId: number): Promise<OrderPhoto[]> {
+  return apiGet<OrderPhoto[]>(`/api/orders/${orderId}/photos`)
+}
+
+export async function adminUploadPhoto(orderId: number, image_data: string, caption: string): Promise<{ id: number; caption: string; created_at: string }> {
+  return apiPost<{ id: number; caption: string; created_at: string }>(`/api/admin/orders/${orderId}/photos`, { image_data, caption })
+}
+
+export async function adminDeletePhoto(orderId: number, photoId: number, password: string): Promise<{ ok: boolean }> {
+  return apiDelete<{ ok: boolean }>(`/api/admin/orders/${orderId}/photos/${photoId}?password=${encodeURIComponent(password)}`)
+}
+
 export async function apiForgotPassword(email: string): Promise<{ ok: boolean; message: string }> {
   const res = await fetch(`${BASE}/api/auth/forgot-password`, {
     method: 'POST',

@@ -189,6 +189,19 @@ async def lifespan(app: FastAPI):
                 logger.info("Dropped column %s from users", col)
             except Exception:
                 db.rollback()
+        # Migrate order_photos table
+        try:
+            db.execute(text("""CREATE TABLE IF NOT EXISTS order_photos (
+                id SERIAL PRIMARY KEY,
+                order_id INTEGER REFERENCES orders(id),
+                image_data TEXT NOT NULL,
+                caption VARCHAR DEFAULT '',
+                created_at TIMESTAMP DEFAULT NOW()
+            )"""))
+            db.commit()
+            logger.info("Created order_photos table")
+        except Exception:
+            db.rollback()
         db.close()
     except Exception as e:
         logger.warning("Could not seed data: %s", e)

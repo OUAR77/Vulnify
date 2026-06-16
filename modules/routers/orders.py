@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from database import get_db
 from models.order import Order
+from models.order_photo import OrderPhoto
 from models.user import User
 from modules.auth import require_admin_totp, verify_password
 from config import limiter
@@ -142,5 +143,45 @@ def admin_delete_order(
     if not order:
         raise HTTPException(status_code=404, detail="Pedido no encontrado")
     db.delete(order)
+    db.commit()
+    return {"ok": True}
+
+
+class PhotoUpload(BaseModel):
+    image_data: str
+    caption: str = ""
+
+
+@router.post("/orders/{order_id}/photos", description="Upload a progress photo (admin only)")
+def admin_upload_photo(
+    order_id: int,
+    body: PhotoUpload,
+    admin: User = Depends(require_admin_totp),
+    db: Session = Depends(get_db),
+):
+    order = db.query(Order).filter(Order.id == order_id).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Pedido no encontrado")
+    photo = OrderPhoto(order_id=order_id, image_data=body.image_data, caption=body.caption)
+    db.add(photo)
+    db.commit()
+    db.refresh(photo)
+    return {"id": photo.id, "caption": photo.caption, "created_at": str(photo.created_at)[:19]}
+
+
+@router.delete("/orders/{order_id}/photos/{photo_id}", description="Delete a progress photo (admin only)")
+def admin_delete_photo(
+    order_id: int,
+    photo_id: int,
+    password: str | None = Query(None),
+    admin: User = Depends(require_admin_totp),
+    db: Session = Depends(get_db),
+):
+    if not password or not verify_password(password, admin.password):
+        raise HTTPException(status_code=403, detail="Contraseña incorrecta")
+    photo = db.query(OrderPhoto).filter(OrderPhoto.id == photo_id, OrderPhoto.order_id == order_id).first()
+    if not photo:
+        raise HTTPException(status_code=404, detail="Foto no encontrada")
+    db.delete(photo)
     db.commit()
     return {"ok": True}
