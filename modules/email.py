@@ -23,14 +23,14 @@ def _html_wrapper(body: str) -> str:
     <tr><td style="padding:40px 32px 32px;text-align:center;border-bottom:1px solid #222">
       <span style="display:inline-block;width:40px;height:40px;border-radius:50%;border:2px solid #333;margin-bottom:12px"></span>
       <h1 style="margin:0;font-size:20px;font-weight:600;color:#fff;letter-spacing:-0.3px">Vulnify</h1>
-      <p style="margin:4px 0 0;font-size:13px;color:#666">Monitorización de Reputación Digital</p>
+      <p style="margin:4px 0 0;font-size:13px;color:#666">Ecosistemas Digitales con IA</p>
     </td></tr>
     <tr><td style="padding:32px;color:#ccc;font-size:15px;line-height:1.6">
       {body}
     </td></tr>
     <tr><td style="padding:24px 32px;background:#0d0d0d;text-align:center;border-top:1px solid #222">
       <p style="margin:0;font-size:12px;color:#555">
-        Vulnify &mdash; Protegiendo tu huella digital<br>
+        Vulnify &mdash; Ecosistemas Digitales con IA<br>
         <a href="{settings.SITE_URL}" style="color:#888;text-decoration:underline">vulnify.es</a>
       </p>
     </td></tr>
