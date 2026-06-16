@@ -13,7 +13,7 @@ export function AnimatedHeroText() {
       >
         VULNIFY
       </motion.span>
-      <div className="flex flex-wrap gap-x-[0.3em]">
+      <div className="flex flex-wrap gap-x-[4vw]">
         {words.map((word, i) => (
           <motion.span
             key={word}
