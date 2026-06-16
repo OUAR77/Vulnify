@@ -197,19 +197,19 @@ export function AuthPage({ mode, onSubmit, onSwitchMode, onBack, loading, error 
 
           <div className="text-center text-sm text-zinc-500">
             {mode === 'login' ? (
-              <>
+              <span>
                 ¿No tienes cuenta?{' '}
-                <button onClick={onSwitchMode} className="text-white hover:underline underline-offset-4 font-medium">
-                  Registrarse
+                <button onClick={onSwitchMode} className="inline-flex items-center gap-1.5 text-sm font-medium text-zinc-400 hover:text-white border border-white/[0.06] hover:border-white/20 rounded-lg px-4 py-2 transition-all bg-transparent cursor-pointer">
+                  Registrarse <ArrowLeft className="size-3.5 rotate-180" />
                 </button>
-              </>
+              </span>
             ) : (
-              <>
+              <span>
                 ¿Ya tienes cuenta?{' '}
-                <button onClick={onSwitchMode} className="text-white hover:underline underline-offset-4 font-medium">
-                  Iniciar sesión
+                <button onClick={onSwitchMode} className="inline-flex items-center gap-1.5 text-sm font-medium text-zinc-400 hover:text-white border border-white/[0.06] hover:border-white/20 rounded-lg px-4 py-2 transition-all bg-transparent cursor-pointer">
+                  Iniciar sesión <ArrowLeft className="size-3.5 rotate-180" />
                 </button>
-              </>
+              </span>
             )}
           </div>
         </div>
