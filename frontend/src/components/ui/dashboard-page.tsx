@@ -104,9 +104,8 @@ export function DashboardPage() {
   const handleSendVerification = async () => {
     setVerifSending(true); setVerifError('')
     try {
-      const res = await sendVerification()
-      setVerifSent(res.sent)
-      if (!res.sent) setVerifError('No se pudo enviar el email. Intenta más tarde.')
+      await sendVerification()
+      setVerifSent(true)
     } catch (e: any) { setVerifError(e.message) }
     finally { setVerifSending(false) }
   }
