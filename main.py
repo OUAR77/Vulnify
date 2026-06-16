@@ -283,34 +283,7 @@ async def index(request: Request):
 
 
 
-@app.get("/monitor", response_class=HTMLResponse, description="Reputation monitor")
-async def monitor_page(request: Request):
-    return templates.TemplateResponse(request, "monitor.html")
 
-
-@app.get("/scanner", response_class=HTMLResponse, description="Security scanner")
-async def scanner_page(request: Request, target: str = ""):
-    return templates.TemplateResponse(request, "scan.html", {"target": target})
-
-
-@app.get("/precios", response_class=HTMLResponse, description="Pricing plans")
-async def precios(request: Request):
-    return templates.TemplateResponse(request, "pricing.html")
-
-
-@app.get("/dashboard", response_class=HTMLResponse, description="User dashboard")
-async def dashboard(request: Request):
-    return templates.TemplateResponse(request, "dashboard.html")
-
-
-@app.get("/admin", response_class=HTMLResponse, description="Admin panel")
-async def admin_panel(request: Request):
-    return templates.TemplateResponse(request, "admin.html")
-
-
-@app.get("/settings", response_class=HTMLResponse, description="User settings")
-async def settings_page(request: Request):
-    return templates.TemplateResponse(request, "settings.html")
 
 
 @app.post("/api/contact")

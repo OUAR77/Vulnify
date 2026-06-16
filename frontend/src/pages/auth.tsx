@@ -16,7 +16,7 @@ export function LoginPage() {
     try {
       const res = await apiLogin(email, password)
       login(res.token, res.refresh_token, res.user)
-      navigate('/')
+      navigate('/dashboard')
     } catch (e: any) {
       setError(e.message || 'Error al iniciar sesión')
     } finally {
@@ -49,7 +49,7 @@ export function RegisterPage() {
     try {
       const res = await apiRegister(name, email, password)
       login(res.token, res.refresh_token, res.user)
-      navigate('/')
+      navigate('/dashboard')
     } catch (e: any) {
       setError(e.message || 'Error al registrarse')
     } finally {
