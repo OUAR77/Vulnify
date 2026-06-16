@@ -56,28 +56,9 @@ export function ArtificialHero() {
     const c: CanvasRenderingContext2D = ctx
     const gC: CanvasRenderingContext2D = grainCtx
 
-    const density = ' .:-=+*#%@'
-
     const params = {
-      rotation: 0,
-      brightness: 0,
       glitchIntensity: 0,
     }
-
-    gsap.to(params, {
-      rotation: Math.PI * 2,
-      duration: 20,
-      repeat: -1,
-      ease: 'none',
-    })
-
-    gsap.to(params, {
-      brightness: 1,
-      duration: 6,
-      repeat: -1,
-      yoyo: true,
-      ease: 'sine.inOut',
-    })
 
     gsap.to(params, {
       glitchIntensity: 1,
@@ -110,54 +91,6 @@ export function ArtificialHero() {
 
       c.fillStyle = '#000'
       c.fillRect(0, 0, width, height)
-
-      const cx = width / 2
-      const cy = height / 2
-      const r = Math.min(width, height) * 0.2
-      const bright = 0.5 + params.brightness * 0.5
-
-      const bgGradient = c.createRadialGradient(cx, cy - 50, 0, cx, cy, Math.max(width, height) * 0.8)
-      bgGradient.addColorStop(0, `rgba(255, 255, 255, ${0.2 * bright})`)
-      bgGradient.addColorStop(0.3, `rgba(200, 200, 200, ${0.12 * bright})`)
-      bgGradient.addColorStop(0.6, `rgba(100, 100, 100, ${0.08 * bright})`)
-      bgGradient.addColorStop(1, 'rgba(0, 0, 0, 0.95)')
-      c.fillStyle = bgGradient
-      c.fillRect(0, 0, width, height)
-
-      c.font = '10px "JetBrains Mono", monospace'
-      c.textAlign = 'center'
-      c.textBaseline = 'middle'
-
-      const spacing = 9
-      const cols = Math.floor(width / spacing)
-      const rows = Math.floor(height / spacing)
-
-      for (let i = 0; i < Math.min(cols, 150); i++) {
-        for (let j = 0; j < Math.min(rows, 100); j++) {
-          const x = (i - cols / 2) * spacing + cx
-          const y = (j - rows / 2) * spacing + cy
-          const dx = x - cx
-          const dy = y - cy
-          const dist = Math.sqrt(dx * dx + dy * dy)
-
-          if (dist < r && Math.random() > 0.4) {
-            const z = Math.sqrt(Math.max(0, r * r - dx * dx - dy * dy))
-            const angle = params.rotation
-            const rotZ = dx * Math.sin(angle) + z * Math.cos(angle)
-            const brightness = (rotZ + r) / (r * 2)
-
-            if (rotZ > -r * 0.3) {
-              let char = density[Math.floor(brightness * (density.length - 1))]
-              if (dist < r * 0.8 && params.glitchIntensity > 0.8 && Math.random() < 0.3) {
-                const glitchChars = ['█', '▓', '▒', '░', '▄', '▀', '■', '□']
-                char = glitchChars[Math.floor(Math.random() * glitchChars.length)]
-              }
-              c.fillStyle = `rgba(255, 255, 255, ${Math.max(0.2, brightness * bright)})`
-              c.fillText(char, x, y)
-            }
-          }
-        }
-      }
 
       gC.clearRect(0, 0, width, height)
       const grainIntensity = 0.22 + Math.sin(time * 10) * 0.03
