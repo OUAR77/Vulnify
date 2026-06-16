@@ -117,7 +117,7 @@ export function HomeContent({ onAboutOpen }: { onAboutOpen?: () => void }) {
       <FlowArt className="relative z-10">
 
         {/* SECTION 1: Hero + Stats + CTA */}
-        <FlowSection aria-label="Arquitectura Digital" style={{ backgroundColor: '#000000' }}>
+        <FlowSection aria-label="Arquitectura Digital" style={{ backgroundColor: '#0a0a0a' }}>
           <div className="flex items-center gap-2">
             <p className="text-xs font-bold uppercase tracking-[0.2em]">01 — Arquitectura Digital</p>
           </div>
@@ -153,7 +153,7 @@ export function HomeContent({ onAboutOpen }: { onAboutOpen?: () => void }) {
         </FlowSection>
 
         {/* SECTION 2: Problem → Solution */}
-        <FlowSection aria-label="El Problema" style={{ backgroundColor: '#000000' }}>
+        <FlowSection aria-label="El Problema" style={{ backgroundColor: '#111111' }}>
           <div className="flex items-center gap-2">
             <p className="text-xs font-bold uppercase tracking-[0.2em]">02 — De Problema a Solución</p>
           </div>
@@ -221,7 +221,7 @@ export function HomeContent({ onAboutOpen }: { onAboutOpen?: () => void }) {
         </FlowSection>
 
         {/* SECTION 3: Services + Process */}
-        <FlowSection aria-label="Servicios" style={{ backgroundColor: '#000000' }}>
+        <FlowSection aria-label="Servicios" style={{ backgroundColor: '#1a1a1a' }}>
           <div className="flex items-center gap-2">
             <p className="text-xs font-bold uppercase tracking-[0.2em]">03 — Servicios</p>
           </div>
@@ -273,7 +273,7 @@ export function HomeContent({ onAboutOpen }: { onAboutOpen?: () => void }) {
         </FlowSection>
 
         {/* SECTION 4: Results + Contact */}
-        <FlowSection aria-label="Resultados" style={{ backgroundColor: '#000000' }}>
+        <FlowSection aria-label="Resultados" style={{ backgroundColor: '#222222' }}>
           <div className="flex items-center gap-2">
             <p className="text-xs font-bold uppercase tracking-[0.2em]">04 — Casos de Éxito</p>
           </div>
