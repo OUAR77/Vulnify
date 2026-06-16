@@ -1,5 +1,41 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
+import { motion } from 'framer-motion'
+
+const FloatingPaths = ({ position = 1, opacity = 0.5 }: { position?: number; opacity?: number }) => {
+  const paths = Array.from({ length: 36 }, (_, i) => ({
+    id: i,
+    d: `M-${380 - i * 5 * position} -${189 + i * 6}C-${380 - i * 5 * position} -${189 + i * 6} -${312 - i * 5 * position} ${216 - i * 6} ${152 - i * 5 * position} ${343 - i * 6}C${616 - i * 5 * position} ${470 - i * 6} ${684 - i * 5 * position} ${875 - i * 6} ${684 - i * 5 * position} ${875 - i * 6}`,
+    width: 0.5 + i * 0.03,
+  }))
+  return (
+    <div className="absolute inset-0 pointer-events-none" style={{ opacity }}>
+      <svg className="w-full h-full text-white/20" viewBox="0 0 696 316" fill="none" preserveAspectRatio="none">
+        <title>Background Paths</title>
+        {paths.map((path) => (
+          <motion.path
+            key={path.id}
+            d={path.d}
+            stroke="currentColor"
+            strokeWidth={path.width}
+            strokeOpacity={0.04 + path.id * 0.008}
+            initial={{ pathLength: 0.3, opacity: 0.4 }}
+            animate={{
+              pathLength: 1,
+              opacity: [0.2, 0.6, 0.2],
+              pathOffset: [0, 1, 0],
+            }}
+            transition={{
+              duration: 20 + Math.random() * 15,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: 'linear',
+            }}
+          />
+        ))}
+      </svg>
+    </div>
+  )
+}
 
 export function ArtificialHero() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -24,7 +60,7 @@ export function ArtificialHero() {
 
     const params = {
       rotation: 0,
-      atmosphereShift: 0,
+      brightness: 0,
       glitchIntensity: 0,
     }
 
@@ -36,7 +72,7 @@ export function ArtificialHero() {
     })
 
     gsap.to(params, {
-      atmosphereShift: 1,
+      brightness: 1,
       duration: 6,
       repeat: -1,
       yoyo: true,
@@ -65,7 +101,7 @@ export function ArtificialHero() {
       return imageData
     }
 
-    const drawGlitchedOrb = (cx: number, cy: number, r: number, hue: number, _time: number, glitch: number) => {
+    const drawGlitchedOrb = (cx: number, cy: number, r: number, bright: number, glitch: number) => {
       c.save()
 
       const shouldGlitch = Math.random() < 0.1 && glitch > 0.5
@@ -78,15 +114,16 @@ export function ArtificialHero() {
       }
 
       const orbGradient = c.createRadialGradient(cx, cy, 0, cx, cy, r * 1.5)
-      orbGradient.addColorStop(0, `hsla(${hue + 10}, 100%, 95%, 0.9)`)
-      orbGradient.addColorStop(0.2, `hsla(${hue + 20}, 90%, 80%, 0.7)`)
-      orbGradient.addColorStop(0.5, `hsla(${hue}, 70%, 50%, 0.4)`)
+      const a = 0.5 + bright * 0.4
+      orbGradient.addColorStop(0, `rgba(255, 255, 255, ${0.8 * a})`)
+      orbGradient.addColorStop(0.2, `rgba(220, 220, 220, ${0.5 * a})`)
+      orbGradient.addColorStop(0.5, `rgba(160, 160, 160, ${0.25 * a})`)
       orbGradient.addColorStop(1, 'rgba(0, 0, 0, 0)')
       c.fillStyle = orbGradient
       c.fillRect(0, 0, cvs.width, cvs.height)
 
       const centerR = r * 0.3
-      c.fillStyle = `hsla(${hue + 20}, 100%, 95%, 0.8)`
+      c.fillStyle = `rgba(255, 255, 255, ${0.6 * a})`
       c.beginPath()
       c.arc(cx, cy, centerR, 0, Math.PI * 2)
       c.fill()
@@ -94,19 +131,19 @@ export function ArtificialHero() {
       if (shouldGlitch) {
         c.globalCompositeOperation = 'screen'
 
-        c.fillStyle = `hsla(100, 100%, 50%, ${0.6 * glitch})`
+        c.fillStyle = `rgba(255, 255, 255, ${0.3 * glitch})`
         c.beginPath()
         c.arc(cx + glitchOffset * 0.5, cy, centerR, 0, Math.PI * 2)
         c.fill()
 
-        c.fillStyle = `hsla(240, 100%, 50%, ${0.5 * glitch})`
+        c.fillStyle = `rgba(200, 200, 255, ${0.25 * glitch})`
         c.beginPath()
         c.arc(cx - glitchOffset * 0.5, cy, centerR, 0, Math.PI * 2)
         c.fill()
 
         c.globalCompositeOperation = 'source-over'
 
-        c.strokeStyle = `rgba(255, 255, 255, ${0.6 * glitch})`
+        c.strokeStyle = `rgba(255, 255, 255, ${0.5 * glitch})`
         c.lineWidth = 1
         for (let i = 0; i < 5; i++) {
           const y = cy - r + Math.random() * r * 2
@@ -116,7 +153,7 @@ export function ArtificialHero() {
           c.stroke()
         }
 
-        c.fillStyle = `rgba(255, 0, 255, ${0.4 * glitch})`
+        c.fillStyle = `rgba(200, 200, 200, ${0.3 * glitch})`
         for (let i = 0; i < 3; i++) {
           const bx = cx - r + Math.random() * r * 2
           const by = cy - r + Math.random() * r * 2
@@ -124,7 +161,7 @@ export function ArtificialHero() {
         }
       }
 
-      c.strokeStyle = `hsla(${hue + 20}, 80%, 70%, 0.6)`
+      c.strokeStyle = `rgba(255, 255, 255, ${0.3 + 0.2 * a})`
       c.lineWidth = 2
 
       if (shouldGlitch) {
@@ -145,7 +182,7 @@ export function ArtificialHero() {
 
       if (shouldGlitch && Math.random() < 0.3) {
         c.globalCompositeOperation = 'difference'
-        c.fillStyle = `rgba(255, 255, 255, ${0.8 * glitch})`
+        c.fillStyle = `rgba(255, 255, 255, ${0.6 * glitch})`
         for (let i = 0; i < 3; i++) {
           const barY = cy - r + Math.random() * r * 2
           c.fillRect(cx - r, barY, r * 2, Math.random() * 5 + 1)
@@ -169,17 +206,17 @@ export function ArtificialHero() {
       const cx = width / 2
       const cy = height / 2
       const r = Math.min(width, height) * 0.2
+      const bright = 0.5 + params.brightness * 0.5
 
       const bgGradient = c.createRadialGradient(cx, cy - 50, 0, cx, cy, Math.max(width, height) * 0.8)
-      const hue = 180 + params.atmosphereShift * 60
-      bgGradient.addColorStop(0, `hsla(${hue + 40}, 80%, 60%, 0.4)`)
-      bgGradient.addColorStop(0.3, `hsla(${hue}, 60%, 40%, 0.3)`)
-      bgGradient.addColorStop(0.6, `hsla(${hue - 20}, 40%, 20%, 0.2)`)
-      bgGradient.addColorStop(1, 'rgba(0, 0, 0, 0.9)')
+      bgGradient.addColorStop(0, `rgba(255, 255, 255, ${0.2 * bright})`)
+      bgGradient.addColorStop(0.3, `rgba(200, 200, 200, ${0.12 * bright})`)
+      bgGradient.addColorStop(0.6, `rgba(100, 100, 100, ${0.08 * bright})`)
+      bgGradient.addColorStop(1, 'rgba(0, 0, 0, 0.95)')
       c.fillStyle = bgGradient
       c.fillRect(0, 0, width, height)
 
-      drawGlitchedOrb(cx, cy, r, hue, time, params.glitchIntensity)
+      drawGlitchedOrb(cx, cy, r, bright, params.glitchIntensity)
 
       c.font = '10px "JetBrains Mono", monospace'
       c.textAlign = 'center'
@@ -209,7 +246,7 @@ export function ArtificialHero() {
                 const glitchChars = ['█', '▓', '▒', '░', '▄', '▀', '■', '□']
                 char = glitchChars[Math.floor(Math.random() * glitchChars.length)]
               }
-              c.fillStyle = `rgba(255, 255, 255, ${Math.max(0.2, brightness)})`
+              c.fillStyle = `rgba(255, 255, 255, ${Math.max(0.2, brightness * bright)})`
               c.fillText(char, x, y)
             }
           }
@@ -268,6 +305,11 @@ export function ArtificialHero() {
 
   return (
     <>
+      <div className="fixed inset-0 z-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255,255,255,0.03), rgba(255,255,255,0))' }} />
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <FloatingPaths position={1} opacity={0.4} />
+        <FloatingPaths position={-1} opacity={0.4} />
+      </div>
       <canvas
         ref={canvasRef}
         className="fixed inset-0 z-0 w-full h-full"
