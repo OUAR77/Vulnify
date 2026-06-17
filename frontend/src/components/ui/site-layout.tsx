@@ -323,7 +323,7 @@ export function SiteLayout() {
 
       <Outlet context={{ aboutOpen, setAboutOpen }} />
 
-      <footer className="w-full bg-zinc-950 border-t border-white/[0.06] py-12 text-center text-sm text-zinc-400">
+      <footer className="relative z-10 w-full bg-zinc-950 border-t border-white/[0.06] py-12 text-center text-sm text-zinc-400">
         <p className="mb-2">&copy; {new Date().getFullYear()} Vulnify. Todos los derechos reservados.</p>
         <p className="text-zinc-500">
           <a href="/privacidad" className="text-zinc-400 hover:text-white transition-colors mx-2">Privacidad</a>
