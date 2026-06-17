@@ -8,3 +8,4 @@ from models.activity_log import ActivityLog
 from models.message import Message
 from models.order import Order
 from models.order_photo import OrderPhoto
+from models.order_log import OrderLog

@@ -38,6 +38,7 @@ class Settings:
     OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "qwen2.5-coder:14b")
     NOTIFY_SEVERITIES: list = os.getenv("NOTIFY_SEVERITIES", "critical,high,medium").split(",")
     ASSET_CHECK_INTERVAL_HOURS: int = int(os.getenv("ASSET_CHECK_INTERVAL_HOURS", "24"))
+    MAINTENANCE_MODE: bool = os.getenv("MAINTENANCE_MODE", "false").lower() == "true"
 
 
 settings = Settings()

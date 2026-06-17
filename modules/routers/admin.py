@@ -142,3 +142,28 @@ def admin_export_orders(request: Request, admin: User = Depends(require_admin_to
         w.writerow([o.id, o.client_name, o.client_email, o.service, o.description, o.amount, o.status, str(o.created_at)[:19]])
     output.seek(0)
     return StreamingResponse(iter([output.getvalue()]), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=orders.csv"})
+
+
+@router.get("/maintenance", description="Get maintenance mode status (admin only)")
+def get_maintenance(admin: User = Depends(require_admin_totp)):
+    from config import settings
+    return {"maintenance_mode": settings.MAINTENANCE_MODE}
+
+
+@router.put("/maintenance", description="Toggle maintenance mode (admin only)")
+def set_maintenance(
+    request: Request,
+    body: dict,
+    password: str | None = Query(None),
+    admin: User = Depends(require_admin_totp),
+    db: Session = Depends(get_db),
+):
+    if not password or not verify_password(password, admin.password):
+        raise HTTPException(status_code=403, detail="Contraseña incorrecta")
+    from config import settings
+    enabled = body.get("maintenance_mode", False)
+    import os
+    os.environ["MAINTENANCE_MODE"] = "true" if enabled else "false"
+    settings.MAINTENANCE_MODE = enabled
+    log_activity("admin.maintenance", admin.id, admin.email, {"maintenance_mode": enabled})
+    return {"ok": True, "maintenance_mode": enabled}

@@ -7,6 +7,8 @@ import {
   adminGetMessages, adminMarkMessageRead, adminDeleteMessage,
   adminGetOrders, adminCreateOrder, adminUpdateOrder, adminDeleteOrder,
   adminUploadPhoto, adminDeletePhoto, adminDeleteAllPhotos, adminGetOrderPhotos,
+  adminGetOrderTimeline, adminGetOrderInvoice,
+  getMaintenance, setMaintenance,
   downloadAdminCSV,
   type AdminStats, type AdminUser, type ActivityLog,
   type ContactMessage, type Order, type OrderPhoto,
@@ -14,6 +16,7 @@ import {
 import {
   Users, ShieldAlert, Activity, Search, Trash2, ArrowLeft, LogOut,
   LayoutDashboard, RefreshCw, Plus, MessageSquare, ShoppingCart, Image,
+  History, FileText, Wrench,
 } from 'lucide-react'
 
 export function AdminPage() {
@@ -64,6 +67,13 @@ export function AdminPage() {
   const [photoCaption, setPhotoCaption] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  // Timeline
+  const [timelineOrder, setTimelineOrder] = useState<Order | null>(null)
+  const [timeline, setTimeline] = useState<any[]>([])
+
+  // Maintenance
+  const [maintenanceMode, setMaintenanceMode] = useState(false)
+
   const [tab, setTab] = useState<'stats' | 'users' | 'logs' | 'messages' | 'orders'>('stats')
 
   const loadStats = useCallback(async () => {
@@ -111,6 +121,7 @@ export function AdminPage() {
     if (!isAuthenticated) { navigate('/login'); return }
     if (!isAdmin) { navigate('/dashboard'); return }
     loadStats(); loadUsers(1); loadLogs(1); loadLogActions(); loadMessages(1); loadOrders(1)
+    getMaintenance().then(r => setMaintenanceMode(r.maintenance_mode)).catch(() => {})
   }, [isAuthenticated, isAdmin])
 
   const handleDeleteUser = async (userId: number) => {
@@ -228,6 +239,14 @@ export function AdminPage() {
     } catch (e: any) { setPasswordError(e.message) }
   }
 
+  const handleToggleMaintenance = async () => {
+    try {
+      const res = await setMaintenance(!maintenanceMode, confirmPassword)
+      setMaintenanceMode(res.maintenance_mode)
+      setPasswordModal(null); setConfirmPassword(''); setPasswordError('')
+    } catch (e: any) { setPasswordError(e.message) }
+  }
+
   const pages = Math.ceil(usersTotal / 50)
   const messagesPages = Math.ceil(messagesTotal / 50)
   const ordersPages = Math.ceil(ordersTotal / 50)
@@ -295,6 +314,21 @@ export function AdminPage() {
                   <div className="text-3xl font-bold">{card.value}</div>
                 </div>
               ))}
+            </div>
+            <div className="mt-8 rounded-xl bg-white/[0.02] border border-white/[0.06] p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Wrench className="size-5 text-zinc-500" />
+                  <div>
+                    <p className="text-sm font-medium text-white">Modo mantenimiento</p>
+                    <p className="text-xs text-zinc-500">Deshabilita el acceso público a la web</p>
+                  </div>
+                </div>
+                <button onClick={() => setPasswordModal({ action: 'toggle_maintenance', id: 0 })}
+                  className={`relative w-11 h-6 rounded-full transition-colors cursor-pointer border-none ${maintenanceMode ? 'bg-red-500' : 'bg-zinc-700'}`}>
+                  <span className={`absolute top-0.5 left-0.5 size-5 rounded-full bg-black transition-transform ${maintenanceMode ? 'translate-x-5' : ''}`} />
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -542,6 +576,14 @@ export function AdminPage() {
                       <td className="py-3 px-4 text-zinc-500 text-xs">{o.created_at?.slice(0, 10)}</td>
                       <td className="py-3 px-4 text-right">
                         <div className="flex items-center justify-end gap-2">
+                          <button onClick={() => { setTimelineOrder(o); adminGetOrderTimeline(o.id).then(setTimeline).catch(() => setTimeline([])) }}
+                            className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent flex items-center gap-1">
+                            <History className="size-3" /> Historial
+                          </button>
+                          <button onClick={() => adminGetOrderInvoice(o.id).catch((e: any) => alert(e.message))}
+                            className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent flex items-center gap-1">
+                            <FileText className="size-3" /> PDF
+                          </button>
                           <button onClick={() => openPhotoGallery(o)}
                             className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent flex items-center gap-1">
                             <Image className="size-3" /> Fotos
@@ -626,6 +668,40 @@ export function AdminPage() {
           </div>
         )}
 
+        {/* Timeline modal */}
+        {timelineOrder && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => { setTimelineOrder(null); setTimeline([]) }}>
+            <div className="bg-zinc-900 border border-white/[0.1] rounded-xl p-6 w-full max-w-lg mx-4 max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">Historial — #{timelineOrder.id} {timelineOrder.service}</h3>
+                <button onClick={() => { setTimelineOrder(null); setTimeline([]) }}
+                  className="text-zinc-500 hover:text-white transition-colors cursor-pointer bg-transparent border-none text-lg">✕</button>
+              </div>
+              <div className="space-y-3">
+                {timeline.map((t: any) => (
+                  <div key={t.id} className="rounded-lg bg-white/[0.02] border border-white/[0.04] p-3">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-medium text-zinc-300">{t.field === 'status' ? 'Estado' : t.field === 'amount' ? 'Importe' : t.field === 'service' ? 'Servicio' : t.field}</span>
+                      <span className="text-[10px] text-zinc-600">{t.created_at}</span>
+                    </div>
+                    {t.field === 'status' ? (
+                      <div className="flex items-center gap-2 text-xs">
+                        <span className="px-2 py-0.5 rounded bg-zinc-500/20 text-zinc-400">{t.old_value || '—'}</span>
+                        <span className="text-zinc-600">→</span>
+                        <span className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400">{t.new_value}</span>
+                      </div>
+                    ) : (
+                      <p className="text-xs text-zinc-500">{t.old_value || '—'} → {t.new_value}</p>
+                    )}
+                    <p className="text-[10px] text-zinc-700 mt-1">por {t.changed_by}</p>
+                  </div>
+                ))}
+                {timeline.length === 0 && <p className="text-center py-8 text-zinc-500 text-sm">Sin cambios registrados</p>}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Photo gallery modal */}
         {photoOrder && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => { setPhotoOrder(null); setPhotos([]) }}>
@@ -675,9 +751,9 @@ export function AdminPage() {
               <input type="password" placeholder="Tu contraseña" value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30 mb-4" autoFocus
-                onKeyDown={(e) => { if (e.key === 'Enter') { const pm = passwordModal; if (pm?.action === 'delete_user') handleDeleteUser(pm.id); else if (pm?.action === 'role') handleToggleRole(pm.id, pm.extra || 'user'); else if (pm?.action === 'delete_message') handleDeleteMessage(pm.id); else if (pm?.action === 'delete_order') handleDeleteOrder(pm.id); else if (pm?.action === 'delete_photo') handleDeletePhoto(pm.id); else if (pm?.action === 'delete_all_photos') handleDeleteAllPhotos() } }} />
+                onKeyDown={(e) => { if (e.key === 'Enter') { const pm = passwordModal; if (pm?.action === 'delete_user') handleDeleteUser(pm.id); else if (pm?.action === 'role') handleToggleRole(pm.id, pm.extra || 'user'); else if (pm?.action === 'delete_message') handleDeleteMessage(pm.id); else if (pm?.action === 'delete_order') handleDeleteOrder(pm.id); else if (pm?.action === 'delete_photo') handleDeletePhoto(pm.id); else if (pm?.action === 'delete_all_photos') handleDeleteAllPhotos(); else if (pm?.action === 'toggle_maintenance') handleToggleMaintenance() } }} />
               <div className="flex gap-3">
-                <button onClick={() => { const pm = passwordModal; if (pm?.action === 'delete_user') handleDeleteUser(pm.id); else if (pm?.action === 'role') handleToggleRole(pm.id, pm.extra || 'user'); else if (pm?.action === 'delete_message') handleDeleteMessage(pm.id); else if (pm?.action === 'delete_order') handleDeleteOrder(pm.id); else if (pm?.action === 'delete_photo') handleDeletePhoto(pm.id); else if (pm?.action === 'delete_all_photos') handleDeleteAllPhotos() }}
+                <button onClick={() => { const pm = passwordModal; if (pm?.action === 'delete_user') handleDeleteUser(pm.id); else if (pm?.action === 'role') handleToggleRole(pm.id, pm.extra || 'user'); else if (pm?.action === 'delete_message') handleDeleteMessage(pm.id); else if (pm?.action === 'delete_order') handleDeleteOrder(pm.id); else if (pm?.action === 'delete_photo') handleDeletePhoto(pm.id); else if (pm?.action === 'delete_all_photos') handleDeleteAllPhotos(); else if (pm?.action === 'toggle_maintenance') handleToggleMaintenance() }}
                   disabled={!confirmPassword || userActionLoading !== null}
                   className="flex-1 py-2.5 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors disabled:opacity-50 cursor-pointer border-none">
                   {userActionLoading !== null ? 'Verificando...' : 'Confirmar'}

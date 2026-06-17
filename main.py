@@ -40,7 +40,7 @@ if settings.SENTRY_DSN and settings.ENVIRONMENT == "production":
 
 
 class ConnectionManager:
-    def __init__(self):
+def __init__(self):
         self.active: dict[int, list[WebSocket]] = {}
 
     async def connect(self, user_id: int, ws: WebSocket):
@@ -66,6 +66,13 @@ class ConnectionManager:
 
 
 manager = ConnectionManager()
+
+
+class MaintenanceMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        if settings.MAINTENANCE_MODE and not request.url.path.startswith(("/api/admin", "/api/auth/login", "/api/auth/me", "/health")):
+            return JSONResponse(status_code=503, content={"detail": "Modo mantenimiento. Volvemos pronto."})
+        return await call_next(request)
 
 
 @asynccontextmanager
@@ -202,6 +209,21 @@ async def lifespan(app: FastAPI):
             logger.info("Created order_photos table")
         except Exception:
             db.rollback()
+        # Migrate order_logs table
+        try:
+            db.execute(text("""CREATE TABLE IF NOT EXISTS order_logs (
+                id SERIAL PRIMARY KEY,
+                order_id INTEGER REFERENCES orders(id),
+                field VARCHAR NOT NULL,
+                old_value TEXT DEFAULT '',
+                new_value TEXT DEFAULT '',
+                changed_by VARCHAR DEFAULT '',
+                created_at TIMESTAMP DEFAULT NOW()
+            )"""))
+            db.commit()
+            logger.info("Created order_logs table")
+        except Exception:
+            db.rollback()
         db.close()
     except Exception as e:
         logger.warning("Could not seed data: %s", e)
@@ -261,6 +283,7 @@ app.add_middleware(
 )
 
 app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(MaintenanceMiddleware)
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")

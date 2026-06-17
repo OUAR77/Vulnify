@@ -7,6 +7,7 @@ export interface User {
   role: string
   company?: string
   bio?: string
+  avatar?: string
   is_verified?: boolean
   totp_enabled?: boolean
   dark_mode?: boolean
@@ -394,6 +395,64 @@ export async function adminDeletePhoto(orderId: number, photoId: number, passwor
 
 export async function adminDeleteAllPhotos(orderId: number, password: string): Promise<{ ok: boolean; deleted: number }> {
   return apiDelete<{ ok: boolean; deleted: number }>(`/api/admin/orders/${orderId}/photos?password=${encodeURIComponent(password)}`)
+}
+
+export async function adminGetOrderTimeline(orderId: number): Promise<{ id: number; field: string; old_value: string; new_value: string; changed_by: string; created_at: string }[]> {
+  return apiGet(`/api/admin/orders/${orderId}/timeline`)
+}
+
+export async function adminGetOrderInvoice(orderId: number): Promise<void> {
+  const token = getToken()
+  const res = await fetch(`${BASE}/api/admin/orders/${orderId}/invoice`, {
+    headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+  })
+  if (!res.ok) throw new Error('Error al generar factura')
+  const blob = await res.blob()
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url; a.download = `invoice-${orderId}.pdf`; a.click()
+  URL.revokeObjectURL(url)
+}
+
+// User timeline & invoice
+export async function getOrderTimeline(orderId: number): Promise<{ id: number; field: string; old_value: string; new_value: string; changed_by: string; created_at: string }[]> {
+  return apiGet(`/api/orders/${orderId}/timeline`)
+}
+
+export async function getOrderInvoice(orderId: number): Promise<void> {
+  const token = getToken()
+  const res = await fetch(`${BASE}/api/orders/${orderId}/invoice`, {
+    headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+  })
+  if (!res.ok) throw new Error('Error al generar factura')
+  const blob = await res.blob()
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url; a.download = `invoice-${orderId}.pdf`; a.click()
+  URL.revokeObjectURL(url)
+}
+
+// Avatar
+export async function uploadAvatar(file: File): Promise<{ ok: boolean; avatar: string }> {
+  const token = getToken()
+  const fd = new FormData()
+  fd.append('file', file)
+  const res = await fetch(`${BASE}/api/auth/avatar`, {
+    method: 'POST',
+    headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    body: fd,
+  })
+  if (!res.ok) { const e = await res.json().catch(() => ({ detail: 'Error' })); throw new Error(e.detail) }
+  return res.json()
+}
+
+// Maintenance mode
+export async function getMaintenance(): Promise<{ maintenance_mode: boolean }> {
+  return apiGet('/api/admin/maintenance')
+}
+
+export async function setMaintenance(enabled: boolean, password: string): Promise<{ ok: boolean; maintenance_mode: boolean }> {
+  return apiPut<{ ok: boolean; maintenance_mode: boolean }>(`/api/admin/maintenance?password=${encodeURIComponent(password)}`, { maintenance_mode: enabled })
 }
 
 export async function apiForgotPassword(email: string): Promise<{ ok: boolean; message: string }> {

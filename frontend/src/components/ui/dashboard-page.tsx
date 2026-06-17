@@ -1,15 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '@/lib/auth-context'
 import { useNavigate } from 'react-router-dom'
 import { totpSetup, totpEnable, totpDisable, setUser as storeUser, getStoredUser } from '@/lib/api'
 import {
   User, LogOut, Mail, Calendar, ArrowLeft, ShieldAlert, Smartphone, Check, X,
   Key, Copy, Eye, EyeOff, RefreshCw, Moon, Sun, FileText, Package, PenSquare,
-  Save, Trash2, Plus, ExternalLink, Image,
+  Save, Trash2, Plus, ExternalLink, Image, History, Camera,
 } from 'lucide-react'
 import {
   updateProfile, sendVerification, verifyEmail, getApiKeys, createApiKey, deleteApiKey,
   getMyOrders, getDarkMode, setDarkMode as apiSetDarkMode, getOrderPhotos,
+  uploadAvatar, createMyOrder, getOrderTimeline, getOrderInvoice,
   type ApiKey, type Order, type OrderPhoto,
 } from '@/lib/api'
 
@@ -41,8 +42,18 @@ export function DashboardPage() {
 
   // Orders
   const [orders, setOrders] = useState<Order[]>([])
+  const [ordersTotal, setOrdersTotal] = useState(0)
+  const [ordersPage, setOrdersPage] = useState(1)
   const [photosOrder, setPhotosOrder] = useState<Order | null>(null)
   const [orderPhotos, setOrderPhotos] = useState<OrderPhoto[]>([])
+  // New order form
+  const [showOrderForm, setShowOrderForm] = useState(false)
+  const [orderForm, setOrderForm] = useState({ service: '', description: '', amount: 0 })
+  // Timeline
+  const [tlOrder, setTlOrder] = useState<Order | null>(null)
+  const [tlData, setTlData] = useState<any[]>([])
+  // Avatar
+  const avatarInputRef = useRef<HTMLInputElement>(null)
 
   // Dark mode
   const [darkMode, setDarkMode] = useState(true)
@@ -50,8 +61,8 @@ export function DashboardPage() {
   useEffect(() => {
     getDarkMode().then(p => setDarkMode(p.dark_mode)).catch(() => {})
     getApiKeys().then(setApiKeys).catch(() => {})
-    getMyOrders().then(r => setOrders(r.items)).catch(() => {})
-  }, [])
+    getMyOrders(ordersPage).then(r => { setOrders(r.items); setOrdersTotal(r.total); setOrdersPage(r.page) }).catch(() => {})
+  }, [ordersPage])
 
   if (!isAuthenticated) {
     navigate('/login')
@@ -151,6 +162,25 @@ export function DashboardPage() {
     catch { setOrderPhotos([]) }
   }
 
+  const handleAvatarUpload = async () => {
+    const file = avatarInputRef.current?.files?.[0]
+    if (!file) return
+    try {
+      await uploadAvatar(file)
+      window.location.reload()
+    } catch (e: any) { alert(e.message) }
+  }
+
+  const handleCreateOrder = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      await createMyOrder(orderForm)
+      setShowOrderForm(false)
+      setOrderForm({ service: '', description: '', amount: 0 })
+      getMyOrders(ordersPage).then(r => { setOrders(r.items); setOrdersTotal(r.total) }).catch(() => {})
+    } catch (e: any) { alert(e.message) }
+  }
+
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="mx-auto max-w-5xl px-6 py-16">
@@ -194,8 +224,17 @@ export function DashboardPage() {
         {/* Profile Section */}
         <section id="profile" className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 mb-8">
           <div className="flex items-center gap-4 mb-6">
-            <div className="size-14 rounded-full bg-zinc-800 flex items-center justify-center">
-              <User className="size-6 text-zinc-400" />
+            <div className="relative size-14 rounded-full bg-zinc-800 flex items-center justify-center overflow-hidden">
+              {user?.avatar ? (
+                <img src={user.avatar} alt="" className="size-full object-cover" />
+              ) : (
+                <User className="size-6 text-zinc-400" />
+              )}
+              <button onClick={() => avatarInputRef.current?.click()}
+                className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer border-none">
+                <Camera className="size-4 text-white" />
+              </button>
+              <input type="file" accept="image/*" ref={avatarInputRef} className="hidden" onChange={handleAvatarUpload} />
             </div>
             <div>
               <h2 className="text-xl font-semibold">{user?.name}</h2>
@@ -377,41 +416,130 @@ export function DashboardPage() {
 
         {/* Orders */}
         <section id="orders" className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 mb-8">
-          <div className="flex items-center gap-3 mb-6">
-            <Package className="size-5 text-zinc-500" />
-            <h2 className="text-lg font-semibold">Mis pedidos</h2>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <Package className="size-5 text-zinc-500" />
+              <h2 className="text-lg font-semibold">Mis pedidos</h2>
+            </div>
+            <button onClick={() => setShowOrderForm(true)}
+              className="flex items-center gap-2 text-sm bg-white/10 rounded-lg px-4 py-2 hover:bg-white/20 transition-colors cursor-pointer border-none text-white">
+              <Plus className="size-4" /> Nuevo pedido
+            </button>
           </div>
+
+          {/* New order form modal */}
+          {showOrderForm && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => setShowOrderForm(false)}>
+              <div className="bg-zinc-900 border border-white/[0.1] rounded-xl p-6 w-full max-w-md mx-4" onClick={(e) => e.stopPropagation()}>
+                <h3 className="text-lg font-semibold mb-4">Solicitar nuevo pedido</h3>
+                <form onSubmit={handleCreateOrder} className="space-y-4">
+                  <input placeholder="Servicio (ej: Diseño Web, SEO...)" value={orderForm.service}
+                    onChange={(e) => setOrderForm({ ...orderForm, service: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
+                  <textarea placeholder="Describe lo que necesitas" value={orderForm.description}
+                    onChange={(e) => setOrderForm({ ...orderForm, description: e.target.value })} rows={3}
+                    className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
+                  <input type="number" step="0.01" placeholder="Presupuesto estimado (€)" value={orderForm.amount || ''}
+                    onChange={(e) => setOrderForm({ ...orderForm, amount: parseFloat(e.target.value) || 0 })}
+                    className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
+                  <div className="flex gap-3 pt-2">
+                    <button type="submit" className="flex-1 py-2.5 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors cursor-pointer border-none">
+                      Enviar solicitud
+                    </button>
+                    <button type="button" onClick={() => setShowOrderForm(false)}
+                      className="px-4 py-2.5 rounded-lg border border-white/[0.1] text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer bg-transparent">
+                      Cancelar
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
           {orders.length === 0 ? (
             <p className="text-sm text-zinc-500">No tienes pedidos todavía.</p>
           ) : (
-            <div className="space-y-3">
-              {orders.map(o => (
-                <div key={o.id} className="flex items-center justify-between p-4 rounded-xl bg-white/[0.02] border border-white/[0.04]">
-                  <div>
-                    <p className="text-sm font-medium text-white">{o.service}</p>
-                    <p className="text-xs text-zinc-500">{o.description || '—'}</p>
-                    <p className="text-xs text-zinc-600 mt-1">{o.created_at}</p>
+            <>
+              <div className="space-y-3">
+                {orders.map(o => (
+                  <div key={o.id} className="flex items-center justify-between p-4 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+                    <div>
+                      <p className="text-sm font-medium text-white">{o.service}</p>
+                      <p className="text-xs text-zinc-500">{o.description || '—'}</p>
+                      <p className="text-xs text-zinc-600 mt-1">{o.created_at}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => { setTlOrder(o); getOrderTimeline(o.id).then(setTlData).catch(() => setTlData([])) }}
+                        className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white transition-colors cursor-pointer bg-transparent">
+                        <History className="size-3" />
+                      </button>
+                      {o.status === 'completed' && (
+                        <button onClick={() => getOrderInvoice(o.id).catch((e: any) => alert(e.message))}
+                          className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white transition-colors cursor-pointer bg-transparent">
+                          <FileText className="size-3" />
+                        </button>
+                      )}
+                      <button onClick={() => handleViewPhotos(o)}
+                        className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white transition-colors cursor-pointer bg-transparent">
+                        <Image className="size-3" />
+                      </button>
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${
+                        o.status === 'completed' ? 'bg-green-500/10 text-green-400' :
+                        o.status === 'in_progress' ? 'bg-blue-500/10 text-blue-400' :
+                        o.status === 'pending' ? 'bg-amber-500/10 text-amber-400' :
+                        'bg-zinc-500/10 text-zinc-400'
+                      }`}>
+                        {o.status === 'completed' ? 'Completado' : o.status === 'in_progress' ? 'En progreso' : o.status === 'pending' ? 'Pendiente' : o.status}
+                      </span>
+                      <span className="text-sm font-medium text-zinc-300">{o.amount}€</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <button onClick={() => handleViewPhotos(o)}
-                      className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent flex items-center gap-1">
-                      <Image className="size-3" /> Fotos
-                    </button>
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${
-                      o.status === 'completed' ? 'bg-green-500/10 text-green-400' :
-                      o.status === 'in_progress' ? 'bg-blue-500/10 text-blue-400' :
-                      o.status === 'pending' ? 'bg-amber-500/10 text-amber-400' :
-                      'bg-zinc-500/10 text-zinc-400'
-                    }`}>
-                      {o.status === 'completed' ? 'Completado' : o.status === 'in_progress' ? 'En progreso' : o.status === 'pending' ? 'Pendiente' : o.status}
-                    </span>
-                    <span className="text-sm font-medium text-zinc-300">{o.amount}€</span>
-                  </div>
+                ))}
+              </div>
+              {Math.ceil(ordersTotal / 20) > 1 && (
+                <div className="flex justify-center gap-2 mt-6">
+                  {Array.from({ length: Math.ceil(ordersTotal / 20) }, (_, i) => i + 1).map(p => (
+                    <button key={p} onClick={() => setOrdersPage(p)}
+                      className={`w-8 h-8 text-xs rounded transition-colors cursor-pointer border-none ${ordersPage === p ? 'bg-white/20 text-white' : 'bg-white/5 text-zinc-500 hover:bg-white/10'}`}>{p}</button>
+                  ))}
                 </div>
-              ))}
-            </div>
+              )}
+            </>
           )}
         </section>
+
+        {/* Timeline modal */}
+        {tlOrder && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => { setTlOrder(null); setTlData([]) }}>
+            <div className="bg-zinc-900 border border-white/[0.1] rounded-xl p-6 w-full max-w-lg mx-4 max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">Historial — {tlOrder.service}</h3>
+                <button onClick={() => { setTlOrder(null); setTlData([]) }}
+                  className="text-zinc-500 hover:text-white transition-colors cursor-pointer bg-transparent border-none text-lg">✕</button>
+              </div>
+              <div className="space-y-3">
+                {tlData.map((t: any) => (
+                  <div key={t.id} className="rounded-lg bg-white/[0.02] border border-white/[0.04] p-3">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-medium text-zinc-300">{t.field === 'status' ? 'Estado' : t.field}</span>
+                      <span className="text-[10px] text-zinc-600">{t.created_at}</span>
+                    </div>
+                    {t.field === 'status' ? (
+                      <div className="flex items-center gap-2 text-xs">
+                        <span className="px-2 py-0.5 rounded bg-zinc-500/20 text-zinc-400">{t.old_value || '—'}</span>
+                        <span className="text-zinc-600">→</span>
+                        <span className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400">{t.new_value}</span>
+                      </div>
+                    ) : (
+                      <p className="text-xs text-zinc-500">{t.old_value || '—'} → {t.new_value}</p>
+                    )}
+                  </div>
+                ))}
+                {tlData.length === 0 && <p className="text-center py-8 text-zinc-500 text-sm">Sin cambios registrados</p>}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Photo viewer modal */}
         {photosOrder && (

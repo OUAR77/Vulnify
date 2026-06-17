@@ -1,7 +1,8 @@
 import re
 import secrets
+import base64
 import logging
-from fastapi import APIRouter, Body, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Body, Depends, HTTPException, Query, Request, UploadFile, File
 from pydantic import BaseModel, field_validator
 from sqlalchemy.orm import Session
 from database import get_db
@@ -125,7 +126,7 @@ def register(request: Request, body: RegisterBody, db: Session = Depends(get_db)
     log_activity("user.register", user.id, user.email, {"name": user.name}, ip)
     return {
         "token": token, "refresh_token": refresh_token,
-        "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role, "totp_enabled": bool(user.totp_enabled)},
+        "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role, "company": user.company, "bio": user.bio, "avatar": user.avatar, "is_verified": bool(user.is_verified), "totp_enabled": bool(user.totp_enabled), "dark_mode": bool(user.dark_mode), "created_at": str(user.created_at)},
     }
 
 
@@ -155,7 +156,7 @@ def login(request: Request, body: LoginBody, db: Session = Depends(get_db)):
             logger.warning("Admin login alert not sent: %s", e)
     return {
         "token": token, "refresh_token": refresh_token,
-        "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role, "verified": bool(user.is_verified), "totp_enabled": bool(user.totp_enabled)},
+        "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role, "company": user.company, "bio": user.bio, "avatar": user.avatar, "verified": bool(user.is_verified), "totp_enabled": bool(user.totp_enabled), "dark_mode": bool(user.dark_mode), "created_at": str(user.created_at)},
     }
 
 
@@ -178,7 +179,7 @@ def verify_totp_login(request: Request, body: TotpVerifyBody, db: Session = Depe
     log_activity("user.login_2fa", user.id, user.email, {}, get_client_ip(request))
     return {
         "token": token, "refresh_token": refresh_token,
-        "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role, "verified": bool(user.is_verified), "totp_enabled": bool(user.totp_enabled)},
+        "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role, "company": user.company, "bio": user.bio, "avatar": user.avatar, "verified": bool(user.is_verified), "totp_enabled": bool(user.totp_enabled), "dark_mode": bool(user.dark_mode), "created_at": str(user.created_at)},
     }
 
 
@@ -272,6 +273,7 @@ def me(request: Request, user: User = Depends(get_current_user)):
     return {
         "id": user.id, "name": user.name, "email": user.email,
         "role": user.role, "company": user.company, "bio": user.bio,
+        "avatar": user.avatar or "",
         "created_at": str(user.created_at),
         "totp_enabled": user.totp_enabled,
         "dark_mode": user.dark_mode,
@@ -375,3 +377,33 @@ def set_dark_mode(body: DarkModeBody, user: User = Depends(get_current_user), db
     db.commit()
     log_activity("user.dark_mode", user.id, user.email, {"dark_mode": body.dark_mode})
     return {"ok": True}
+
+
+@router.post("/avatar", description="Upload profile avatar")
+def upload_avatar(
+    request: Request,
+    file: UploadFile = File(...),
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    try:
+        image_bytes = file.file.read()
+        if not image_bytes:
+            raise HTTPException(status_code=400, detail="Archivo vacío")
+        import io
+        from PIL import Image as PILImage
+        img = PILImage.open(io.BytesIO(image_bytes))
+        img = img.convert("RGB")
+        img.thumbnail((300, 300), PILImage.LANCZOS)
+        buf = io.BytesIO()
+        img.save(buf, "JPEG", quality=80)
+        b64 = base64.b64encode(buf.getvalue()).decode()
+        user.avatar = "data:image/jpeg;base64," + b64
+        db.commit()
+        log_activity("user.avatar", user.id, user.email, {})
+        return {"ok": True, "avatar": user.avatar}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("Avatar upload error")
+        raise HTTPException(status_code=500, detail=str(e)[:200])

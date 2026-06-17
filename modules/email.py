@@ -165,3 +165,30 @@ def send_breach_alert(email: str, name: str, asset: str, breach_count: int, seve
         plain_text_content=f"Hola {name},\n\n{breach_count} brecha(s) detectadas en {asset} (severidad: {sev_label}).\n\nRevisa tu dashboard:\n{settings.SITE_URL}/dashboard",
         html_content=_html_wrapper(body),
     ))
+
+
+def send_order_status_email(email: str, name: str, order_id: int, service: str, status: str) -> bool:
+    status_labels = {"pending": "Pendiente", "in_progress": "En progreso", "completed": "Completado", "cancelled": "Cancelado"}
+    label = status_labels.get(status, status)
+    body = f"""
+    <p style="margin:0 0 16px">Hola <strong style="color:#111">{name}</strong>,</p>
+    <p style="margin:0 0 24px;color:#666">Tu pedido <strong>#{order_id}</strong> — <strong>{service}</strong> ha cambiado de estado:</p>
+    <div style="background:#f5f5f5;border-radius:12px;padding:20px;margin:0 0 24px;text-align:center">
+      <span style="display:inline-block;background:#111;color:#fff;font-size:14px;font-weight:700;padding:8px 24px;border-radius:999px">{label}</span>
+    </div>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 24px">
+      <tr>
+        <td align="center" style="background:#111;border-radius:999px;padding:14px 36px;font-size:15px;font-weight:600">
+          <a href="{settings.SITE_URL}/dashboard#orders" style="color:#fff;text-decoration:none;display:block">Ver mis pedidos</a>
+        </td>
+      </tr>
+    </table>
+    <p style="margin:24px 0 0;font-size:13px;color:#888;border-top:1px solid #eee;padding-top:20px">Gracias por confiar en Vulnify.</p>
+    """
+    return _send(Mail(
+        from_email=Email("noreply@vulnify.es"),
+        to_emails=To(email),
+        subject=f"[Vulnify] Pedido #{order_id} — {label}",
+        plain_text_content=f"Hola {name},\n\nTu pedido #{order_id} ({service}) ha cambiado a: {label}\n\nVer en: {settings.SITE_URL}/dashboard#orders",
+        html_content=_html_wrapper(body),
+    ))
