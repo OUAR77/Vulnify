@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight, Globe, Bot, Code, Cpu, Zap, ChevronRight, Plus, MessageCircle } from 'lucide-react'
 import { ArtificialHero } from '@/components/ui/artificial-hero'
@@ -8,6 +9,7 @@ import { MeshGradient } from '@paper-design/shaders-react'
 import FlowArt, { FlowSection } from './story-scroll'
 import Testimonials from './twitter-testimonial-cards'
 import { AnimatedHeroText } from './animated-hero-text'
+import { getFAQs, type FAQData } from '@/lib/api'
 
 export function FloatingPathsEffect() {
   return (
@@ -51,8 +53,6 @@ const FAQItem = ({ question, answer }: any) => {
     </div>
   )
 }
-
-import { useState } from 'react'
 
 function ContactForm() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' })
@@ -108,6 +108,9 @@ function ContactForm() {
 }
 
 export function HomeContent() {
+  const [faqs, setFaqs] = useState<FAQData[]>([])
+  useEffect(() => { getFAQs().then(setFaqs).catch(() => {}) }, [])
+
   const stats = [
     { number: '40+', label: 'Proyectos entregados' },
     { number: '6+', label: 'Años de experiencia' },
@@ -302,13 +305,13 @@ export function HomeContent() {
             </h2>
           </div>
           <div className="space-y-3">
-            {[
-              { q: '¿Cuánto tiempo lleva desarrollar una web?', a: 'Depende de la complejidad. Una web corporativa puede estar lista en 2-3 semanas. Proyectos con IA integrada suelen requerir 4-6 semanas.' },
-              { q: '¿Necesito tener claro todo antes de empezar?', a: 'No. Te guiamos desde la idea. Nuestro proceso incluye una fase de auditoría y estrategia donde definimos juntos el alcance.' },
-              { q: '¿Ofrecen mantenimiento después del lanzamiento?', a: 'Sí. Todos nuestros proyectos incluyen soporte post-lanzamiento y planes de mantenimiento continuo para mantener tu web actualizada.' },
-              { q: '¿Cómo integran la inteligencia artificial?', a: 'Desde chatbots personalizados hasta automatización de procesos y análisis predictivo. Evaluamos tu caso y proponemos la solución óptima.' },
-            ].map((item) => (
-              <FAQItem key={item.q} question={item.q} answer={item.a} />
+            {(faqs.length > 0 ? faqs : [
+              { id: 0, question: '¿Cuánto tiempo lleva desarrollar una web?', answer: 'Depende de la complejidad. Una web corporativa puede estar lista en 2-3 semanas. Proyectos con IA integrada suelen requerir 4-6 semanas.', category: 'General', order: 0, published: true },
+              { id: 1, question: '¿Necesito tener claro todo antes de empezar?', answer: 'No. Te guiamos desde la idea. Nuestro proceso incluye una fase de auditoría y estrategia donde definimos juntos el alcance.', category: 'General', order: 0, published: true },
+              { id: 2, question: '¿Ofrecen mantenimiento después del lanzamiento?', answer: 'Sí. Todos nuestros proyectos incluyen soporte post-lanzamiento y planes de mantenimiento continuo para mantener tu web actualizada.', category: 'General', order: 0, published: true },
+              { id: 3, question: '¿Cómo integran la inteligencia artificial?', answer: 'Desde chatbots personalizados hasta automatización de procesos y análisis predictivo. Evaluamos tu caso y proponemos la solución óptima.', category: 'General', order: 0, published: true },
+            ]).map((item) => (
+              <FAQItem key={item.id} question={item.question} answer={item.answer} />
             ))}
           </div>
         </div>
