@@ -392,6 +392,10 @@ export async function adminDeletePhoto(orderId: number, photoId: number, passwor
   return apiDelete<{ ok: boolean }>(`/api/admin/orders/${orderId}/photos/${photoId}?password=${encodeURIComponent(password)}`)
 }
 
+export async function adminDeleteAllPhotos(orderId: number, password: string): Promise<{ ok: boolean; deleted: number }> {
+  return apiDelete<{ ok: boolean; deleted: number }>(`/api/admin/orders/${orderId}/photos?password=${encodeURIComponent(password)}`)
+}
+
 export async function apiForgotPassword(email: string): Promise<{ ok: boolean; message: string }> {
   const res = await fetch(`${BASE}/api/auth/forgot-password`, {
     method: 'POST',

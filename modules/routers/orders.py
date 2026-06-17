@@ -219,3 +219,17 @@ def admin_delete_photo(
     db.delete(photo)
     db.commit()
     return {"ok": True}
+
+
+@router.delete("/orders/{order_id}/photos", description="Delete all progress photos for an order (admin only)")
+def admin_delete_all_photos(
+    order_id: int,
+    password: str | None = Query(None),
+    admin: User = Depends(require_admin_totp),
+    db: Session = Depends(get_db),
+):
+    if not password or not verify_password(password, admin.password):
+        raise HTTPException(status_code=403, detail="Contraseña incorrecta")
+    deleted = db.query(OrderPhoto).filter(OrderPhoto.order_id == order_id).delete()
+    db.commit()
+    return {"ok": True, "deleted": deleted}

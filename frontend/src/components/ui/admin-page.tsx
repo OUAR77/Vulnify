@@ -6,7 +6,7 @@ import {
   adminGetActivityLogs, adminGetActivityActions,
   adminGetMessages, adminMarkMessageRead, adminDeleteMessage,
   adminGetOrders, adminCreateOrder, adminUpdateOrder, adminDeleteOrder,
-  adminUploadPhoto, adminDeletePhoto, adminGetOrderPhotos,
+  adminUploadPhoto, adminDeletePhoto, adminDeleteAllPhotos, adminGetOrderPhotos,
   downloadAdminCSV,
   type AdminStats, type AdminUser, type ActivityLog,
   type ContactMessage, type Order, type OrderPhoto,
@@ -214,6 +214,15 @@ export function AdminPage() {
     if (!photoOrder) return
     try {
       await adminDeletePhoto(photoOrder.id, photoId, confirmPassword)
+      setPhotos(await adminGetOrderPhotos(photoOrder.id))
+      setPasswordModal(null); setConfirmPassword(''); setPasswordError('')
+    } catch (e: any) { setPasswordError(e.message) }
+  }
+
+  const handleDeleteAllPhotos = async () => {
+    if (!photoOrder) return
+    try {
+      await adminDeleteAllPhotos(photoOrder.id, confirmPassword)
       setPhotos(await adminGetOrderPhotos(photoOrder.id))
       setPasswordModal(null); setConfirmPassword(''); setPasswordError('')
     } catch (e: any) { setPasswordError(e.message) }
@@ -626,14 +635,18 @@ export function AdminPage() {
                 <button onClick={() => { setPhotoOrder(null); setPhotos([]) }}
                   className="text-zinc-500 hover:text-white transition-colors cursor-pointer bg-transparent border-none text-lg">✕</button>
               </div>
-              <div className="flex gap-3 mb-6">
+              <div className="flex gap-3 mb-6 flex-wrap">
                 <input type="file" accept="image/*" ref={fileInputRef}
-                  className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-sm text-white file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:bg-white/10 file:text-white file:cursor-pointer" />
+                  className="flex-1 min-w-[150px] bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-sm text-white file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:bg-white/10 file:text-white file:cursor-pointer" />
                 <input placeholder="Pie de foto (opcional)" value={photoCaption}
                   onChange={(e) => setPhotoCaption(e.target.value)}
-                  className="w-40 bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
+                  className="w-32 bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
                 <button onClick={handleUploadPhoto}
                   className="px-4 py-2 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors cursor-pointer border-none">Subir</button>
+                {photos.length > 0 && (
+                  <button onClick={() => setPasswordModal({ action: 'delete_all_photos', id: photoOrder.id })}
+                    className="px-4 py-2 rounded-lg bg-red-500/20 text-red-400 text-sm font-medium hover:bg-red-500/30 transition-colors cursor-pointer border-none">Borrar todas</button>
+                )}
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {photos.map((p) => (
@@ -662,9 +675,9 @@ export function AdminPage() {
               <input type="password" placeholder="Tu contraseña" value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30 mb-4" autoFocus
-                onKeyDown={(e) => { if (e.key === 'Enter') { const pm = passwordModal; if (pm?.action === 'delete_user') handleDeleteUser(pm.id); else if (pm?.action === 'role') handleToggleRole(pm.id, pm.extra || 'user'); else if (pm?.action === 'delete_message') handleDeleteMessage(pm.id); else if (pm?.action === 'delete_order') handleDeleteOrder(pm.id); else if (pm?.action === 'delete_photo') handleDeletePhoto(pm.id) } }} />
+                onKeyDown={(e) => { if (e.key === 'Enter') { const pm = passwordModal; if (pm?.action === 'delete_user') handleDeleteUser(pm.id); else if (pm?.action === 'role') handleToggleRole(pm.id, pm.extra || 'user'); else if (pm?.action === 'delete_message') handleDeleteMessage(pm.id); else if (pm?.action === 'delete_order') handleDeleteOrder(pm.id); else if (pm?.action === 'delete_photo') handleDeletePhoto(pm.id); else if (pm?.action === 'delete_all_photos') handleDeleteAllPhotos() } }} />
               <div className="flex gap-3">
-                <button onClick={() => { const pm = passwordModal; if (pm?.action === 'delete_user') handleDeleteUser(pm.id); else if (pm?.action === 'role') handleToggleRole(pm.id, pm.extra || 'user'); else if (pm?.action === 'delete_message') handleDeleteMessage(pm.id); else if (pm?.action === 'delete_order') handleDeleteOrder(pm.id); else if (pm?.action === 'delete_photo') handleDeletePhoto(pm.id) }}
+                <button onClick={() => { const pm = passwordModal; if (pm?.action === 'delete_user') handleDeleteUser(pm.id); else if (pm?.action === 'role') handleToggleRole(pm.id, pm.extra || 'user'); else if (pm?.action === 'delete_message') handleDeleteMessage(pm.id); else if (pm?.action === 'delete_order') handleDeleteOrder(pm.id); else if (pm?.action === 'delete_photo') handleDeletePhoto(pm.id); else if (pm?.action === 'delete_all_photos') handleDeleteAllPhotos() }}
                   disabled={!confirmPassword || userActionLoading !== null}
                   className="flex-1 py-2.5 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors disabled:opacity-50 cursor-pointer border-none">
                   {userActionLoading !== null ? 'Verificando...' : 'Confirmar'}
