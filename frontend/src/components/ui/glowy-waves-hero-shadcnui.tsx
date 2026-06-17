@@ -337,6 +337,7 @@ export function GlowyWavesHero() {
             <Button
               size="lg"
               className="group gap-2 rounded-full px-8 text-base uppercase tracking-[0.2em]"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-contact'))}
             >
               Solicitar presupuesto
               <ArrowRight

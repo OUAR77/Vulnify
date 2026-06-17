@@ -22,9 +22,9 @@ export function SplineSceneBasic() {
             diseño 3D interactivo y automatizaciones que transforman tu negocio.
           </p>
           <div className="mt-6">
-            <a href="#contacto" className="inline-flex h-11 items-center justify-center rounded-md bg-white px-6 text-sm font-medium text-black transition hover:bg-neutral-200">
+            <button onClick={() => window.dispatchEvent(new CustomEvent('open-contact'))} className="inline-flex h-11 items-center justify-center rounded-md bg-white px-6 text-sm font-medium text-black transition hover:bg-neutral-200 cursor-pointer">
               Solicitar presupuesto
-            </a>
+            </button>
           </div>
         </div>
 

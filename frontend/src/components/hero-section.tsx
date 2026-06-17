@@ -24,9 +24,9 @@ export function HeroSection() {
           que automatizan procesos, mejoran la experiencia de usuario y aumentan tus ventas.
         </p>
         <div className="flex gap-4 mt-10">
-          <a href="#" className="inline-flex h-12 items-center justify-center rounded-md bg-white px-8 text-sm font-medium text-black transition-all hover:bg-neutral-200 hover:scale-105">
+          <button onClick={() => window.dispatchEvent(new CustomEvent('open-contact'))} className="inline-flex h-12 items-center justify-center rounded-md bg-white px-8 text-sm font-medium text-black transition-all hover:bg-neutral-200 hover:scale-105 cursor-pointer">
             Solicitar presupuesto
-          </a>
+          </button>
           <a href="#" className="inline-flex h-12 items-center justify-center rounded-md border border-neutral-700 px-8 text-sm font-medium text-neutral-300 transition-all hover:bg-neutral-800 hover:scale-105">
             Ver proyectos
           </a>

@@ -23,13 +23,13 @@ export default function PricingSection4() {
             <p className="text-zinc-500 text-sm mb-8">
               Precio personalizado según tu proyecto
             </p>
-            <a
-              href="mailto:hola@vulnify.es"
-              className="inline-flex items-center gap-2 h-12 rounded-xl bg-white px-8 text-sm font-semibold text-black transition-all hover:bg-zinc-200 hover:scale-105 active:scale-95 mb-8"
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent('open-contact'))}
+              className="inline-flex items-center gap-2 h-12 rounded-xl bg-white px-8 text-sm font-semibold text-black transition-all hover:bg-zinc-200 hover:scale-105 active:scale-95 mb-8 cursor-pointer"
             >
               <Mail className="size-4" />
               Solicitar presupuesto
-            </a>
+            </button>
           </div>
 
           <div className="border-t border-zinc-800 pt-8">

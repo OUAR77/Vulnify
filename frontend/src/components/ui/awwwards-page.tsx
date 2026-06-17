@@ -216,7 +216,7 @@ const Nav = ({ menuOpen, setMenuOpen, isDark, onToggle }: any) => {
           ))}
           <div className="w-px h-5 bg-white/[0.06]" />
           <ThemeToggle isDark={isDark} onToggle={onToggle} />
-          <HoverBorderGradient as="a" href="mailto:hola@vulnify.es" className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium">
+          <HoverBorderGradient as="button" onClick={() => window.dispatchEvent(new CustomEvent('open-contact'))} className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium">
             Presupuesto <ArrowUpRight className="size-3.5" />
           </HoverBorderGradient>
         </div>
@@ -253,7 +253,7 @@ const Nav = ({ menuOpen, setMenuOpen, isDark, onToggle }: any) => {
                   {l}
                 </motion.a>
               ))}
-              <HoverBorderGradient as="a" href="mailto:hola@vulnify.es" className="flex items-center gap-2 px-8 py-4 text-base font-medium">
+              <HoverBorderGradient as="button" onClick={() => window.dispatchEvent(new CustomEvent('open-contact'))} className="flex items-center gap-2 px-8 py-4 text-base font-medium">
                 Solicitar presupuesto <ArrowUpRight className="size-4" />
               </HoverBorderGradient>
             </div>
@@ -346,17 +346,17 @@ export const Component = () => {
           >
             <MessageCircle className="size-5" />
           </motion.a>
-          <motion.a
-            href="mailto:hola@vulnify.es"
+          <motion.button
+            onClick={() => window.dispatchEvent(new CustomEvent('open-contact'))}
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 2, duration: 0.4, type: 'spring' }}
-            className="size-14 rounded-full bg-white text-black flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+            className="size-14 rounded-full bg-white text-black flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer"
             whileHover={{ rotate: -12 }}
             aria-label="Contacto"
           >
             <ArrowUpRight className="size-5" />
-          </motion.a>
+          </motion.button>
         </div>
 
         {/* ─── HERO ─── */}
@@ -923,7 +923,7 @@ export const Component = () => {
               Solicita una auditoría gratuita de tu presencia digital y descubre cómo podemos ayudarte a crecer.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
-              <HoverBorderGradient as="a" href="mailto:hola@vulnify.es" className="flex items-center gap-2 px-8 py-4 text-base font-medium">
+              <HoverBorderGradient as="button" onClick={() => window.dispatchEvent(new CustomEvent('open-contact'))} className="flex items-center gap-2 px-8 py-4 text-base font-medium">
                 Solicitar auditoría gratis <ArrowUpRight className="size-4" />
               </HoverBorderGradient>
               <a

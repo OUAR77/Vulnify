@@ -145,7 +145,7 @@ export function HomeContent() {
               No construimos páginas. Diseñamos ecosistemas digitales con inteligencia artificial integrada para que tu negocio crezca.
             </p>
             <div className="flex flex-wrap gap-4 mt-8">
-              <HoverBorderGradient as="a" href="mailto:hola@vulnify.es" className="flex items-center gap-2 px-8 py-4 text-base font-medium">
+              <HoverBorderGradient as="button" onClick={() => window.dispatchEvent(new CustomEvent('open-contact'))} className="flex items-center gap-2 px-8 py-4 text-base font-medium">
                 Solicitar auditoría gratis <ArrowUpRight className="size-4" />
               </HoverBorderGradient>
               <a href="https://wa.me/34600000000" target="_blank" rel="noopener noreferrer"
@@ -339,7 +339,7 @@ export function HomeContent() {
               Solicita una auditoría gratuita de tu presencia digital y descubre cómo podemos ayudarte a crecer.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
-              <HoverBorderGradient as="a" href="mailto:hola@vulnify.es" className="flex items-center gap-2 px-8 py-4 text-base font-medium">
+              <HoverBorderGradient as="button" onClick={() => window.dispatchEvent(new CustomEvent('open-contact'))} className="flex items-center gap-2 px-8 py-4 text-base font-medium">
                 Solicitar auditoría gratis <ArrowUpRight className="size-4" />
               </HoverBorderGradient>
               <a href="https://wa.me/34600000000" target="_blank" rel="noopener noreferrer"

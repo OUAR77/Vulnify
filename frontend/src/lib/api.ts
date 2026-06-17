@@ -1,5 +1,9 @@
 const BASE = import.meta.env.VITE_API_URL || ''
 
+export function openContactForm() {
+  window.dispatchEvent(new CustomEvent('open-contact'))
+}
+
 export interface User {
   id: number
   name: string

@@ -6,6 +6,7 @@ import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { HoverBorderGradient } from '@/components/ui/hover-border-gradient'
 import { MenuToggleIcon } from '@/components/ui/menu-toggle-icon'
 import { AboutModal } from '@/components/ui/about-modal'
+import { ContactModal } from '@/components/ui/contact-modal'
 import { useAuth } from '@/lib/auth-context'
 
 const ScrollProgress = () => {
@@ -166,18 +167,25 @@ export function SiteLayout() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [isDark, setIsDark] = useState(true)
   const [aboutOpen, setAboutOpen] = useState(false)
+  const [contactOpen, setContactOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
+
+  useEffect(() => {
+    const handler = () => setContactOpen(true)
+    window.addEventListener('open-contact', handler)
+    return () => window.removeEventListener('open-contact', handler)
+  }, [])
 
   useEffect(() => {
     document.documentElement.classList.toggle('light', !isDark)
   }, [isDark])
 
   useEffect(() => {
-    document.body.style.overflow = menuOpen || aboutOpen ? 'hidden' : ''
+    document.body.style.overflow = menuOpen || aboutOpen || contactOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
-  }, [menuOpen, aboutOpen])
+  }, [menuOpen, aboutOpen, contactOpen])
 
   useEffect(() => {
     setMenuOpen(false)
@@ -250,7 +258,7 @@ export function SiteLayout() {
           <div className="w-px h-5 bg-white/[0.06]" />
           <ThemeToggle isDark={isDark} onToggle={() => setIsDark(!isDark)} />
           <AuthButtons />
-          <HoverBorderGradient as="a" href="mailto:hola@vulnify.es" className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium">
+          <HoverBorderGradient as="button" onClick={() => window.dispatchEvent(new CustomEvent('open-contact'))} className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium">
             Presupuesto <ArrowUpRight className="size-3.5" />
           </HoverBorderGradient>
         </div>
@@ -286,7 +294,7 @@ export function SiteLayout() {
                   {item.label}
                 </motion.button>
               ))}
-              <HoverBorderGradient as="a" href="mailto:hola@vulnify.es" className="flex items-center gap-2 px-8 py-4 text-base font-medium">
+              <HoverBorderGradient as="button" onClick={() => window.dispatchEvent(new CustomEvent('open-contact'))} className="flex items-center gap-2 px-8 py-4 text-base font-medium">
                 Solicitar presupuesto <ArrowUpRight className="size-4" />
               </HoverBorderGradient>
               <MobileAuthButtons />
@@ -308,17 +316,17 @@ export function SiteLayout() {
         >
           <MessageCircle className="size-5" />
         </motion.a>
-        <motion.a
-          href="mailto:hola@vulnify.es"
+        <motion.button
+          onClick={() => window.dispatchEvent(new CustomEvent('open-contact'))}
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 2, duration: 0.4, type: 'spring' }}
-          className="size-14 rounded-full bg-white text-black flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+          className="size-14 rounded-full bg-white text-black flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer"
           whileHover={{ rotate: -12 }}
           aria-label="Contacto"
         >
           <ArrowUpRight className="size-5" />
-        </motion.a>
+        </motion.button>
       </div>
 
       <Outlet context={{ aboutOpen, setAboutOpen }} />
@@ -367,6 +375,7 @@ export function SiteLayout() {
         </div>
       </footer>
 
+      <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
       <CookieBanner />
       <AboutModal open={aboutOpen} onClose={() => setAboutOpen(false)} />
     </div>

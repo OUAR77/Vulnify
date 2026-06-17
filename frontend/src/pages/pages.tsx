@@ -205,9 +205,9 @@ export function ServicioPage() {
             <span className="inline-block text-[11px] tracking-[0.25em] uppercase text-zinc-600 mb-4 font-mono">Servicios</span>
             <h1 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mb-6">{service.title}</h1>
             <p className="text-sm text-zinc-400 leading-relaxed mb-8">{service.desc}</p>
-            <a href="mailto:hola@vulnify.es" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-black text-sm font-medium hover:bg-zinc-200 transition-colors">
+            <button onClick={() => window.dispatchEvent(new CustomEvent('open-contact'))} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-black text-sm font-medium hover:bg-zinc-200 transition-colors cursor-pointer">
               Solicitar presupuesto <ArrowUpRight className="size-4" />
-            </a>
+            </button>
           </div>
           <div className="space-y-3">
             <h3 className="text-xs tracking-[0.2em] uppercase text-zinc-500 mb-4">Qué incluye</h3>

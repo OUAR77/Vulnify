@@ -65,8 +65,8 @@ export function BackgroundPaths({
                         transition={{ delay: 1.8, duration: 0.6 }}
                     >
                         <HoverBorderGradient
-                            as="a"
-                            href="mailto:hola@vulnify.es"
+                            as="button"
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-contact'))}
                             className="inline-flex items-center gap-2 px-8 py-4 text-base font-medium"
                         >
                             Solicitar presupuesto <ArrowUpRight className="size-4" />

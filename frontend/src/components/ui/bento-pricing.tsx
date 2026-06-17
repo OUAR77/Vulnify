@@ -62,7 +62,7 @@ export function BentoPricing() {
                   Cada proyecto es único. Te enviamos un presupuesto transparente y detallado sin compromiso.
                 </p>
               </div>
-              <HoverBorderGradient as="a" href="mailto:hola@vulnify.es" className="flex items-center gap-2 px-6 py-3 text-sm font-medium">
+              <HoverBorderGradient as="button" onClick={() => window.dispatchEvent(new CustomEvent('open-contact'))} className="flex items-center gap-2 px-6 py-3 text-sm font-medium">
                 Solicitar presupuesto
                 <Mail className="size-4" />
               </HoverBorderGradient>
