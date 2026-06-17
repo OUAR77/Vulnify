@@ -6,7 +6,7 @@ import {
   adminGetActivityLogs, adminGetActivityActions,
   adminGetMessages, adminMarkMessageRead, adminDeleteMessage,
   adminGetOrders, adminCreateOrder, adminUpdateOrder, adminDeleteOrder,
-  adminUploadPhoto, adminDeletePhoto, getOrderPhotos,
+  adminUploadPhoto, adminDeletePhoto, adminGetOrderPhotos,
   downloadAdminCSV,
   type AdminStats, type AdminUser, type ActivityLog,
   type ContactMessage, type Order, type OrderPhoto,
@@ -195,7 +195,7 @@ export function AdminPage() {
 
   const openPhotoGallery = async (order: Order) => {
     setPhotoOrder(order)
-    try { setPhotos(await getOrderPhotos(order.id)) }
+    try { setPhotos(await adminGetOrderPhotos(order.id)) }
     catch { setPhotos([]) }
   }
 
@@ -204,7 +204,7 @@ export function AdminPage() {
     if (!file || !photoOrder) return
     try {
       await adminUploadPhoto(photoOrder.id, file, photoCaption)
-      setPhotos(await getOrderPhotos(photoOrder.id))
+      setPhotos(await adminGetOrderPhotos(photoOrder.id))
       setPhotoCaption('')
       if (fileInputRef.current) fileInputRef.current.value = ''
     } catch (err: any) { alert(err.message) }
@@ -214,7 +214,7 @@ export function AdminPage() {
     if (!photoOrder) return
     try {
       await adminDeletePhoto(photoOrder.id, photoId, confirmPassword)
-      setPhotos(await getOrderPhotos(photoOrder.id))
+      setPhotos(await adminGetOrderPhotos(photoOrder.id))
       setPasswordModal(null); setConfirmPassword(''); setPasswordError('')
     } catch (e: any) { setPasswordError(e.message) }
   }

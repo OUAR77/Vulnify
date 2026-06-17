@@ -361,6 +361,10 @@ export interface OrderPhoto {
   created_at: string
 }
 
+export async function adminGetOrderPhotos(orderId: number): Promise<OrderPhoto[]> {
+  return apiGet<OrderPhoto[]>(`/api/admin/orders/${orderId}/photos`)
+}
+
 export async function getOrderPhotos(orderId: number): Promise<OrderPhoto[]> {
   return apiGet<OrderPhoto[]>(`/api/orders/${orderId}/photos`)
 }

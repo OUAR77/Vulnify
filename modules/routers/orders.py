@@ -185,6 +185,24 @@ def admin_upload_photo(
         return JSONResponse(status_code=500, content={"detail": str(e)[:300]})
 
 
+@router.get("/orders/{order_id}/photos", description="Get progress photos for an order (admin only)")
+def admin_get_photos(
+    order_id: int,
+    admin: User = Depends(require_admin_totp),
+    db: Session = Depends(get_db),
+):
+    photos = (
+        db.query(OrderPhoto)
+        .filter(OrderPhoto.order_id == order_id)
+        .order_by(OrderPhoto.created_at.asc())
+        .all()
+    )
+    return [
+        {"id": p.id, "image_data": p.image_data, "caption": p.caption, "created_at": str(p.created_at)[:19]}
+        for p in photos
+    ]
+
+
 @router.delete("/orders/{order_id}/photos/{photo_id}", description="Delete a progress photo (admin only)")
 def admin_delete_photo(
     order_id: int,
