@@ -1,6 +1,7 @@
 import logging
 import base64
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, UploadFile, File, Form
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from database import get_db
@@ -156,16 +157,32 @@ def admin_upload_photo(
     admin: User = Depends(require_admin_totp),
     db: Session = Depends(get_db),
 ):
-    order = db.query(Order).filter(Order.id == order_id).first()
-    if not order:
-        raise HTTPException(status_code=404, detail="Pedido no encontrado")
-    image_bytes = file.file.read()
-    image_data = "data:" + (file.content_type or "image/jpeg") + ";base64," + base64.b64encode(image_bytes).decode()
-    photo = OrderPhoto(order_id=order_id, image_data=image_data, caption=caption)
-    db.add(photo)
-    db.commit()
-    db.refresh(photo)
-    return {"id": photo.id, "caption": photo.caption, "created_at": str(photo.created_at)[:19]}
+    try:
+        order = db.query(Order).filter(Order.id == order_id).first()
+        if not order:
+            return JSONResponse(status_code=404, content={"detail": "Pedido no encontrado"})
+        image_bytes = file.file.read()
+        if not image_bytes:
+            return JSONResponse(status_code=400, content={"detail": "Archivo vacío"})
+        import io
+        from PIL import Image as PILImage
+        img = PILImage.open(io.BytesIO(image_bytes))
+        max_size = 1200
+        if img.width > max_size or img.height > max_size:
+            ratio = max_size / max(img.width, img.height)
+            img = img.resize((int(img.width * ratio), int(img.height * ratio)), PILImage.LANCZOS)
+        buf = io.BytesIO()
+        img.convert("RGB").save(buf, "JPEG", quality=80)
+        b64 = base64.b64encode(buf.getvalue()).decode()
+        image_data = "data:image/jpeg;base64," + b64
+        photo = OrderPhoto(order_id=order_id, image_data=image_data, caption=caption)
+        db.add(photo)
+        db.commit()
+        db.refresh(photo)
+        return {"id": photo.id, "caption": photo.caption, "created_at": str(photo.created_at)[:19]}
+    except Exception as e:
+        logger.exception("Upload photo error")
+        return JSONResponse(status_code=500, content={"detail": str(e)[:300]})
 
 
 @router.delete("/orders/{order_id}/photos/{photo_id}", description="Delete a progress photo (admin only)")

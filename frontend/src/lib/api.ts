@@ -376,8 +376,10 @@ export async function adminUploadPhoto(orderId: number, file: File, caption: str
     body: fd,
   })
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ detail: 'Error de conexión' }))
-    throw new Error(err.detail || `Error ${res.status}`)
+    const text = await res.text()
+    let detail = text
+    try { detail = JSON.parse(text).detail || text } catch {}
+    throw new Error(`Error ${res.status}: ${detail}`)
   }
   return res.json()
 }
