@@ -10,13 +10,18 @@ import {
   adminGetOrderTimeline, adminGetOrderInvoice,
   getMaintenance, setMaintenance,
   downloadAdminCSV,
+  adminGetAllPosts, adminCreatePost, adminUpdatePost, adminDeletePost,
+  getTestimonials, adminCreateTestimonial, adminUpdateTestimonial, adminDeleteTestimonial,
+  getFAQs, adminCreateFAQ, adminUpdateFAQ, adminDeleteFAQ,
   type AdminStats, type AdminUser, type ActivityLog,
   type ContactMessage, type Order, type OrderPhoto,
+  type BlogPost, type TestimonialData, type FAQData,
 } from '@/lib/api'
 import {
   Users, ShieldAlert, Activity, Search, Trash2, ArrowLeft, LogOut,
   LayoutDashboard, RefreshCw, Plus, MessageSquare, ShoppingCart, Image,
-  History, FileText, Wrench,
+  History, FileText, Wrench, BookOpen, Star, HelpCircle,
+  ChevronUp, ChevronDown,
 } from 'lucide-react'
 
 export function AdminPage() {
@@ -74,7 +79,28 @@ export function AdminPage() {
   // Maintenance
   const [maintenanceMode, setMaintenanceMode] = useState(false)
 
-  const [tab, setTab] = useState<'stats' | 'users' | 'logs' | 'messages' | 'orders'>('stats')
+  // Blog
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
+  const [blogError, setBlogError] = useState('')
+  const [showBlogForm, setShowBlogForm] = useState(false)
+  const [blogForm, setBlogForm] = useState({ title: '', slug: '', tag: '', excerpt: '', content: '', author: '', read_time: '', published: false })
+  const [editingBlogPost, setEditingBlogPost] = useState<BlogPost | null>(null)
+
+  // Testimonials
+  const [testimonials, setTestimonials] = useState<TestimonialData[]>([])
+  const [testError, setTestError] = useState('')
+  const [showTestForm, setShowTestForm] = useState(false)
+  const [testForm, setTestForm] = useState({ name: '', role: '', company: '', content: '', avatar_url: '', rating: 5, featured: false })
+  const [editingTestimonial, setEditingTestimonial] = useState<TestimonialData | null>(null)
+
+  // FAQ
+  const [faqs, setFaqs] = useState<FAQData[]>([])
+  const [faqError, setFaqError] = useState('')
+  const [showFaqForm, setShowFaqForm] = useState(false)
+  const [faqForm, setFaqForm] = useState({ question: '', answer: '', category: '', published: false, order: 0 })
+  const [editingFaq, setEditingFaq] = useState<FAQData | null>(null)
+
+  const [tab, setTab] = useState<'stats' | 'users' | 'logs' | 'messages' | 'orders' | 'blog' | 'testimonios' | 'faq'>('stats')
 
   const loadStats = useCallback(async () => {
     try { setStatsError(''); setStats(await adminGetStats()) }
@@ -117,10 +143,33 @@ export function AdminPage() {
     } catch { /* ignore */ }
   }, [])
 
+  const loadBlogPosts = useCallback(async () => {
+    try {
+      setBlogError('')
+      const token = localStorage.getItem('vulnify_token') || ''
+      setBlogPosts(await adminGetAllPosts(token))
+    } catch (e: any) { setBlogError(e.message) }
+  }, [])
+
+  const loadTestimonials = useCallback(async () => {
+    try {
+      setTestError('')
+      setTestimonials(await getTestimonials())
+    } catch (e: any) { setTestError(e.message) }
+  }, [])
+
+  const loadFAQs = useCallback(async () => {
+    try {
+      setFaqError('')
+      setFaqs(await getFAQs())
+    } catch (e: any) { setFaqError(e.message) }
+  }, [])
+
   useEffect(() => {
     if (!isAuthenticated) { navigate('/login'); return }
     if (!isAdmin) { navigate('/dashboard'); return }
     loadStats(); loadUsers(1); loadLogs(1); loadLogActions(); loadMessages(1); loadOrders(1)
+    loadBlogPosts(); loadTestimonials(); loadFAQs()
     getMaintenance().then(r => setMaintenanceMode(r.maintenance_mode)).catch(() => {})
   }, [isAuthenticated, isAdmin])
 
@@ -154,6 +203,9 @@ export function AdminPage() {
     loadLogs(logsPage, logFilterAction || undefined)
     loadMessages(messagesPage)
     loadOrders(ordersPage)
+    loadBlogPosts()
+    loadTestimonials()
+    loadFAQs()
   }
 
   const handleMarkRead = async (msg: ContactMessage) => {
@@ -247,6 +299,147 @@ export function AdminPage() {
     } catch (e: any) { setPasswordError(e.message) }
   }
 
+  const handleBlogSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const token = localStorage.getItem('vulnify_token') || ''
+    try {
+      if (editingBlogPost) {
+        await adminUpdatePost(token, editingBlogPost.id, blogForm)
+      } else {
+        await adminCreatePost(token, blogForm)
+      }
+      setShowBlogForm(false)
+      setEditingBlogPost(null)
+      setBlogForm({ title: '', slug: '', tag: '', excerpt: '', content: '', author: '', read_time: '', published: false })
+      loadBlogPosts()
+    } catch (e: any) { alert(e.message) }
+  }
+
+  const handleEditBlogPost = (post: BlogPost) => {
+    setEditingBlogPost(post)
+    setBlogForm({
+      title: post.title,
+      slug: post.slug,
+      tag: post.tag,
+      excerpt: post.excerpt,
+      content: post.content,
+      author: post.author,
+      read_time: post.read_time,
+      published: post.published,
+    })
+    setShowBlogForm(true)
+  }
+
+  const handleDeleteBlogPost = async (id: number) => {
+    if (!confirmPassword) return
+    try {
+      const token = localStorage.getItem('vulnify_token') || ''
+      await adminDeletePost(token, id)
+      loadBlogPosts()
+    } catch (e: any) { setPasswordError(e.message); return }
+    setPasswordModal(null); setConfirmPassword(''); setPasswordError('')
+  }
+
+  const handleTogglePublish = async (post: BlogPost) => {
+    const token = localStorage.getItem('vulnify_token') || ''
+    try {
+      await adminUpdatePost(token, post.id, { published: !post.published })
+      loadBlogPosts()
+    } catch (e: any) { alert(e.message) }
+  }
+
+  const handleTestSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const token = localStorage.getItem('vulnify_token') || ''
+    try {
+      if (editingTestimonial) {
+        await adminUpdateTestimonial(token, editingTestimonial.id, testForm)
+      } else {
+        await adminCreateTestimonial(token, testForm)
+      }
+      setShowTestForm(false)
+      setEditingTestimonial(null)
+      setTestForm({ name: '', role: '', company: '', content: '', avatar_url: '', rating: 5, featured: false })
+      loadTestimonials()
+    } catch (e: any) { alert(e.message) }
+  }
+
+  const handleEditTestimonial = (t: TestimonialData) => {
+    setEditingTestimonial(t)
+    setTestForm({
+      name: t.name,
+      role: t.role,
+      company: t.company,
+      content: t.content,
+      avatar_url: t.avatar_url,
+      rating: t.rating,
+      featured: t.featured,
+    })
+    setShowTestForm(true)
+  }
+
+  const handleDeleteTestimonial = async (id: number) => {
+    if (!confirmPassword) return
+    try {
+      const token = localStorage.getItem('vulnify_token') || ''
+      await adminDeleteTestimonial(token, id)
+      loadTestimonials()
+    } catch (e: any) { setPasswordError(e.message); return }
+    setPasswordModal(null); setConfirmPassword(''); setPasswordError('')
+  }
+
+  const handleFaqSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const token = localStorage.getItem('vulnify_token') || ''
+    try {
+      if (editingFaq) {
+        await adminUpdateFAQ(token, editingFaq.id, faqForm)
+      } else {
+        await adminCreateFAQ(token, faqForm)
+      }
+      setShowFaqForm(false)
+      setEditingFaq(null)
+      setFaqForm({ question: '', answer: '', category: '', published: false, order: 0 })
+      loadFAQs()
+    } catch (e: any) { alert(e.message) }
+  }
+
+  const handleEditFaq = (faq: FAQData) => {
+    setEditingFaq(faq)
+    setFaqForm({
+      question: faq.question,
+      answer: faq.answer,
+      category: faq.category,
+      published: faq.published,
+      order: faq.order,
+    })
+    setShowFaqForm(true)
+  }
+
+  const handleDeleteFaq = async (id: number) => {
+    if (!confirmPassword) return
+    try {
+      const token = localStorage.getItem('vulnify_token') || ''
+      await adminDeleteFAQ(token, id)
+      loadFAQs()
+    } catch (e: any) { setPasswordError(e.message); return }
+    setPasswordModal(null); setConfirmPassword(''); setPasswordError('')
+  }
+
+  const handleMoveFaq = async (faq: FAQData, direction: 'up' | 'down') => {
+    const sorted = [...faqs].sort((a, b) => a.order - b.order)
+    const idx = sorted.findIndex(f => f.id === faq.id)
+    if (direction === 'up' && idx <= 0) return
+    if (direction === 'down' && idx >= sorted.length - 1) return
+    const target = direction === 'up' ? sorted[idx - 1] : sorted[idx + 1]
+    const token = localStorage.getItem('vulnify_token') || ''
+    try {
+      await adminUpdateFAQ(token, faq.id, { order: target.order })
+      await adminUpdateFAQ(token, target.id, { order: faq.order })
+      loadFAQs()
+    } catch (e: any) { alert(e.message) }
+  }
+
   const pages = Math.ceil(usersTotal / 50)
   const messagesPages = Math.ceil(messagesTotal / 50)
   const ordersPages = Math.ceil(ordersTotal / 50)
@@ -283,6 +476,9 @@ export function AdminPage() {
             ['users', 'Usuarios'],
             ['messages', 'Mensajes'],
             ['orders', 'Pedidos'],
+            ['blog', 'Blog'],
+            ['testimonios', 'Testimonios'],
+            ['faq', 'FAQ'],
             ['logs', 'Actividad'],
           ] as const).map(([key, label]) => (
             <button key={key} onClick={() => setTab(key)}
@@ -613,6 +809,338 @@ export function AdminPage() {
           </div>
         )}
 
+        {/* Blog Tab */}
+        {tab === 'blog' && (
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <BookOpen className="size-5 text-zinc-500" />
+                <span className="text-sm text-zinc-500">{blogPosts.length} posts</span>
+              </div>
+              <button onClick={() => { setEditingBlogPost(null); setBlogForm({ title: '', slug: '', tag: '', excerpt: '', content: '', author: '', read_time: '', published: false }); setShowBlogForm(true) }}
+                className="flex items-center gap-2 text-sm bg-white/10 rounded-lg px-4 py-2 hover:bg-white/20 transition-colors cursor-pointer border-none text-white">
+                <Plus className="size-4" /> Nuevo Post
+              </button>
+            </div>
+
+            {blogError && <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400 mb-6">{blogError}</div>}
+
+            {showBlogForm && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => setShowBlogForm(false)}>
+                <div className="bg-zinc-900 border border-white/[0.1] rounded-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                  <h3 className="text-lg font-semibold mb-4">{editingBlogPost ? 'Editar post' : 'Nuevo post'}</h3>
+                  <form onSubmit={handleBlogSubmit} className="space-y-4">
+                    <input placeholder="Título" value={blogForm.title}
+                      onChange={(e) => setBlogForm({ ...blogForm, title: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
+                    <div className="flex gap-4">
+                      <input placeholder="Slug (url)" value={blogForm.slug}
+                        onChange={(e) => setBlogForm({ ...blogForm, slug: e.target.value })}
+                        className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
+                      <input placeholder="Tag" value={blogForm.tag}
+                        onChange={(e) => setBlogForm({ ...blogForm, tag: e.target.value })}
+                        className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
+                    </div>
+                    <div className="flex gap-4">
+                      <input placeholder="Autor" value={blogForm.author}
+                        onChange={(e) => setBlogForm({ ...blogForm, author: e.target.value })}
+                        className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
+                      <input placeholder="Tiempo lectura (ej: 5 min)" value={blogForm.read_time}
+                        onChange={(e) => setBlogForm({ ...blogForm, read_time: e.target.value })}
+                        className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
+                    </div>
+                    <textarea placeholder="Extracto (resumen breve)" value={blogForm.excerpt}
+                      onChange={(e) => setBlogForm({ ...blogForm, excerpt: e.target.value })} rows={2}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
+                    <textarea placeholder="Contenido (markdown)" value={blogForm.content}
+                      onChange={(e) => setBlogForm({ ...blogForm, content: e.target.value })} rows={6}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30 font-mono" required />
+                    <label className="flex items-center gap-3 text-sm text-zinc-400">
+                      <input type="checkbox" checked={blogForm.published}
+                        onChange={(e) => setBlogForm({ ...blogForm, published: e.target.checked })}
+                        className="size-4 rounded border-white/20 bg-white/5 text-white focus:ring-0 cursor-pointer" />
+                      Publicado
+                    </label>
+                    <div className="flex gap-3 pt-2">
+                      <button type="submit" className="flex-1 py-2.5 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors cursor-pointer border-none">
+                        {editingBlogPost ? 'Guardar' : 'Crear post'}
+                      </button>
+                      <button type="button" onClick={() => setShowBlogForm(false)}
+                        className="px-4 py-2.5 rounded-lg border border-white/[0.1] text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer bg-transparent">
+                        Cancelar
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
+            <div className="rounded-xl border border-white/[0.06] overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-white/[0.06] bg-white/[0.02]">
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">ID</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Título</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Tag</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Estado</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Fecha</th>
+                    <th className="text-right py-3 px-4 text-zinc-500 font-medium">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {blogPosts.map((p) => (
+                    <tr key={p.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+                      <td className="py-3 px-4 text-zinc-400">{p.id}</td>
+                      <td className="py-3 px-4 max-w-[200px] truncate">{p.title}</td>
+                      <td className="py-3 px-4">
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-500/10 text-zinc-400">{p.tag}</span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className={`text-xs px-2 py-0.5 rounded-full ${p.published ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                          {p.published ? 'Publicado' : 'Borrador'}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-zinc-500 text-xs">{p.created_at?.slice(0, 10)}</td>
+                      <td className="py-3 px-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button onClick={() => handleTogglePublish(p)}
+                            className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent">
+                            {p.published ? 'Archivar' : 'Publicar'}
+                          </button>
+                          <button onClick={() => handleEditBlogPost(p)}
+                            className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent">Editar</button>
+                          <button onClick={() => setPasswordModal({ action: 'delete_blog_post', id: p.id })}
+                            className="text-xs px-2 py-1 rounded border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer bg-transparent">
+                            <Trash2 className="size-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {blogPosts.length === 0 && !blogError && <tr><td colSpan={6} className="py-8 text-center text-zinc-500">Sin posts</td></tr>}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Testimonios Tab */}
+        {tab === 'testimonios' && (
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <Star className="size-5 text-zinc-500" />
+                <span className="text-sm text-zinc-500">{testimonials.length} testimonios</span>
+              </div>
+              <button onClick={() => { setEditingTestimonial(null); setTestForm({ name: '', role: '', company: '', content: '', avatar_url: '', rating: 5, featured: false }); setShowTestForm(true) }}
+                className="flex items-center gap-2 text-sm bg-white/10 rounded-lg px-4 py-2 hover:bg-white/20 transition-colors cursor-pointer border-none text-white">
+                <Plus className="size-4" /> Nuevo testimonio
+              </button>
+            </div>
+
+            {testError && <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400 mb-6">{testError}</div>}
+
+            {showTestForm && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => setShowTestForm(false)}>
+                <div className="bg-zinc-900 border border-white/[0.1] rounded-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                  <h3 className="text-lg font-semibold mb-4">{editingTestimonial ? 'Editar testimonio' : 'Nuevo testimonio'}</h3>
+                  <form onSubmit={handleTestSubmit} className="space-y-4">
+                    <div className="flex gap-4">
+                      <input placeholder="Nombre" value={testForm.name}
+                        onChange={(e) => setTestForm({ ...testForm, name: e.target.value })}
+                        className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
+                      <input placeholder="Cargo (ej: CEO)" value={testForm.role}
+                        onChange={(e) => setTestForm({ ...testForm, role: e.target.value })}
+                        className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
+                    </div>
+                    <input placeholder="Empresa" value={testForm.company}
+                      onChange={(e) => setTestForm({ ...testForm, company: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
+                    <input placeholder="URL del avatar" value={testForm.avatar_url}
+                      onChange={(e) => setTestForm({ ...testForm, avatar_url: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
+                    <textarea placeholder="Contenido del testimonio" value={testForm.content}
+                      onChange={(e) => setTestForm({ ...testForm, content: e.target.value })} rows={4}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
+                    <div className="flex gap-4 items-end">
+                      <div>
+                        <label className="text-xs text-zinc-500 mb-1 block">Valoración (1-5)</label>
+                        <input type="number" min={1} max={5} value={testForm.rating}
+                          onChange={(e) => setTestForm({ ...testForm, rating: parseInt(e.target.value) || 5 })}
+                          className="w-20 bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30" />
+                      </div>
+                      <label className="flex items-center gap-3 text-sm text-zinc-400 pb-1">
+                        <input type="checkbox" checked={testForm.featured}
+                          onChange={(e) => setTestForm({ ...testForm, featured: e.target.checked })}
+                          className="size-4 rounded border-white/20 bg-white/5 text-white focus:ring-0 cursor-pointer" />
+                        Destacado
+                      </label>
+                    </div>
+                    <div className="flex gap-3 pt-2">
+                      <button type="submit" className="flex-1 py-2.5 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors cursor-pointer border-none">
+                        {editingTestimonial ? 'Guardar' : 'Crear testimonio'}
+                      </button>
+                      <button type="button" onClick={() => setShowTestForm(false)}
+                        className="px-4 py-2.5 rounded-lg border border-white/[0.1] text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer bg-transparent">
+                        Cancelar
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
+            <div className="rounded-xl border border-white/[0.06] overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-white/[0.06] bg-white/[0.02]">
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">ID</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Nombre</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Empresa</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Valoración</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Destacado</th>
+                    <th className="text-right py-3 px-4 text-zinc-500 font-medium">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {testimonials.map((t) => (
+                    <tr key={t.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+                      <td className="py-3 px-4 text-zinc-400">{t.id}</td>
+                      <td className="py-3 px-4">{t.name}</td>
+                      <td className="py-3 px-4 text-zinc-400">{t.company || '-'}</td>
+                      <td className="py-3 px-4">
+                        <span className="text-yellow-400">{'★'.repeat(t.rating)}{'☆'.repeat(5 - t.rating)}</span>
+                      </td>
+                      <td className="py-3 px-4">
+                        {t.featured ? <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-400">Sí</span> : <span className="text-xs text-zinc-500">No</span>}
+                      </td>
+                      <td className="py-3 px-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button onClick={() => handleEditTestimonial(t)}
+                            className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent">Editar</button>
+                          <button onClick={() => setPasswordModal({ action: 'delete_testimonial', id: t.id })}
+                            className="text-xs px-2 py-1 rounded border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer bg-transparent">
+                            <Trash2 className="size-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {testimonials.length === 0 && !testError && <tr><td colSpan={6} className="py-8 text-center text-zinc-500">Sin testimonios</td></tr>}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* FAQ Tab */}
+        {tab === 'faq' && (
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <HelpCircle className="size-5 text-zinc-500" />
+                <span className="text-sm text-zinc-500">{faqs.length} FAQs</span>
+              </div>
+              <button onClick={() => { setEditingFaq(null); setFaqForm({ question: '', answer: '', category: '', published: false, order: faqs.length + 1 }); setShowFaqForm(true) }}
+                className="flex items-center gap-2 text-sm bg-white/10 rounded-lg px-4 py-2 hover:bg-white/20 transition-colors cursor-pointer border-none text-white">
+                <Plus className="size-4" /> Nueva FAQ
+              </button>
+            </div>
+
+            {faqError && <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400 mb-6">{faqError}</div>}
+
+            {showFaqForm && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => setShowFaqForm(false)}>
+                <div className="bg-zinc-900 border border-white/[0.1] rounded-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                  <h3 className="text-lg font-semibold mb-4">{editingFaq ? 'Editar FAQ' : 'Nueva FAQ'}</h3>
+                  <form onSubmit={handleFaqSubmit} className="space-y-4">
+                    <input placeholder="Pregunta" value={faqForm.question}
+                      onChange={(e) => setFaqForm({ ...faqForm, question: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
+                    <textarea placeholder="Respuesta" value={faqForm.answer}
+                      onChange={(e) => setFaqForm({ ...faqForm, answer: e.target.value })} rows={5}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
+                    <div className="flex gap-4 items-end">
+                      <div className="flex-1">
+                        <label className="text-xs text-zinc-500 mb-1 block">Categoría</label>
+                        <input placeholder="Categoría" value={faqForm.category}
+                          onChange={(e) => setFaqForm({ ...faqForm, category: e.target.value })}
+                          className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
+                      </div>
+                      <label className="flex items-center gap-3 text-sm text-zinc-400 pb-1">
+                        <input type="checkbox" checked={faqForm.published}
+                          onChange={(e) => setFaqForm({ ...faqForm, published: e.target.checked })}
+                          className="size-4 rounded border-white/20 bg-white/5 text-white focus:ring-0 cursor-pointer" />
+                        Publicado
+                      </label>
+                    </div>
+                    <div className="flex gap-3 pt-2">
+                      <button type="submit" className="flex-1 py-2.5 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors cursor-pointer border-none">
+                        {editingFaq ? 'Guardar' : 'Crear FAQ'}
+                      </button>
+                      <button type="button" onClick={() => setShowFaqForm(false)}
+                        className="px-4 py-2.5 rounded-lg border border-white/[0.1] text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer bg-transparent">
+                        Cancelar
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
+            <div className="rounded-xl border border-white/[0.06] overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-white/[0.06] bg-white/[0.02]">
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Orden</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Pregunta</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Categoría</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Publicado</th>
+                    <th className="text-right py-3 px-4 text-zinc-500 font-medium">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[...faqs].sort((a, b) => a.order - b.order).map((faq) => (
+                    <tr key={faq.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+                      <td className="py-3 px-4 text-zinc-400 text-xs">{faq.order}</td>
+                      <td className="py-3 px-4 max-w-[300px] truncate">{faq.question}</td>
+                      <td className="py-3 px-4">
+                        {faq.category && <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-500/10 text-zinc-400">{faq.category}</span>}
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className={`text-xs px-2 py-0.5 rounded-full ${faq.published ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                          {faq.published ? 'Sí' : 'No'}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          <button onClick={() => handleMoveFaq(faq, 'up')}
+                            className="text-xs p-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent"
+                            title="Subir">
+                            <ChevronUp className="size-3.5" />
+                          </button>
+                          <button onClick={() => handleMoveFaq(faq, 'down')}
+                            className="text-xs p-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent"
+                            title="Bajar">
+                            <ChevronDown className="size-3.5" />
+                          </button>
+                          <button onClick={() => handleEditFaq(faq)}
+                            className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent ml-1">Editar</button>
+                          <button onClick={() => setPasswordModal({ action: 'delete_faq', id: faq.id })}
+                            className="text-xs px-2 py-1 rounded border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer bg-transparent">
+                            <Trash2 className="size-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {faqs.length === 0 && !faqError && <tr><td colSpan={5} className="py-8 text-center text-zinc-500">Sin FAQs</td></tr>}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
         {/* Activity Logs Tab */}
         {tab === 'logs' && (
           <div>
@@ -751,9 +1279,9 @@ export function AdminPage() {
               <input type="password" placeholder="Tu contraseña" value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30 mb-4" autoFocus
-                onKeyDown={(e) => { if (e.key === 'Enter') { const pm = passwordModal; if (pm?.action === 'delete_user') handleDeleteUser(pm.id); else if (pm?.action === 'role') handleToggleRole(pm.id, pm.extra || 'user'); else if (pm?.action === 'delete_message') handleDeleteMessage(pm.id); else if (pm?.action === 'delete_order') handleDeleteOrder(pm.id); else if (pm?.action === 'delete_photo') handleDeletePhoto(pm.id); else if (pm?.action === 'delete_all_photos') handleDeleteAllPhotos(); else if (pm?.action === 'toggle_maintenance') handleToggleMaintenance() } }} />
+                onKeyDown={(e) => { if (e.key === 'Enter') { const pm = passwordModal; if (pm?.action === 'delete_user') handleDeleteUser(pm.id); else if (pm?.action === 'role') handleToggleRole(pm.id, pm.extra || 'user'); else if (pm?.action === 'delete_message') handleDeleteMessage(pm.id); else if (pm?.action === 'delete_order') handleDeleteOrder(pm.id); else if (pm?.action === 'delete_photo') handleDeletePhoto(pm.id); else if (pm?.action === 'delete_all_photos') handleDeleteAllPhotos(); else if (pm?.action === 'toggle_maintenance') handleToggleMaintenance(); else if (pm?.action === 'delete_blog_post') handleDeleteBlogPost(pm.id); else if (pm?.action === 'delete_testimonial') handleDeleteTestimonial(pm.id); else if (pm?.action === 'delete_faq') handleDeleteFaq(pm.id) } }} />
               <div className="flex gap-3">
-                <button onClick={() => { const pm = passwordModal; if (pm?.action === 'delete_user') handleDeleteUser(pm.id); else if (pm?.action === 'role') handleToggleRole(pm.id, pm.extra || 'user'); else if (pm?.action === 'delete_message') handleDeleteMessage(pm.id); else if (pm?.action === 'delete_order') handleDeleteOrder(pm.id); else if (pm?.action === 'delete_photo') handleDeletePhoto(pm.id); else if (pm?.action === 'delete_all_photos') handleDeleteAllPhotos(); else if (pm?.action === 'toggle_maintenance') handleToggleMaintenance() }}
+                <button onClick={() => { const pm = passwordModal; if (pm?.action === 'delete_user') handleDeleteUser(pm.id); else if (pm?.action === 'role') handleToggleRole(pm.id, pm.extra || 'user'); else if (pm?.action === 'delete_message') handleDeleteMessage(pm.id); else if (pm?.action === 'delete_order') handleDeleteOrder(pm.id); else if (pm?.action === 'delete_photo') handleDeletePhoto(pm.id); else if (pm?.action === 'delete_all_photos') handleDeleteAllPhotos(); else if (pm?.action === 'toggle_maintenance') handleToggleMaintenance(); else if (pm?.action === 'delete_blog_post') handleDeleteBlogPost(pm.id); else if (pm?.action === 'delete_testimonial') handleDeleteTestimonial(pm.id); else if (pm?.action === 'delete_faq') handleDeleteFaq(pm.id) }}
                   disabled={!confirmPassword || userActionLoading !== null}
                   className="flex-1 py-2.5 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors disabled:opacity-50 cursor-pointer border-none">
                   {userActionLoading !== null ? 'Verificando...' : 'Confirmar'}

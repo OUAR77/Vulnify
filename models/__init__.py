@@ -9,3 +9,6 @@ from models.message import Message
 from models.order import Order
 from models.order_photo import OrderPhoto
 from models.order_log import OrderLog
+from models.blog_post import BlogPost
+from models.testimonial import Testimonial
+from models.faq import FAQ

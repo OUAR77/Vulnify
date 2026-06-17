@@ -1,54 +1,46 @@
+import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ArrowUpRight } from 'lucide-react'
 import { SEO } from '@/components/ui/seo'
+import { getBlogPosts, type BlogPost } from '@/lib/api'
 
 export function BlogPage() {
+  const [posts, setPosts] = useState<BlogPost[]>([])
+  useEffect(() => {
+    getBlogPosts().then(setPosts).catch(() => {})
+  }, [])
+
   return (
     <>
       <SEO title="Blog" description="Recursos, guías y artículos sobre desarrollo web, IA, SEO y marketing digital." />
-      <BlogContent />
-    </>
-  )
-}
-
-function BlogContent() {
-  const posts = [
-    { tag: 'Desarrollo', title: 'Next.js vs Astro: cuál elegir según tu proyecto', date: '12 Jun 2026', read: '5 min', desc: 'Comparativa completa de los dos frameworks más populares para construir webs modernas.' },
-    { tag: 'IA', title: 'Cómo integrar un chatbot en tu web sin saber programar', date: '28 May 2026', read: '7 min', desc: 'Guía paso a paso para añadir inteligencia artificial a tu sitio sin escribir una línea de código.' },
-    { tag: 'SEO', title: 'Los 5 errores técnicos que están matando tu posicionamiento', date: '15 May 2026', read: '4 min', desc: 'Errores comunes que cometemos al optimizar una web y cómo solucionarlos.' },
-    { tag: 'Rendimiento', title: 'Core Web Vitals: la guía definitiva para 2026', date: '2 May 2026', read: '6 min', desc: 'Todo lo que necesitas saber sobre las métricas que Google usa para posicionar tu web.' },
-    { tag: 'Negocio', title: 'Por qué tu web debería ser una máquina de leads', date: '20 Abr 2026', read: '5 min', desc: 'De folleto digital a motor de crecimiento. Estrategias para convertir visitantes en clientes.' },
-    { tag: 'Tecnología', title: 'Automatización con IA: casos reales en pymes', date: '8 Abr 2026', read: '8 min', desc: 'Ejemplos prácticos de cómo pequeñas empresas están usando IA para ahorrar tiempo y dinero.' },
-  ]
-
-  return (
-    <div className="min-h-screen pt-28 md:pt-36">
-      <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-16 md:py-24">
-        <div className="mb-16">
-          <Link to="/" className="text-xs text-zinc-600 hover:text-white transition-colors inline-flex items-center gap-1 mb-6">
-            ← Volver al inicio
-          </Link>
-          <span className="inline-block text-[11px] tracking-[0.25em] uppercase text-zinc-600 mb-4 font-mono">Blog</span>
-          <h1 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">Recursos para crecer.</h1>
-        </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {posts.map((post) => (
-            <div key={post.title} className="group p-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500 relative overflow-hidden">
-              <span className="text-[10px] tracking-[0.2em] uppercase text-zinc-600 bg-white/[0.03] px-2.5 py-1 rounded-md border border-white/[0.04] inline-block mb-4">
-                {post.tag}
-              </span>
-              <h2 className="text-base font-semibold text-white mb-2 leading-snug">{post.title}</h2>
-              <p className="text-sm text-zinc-500 leading-relaxed mb-4">{post.desc}</p>
-              <div className="flex items-center gap-3 text-xs text-zinc-700 mt-auto">
-                <span>{post.date}</span>
-                <span className="w-1 h-1 rounded-full bg-zinc-700/50" />
-                <span>{post.read}</span>
+      <div className="min-h-screen pt-28 md:pt-36">
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-16 md:py-24">
+          <div className="mb-16">
+            <Link to="/" className="text-xs text-zinc-600 hover:text-white transition-colors inline-flex items-center gap-1 mb-6">
+              ← Volver al inicio
+            </Link>
+            <span className="inline-block text-[11px] tracking-[0.25em] uppercase text-zinc-600 mb-4 font-mono">Blog</span>
+            <h1 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight">Recursos para crecer.</h1>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.map((post) => (
+              <div key={post.id} className="group p-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500 relative overflow-hidden">
+                <span className="text-[10px] tracking-[0.2em] uppercase text-zinc-600 bg-white/[0.03] px-2.5 py-1 rounded-md border border-white/[0.04] inline-block mb-4">
+                  {post.tag}
+                </span>
+                <h2 className="text-base font-semibold text-white mb-2 leading-snug">{post.title}</h2>
+                <p className="text-sm text-zinc-500 leading-relaxed mb-4">{post.excerpt}</p>
+                <div className="flex items-center gap-3 text-xs text-zinc-700 mt-auto">
+                  <span>{new Date(post.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                  <span className="w-1 h-1 rounded-full bg-zinc-700/50" />
+                  <span>{post.read_time}</span>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 

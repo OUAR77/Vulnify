@@ -478,3 +478,134 @@ export async function apiResetPassword(token: string, password: string): Promise
   if (!res.ok) throw new Error('Error al restablecer la contraseña')
   return res.json()
 }
+
+export interface BlogPost {
+  id: number; title: string; slug: string; tag: string
+  excerpt: string; content: string; author: string
+  read_time: string; published: boolean; created_at: string
+}
+
+export async function getBlogPosts(): Promise<BlogPost[]> {
+  const res = await fetch(`${BASE}/api/blog`)
+  if (!res.ok) throw new Error('Error al cargar posts')
+  return res.json()
+}
+
+export async function getBlogPost(slug: string): Promise<BlogPost> {
+  const res = await fetch(`${BASE}/api/blog/${slug}`)
+  if (!res.ok) throw new Error('Post no encontrado')
+  return res.json()
+}
+
+export async function adminGetAllPosts(token: string): Promise<BlogPost[]> {
+  const res = await fetch(`${BASE}/api/blog/admin/all`, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  })
+  if (!res.ok) throw new Error('Error al cargar posts')
+  return res.json()
+}
+
+export async function adminCreatePost(token: string, data: Partial<BlogPost>): Promise<BlogPost> {
+  const res = await fetch(`${BASE}/api/blog/admin`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+    body: JSON.stringify(data),
+  })
+  if (!res.ok) throw new Error('Error al crear post')
+  return res.json()
+}
+
+export async function adminUpdatePost(token: string, id: number, data: Partial<BlogPost>): Promise<BlogPost> {
+  const res = await fetch(`${BASE}/api/blog/admin/${id}`, {
+    method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+    body: JSON.stringify(data),
+  })
+  if (!res.ok) throw new Error('Error al actualizar post')
+  return res.json()
+}
+
+export async function adminDeletePost(token: string, id: number): Promise<void> {
+  const res = await fetch(`${BASE}/api/blog/admin/${id}`, {
+    method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }
+  })
+  if (!res.ok) throw new Error('Error al eliminar post')
+}
+
+export interface TestimonialData {
+  id: number; name: string; role: string; company: string
+  content: string; avatar_url: string; rating: number; featured: boolean
+}
+
+export async function getTestimonials(featured?: boolean): Promise<TestimonialData[]> {
+  const url = featured ? `${BASE}/api/testimonials` : `${BASE}/api/testimonials/all`
+  const res = await fetch(url)
+  if (!res.ok) throw new Error('Error al cargar testimonios')
+  return res.json()
+}
+
+export async function adminCreateTestimonial(token: string, data: Partial<TestimonialData>): Promise<TestimonialData> {
+  const res = await fetch(`${BASE}/api/testimonials/admin`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+    body: JSON.stringify(data),
+  })
+  if (!res.ok) throw new Error('Error al crear testimonio')
+  return res.json()
+}
+
+export async function adminUpdateTestimonial(token: string, id: number, data: Partial<TestimonialData>): Promise<TestimonialData> {
+  const res = await fetch(`${BASE}/api/testimonials/admin/${id}`, {
+    method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+    body: JSON.stringify(data),
+  })
+  if (!res.ok) throw new Error('Error al actualizar testimonio')
+  return res.json()
+}
+
+export async function adminDeleteTestimonial(token: string, id: number): Promise<void> {
+  const res = await fetch(`${BASE}/api/testimonials/admin/${id}`, {
+    method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }
+  })
+  if (!res.ok) throw new Error('Error al eliminar testimonio')
+}
+
+export interface FAQData {
+  id: number; question: string; answer: string; category: string; order: number; published: boolean
+}
+
+export async function getFAQs(): Promise<FAQData[]> {
+  const res = await fetch(`${BASE}/api/faqs`)
+  if (!res.ok) throw new Error('Error al cargar FAQs')
+  return res.json()
+}
+
+export async function adminCreateFAQ(token: string, data: Partial<FAQData>): Promise<FAQData> {
+  const res = await fetch(`${BASE}/api/faqs/admin`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+    body: JSON.stringify(data),
+  })
+  if (!res.ok) throw new Error('Error al crear FAQ')
+  return res.json()
+}
+
+export async function adminUpdateFAQ(token: string, id: number, data: Partial<FAQData>): Promise<FAQData> {
+  const res = await fetch(`${BASE}/api/faqs/admin/${id}`, {
+    method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+    body: JSON.stringify(data),
+  })
+  if (!res.ok) throw new Error('Error al actualizar FAQ')
+  return res.json()
+}
+
+export async function adminDeleteFAQ(token: string, id: number): Promise<void> {
+  const res = await fetch(`${BASE}/api/faqs/admin/${id}`, {
+    method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }
+  })
+  if (!res.ok) throw new Error('Error al eliminar FAQ')
+}
+
+export async function adminReorderFAQs(token: string, order: Record<number, number>): Promise<void> {
+  const res = await fetch(`${BASE}/api/faqs/admin/reorder`, {
+    method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+    body: JSON.stringify(order),
+  })
+  if (!res.ok) throw new Error('Error al reordenar FAQs')
+}

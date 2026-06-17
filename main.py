@@ -18,6 +18,9 @@ from jose import JWTError, jwt
 from config import limiter, settings
 from database import Base, engine
 from modules.routers import auth_router, assets_router, alerts_router, plans_router, admin_router, search_router, reports_router, scan_router, batch_router, messages_router, orders_router, user_orders_router
+from modules.routers.blog import router as blog_router
+from modules.routers.testimonials import router as testimonials_router
+from modules.routers.faqs import router as faqs_router
 from models.user import User
 from models.message import Message
 
@@ -202,6 +205,57 @@ async def lifespan(app: FastAPI):
             logger.info("Created order_photos table")
         except Exception:
             db.rollback()
+        # Migrate blog_posts table
+        try:
+            db.execute(text("""CREATE TABLE IF NOT EXISTS blog_posts (
+                id SERIAL PRIMARY KEY,
+                title VARCHAR NOT NULL,
+                slug VARCHAR UNIQUE NOT NULL,
+                tag VARCHAR DEFAULT 'General',
+                excerpt TEXT DEFAULT '',
+                content TEXT DEFAULT '',
+                author VARCHAR DEFAULT 'Vulnify',
+                read_time VARCHAR DEFAULT '5 min',
+                published BOOLEAN DEFAULT false,
+                created_at TIMESTAMP DEFAULT NOW(),
+                updated_at TIMESTAMP DEFAULT NOW()
+            )"""))
+            db.commit()
+            logger.info("Created blog_posts table")
+        except Exception:
+            db.rollback()
+        # Migrate testimonials table
+        try:
+            db.execute(text("""CREATE TABLE IF NOT EXISTS testimonials (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR NOT NULL,
+                role VARCHAR DEFAULT '',
+                company VARCHAR DEFAULT '',
+                content TEXT NOT NULL,
+                avatar_url VARCHAR DEFAULT '',
+                rating INTEGER DEFAULT 5,
+                featured BOOLEAN DEFAULT false,
+                created_at TIMESTAMP DEFAULT NOW()
+            )"""))
+            db.commit()
+            logger.info("Created testimonials table")
+        except Exception:
+            db.rollback()
+        # Migrate faqs table
+        try:
+            db.execute(text("""CREATE TABLE IF NOT EXISTS faqs (
+                id SERIAL PRIMARY KEY,
+                question VARCHAR NOT NULL,
+                answer TEXT NOT NULL,
+                category VARCHAR DEFAULT 'General',
+                "order" INTEGER DEFAULT 0,
+                published BOOLEAN DEFAULT true,
+                created_at TIMESTAMP DEFAULT NOW()
+            )"""))
+            db.commit()
+            logger.info("Created faqs table")
+        except Exception:
+            db.rollback()
         # Migrate order_logs table
         try:
             db.execute(text("""CREATE TABLE IF NOT EXISTS order_logs (
@@ -293,6 +347,9 @@ app.include_router(batch_router)
 app.include_router(messages_router)
 app.include_router(orders_router)
 app.include_router(user_orders_router)
+app.include_router(blog_router)
+app.include_router(testimonials_router)
+app.include_router(faqs_router)
 
 templates = Jinja2Templates(directory="templates")
 
