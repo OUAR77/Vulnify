@@ -68,13 +68,6 @@ def __init__(self):
 manager = ConnectionManager()
 
 
-class MaintenanceMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        if settings.MAINTENANCE_MODE and not request.url.path.startswith(("/api/admin", "/api/auth/login", "/api/auth/me", "/health")):
-            return JSONResponse(status_code=503, content={"detail": "Modo mantenimiento. Volvemos pronto."})
-        return await call_next(request)
-
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     import models
@@ -283,7 +276,6 @@ app.add_middleware(
 )
 
 app.add_middleware(SecurityHeadersMiddleware)
-app.add_middleware(MaintenanceMiddleware)
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
