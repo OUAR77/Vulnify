@@ -10,12 +10,15 @@ import { DashboardPage } from '@/components/ui/dashboard-page'
 import { AdminPage } from '@/components/ui/admin-page'
 import { VerifyEmailPage } from '@/components/ui/verify-email-page'
 import { NotFound } from '@/components/ui/not-found-2'
+import { SEO } from '@/components/ui/seo'
 import { ErrorBoundary } from '@/components/ui/error-boundary'
 import { AuthProvider } from '@/lib/auth-context'
+import { HelmetProvider } from 'react-helmet-async'
 
 function HomePage() {
   return (
     <>
+      <SEO />
       <FloatingPathsEffect />
       <div className="relative z-10">
         <HomeContent />
@@ -27,6 +30,7 @@ function HomePage() {
 function App() {
   return (
     <ErrorBoundary>
+      <HelmetProvider>
       <AuthProvider>
         <BrowserRouter>
           <Routes>
@@ -52,6 +56,7 @@ function App() {
           </Routes>
         </BrowserRouter>
       </AuthProvider>
+      </HelmetProvider>
     </ErrorBoundary>
   )
 }

@@ -1,7 +1,17 @@
 import { Link, useLocation } from 'react-router-dom'
 import { ArrowUpRight } from 'lucide-react'
+import { SEO } from '@/components/ui/seo'
 
 export function BlogPage() {
+  return (
+    <>
+      <SEO title="Blog" description="Recursos, guías y artículos sobre desarrollo web, IA, SEO y marketing digital." />
+      <BlogContent />
+    </>
+  )
+}
+
+function BlogContent() {
   const posts = [
     { tag: 'Desarrollo', title: 'Next.js vs Astro: cuál elegir según tu proyecto', date: '12 Jun 2026', read: '5 min', desc: 'Comparativa completa de los dos frameworks más populares para construir webs modernas.' },
     { tag: 'IA', title: 'Cómo integrar un chatbot en tu web sin saber programar', date: '28 May 2026', read: '7 min', desc: 'Guía paso a paso para añadir inteligencia artificial a tu sitio sin escribir una línea de código.' },
@@ -62,7 +72,9 @@ export function LegalPage({ title, date, children }: { title: string; date: stri
 
 export function PrivacidadPage() {
   return (
-    <LegalPage title="Política de Privacidad" date="1 de junio de 2026">
+    <>
+      <SEO title="Política de Privacidad" description="Política de privacidad de Vulnify. Conoce cómo tratamos tus datos personales." />
+      <LegalPage title="Política de Privacidad" date="1 de junio de 2026">
       <h2 className="text-white font-medium text-base mt-8 mb-3">1. Responsable del tratamiento</h2>
       <p>Vulnify (en adelante, "la empresa"), con domicilio en España, es la responsable del tratamiento de los datos personales facilitados por los usuarios a través de este sitio web.</p>
 
@@ -81,12 +93,15 @@ export function PrivacidadPage() {
       <h2 className="text-white font-medium text-base mt-8 mb-3">6. Derechos</h2>
       <p>Tienes derecho a acceder, rectificar, suprimir, limitar el tratamiento, oponerte al tratamiento y solicitar la portabilidad de tus datos. Puedes ejercer estos derechos escribiendo a hola@vulnify.es.</p>
     </LegalPage>
+    </>
   )
 }
 
 export function TerminosPage() {
   return (
-    <LegalPage title="Términos y Condiciones" date="1 de junio de 2026">
+    <>
+      <SEO title="Términos y Condiciones" description="Términos y condiciones de uso del sitio web de Vulnify." />
+      <LegalPage title="Términos y Condiciones" date="1 de junio de 2026">
       <h2 className="text-white font-medium text-base mt-8 mb-3">1. Aceptación de los términos</h2>
       <p>Al acceder y utilizar este sitio web, aceptas los presentes términos y condiciones. Si no estás de acuerdo con alguno de ellos, te recomendamos no utilizar el sitio.</p>
 
@@ -102,12 +117,15 @@ export function TerminosPage() {
       <h2 className="text-white font-medium text-base mt-8 mb-3">5. Modificaciones</h2>
       <p>Nos reservamos el derecho de modificar estos términos en cualquier momento. Los cambios serán publicados en esta página.</p>
     </LegalPage>
+    </>
   )
 }
 
 export function CookiesPage() {
   return (
-    <LegalPage title="Política de Cookies" date="1 de junio de 2026">
+    <>
+      <SEO title="Política de Cookies" description="Política de cookies de Vulnify. Infórmate sobre cómo usamos las cookies." />
+      <LegalPage title="Política de Cookies" date="1 de junio de 2026">
       <h2 className="text-white font-medium text-base mt-8 mb-3">1. ¿Qué son las cookies?</h2>
       <p>Las cookies son pequeños archivos de texto que se almacenan en tu navegador cuando visitas un sitio web. Nos permiten recordar tus preferencias y mejorar tu experiencia de navegación.</p>
 
@@ -125,10 +143,20 @@ export function CookiesPage() {
       <h2 className="text-white font-medium text-base mt-8 mb-3">5. Más información</h2>
       <p>Para cualquier duda sobre nuestra política de cookies, escríbenos a hola@vulnify.es.</p>
     </LegalPage>
+    </>
   )
 }
 
 export function CasosExitoPage() {
+  return (
+    <>
+      <SEO title="Casos de Éxito" description="Resultados reales de nuestros clientes. Descubre cómo Vulnify transforma negocios con tecnología." />
+      <CasosExitoContent />
+    </>
+  )
+}
+
+function CasosExitoContent() {
   const cases = [
     { metric: '+300%', label: 'leads orgánicos', company: 'TechFlow', sector: 'SaaS', desc: 'Rediseñamos su web con IA conversacional. Pasaron de 10 a 40 leads/mes sin invertir en anuncios.', result: 'Aumento del tráfico orgánico en un 180% gracias a la optimización SEO técnica y de contenido.' },
     { metric: '20h', label: 'semanales ahorradas', company: 'InnovaCorp', sector: 'Consultoría', desc: 'Automatizamos su proceso de reporting con un dashboard predictivo. Su equipo recuperó tiempo estratégico.', result: 'Reducción del 85% en el tiempo dedicado a reportes manuales. El equipo pasó de 24h a 4h semanales.' },
@@ -167,6 +195,14 @@ export function CasosExitoPage() {
 }
 
 export function ServicioPage() {
+  return (
+    <>
+      <ServicioContent />
+    </>
+  )
+}
+
+function ServicioContent() {
   const location = useLocation()
   const services: Record<string, { title: string; desc: string; features: string[] }> = {
     'desarrollo-web': {
