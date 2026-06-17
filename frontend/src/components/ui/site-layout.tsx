@@ -323,15 +323,48 @@ export function SiteLayout() {
 
       <Outlet context={{ aboutOpen, setAboutOpen }} />
 
-      <footer className="relative z-10 w-full bg-zinc-950 border-t border-white/[0.06] py-12 text-center text-sm text-zinc-400">
-        <p className="mb-2">&copy; {new Date().getFullYear()} Vulnify. Todos los derechos reservados.</p>
-        <p className="text-zinc-500">
-          <a href="/privacidad" className="text-zinc-400 hover:text-white transition-colors mx-2">Privacidad</a>
-          <span className="text-zinc-700">·</span>
-          <a href="/terminos" className="text-zinc-400 hover:text-white transition-colors mx-2">Términos</a>
-          <span className="text-zinc-700">·</span>
-          <a href="/cookies" className="text-zinc-400 hover:text-white transition-colors mx-2">Cookies</a>
-        </p>
+      <footer className="relative z-10 w-full bg-zinc-950 border-t border-white/[0.06]">
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-16 md:py-20">
+          <div className="grid md:grid-cols-4 gap-12 mb-16">
+            <div>
+              <Link to="/" className="text-base font-bold tracking-[0.3em] text-white no-underline">VULNIFY</Link>
+              <p className="text-sm text-zinc-400 mt-4 max-w-[200px] leading-relaxed">Desarrollo web e inteligencia artificial para impulsar tu negocio.</p>
+            </div>
+            {footerLinks.map((col) => (
+              <div key={col.title}>
+                <h4 className="text-xs tracking-[0.2em] uppercase text-zinc-300 mb-5">{col.title}</h4>
+                <ul className="space-y-3">
+                  {col.links.map((link) => (
+                    <li key={link.label}>
+                      {link.label === 'Sobre nosotros' ? (
+                        <button
+                          onClick={() => setAboutOpen(true)}
+                          className="text-sm text-zinc-400 hover:text-white transition-colors bg-transparent border-none cursor-pointer p-0"
+                        >
+                          {link.label}
+                        </button>
+                      ) : (
+                        <Link to={link.to} className="text-sm text-zinc-400 hover:text-white transition-colors no-underline">
+                          {link.label}
+                        </Link>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <div className="pt-8 border-t border-white/[0.06] flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-sm text-zinc-500">&copy; {new Date().getFullYear()} Vulnify. Todos los derechos reservados.</p>
+            <div className="flex items-center gap-5">
+              <Link to="/privacidad" className="text-sm text-zinc-400 hover:text-white transition-colors no-underline">Privacidad</Link>
+              <Link to="/terminos" className="text-sm text-zinc-400 hover:text-white transition-colors no-underline">Términos</Link>
+              <Link to="/cookies" className="text-sm text-zinc-400 hover:text-white transition-colors no-underline">Cookies</Link>
+              <span className="text-zinc-700">|</span>
+              <a href="mailto:hola@vulnify.es" className="text-sm text-zinc-400 hover:text-white transition-colors no-underline">hola@vulnify.es</a>
+            </div>
+          </div>
+        </div>
       </footer>
 
       <CookieBanner />
