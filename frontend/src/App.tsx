@@ -9,6 +9,7 @@ import { ResetPasswordPage } from '@/pages/reset-password'
 import { DashboardPage } from '@/components/ui/dashboard-page'
 import { AdminPage } from '@/components/ui/admin-page'
 import { VerifyEmailPage } from '@/components/ui/verify-email-page'
+import { NotFound } from '@/components/ui/not-found-2'
 import { ErrorBoundary } from '@/components/ui/error-boundary'
 import { AuthProvider } from '@/lib/auth-context'
 
@@ -47,6 +48,7 @@ function App() {
               <Route path="/servicios/:slug" element={<ServicioPage />} />
               <Route path="/sobre-nosotros" element={<HomePage />} />
             </Route>
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
