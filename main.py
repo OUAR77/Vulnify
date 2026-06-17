@@ -40,7 +40,7 @@ if settings.SENTRY_DSN and settings.ENVIRONMENT == "production":
 
 
 class ConnectionManager:
-def __init__(self):
+    def __init__(self):
         self.active: dict[int, list[WebSocket]] = {}
 
     async def connect(self, user_id: int, ws: WebSocket):
