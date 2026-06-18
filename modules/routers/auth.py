@@ -13,7 +13,6 @@ from modules.auth import (
     create_reset_token, verify_reset_token,
     create_refresh_token, verify_refresh_token,
     create_verification_token, verify_email_token,
-    hash_api_key,
 )
 from config import limiter, settings
 from modules.email import send_verification_email
