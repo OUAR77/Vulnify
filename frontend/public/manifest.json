@@ -1,0 +1,13 @@
+{
+  "name": "Vulnify",
+  "short_name": "Vulnify",
+  "description": "Desarrollo web e inteligencia artificial para impulsar tu negocio.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "/icons.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

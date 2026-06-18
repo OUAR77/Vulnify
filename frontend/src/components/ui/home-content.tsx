@@ -9,7 +9,7 @@ import { MeshGradient } from '@paper-design/shaders-react'
 import FlowArt, { FlowSection } from './story-scroll'
 import Testimonials from './twitter-testimonial-cards'
 import { AnimatedHeroText } from './animated-hero-text'
-import { getFAQs, type FAQData } from '@/lib/api'
+import { getFAQs, getTestimonials, type FAQData, type TestimonialData } from '@/lib/api'
 
 export function FloatingPathsEffect() {
   return (
@@ -109,7 +109,9 @@ function ContactForm() {
 
 export function HomeContent() {
   const [faqs, setFaqs] = useState<FAQData[]>([])
+  const [testimonials, setTestimonials] = useState<TestimonialData[]>([])
   useEffect(() => { getFAQs().then(setFaqs).catch(() => {}) }, [])
+  useEffect(() => { getTestimonials(true).then(setTestimonials).catch(() => {}) }, [])
 
   const stats = [
     { number: '40+', label: 'Proyectos entregados' },
@@ -283,7 +285,17 @@ export function HomeContent() {
             <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mt-5">Lo que dicen nuestros clientes.</h2>
           </div>
           <div className="flex justify-center">
-            <Testimonials />
+            <Testimonials cards={testimonials.length > 0 ? testimonials.map((t) => ({
+              username: t.name,
+              handle: t.company ? `@${t.company.toLowerCase().replace(/\s+/g, '')}` : '@cliente',
+              content: t.content,
+              avatar: t.avatar_url || undefined,
+              verified: t.rating >= 4,
+              likes: t.rating * 50,
+              retweets: t.rating * 10,
+              date: new Date().toLocaleDateString('es-ES', { month: 'short', day: 'numeric', year: 'numeric' }),
+              className: "[grid-area:stack] hover:-translate-y-10 before:absolute before:w-[100%] before:outline-1 before:rounded-2xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/60 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-500 hover:grayscale-0 before:left-0 before:top-0",
+            })) : undefined} />
           </div>
         </div>
       </div>
