@@ -135,38 +135,6 @@ def send_verification_email(email: str, token: str, name: str) -> bool:
     ))
 
 
-def send_breach_alert(email: str, name: str, asset: str, breach_count: int, severity: str) -> bool:
-    if not SG:
-        logger.warning("SendGrid no configurado, breach alert for %s", asset)
-        return False
-    severity_labels = {"critical": "Crítica", "high": "Alta", "medium": "Media", "low": "Baja"}
-    sev_label = severity_labels.get(severity, severity)
-    sev_colors = {"critical": "#f44336", "high": "#ff9800", "medium": "#ffc107", "low": "#4caf50"}
-    sev_color = sev_colors.get(severity, "#999")
-    body = f"""
-    <p style="margin:0 0 16px">Hola <strong style="color:#111">{name}</strong>,</p>
-    <p style="margin:0 0 20px;color:#666">Se detectaron <strong style="color:#111">{breach_count} brecha(s)</strong> en tu activo:</p>
-    <div style="background:#f5f5f5;border-radius:12px;padding:20px;margin:0 0 24px;text-align:center">
-      <p style="margin:0 0 8px;font-size:18px;font-weight:600;color:#111">{asset}</p>
-      <span style="display:inline-block;background:{sev_color};color:#fff;font-size:12px;font-weight:700;padding:4px 14px;border-radius:999px;text-transform:uppercase">{sev_label}</span>
-    </div>
-    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 24px">
-      <tr>
-        <td align="center" style="background:#111;border-radius:999px;padding:14px 36px;font-size:15px;font-weight:600">
-          <a href="{settings.SITE_URL}/dashboard" style="color:#fff;text-decoration:none;display:block">Revisar dashboard</a>
-        </td>
-      </tr>
-    </table>
-    """
-    return _send(Mail(
-        from_email=Email("noreply@vulnify.es"),
-        to_emails=To(email),
-        subject=f"[Vulnify] Alerta {sev_label} — {asset}",
-        plain_text_content=f"Hola {name},\n\n{breach_count} brecha(s) detectadas en {asset} (severidad: {sev_label}).\n\nRevisa tu dashboard:\n{settings.SITE_URL}/dashboard",
-        html_content=_html_wrapper(body),
-    ))
-
-
 def send_order_status_email(email: str, name: str, order_id: int, service: str, status: str) -> bool:
     status_labels = {"pending": "Pendiente", "in_progress": "En progreso", "completed": "Completado", "cancelled": "Cancelado"}
     label = status_labels.get(status, status)

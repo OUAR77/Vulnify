@@ -326,40 +326,6 @@ def change_password(request: Request, body: ChangePasswordBody, user: User = Dep
     return {"ok": True, "message": "Contraseña actualizada"}
 
 
-class ApiKeyCreateBody(BaseModel):
-    name: str
-
-
-@router.post("/api-keys", description="Create a new API key")
-def create_api_key(body: ApiKeyCreateBody, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    key_value = f"vul_{secrets.token_urlsafe(32)}"
-    from models.apikey import ApiKey
-    api_key = ApiKey(user_id=user.id, name=body.name, key=hash_api_key(key_value))
-    db.add(api_key)
-    db.commit()
-    log_activity("api_key.create", user.id, user.email, {"name": body.name})
-    return {"ok": True, "key": key_value, "name": body.name, "id": api_key.id}
-
-
-@router.get("/api-keys", description="List user API keys")
-def list_api_keys(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    from models.apikey import ApiKey
-    keys = db.query(ApiKey).filter(ApiKey.user_id == user.id).all()
-    return [{"id": k.id, "name": k.name, "created_at": str(k.created_at)[:19]} for k in keys]
-
-
-@router.delete("/api-keys/{key_id}", description="Delete an API key")
-def delete_api_key(key_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    from models.apikey import ApiKey
-    k = db.query(ApiKey).filter(ApiKey.id == key_id, ApiKey.user_id == user.id).first()
-    if not k:
-        raise HTTPException(status_code=404, detail="API key no encontrada")
-    db.delete(k)
-    db.commit()
-    log_activity("api_key.delete", user.id, user.email, {"name": k.name})
-    return {"ok": True}
-
-
 # --- Dark mode preference ---
 
 class DarkModeBody(BaseModel):

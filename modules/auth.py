@@ -1,19 +1,15 @@
-import hashlib
 import re
-import secrets
 import bcrypt as _bcrypt
 from datetime import datetime, timedelta, timezone
 from jose import JWTError, jwt
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, APIKeyHeader
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from database import get_db
 from models.user import User
-from models.apikey import ApiKey
 from config import settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login", auto_error=False)
-api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
 
 def hash_password(password: str) -> str:
@@ -43,32 +39,23 @@ def create_access_token(data: dict) -> str:
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm="HS256")
 
 
-def hash_api_key(key: str) -> str:
-    return hashlib.sha256(key.encode()).hexdigest()
-
-
 def get_current_user(
     token: str = Depends(oauth2_scheme),
-    api_key: str = Depends(api_key_header),
     db: Session = Depends(get_db),
 ):
-    user = None
-    if token:
-        try:
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-            user_id = payload.get("sub")
-            if user_id is not None:
-                user = db.query(User).filter(User.id == int(user_id)).first()
-        except JWTError:
-            pass
-    if not user and api_key:
-        hashed = hash_api_key(api_key)
-        key_record = db.query(ApiKey).filter(ApiKey.key == hashed).first()
-        if key_record:
-            user = db.query(User).filter(User.id == key_record.user_id).first()
-    if not user:
+    if not token:
         raise HTTPException(status_code=401, detail="Autenticación requerida")
-    return user
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+        user_id = payload.get("sub")
+        if user_id is None:
+            raise HTTPException(status_code=401, detail="Token inválido")
+        user = db.query(User).filter(User.id == int(user_id)).first()
+        if not user:
+            raise HTTPException(status_code=401, detail="Usuario no encontrado")
+        return user
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Token inválido")
 
 
 def require_verified(user: User = Depends(get_current_user)):
@@ -101,23 +88,6 @@ def require_admin(user: User = Depends(get_current_user)):
 def require_admin_totp(user: User = Depends(require_admin)):
     if not user.totp_enabled:
         raise HTTPException(status_code=403, detail="Debes habilitar 2FA antes de acceder al panel admin. Ve a tu perfil y configura la autenticación de dos factores.")
-    return user
-
-
-# --- API KEYS (SHA-256) ---
-
-
-def get_user_by_api_key(
-    api_key: str = Depends(api_key_header),
-    db: Session = Depends(get_db),
-):
-    if not api_key:
-        return None
-    hashed = hash_api_key(api_key)
-    key_record = db.query(ApiKey).filter(ApiKey.key == hashed).first()
-    if not key_record:
-        return None
-    user = db.query(User).filter(User.id == key_record.user_id).first()
     return user
 
 

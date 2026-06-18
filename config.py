@@ -27,8 +27,6 @@ class Settings:
     STRIPE_PRICE_PROFESIONAL_YEARLY: str = os.getenv("STRIPE_PRICE_PROFESIONAL_YEARLY", "")
     SENDGRID_API_KEY: str = os.getenv("SENDGRID_API_KEY", "")
     SITE_URL: str = os.getenv("SITE_URL", "https://vulnify.es")
-    HIBP_API_KEY: str = os.getenv("HIBP_API_KEY", "")
-    GITHUB_TOKEN: str = os.getenv("GITHUB_TOKEN", "")
     SENTRY_DSN: str = os.getenv("SENTRY_DSN", "")
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
     OPENAI_BASE_URL: str = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
@@ -36,8 +34,6 @@ class Settings:
     AI_PROVIDER: str = os.getenv("AI_PROVIDER", "openai")
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
     OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "qwen2.5-coder:14b")
-    NOTIFY_SEVERITIES: list = os.getenv("NOTIFY_SEVERITIES", "critical,high,medium").split(",")
-    ASSET_CHECK_INTERVAL_HOURS: int = int(os.getenv("ASSET_CHECK_INTERVAL_HOURS", "24"))
     MAINTENANCE_MODE: bool = os.getenv("MAINTENANCE_MODE", "false").lower() == "true"
 
 
