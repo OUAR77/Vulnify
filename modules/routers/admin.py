@@ -9,6 +9,9 @@ from database import get_db
 from models.user import User
 from models.activity_log import ActivityLog
 from modules.auth import require_admin, require_admin_totp, verify_password
+from models.blog_post import BlogPost
+from models.testimonial import Testimonial
+from models.faq import FAQ
 from modules.activity_logger import log_activity, get_client_ip
 from config import limiter
 
@@ -167,3 +170,48 @@ def set_maintenance(
     settings.MAINTENANCE_MODE = enabled
     log_activity("admin.maintenance", admin.id, admin.email, {"maintenance_mode": enabled})
     return {"ok": True, "maintenance_mode": enabled}
+
+@router.post("/seed", description="Insert sample blog posts, testimonials, and FAQs")
+@limiter.limit("1/minute")
+def seed_data(request: Request, admin: User = Depends(require_admin), db: Session = Depends(get_db)):
+    count = {"posts": 0, "testimonials": 0, "faqs": 0}
+
+    if db.query(BlogPost).count() == 0:
+        posts = [
+            BlogPost(title="Next.js vs Astro: cuál elegir según tu proyecto", slug="nextjs-vs-astro", tag="Desarrollo",
+                     excerpt="Comparativa completa de los dos frameworks más populares.",
+                     content="<p>Ambos frameworks son excelentes pero para proyectos diferentes...</p>", author="Vulnify", read_time="5 min", published=True),
+            BlogPost(title="Cómo integrar un chatbot en tu web sin saber programar", slug="chatbot-integration", tag="IA",
+                     excerpt="Guía paso a paso para añadir inteligencia artificial a tu sitio.",
+                     content="<p>Los chatbots con IA son más accesibles que nunca...</p>", author="Vulnify", read_time="7 min", published=True),
+            BlogPost(title="Core Web Vitals: la guía definitiva para 2026", slug="core-web-vitals-2026", tag="Rendimiento",
+                     excerpt="Todo sobre las métricas que Google usa para posicionar tu web.",
+                     content="<p>Google sigue dando prioridad a la experiencia de usuario...</p>", author="Vulnify", read_time="6 min", published=True),
+        ]
+        db.add_all(posts)
+        count["posts"] = len(posts)
+
+    if db.query(Testimonial).count() == 0:
+        testimonials = [
+            Testimonial(name="Carlos Mendoza", role="CEO", company="TechFlow",
+                        content="Vulnify transformó nuestra web. Pasamos de 5 a 40 leads al mes sin invertir en anuncios.", rating=5, featured=True),
+            Testimonial(name="Laura García", role="CTO", company="InnovaCorp",
+                        content="En 3 semanas teníamos nuestra web lista con chatbot IA incluido. El equipo súper profesional.", rating=5, featured=True),
+            Testimonial(name="Miguel Ángel Ruiz", role="Director Operaciones", company="DataSmart",
+                        content="Automatizamos todo nuestro reporting. Ahorramos 20h semanales y tenemos datos en tiempo real.", rating=5, featured=True),
+        ]
+        db.add_all(testimonials)
+        count["testimonials"] = len(testimonials)
+
+    if db.query(FAQ).count() == 0:
+        faqs = [
+            FAQ(question="¿Cuánto tiempo lleva desarrollar una web?", answer= "Depende de la complejidad. Una web corporativa puede estar lista en 2-3 semanas. Proyectos con IA suelen requerir 4-6 semanas.", order=1, published=True),
+            FAQ(question="¿Necesito tener claro todo antes de empezar?", answer="No. Te guiamos desde la idea. Incluye una fase de auditoría donde definimos juntos el alcance.", order=2, published=True),
+            FAQ(question="¿Ofrecen mantenimiento después del lanzamiento?", answer="Sí. Todos nuestros proyectos incluyen soporte post-lanzamiento y planes de mantenimiento continuo.", order=3, published=True),
+            FAQ(question="¿Cómo integran la inteligencia artificial?", answer="Desde chatbots personalizados hasta automatización de procesos y análisis predictivo. Evaluamos tu caso y proponemos la solución óptima.", order=4, published=True),
+        ]
+        db.add_all(faqs)
+        count["faqs"] = len(faqs)
+
+    db.commit()
+    return {"ok": True, "inserted": count}

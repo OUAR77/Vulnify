@@ -21,12 +21,13 @@ import {
   Users, ShieldAlert, Activity, Search, Trash2, ArrowLeft, LogOut,
   LayoutDashboard, RefreshCw, Plus, MessageSquare, ShoppingCart, Image,
   History, FileText, Wrench, BookOpen, Star, HelpCircle,
-  ChevronUp, ChevronDown,
+  ChevronUp, ChevronDown, Database,
 } from 'lucide-react'
 
 export function AdminPage() {
   const { user, isAdmin, logout, isAuthenticated } = useAuth()
   const navigate = useNavigate()
+  const BASE = import.meta.env.VITE_API_URL || ''
 
   // Stats
   const [stats, setStats] = useState<AdminStats | null>(null)
@@ -523,6 +524,32 @@ export function AdminPage() {
                 <button onClick={() => setPasswordModal({ action: 'toggle_maintenance', id: 0 })}
                   className={`relative w-11 h-6 rounded-full transition-colors cursor-pointer border-none ${maintenanceMode ? 'bg-red-500' : 'bg-zinc-700'}`}>
                   <span className={`absolute top-0.5 left-0.5 size-5 rounded-full bg-black transition-transform ${maintenanceMode ? 'translate-x-5' : ''}`} />
+                </button>
+              </div>
+            </div>
+            <div className="mt-4 rounded-xl bg-white/[0.02] border border-white/[0.06] p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Database className="size-5 text-zinc-500" />
+                  <div>
+                    <p className="text-sm font-medium text-white">Datos de ejemplo</p>
+                    <p className="text-xs text-zinc-500">Inserta posts, testimonios y FAQs de ejemplo (solo si están vacíos)</p>
+                  </div>
+                </div>
+                <button onClick={async () => {
+                  try {
+                    const t = localStorage.getItem('vulnify_token') || ''
+                    const res = await fetch(`${BASE}/api/admin/seed`, {
+                      method: 'POST',
+                      headers: { 'Authorization': `Bearer ${t}`, 'Content-Type': 'application/json' },
+                      body: JSON.stringify({}),
+                    })
+                    if (!res.ok) throw new Error('Seed failed')
+                    const data = await res.json()
+                    alert(`Insertados: ${data.inserted.posts} posts, ${data.inserted.testimonials} testimonios, ${data.inserted.faqs} FAQs`)
+                  } catch { alert('Error al insertar datos') }
+                }} className="text-xs px-4 py-2 rounded-lg bg-white text-black font-medium hover:bg-zinc-200 transition-colors cursor-pointer border-none">
+                  Seed Data
                 </button>
               </div>
             </div>
