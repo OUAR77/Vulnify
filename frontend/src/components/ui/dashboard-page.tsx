@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/lib/auth-context'
 import { useNavigate } from 'react-router-dom'
 import { totpSetup, totpEnable, totpDisable, setUser as storeUser, getStoredUser } from '@/lib/api'
@@ -15,6 +16,7 @@ import {
 } from '@/lib/api'
 
 export function DashboardPage() {
+  const { t } = useTranslation()
   const { user, logout, isAuthenticated, isAdmin } = useAuth()
   const navigate = useNavigate()
   const [totpMode, setTotpMode] = useState<'idle' | 'setup' | 'disable'>('idle')
@@ -143,7 +145,7 @@ export function DashboardPage() {
   }
 
   const handleDeleteApiKey = async (id: number) => {
-    if (!confirm('¿Eliminar esta API key?')) return
+    if (!confirm(t('dashboard.api_keys.confirm_delete'))) return
     try {
       await deleteApiKey(id)
       getApiKeys().then(setApiKeys)
@@ -186,21 +188,21 @@ export function DashboardPage() {
       <div className="mx-auto max-w-5xl px-6 py-16">
         {/* Header */}
         <div className="flex items-center justify-between mb-12">
-          <h1 className="text-3xl font-bold tracking-tight">Mi panel</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.heading')}</h1>
           <div className="flex items-center gap-3">
             <button onClick={() => navigate('/')}
               className="flex items-center gap-2 text-sm text-zinc-500 hover:text-white transition-colors bg-transparent border border-white/[0.06] rounded-lg px-4 py-2 cursor-pointer">
-              <ArrowLeft className="size-4" /> Volver
+              <ArrowLeft className="size-4" /> {t('dashboard.back')}
             </button>
             {isAdmin && (
               <button onClick={() => navigate('/admin')}
                 className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors bg-transparent border border-blue-500/20 rounded-lg px-4 py-2 cursor-pointer">
-                <ShieldAlert className="size-4" /> Admin
+                <ShieldAlert className="size-4" /> {t('nav.admin')}
               </button>
             )}
             <button onClick={() => { logout(); navigate('/') }}
               className="flex items-center gap-2 text-sm text-zinc-500 hover:text-white transition-colors bg-transparent border border-white/[0.06] rounded-lg px-4 py-2 cursor-pointer">
-              <LogOut className="size-4" /> Salir
+              <LogOut className="size-4" /> {t('nav.cerrar_sesion')}
             </button>
           </div>
         </div>
@@ -208,11 +210,11 @@ export function DashboardPage() {
         {/* Tabs */}
         <div className="flex gap-2 mb-8 overflow-x-auto">
           {[
-            { id: 'profile', label: 'Perfil', icon: User },
-            { id: 'security', label: 'Seguridad', icon: ShieldAlert },
-            { id: 'keys', label: 'API Keys', icon: Key },
-            { id: 'orders', label: 'Pedidos', icon: Package },
-            { id: 'prefs', label: 'Preferencias', icon: Sun },
+            { id: 'profile', label: t('dashboard.tabs.profile'), icon: User },
+            { id: 'security', label: t('dashboard.tabs.security'), icon: ShieldAlert },
+            { id: 'keys', label: t('dashboard.tabs.api_keys'), icon: Key },
+            { id: 'orders', label: t('dashboard.tabs.orders'), icon: Package },
+            { id: 'prefs', label: t('dashboard.tabs.preferences'), icon: Sun },
           ].map(tab => (
             <a key={tab.id} href={`#${tab.id}`}
               className="flex items-center gap-2 px-4 py-2 text-sm rounded-lg bg-white/[0.02] border border-white/[0.06] text-zinc-400 hover:text-white hover:border-white/20 transition-colors whitespace-nowrap">
@@ -243,61 +245,61 @@ export function DashboardPage() {
           </div>
           <div className="grid md:grid-cols-3 gap-4 mb-6">
             <div>
-              <label className="text-xs text-zinc-600 block mb-1.5">Nombre</label>
+              <label className="text-xs text-zinc-600 block mb-1.5">{t('dashboard.profile.name')}</label>
               <input value={profile.name} onChange={e => setProfile({ ...profile, name: e.target.value })}
                 className="w-full px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-600 outline-none focus:border-white/20 transition-colors" />
             </div>
             <div>
-              <label className="text-xs text-zinc-600 block mb-1.5">Empresa</label>
+              <label className="text-xs text-zinc-600 block mb-1.5">{t('dashboard.profile.company')}</label>
               <input value={profile.company} onChange={e => setProfile({ ...profile, company: e.target.value })}
                 className="w-full px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-600 outline-none focus:border-white/20 transition-colors" />
             </div>
             <div>
-              <label className="text-xs text-zinc-600 block mb-1.5">Bio</label>
+              <label className="text-xs text-zinc-600 block mb-1.5">{t('dashboard.profile.bio')}</label>
               <input value={profile.bio} onChange={e => setProfile({ ...profile, bio: e.target.value })}
                 className="w-full px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-600 outline-none focus:border-white/20 transition-colors" />
             </div>
           </div>
           <button onClick={handleSaveProfile}
             className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors cursor-pointer border-none">
-            <Save className="size-4" /> {profileSaved ? 'Guardado' : 'Guardar cambios'}
+            <Save className="size-4" /> {profileSaved ? t('dashboard.profile.saved') : t('dashboard.profile.save')}
           </button>
         </section>
 
         {/* Security Section: Email Verification + 2FA */}
         <section id="security" className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 mb-8">
-          <h2 className="text-lg font-semibold mb-6">Seguridad</h2>
+          <h2 className="text-lg font-semibold mb-6">{t('dashboard.security.heading')}</h2>
 
           {/* Email Verification */}
           <div className="mb-8 pb-8 border-b border-white/[0.06]">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <Mail className="size-5 text-zinc-500" />
-                <h3 className="text-base font-medium">Verificación de email</h3>
+                <h3 className="text-base font-medium">{t('dashboard.security.email_heading')}</h3>
               </div>
               {user?.is_verified ? (
                 <span className="flex items-center gap-1.5 text-xs text-green-400 bg-green-500/10 px-3 py-1 rounded-full">
-                  <Check className="size-3" /> Verificado
+                  <Check className="size-3" /> {t('dashboard.security.verified')}
                 </span>
               ) : (
                 <span className="flex items-center gap-1.5 text-xs text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full">
-                  <X className="size-3" /> Sin verificar
+                  <X className="size-3" /> {t('dashboard.security.unverified')}
                 </span>
               )}
             </div>
             {!user?.is_verified && (
               <div className="space-y-3">
-                <p className="text-sm text-zinc-500">Recibirás un enlace de verificación en tu email.</p>
+                <p className="text-sm text-zinc-500">{t('dashboard.security.verify_instructions')}</p>
                 <button onClick={handleSendVerification} disabled={verifSending}
                   className="px-5 py-2 text-sm rounded-lg border border-white/[0.1] text-zinc-300 hover:text-white hover:border-white/30 transition-colors disabled:opacity-50 cursor-pointer bg-transparent">
-                  {verifSending ? 'Enviando...' : verifSent ? 'Reenviar' : 'Verificar email'}
+                  {verifSending ? t('common.saving') : verifSent ? t('dashboard.security.resend') : t('dashboard.security.verify_button')}
                 </button>
                 {verifError && <p className="text-sm text-red-400">{verifError}</p>}
                 <div className="flex gap-2 mt-2">
                   <input value={verifToken} onChange={e => setVerifToken(e.target.value)} placeholder="Pega aquí el código de verificación"
                     className="flex-1 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-600 outline-none focus:border-white/20 transition-colors" />
                   <button onClick={handleVerifyEmail} disabled={!verifToken}
-                    className="px-4 py-2 rounded-lg bg-white text-black text-sm font-medium disabled:opacity-50 cursor-pointer border-none">Confirmar</button>
+                    className="px-4 py-2 rounded-lg bg-white text-black text-sm font-medium disabled:opacity-50 cursor-pointer border-none">{t('common.confirm')}</button>
                 </div>
               </div>
             )}
@@ -308,60 +310,60 @@ export function DashboardPage() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <Smartphone className="size-5 text-zinc-500" />
-                <h3 className="text-base font-medium">Autenticación en dos pasos (2FA)</h3>
+                <h3 className="text-base font-medium">{t('dashboard.security.totp_heading')}</h3>
               </div>
               {totpEnabled ? (
                 <span className="flex items-center gap-1.5 text-xs text-green-400 bg-green-500/10 px-3 py-1 rounded-full">
-                  <Check className="size-3" /> Activado
+                  <Check className="size-3" /> {t('dashboard.security.totp_enabled')}
                 </span>
               ) : (
                 <span className="flex items-center gap-1.5 text-xs text-zinc-500 bg-white/5 px-3 py-1 rounded-full">
-                  <X className="size-3" /> Desactivado
+                  <X className="size-3" /> {t('dashboard.security.totp_disabled')}
                 </span>
               )}
             </div>
             {totpMode === 'setup' && totpQr && (
               <div className="space-y-4">
-                <p className="text-sm text-zinc-400">Escanea este código QR con Google Authenticator:</p>
+                <p className="text-sm text-zinc-400">{t('dashboard.security.totp_scan')}</p>
                 <div className="flex justify-center">
-                  <img src={`data:image/png;base64,${totpQr}`} alt="2FA QR" className="rounded-lg bg-white p-2 w-48 h-48" />
+                  <img src={`data:image/png;base64,${totpQr}`} alt={t('dashboard.security.totp_heading')} className="rounded-lg bg-white p-2 w-48 h-48" />
                 </div>
-                <p className="text-xs text-zinc-500 text-center">O manual: <code className="text-zinc-300 bg-white/5 px-2 py-0.5 rounded">{totpSecret}</code></p>
+                <p className="text-xs text-zinc-500 text-center">{t('dashboard.security.totp_manual')} <code className="text-zinc-300 bg-white/5 px-2 py-0.5 rounded">{totpSecret}</code></p>
                 <div className="flex gap-3 justify-center">
-                  <input type="text" inputMode="numeric" placeholder="000000" maxLength={6}
+                  <input type="text" inputMode="numeric" placeholder={t('dashboard.security.totp_placeholder')} maxLength={6}
                     value={totpCode} onChange={e => setTotpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                     className="w-40 bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-white text-center text-lg tracking-[0.3em] focus:outline-none focus:border-white/30 placeholder:text-white/20" autoFocus />
                   <button onClick={handleTotpEnable} disabled={totpLoading || totpCode.length < 6}
                     className="px-6 py-2.5 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors disabled:opacity-50 cursor-pointer border-none">
-                    {totpLoading ? 'Verificando...' : 'Activar'}
+                    {totpLoading ? t('dashboard.security.totp_verifying') : t('dashboard.security.totp_verify')}
                   </button>
                 </div>
                 {totpError && <p className="text-sm text-red-400 text-center">{totpError}</p>}
                 <button onClick={() => setTotpMode('idle')}
-                  className="block mx-auto text-sm text-zinc-500 hover:text-white transition-colors bg-transparent border-none cursor-pointer">Cancelar</button>
+                  className="block mx-auto text-sm text-zinc-500 hover:text-white transition-colors bg-transparent border-none cursor-pointer">{t('dashboard.security.totp_cancel')}</button>
               </div>
             )}
             {totpMode === 'disable' && (
               <div className="space-y-4">
-                <p className="text-sm text-zinc-400">Introduce tu código 2FA para desactivarlo:</p>
+                <p className="text-sm text-zinc-400">{t('dashboard.security.totp_disable_instructions')}</p>
                 <div className="flex gap-3 justify-center">
-                  <input type="text" inputMode="numeric" placeholder="000000" maxLength={6}
+                  <input type="text" inputMode="numeric" placeholder={t('dashboard.security.totp_placeholder')} maxLength={6}
                     value={totpCode} onChange={e => setTotpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                     className="w-40 bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-white text-center text-lg tracking-[0.3em] focus:outline-none focus:border-white/30 placeholder:text-white/20" autoFocus />
                   <button onClick={handleTotpDisable} disabled={totpLoading || totpCode.length < 6}
                     className="px-6 py-2.5 rounded-lg bg-red-500/20 text-red-400 text-sm font-medium hover:bg-red-500/30 transition-colors disabled:opacity-50 cursor-pointer border-none">
-                    {totpLoading ? 'Desactivando...' : 'Desactivar'}
+                    {totpLoading ? t('dashboard.security.totp_disabling') : t('dashboard.security.totp_disable')}
                   </button>
                 </div>
                 {totpError && <p className="text-sm text-red-400 text-center">{totpError}</p>}
                 <button onClick={() => { setTotpMode('idle'); setTotpCode(''); setTotpError('') }}
-                  className="block mx-auto text-sm text-zinc-500 hover:text-white transition-colors bg-transparent border-none cursor-pointer">Cancelar</button>
+                  className="block mx-auto text-sm text-zinc-500 hover:text-white transition-colors bg-transparent border-none cursor-pointer">{t('dashboard.security.totp_cancel')}</button>
               </div>
             )}
             {totpMode === 'idle' && (
               <button onClick={totpEnabled ? () => setTotpMode('disable') : handleTotpSetup} disabled={totpLoading}
                 className="mt-2 px-5 py-2.5 text-sm rounded-lg border border-white/[0.1] text-zinc-300 hover:text-white hover:border-white/30 transition-colors disabled:opacity-50 cursor-pointer bg-transparent">
-                {totpEnabled ? 'Desactivar 2FA' : 'Configurar 2FA'}
+                {totpEnabled ? t('dashboard.security.totp_disable_btn') : t('dashboard.security.totp_setup')}
               </button>
             )}
           </div>
@@ -371,38 +373,38 @@ export function DashboardPage() {
         <section id="keys" className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 mb-8">
           <div className="flex items-center gap-3 mb-6">
             <Key className="size-5 text-zinc-500" />
-            <h2 className="text-lg font-semibold">API Keys</h2>
+            <h2 className="text-lg font-semibold">{t('dashboard.api_keys.heading')}</h2>
           </div>
 
           {showNewKey && (
             <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
-              <p className="text-xs text-amber-400 mb-2 font-medium">Guarda esta clave. No se mostrará de nuevo.</p>
+              <p className="text-xs text-amber-400 mb-2 font-medium">{t('dashboard.api_keys.warning')}</p>
               <div className="flex items-center gap-2">
                 <code className="flex-1 text-sm text-white bg-black/30 px-3 py-2 rounded-lg break-all">{createdKey}</code>
-                <button onClick={() => { navigator.clipboard.writeText(createdKey); alert('Copiado') }}
+                <button onClick={() => { navigator.clipboard.writeText(createdKey); alert(t('dashboard.api_keys.copied')) }}
                   className="p-2 rounded-lg bg-white/10 text-zinc-300 hover:text-white cursor-pointer border-none"><Copy className="size-4" /></button>
               </div>
             </div>
           )}
 
           <div className="flex gap-2 mb-6">
-            <input value={newKeyName} onChange={e => setNewKeyName(e.target.value)} placeholder="Nombre de la API key"
+            <input value={newKeyName} onChange={e => setNewKeyName(e.target.value)} placeholder={t('dashboard.api_keys.placeholder')}
               className="flex-1 px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-600 outline-none focus:border-white/20 transition-colors" />
             <button onClick={handleCreateApiKey} disabled={!newKeyName.trim()}
               className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 disabled:opacity-50 cursor-pointer border-none">
-              <Plus className="size-4" /> Crear
+              <Plus className="size-4" /> {t('dashboard.api_keys.create')}
             </button>
           </div>
 
           {apiKeys.length === 0 ? (
-            <p className="text-sm text-zinc-500">No tienes API keys.</p>
+            <p className="text-sm text-zinc-500">{t('dashboard.api_keys.empty')}</p>
           ) : (
             <div className="space-y-2">
               {apiKeys.map(k => (
                 <div key={k.id} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
                   <div>
                     <p className="text-sm font-medium text-white">{k.name}</p>
-                    <p className="text-xs text-zinc-600">Creada: {k.created_at}</p>
+                    <p className="text-xs text-zinc-600">{t('dashboard.api_keys.created')} {k.created_at}</p>
                   </div>
                   <button onClick={() => handleDeleteApiKey(k.id)}
                     className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 cursor-pointer border-none transition-colors">
@@ -419,11 +421,11 @@ export function DashboardPage() {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <Package className="size-5 text-zinc-500" />
-              <h2 className="text-lg font-semibold">Mis pedidos</h2>
+              <h2 className="text-lg font-semibold">{t('dashboard.orders.heading')}</h2>
             </div>
             <button onClick={() => setShowOrderForm(true)}
               className="flex items-center gap-2 text-sm bg-white/10 rounded-lg px-4 py-2 hover:bg-white/20 transition-colors cursor-pointer border-none text-white">
-              <Plus className="size-4" /> Nuevo pedido
+              <Plus className="size-4" /> {t('dashboard.orders.new_order')}
             </button>
           </div>
 
@@ -431,24 +433,24 @@ export function DashboardPage() {
           {showOrderForm && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => setShowOrderForm(false)}>
               <div className="bg-zinc-900 border border-white/[0.1] rounded-xl p-6 w-full max-w-md mx-4" onClick={(e) => e.stopPropagation()}>
-                <h3 className="text-lg font-semibold mb-4">Solicitar nuevo pedido</h3>
+                <h3 className="text-lg font-semibold mb-4">{t('dashboard.orders.modal_title')}</h3>
                 <form onSubmit={handleCreateOrder} className="space-y-4">
-                  <input placeholder="Servicio (ej: Diseño Web, SEO...)" value={orderForm.service}
+                  <input placeholder={t('dashboard.orders.service_placeholder')} value={orderForm.service}
                     onChange={(e) => setOrderForm({ ...orderForm, service: e.target.value })}
                     className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
-                  <textarea placeholder="Describe lo que necesitas" value={orderForm.description}
+                  <textarea placeholder={t('dashboard.orders.message_placeholder')} value={orderForm.description}
                     onChange={(e) => setOrderForm({ ...orderForm, description: e.target.value })} rows={3}
                     className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
-                  <input type="number" step="0.01" placeholder="Presupuesto estimado (€)" value={orderForm.amount || ''}
+                  <input type="number" step="0.01" placeholder={t('dashboard.orders.budget_placeholder')} value={orderForm.amount || ''}
                     onChange={(e) => setOrderForm({ ...orderForm, amount: parseFloat(e.target.value) || 0 })}
                     className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
                   <div className="flex gap-3 pt-2">
                     <button type="submit" className="flex-1 py-2.5 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors cursor-pointer border-none">
-                      Enviar solicitud
+                      {t('dashboard.orders.submit')}
                     </button>
                     <button type="button" onClick={() => setShowOrderForm(false)}
                       className="px-4 py-2.5 rounded-lg border border-white/[0.1] text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer bg-transparent">
-                      Cancelar
+                      {t('common.cancel')}
                     </button>
                   </div>
                 </form>
@@ -457,7 +459,7 @@ export function DashboardPage() {
           )}
 
           {orders.length === 0 ? (
-            <p className="text-sm text-zinc-500">No tienes pedidos todavía.</p>
+            <p className="text-sm text-zinc-500">{t('dashboard.orders.empty')}</p>
           ) : (
             <>
               <div className="space-y-3">
@@ -489,7 +491,7 @@ export function DashboardPage() {
                         o.status === 'pending' ? 'bg-amber-500/10 text-amber-400' :
                         'bg-zinc-500/10 text-zinc-400'
                       }`}>
-                        {o.status === 'completed' ? 'Completado' : o.status === 'in_progress' ? 'En progreso' : o.status === 'pending' ? 'Pendiente' : o.status}
+                        {o.status === 'completed' ? t('dashboard.orders.status_completed') : o.status === 'in_progress' ? t('dashboard.orders.status_progress') : o.status === 'pending' ? t('dashboard.orders.status_pending') : o.status}
                       </span>
                       <span className="text-sm font-medium text-zinc-300">{o.amount}€</span>
                     </div>
@@ -513,7 +515,7 @@ export function DashboardPage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => { setTlOrder(null); setTlData([]) }}>
             <div className="bg-zinc-900 border border-white/[0.1] rounded-xl p-6 w-full max-w-lg mx-4 max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Historial — {tlOrder.service}</h3>
+                <h3 className="text-lg font-semibold">{t('dashboard.orders.timeline_title', { service: tlOrder.service })}</h3>
                 <button onClick={() => { setTlOrder(null); setTlData([]) }}
                   className="text-zinc-500 hover:text-white transition-colors cursor-pointer bg-transparent border-none text-lg">✕</button>
               </div>
@@ -521,7 +523,7 @@ export function DashboardPage() {
                 {tlData.map((t: any) => (
                   <div key={t.id} className="rounded-lg bg-white/[0.02] border border-white/[0.04] p-3">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-medium text-zinc-300">{t.field === 'status' ? 'Estado' : t.field}</span>
+                      <span className="text-xs font-medium text-zinc-300">{t.field === 'status' ? t('dashboard.orders.field_status') : t.field}</span>
                       <span className="text-[10px] text-zinc-600">{t.created_at}</span>
                     </div>
                     {t.field === 'status' ? (
@@ -535,7 +537,7 @@ export function DashboardPage() {
                     )}
                   </div>
                 ))}
-                {tlData.length === 0 && <p className="text-center py-8 text-zinc-500 text-sm">Sin cambios registrados</p>}
+                {tlData.length === 0 && <p className="text-center py-8 text-zinc-500 text-sm">{t('dashboard.orders.timeline_empty')}</p>}
               </div>
             </div>
           </div>
@@ -546,19 +548,19 @@ export function DashboardPage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80" onClick={() => { setPhotosOrder(null); setOrderPhotos([]) }}>
             <div className="bg-zinc-900 border border-white/[0.1] rounded-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Progreso — {photosOrder.service}</h3>
+                <h3 className="text-lg font-semibold">{t('dashboard.orders.photos_title', { service: photosOrder.service })}</h3>
                 <button onClick={() => { setPhotosOrder(null); setOrderPhotos([]) }}
                   className="text-zinc-500 hover:text-white transition-colors cursor-pointer bg-transparent border-none text-lg">✕</button>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 {orderPhotos.map(p => (
                   <div key={p.id} className="rounded-lg overflow-hidden border border-white/[0.06]">
-                    <img src={p.image_data} alt={p.caption || 'Progreso'} className="w-full h-48 object-cover" />
+                    <img src={p.image_data} alt={p.caption || t('dashboard.orders.photos_title', { service: photosOrder.service })} className="w-full h-48 object-cover" />
                     {p.caption && <div className="p-2 text-xs text-zinc-400">{p.caption}</div>}
                     <div className="px-2 pb-2 text-[10px] text-zinc-600">{p.created_at}</div>
                   </div>
                 ))}
-                {orderPhotos.length === 0 && <div className="col-span-full text-center py-12 text-zinc-500 text-sm">No hay fotos de progreso aún</div>}
+                {orderPhotos.length === 0 && <div className="col-span-full text-center py-12 text-zinc-500 text-sm">{t('dashboard.orders.photos_empty')}</div>}
               </div>
             </div>
           </div>
@@ -566,13 +568,13 @@ export function DashboardPage() {
 
         {/* Preferences */}
         <section id="prefs" className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 mb-8">
-          <h2 className="text-lg font-semibold mb-6">Preferencias</h2>
+          <h2 className="text-lg font-semibold mb-6">{t('dashboard.preferences.heading')}</h2>
           <div className="flex items-center justify-between p-4 rounded-xl bg-white/[0.02] border border-white/[0.04]">
             <div className="flex items-center gap-3">
               {darkMode ? <Moon className="size-5 text-zinc-400" /> : <Sun className="size-5 text-zinc-400" />}
               <div>
-                <p className="text-sm font-medium text-white">Modo oscuro</p>
-                <p className="text-xs text-zinc-500">Sincronizado con tu cuenta</p>
+                <p className="text-sm font-medium text-white">{t('dashboard.preferences.dark_mode')}</p>
+                <p className="text-xs text-zinc-500">{t('dashboard.preferences.dark_mode_sub')}</p>
               </div>
             </div>
             <button onClick={handleDarkModeToggle}

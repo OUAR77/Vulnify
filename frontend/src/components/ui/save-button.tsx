@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Loader2, Check, Sparkles } from "lucide-react"
 import confetti from "canvas-confetti"
 import { cn } from "@/lib/utils"
+import { useTranslation } from 'react-i18next'
 
 interface SaveButtonProps {
   text?: {
@@ -18,15 +19,17 @@ interface SaveButtonProps {
 }
 
 export function SaveButton({
-  text = {
-    idle: "Solicitar presupuesto",
-    saving: "Enviando...",
-    saved: "¡Enviado!",
-  },
+  text: textProp,
   className,
   href,
   onSave,
 }: SaveButtonProps) {
+  const { t } = useTranslation()
+  const text = {
+    idle: textProp?.idle ?? t('hero.cta_presupuesto'),
+    saving: textProp?.saving ?? t('contact.form.submit_saving'),
+    saved: textProp?.saved ?? "¡Enviado!",
+  }
   const [status, setStatus] = useState<"idle" | "saving" | "saved">("idle")
   const [bounce, setBounce] = useState(false)
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight, Globe, Bot, Code, Cpu, Zap, ChevronRight, Plus, MessageCircle } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { ArtificialHero } from '@/components/ui/artificial-hero'
 import { BorderBeam } from '@/components/ui/border-beam'
 import { HoverBorderGradient } from '@/components/ui/hover-border-gradient'
@@ -55,6 +56,7 @@ const FAQItem = ({ question, answer }: any) => {
 }
 
 function ContactForm() {
+  const { t } = useTranslation()
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' })
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
@@ -68,71 +70,66 @@ function ContactForm() {
         body: JSON.stringify(form),
       })
       if (res.ok) setSent(true)
-      else setError('Error al enviar. Intenta de nuevo.')
+      else setError(t('contact.form.error'))
     } catch {
-      setError('Error al enviar. Intenta de nuevo.')
+      setError(t('contact.form.error'))
     }
   }
-  if (sent) return <p className="text-sm text-zinc-400 text-center py-8">Mensaje enviado. Te responderemos en menos de 24h.</p>
+  if (sent) return <p className="text-sm text-zinc-400 text-center py-8">{t('contact.form.success')}</p>
   return (
     <form className="space-y-5" onSubmit={handleSubmit}>
       <div>
-        <label className="text-xs text-zinc-600 mb-2 block">Nombre completo *</label>
-        <input type="text" placeholder="Tu nombre" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
+        <label className="text-xs text-zinc-600 mb-2 block">{t('contact.form.name_label')}</label>
+        <input type="text" placeholder={t('contact.form.name_placeholder')} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
           className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-600 outline-none focus:border-white/20 transition-colors" required />
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="text-xs text-zinc-600 mb-2 block">Email *</label>
-          <input type="email" placeholder="tu@email.com" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
+          <label className="text-xs text-zinc-600 mb-2 block">{t('contact.form.email_label')}</label>
+          <input type="email" placeholder={t('contact.form.email_placeholder')} value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
             className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-600 outline-none focus:border-white/20 transition-colors" required />
         </div>
         <div>
-          <label className="text-xs text-zinc-600 mb-2 block">Teléfono</label>
-          <input type="tel" placeholder="+34 600 000 000" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })}
+          <label className="text-xs text-zinc-600 mb-2 block">{t('contact.form.phone_label')}</label>
+          <input type="tel" placeholder={t('contact.form.phone_placeholder')} value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })}
             className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors" />
         </div>
       </div>
       <div>
-        <label className="text-xs text-zinc-600 mb-2 block">Mensaje *</label>
-        <textarea rows={4} placeholder="Cuéntanos en qué podemos ayudarte..." value={form.message} onChange={e => setForm({ ...form, message: e.target.value })}
+        <label className="text-xs text-zinc-600 mb-2 block">{t('contact.form.message_label')}</label>
+        <textarea rows={4} placeholder={t('contact.form.message_placeholder')} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })}
           className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-zinc-700 outline-none focus:border-white/20 transition-colors resize-none" required />
       </div>
       {error && <p className="text-xs text-red-400">{error}</p>}
       <HoverBorderGradient as="button" type="submit" className="w-full flex items-center justify-center gap-2 py-3.5 text-sm font-medium">
-        Enviar mensaje <ArrowUpRight className="size-4" />
+        {t('contact.form.submit')} <ArrowUpRight className="size-4" />
       </HoverBorderGradient>
-      <p className="text-xs text-zinc-700 text-center">Te respondemos en menos de 24h.</p>
+      <p className="text-xs text-zinc-700 text-center">{t('contact.form.footnote')}</p>
     </form>
   )
 }
 
 export function HomeContent() {
+  const { t } = useTranslation()
   const [faqs, setFaqs] = useState<FAQData[]>([])
   const [testimonials, setTestimonials] = useState<TestimonialData[]>([])
   useEffect(() => { getFAQs().then(setFaqs).catch(() => {}) }, [])
   useEffect(() => { getTestimonials(true).then(setTestimonials).catch(() => {}) }, [])
 
   const stats = [
-    { number: '40+', label: 'Proyectos entregados' },
-    { number: '6+', label: 'Años de experiencia' },
-    { number: '98%', label: 'Clientes satisfechos' },
-    { number: '24h', label: 'Respuesta inicial' },
+    { number: '40+', label: t('stats.projects') },
+    { number: '6+', label: t('stats.experience') },
+    { number: '98%', label: t('stats.clients') },
+    { number: '24h', label: t('stats.response') },
   ]
 
-  const services = [
-    { icon: Globe, title: 'Desarrollo Web', desc: 'Páginas corporativas, tiendas online y aplicaciones web con React, Next.js y diseño responsive.' },
-    { icon: Bot, title: 'Integraciones IA', desc: 'Chatbots inteligentes, automatización de procesos y análisis predictivo para tu negocio.' },
-    { icon: Code, title: 'APIs & Backend', desc: 'Arquitectura escalable, APIs robustas y paneles de administración diseñados para crecer.' },
-    { icon: Cpu, title: 'Consultoría Digital', desc: 'Estrategia tecnológica personalizada: desde la idea hasta la implementación.' },
-  ]
+  const serviceIcons = [Globe, Bot, Code, Cpu]
+  const services = t('services.items', { returnObjects: true }) as { name: string; desc: string }[]
 
-  const steps = [
-    { num: '01', title: 'Auditoría', desc: 'Analizamos tu negocio, competencia y objetivos. Definimos métricas de éxito.' },
-    { num: '02', title: 'Estrategia', desc: 'Diseñamos la arquitectura digital: UX, IA, stack tecnológico y roadmap.' },
-    { num: '03', title: 'Construcción', desc: 'Desarrollamos con diseño iterativo. Ves el progreso en tiempo real.' },
-    { num: '04', title: 'Lanzamiento', desc: 'Despliegue, testing y puesta en marcha. No paramos hasta que funcione.' },
-  ]
+  const steps = t('process.steps', { returnObjects: true }) as { title: string; desc: string }[]
+
+  const solutionIcons = [Globe, Bot, Zap]
+  const solutionItems = t('problem.solution_items', { returnObjects: true }) as { title: string; desc: string }[]
 
   return (
     <>
@@ -141,23 +138,23 @@ export function HomeContent() {
         {/* SECTION 1: Hero + Stats + CTA */}
         <FlowSection aria-label="Arquitectura Digital" style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
           <div className="flex items-center gap-2">
-            <p className="text-xs font-bold uppercase tracking-[0.2em]">01 — Arquitectura Digital</p>
+            <p className="text-xs font-bold uppercase tracking-[0.2em]">{t('hero.label')}</p>
           </div>
           <hr className="border-none border-t border-white/20 my-[2vw]" />
           <div className="flex flex-col justify-center min-h-[30vh]">
             <AnimatedHeroText />
             <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mt-6 leading-relaxed">
-              No construimos páginas. Diseñamos ecosistemas digitales con inteligencia artificial integrada para que tu negocio crezca.
+              {t('hero.subtitle')}
             </p>
             <div className="flex flex-wrap gap-4 mt-8">
               <HoverBorderGradient as="button" onClick={() => window.dispatchEvent(new CustomEvent('open-contact'))} className="flex items-center gap-2 px-8 py-4 text-base font-medium">
-                Solicitar auditoría gratis <ArrowUpRight className="size-4" />
+                {t('hero.cta_audit')} <ArrowUpRight className="size-4" />
               </HoverBorderGradient>
               <a href="https://wa.me/34600000000" target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-2 px-8 py-4 text-base font-medium text-zinc-400 hover:text-white border border-white/[0.06] rounded-xl hover:border-white/20 transition-all"
               >
                 <MessageCircle className="size-4" />
-                Escribir por WhatsApp
+                {t('hero.cta_whatsapp')}
               </a>
             </div>
           </div>
@@ -180,20 +177,20 @@ export function HomeContent() {
       <div className="w-full border-b border-white/[0.04]">
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
           <div className="text-center mb-16">
-            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">El Problema</span>
+            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">{t('problem.label')}</span>
             <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mt-5 mb-6">
-              Tu web no está trabajando para ti. Debería.
+              {t('problem.heading')}
             </h2>
             <p className="text-zinc-500 leading-relaxed max-w-2xl mx-auto">
-              La mayoría de las webs son folletos digitales estáticos. No generan leads, no automatizan procesos, no se adaptan a tus clientes.
+              {t('problem.description')}
             </p>
           </div>
           <div className="grid md:grid-cols-2 gap-8 mb-16">
             <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 relative overflow-hidden">
               <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
-              <span className="text-xs text-zinc-600 font-mono mb-4 block">Señales de alerta</span>
+              <span className="text-xs text-zinc-600 font-mono mb-4 block">{t('problem.signals_label')}</span>
               <div className="space-y-3">
-                {['Sin leads en 30 días', 'Procesos manuales que agotan', 'Web que no convierte'].map((item) => (
+                {(t('problem.signals_items', { returnObjects: true }) as string[]).map((item: string) => (
                   <div key={item} className="flex items-center gap-3 p-4 rounded-xl bg-red-500/5 border border-red-500/10">
                     <span className="size-2 rounded-full bg-red-400/60" />
                     <span className="text-sm text-zinc-400">{item}</span>
@@ -203,23 +200,22 @@ export function HomeContent() {
             </div>
             <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 relative overflow-hidden">
               <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
-              <span className="text-xs text-zinc-600 font-mono mb-4 block">Nuestra solución</span>
+              <span className="text-xs text-zinc-600 font-mono mb-4 block">{t('problem.solution_label')}</span>
               <div className="space-y-3">
-                {[
-                  { icon: Globe, title: 'Diseño que convierte', desc: 'Interfaces ultrarrápidas optimizadas para conversión y SEO.' },
-                  { icon: Bot, title: 'IA integrada', desc: 'Chatbots inteligentes, automatización y análisis predictivo.' },
-                  { icon: Zap, title: 'Crecimiento continuo', desc: 'No es un proyecto finito. Iteramos y escalamos tu presencia digital.' },
-                ].map((item) => (
-                  <div key={item.title} className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02]">
-                    <div className="size-9 rounded-lg bg-zinc-500/10 border border-zinc-500/20 flex items-center justify-center shrink-0">
-                      <item.icon className="size-4 text-zinc-400" />
+                {solutionItems.map((item, i) => {
+                  const IconComponent = solutionIcons[i]
+                  return (
+                    <div key={item.title} className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02]">
+                      <div className="size-9 rounded-lg bg-zinc-500/10 border border-zinc-500/20 flex items-center justify-center shrink-0">
+                        <IconComponent className="size-4 text-zinc-400" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium text-white">{item.title}</div>
+                        <p className="text-xs text-zinc-500 mt-0.5">{item.desc}</p>
+                      </div>
                     </div>
-                    <div>
-                      <div className="text-sm font-medium text-white">{item.title}</div>
-                      <p className="text-xs text-zinc-500 mt-0.5">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
           </div>
@@ -230,25 +226,28 @@ export function HomeContent() {
       <div id="servicios" className="w-full border-b border-white/[0.04]">
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
           <div className="mb-16">
-            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">Servicios</span>
+            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">{t('services.label')}</span>
             <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight max-w-2xl mt-5">
-              Todo lo que necesitas para dominar el espacio digital.
+              {t('services.heading')}
             </h2>
           </div>
           <div className="grid md:grid-cols-2 gap-6">
-            {services.map((s, i) => (
-              <div key={s.title} className="group p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/15 transition-all duration-500 relative overflow-hidden">
-                <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
-                <div className="flex items-center gap-4 mb-6">
-                  <span className="text-3xl font-bold text-zinc-700 group-hover:text-zinc-500 transition-colors">{String(i + 1).padStart(2, '0')}</span>
-                  <div className="size-10 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-zinc-500/10 transition-colors">
-                    <s.icon className="size-4 text-zinc-400 group-hover:text-zinc-400 transition-colors" />
+            {services.map((s, i) => {
+              const IconComponent = serviceIcons[i]
+              return (
+                <div key={s.name} className="group p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/15 transition-all duration-500 relative overflow-hidden">
+                  <BorderBeam duration={10} lightColor="#FAFAFA" borderWidth={1} />
+                  <div className="flex items-center gap-4 mb-6">
+                    <span className="text-3xl font-bold text-zinc-700 group-hover:text-zinc-500 transition-colors">{String(i + 1).padStart(2, '0')}</span>
+                    <div className="size-10 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-zinc-500/10 transition-colors">
+                      <IconComponent className="size-4 text-zinc-400 group-hover:text-zinc-400 transition-colors" />
+                    </div>
                   </div>
+                  <h3 className="text-xl font-semibold text-white mb-3">{s.name}</h3>
+                  <p className="text-sm text-zinc-500 leading-relaxed">{s.desc}</p>
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-3">{s.title}</h3>
-                <p className="text-sm text-zinc-500 leading-relaxed">{s.desc}</p>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </div>
@@ -257,13 +256,13 @@ export function HomeContent() {
       <div id="proceso" className="w-full border-b border-white/[0.04]">
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
           <div className="mb-16">
-            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">Proceso</span>
-            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mt-5">De la idea al impacto.</h2>
+            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">{t('process.label')}</span>
+            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mt-5">{t('process.heading')}</h2>
           </div>
           <div className="grid md:grid-cols-4 gap-8">
             {steps.map((s, i) => (
-              <div key={s.num} className="relative">
-                <span className="text-6xl md:text-7xl font-bold text-white/[0.04] block mb-4 leading-none">{s.num}</span>
+              <div key={s.title} className="relative">
+                <span className="text-6xl md:text-7xl font-bold text-white/[0.04] block mb-4 leading-none">{String(i + 1).padStart(2, '0')}</span>
                 <h3 className="text-lg font-semibold text-white mb-2">{s.title}</h3>
                 <p className="text-sm text-zinc-500 leading-relaxed">{s.desc}</p>
                 {i < steps.length - 1 && (
@@ -281,18 +280,18 @@ export function HomeContent() {
       <div className="w-full border-b border-white/[0.04]">
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
           <div className="mb-16 text-center">
-            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">Reseñas</span>
-            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mt-5">Lo que dicen nuestros clientes.</h2>
+            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">{t('testimonials.label')}</span>
+            <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mt-5">{t('testimonials.heading')}</h2>
           </div>
           <div className="flex justify-center">
-            <Testimonials cards={testimonials.length > 0 ? testimonials.map((t) => ({
-              username: t.name,
-              handle: t.company ? `@${t.company.toLowerCase().replace(/\s+/g, '')}` : '@cliente',
-              content: t.content,
-              avatar: t.avatar_url || undefined,
-              verified: t.rating >= 4,
-              likes: t.rating * 50,
-              retweets: t.rating * 10,
+            <Testimonials cards={testimonials.length > 0 ? testimonials.map((testimonial) => ({
+              username: testimonial.name,
+              handle: testimonial.company ? `@${testimonial.company.toLowerCase().replace(/\s+/g, '')}` : '@cliente',
+              content: testimonial.content,
+              avatar: testimonial.avatar_url || undefined,
+              verified: testimonial.rating >= 4,
+              likes: testimonial.rating * 50,
+              retweets: testimonial.rating * 10,
               date: new Date().toLocaleDateString('es-ES', { month: 'short', day: 'numeric', year: 'numeric' }),
               className: "[grid-area:stack] hover:-translate-y-10 before:absolute before:w-[100%] before:outline-1 before:rounded-2xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/60 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-500 hover:grayscale-0 before:left-0 before:top-0",
             })) : undefined} />
@@ -311,9 +310,9 @@ export function HomeContent() {
       <div className="w-full border-b border-white/[0.04]">
         <div className="mx-auto max-w-3xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
           <div className="text-center mb-16">
-            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">FAQ</span>
+            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">{t('faq.label')}</span>
             <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mt-4">
-              Respuestas rápidas.
+              {t('faq.heading')}
             </h2>
           </div>
           <div className="space-y-3">
@@ -333,12 +332,12 @@ export function HomeContent() {
       <div id="contacto" className="w-full border-b border-white/[0.04]">
         <div className="mx-auto max-w-3xl px-6 md:px-12 lg:px-20 py-28 md:py-36">
           <div className="text-center mb-14">
-            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">Contacto</span>
+            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">{t('contact.label')}</span>
             <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mt-4 mb-4">
-              Cuéntanos tu proyecto.
+              {t('contact.heading')}
             </h2>
             <p className="text-sm text-zinc-500 leading-relaxed max-w-md mx-auto">
-              Sin compromiso. Te respondemos en menos de 24 horas con una propuesta personalizada.
+              {t('contact.description')}
             </p>
           </div>
           <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 relative overflow-hidden">
@@ -346,27 +345,27 @@ export function HomeContent() {
             <ContactForm />
           </div>
           <div className="text-center mt-20">
-            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">Empieza hoy</span>
+            <span className="text-[11px] tracking-[0.25em] uppercase text-zinc-600 font-mono">{t('final_cta.label')}</span>
             <h2 className="text-3xl md:text-6xl font-bold text-white leading-[1.05] tracking-tight mt-4 mb-6">
-              ¿Listo para dominar <br className="hidden md:block" />el espacio digital?
+              {t('final_cta.heading')}
             </h2>
             <p className="text-base md:text-lg text-zinc-500 leading-relaxed mb-8 max-w-xl mx-auto">
-              Solicita una auditoría gratuita de tu presencia digital y descubre cómo podemos ayudarte a crecer.
+              {t('final_cta.description')}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
               <HoverBorderGradient as="button" onClick={() => window.dispatchEvent(new CustomEvent('open-contact'))} className="flex items-center gap-2 px-8 py-4 text-base font-medium">
-                Solicitar auditoría gratis <ArrowUpRight className="size-4" />
+                {t('hero.cta_audit')} <ArrowUpRight className="size-4" />
               </HoverBorderGradient>
               <a href="https://wa.me/34600000000" target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-2 px-8 py-4 text-base font-medium text-zinc-400 hover:text-white border border-white/[0.06] rounded-xl hover:border-white/20 transition-all"
               >
                 <MessageCircle className="size-4" />
-                Escribir por WhatsApp
+                {t('hero.cta_whatsapp')}
               </a>
             </div>
             <div className="flex items-center justify-center gap-2 text-xs text-zinc-700">
               <span className="size-1.5 rounded-full bg-amber-400/60 animate-pulse" />
-              Solo 3 proyectos este mes — auditoría gratuita
+              {t('final_cta.scarcity')}
             </div>
           </div>
         </div>

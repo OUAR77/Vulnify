@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/lib/auth-context'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -25,6 +26,7 @@ import {
 } from 'lucide-react'
 
 export function AdminPage() {
+  const { t } = useTranslation()
   const { user, isAdmin, logout, isAuthenticated } = useAuth()
   const navigate = useNavigate()
   const BASE = import.meta.env.VITE_API_URL || ''
@@ -445,6 +447,14 @@ export function AdminPage() {
   const messagesPages = Math.ceil(messagesTotal / 50)
   const ordersPages = Math.ceil(ordersTotal / 50)
 
+  const userCols = t('admin.users.columns', { returnObjects: true }) as string[]
+  const orderCols = t('admin.orders.columns', { returnObjects: true }) as string[]
+  const blogCols = t('admin.blog.columns', { returnObjects: true }) as string[]
+  const testCols = t('admin.testimonials.columns', { returnObjects: true }) as string[]
+  const faqCols = t('admin.faq.columns', { returnObjects: true }) as string[]
+  const logCols = t('admin.activity.columns', { returnObjects: true }) as string[]
+  const statusOptions = t('admin.orders.status_options', { returnObjects: true }) as string[]
+
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="mx-auto max-w-6xl px-6 py-8">
@@ -452,20 +462,20 @@ export function AdminPage() {
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
             <ShieldAlert className="size-7 text-zinc-500" />
-            <h1 className="text-2xl font-bold tracking-tight">Admin</h1>
+            <h1 className="text-2xl font-bold tracking-tight">{t('admin.heading')}</h1>
           </div>
           <div className="flex items-center gap-3 flex-wrap justify-end">
             <button onClick={handleRefresh} className="flex items-center gap-2 text-sm text-zinc-500 hover:text-white transition-colors bg-transparent border border-white/[0.06] rounded-lg px-4 py-2 cursor-pointer">
-              <RefreshCw className="size-4" /> Recargar
+              <RefreshCw className="size-4" /> {t('admin.refresh')}
             </button>
             <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 text-sm text-zinc-500 hover:text-white transition-colors bg-transparent border border-white/[0.06] rounded-lg px-4 py-2 cursor-pointer">
-              <LayoutDashboard className="size-4" /> Mi panel
+              <LayoutDashboard className="size-4" /> {t('nav.mi_panel')}
             </button>
             <button onClick={() => navigate('/')} className="flex items-center gap-2 text-sm text-zinc-500 hover:text-white transition-colors bg-transparent border border-white/[0.06] rounded-lg px-4 py-2 cursor-pointer">
-              <ArrowLeft className="size-4" /> Volver a la web
+              <ArrowLeft className="size-4" /> {t('common.back_to_website')}
             </button>
             <button onClick={() => { logout(); navigate('/') }} className="flex items-center gap-2 text-sm text-zinc-500 hover:text-white transition-colors bg-transparent border border-white/[0.06] rounded-lg px-4 py-2 cursor-pointer">
-              <LogOut className="size-4" /> Cerrar sesión
+              <LogOut className="size-4" /> {t('nav.cerrar_sesion')}
             </button>
           </div>
         </div>
@@ -473,14 +483,14 @@ export function AdminPage() {
         {/* Tabs */}
         <div className="flex gap-1 mb-8 border-b border-white/[0.06] overflow-x-auto">
           {([
-            ['stats', 'Estadísticas'],
-            ['users', 'Usuarios'],
-            ['messages', 'Mensajes'],
-            ['orders', 'Pedidos'],
-            ['blog', 'Blog'],
-            ['testimonios', 'Testimonios'],
-            ['faq', 'FAQ'],
-            ['logs', 'Actividad'],
+            ['stats', t('admin.tabs.stats')],
+            ['users', t('admin.tabs.users')],
+            ['messages', t('admin.tabs.messages')],
+            ['orders', t('admin.tabs.orders')],
+            ['blog', t('admin.tabs.blog')],
+            ['testimonios', t('admin.tabs.testimonials')],
+            ['faq', t('admin.tabs.faq')],
+            ['logs', t('admin.tabs.activity')],
           ] as const).map(([key, label]) => (
             <button key={key} onClick={() => setTab(key)}
               className={`px-5 py-3 text-sm transition-colors cursor-pointer bg-transparent border-none whitespace-nowrap ${
@@ -498,10 +508,10 @@ export function AdminPage() {
             {statsError && <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400 mb-6">{statsError}</div>}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { label: 'Usuarios', value: stats?.total_users ?? '-', icon: Users },
-                { label: 'Mensajes', value: stats?.total_messages ?? '-', icon: MessageSquare },
-                { label: 'Pedidos', value: stats?.total_orders ?? '-', icon: ShoppingCart },
-                { label: 'Registros de actividad', value: stats?.total_logs ?? '-', icon: Activity },
+                { label: t('admin.stats.users'), value: stats?.total_users ?? '-', icon: Users },
+                { label: t('admin.stats.messages'), value: stats?.total_messages ?? '-', icon: MessageSquare },
+                { label: t('admin.stats.orders'), value: stats?.total_orders ?? '-', icon: ShoppingCart },
+                { label: t('admin.stats.activity'), value: stats?.total_logs ?? '-', icon: Activity },
               ].map((card) => (
                 <div key={card.label} className="rounded-xl bg-white/[0.02] border border-white/[0.06] p-6">
                   <div className="flex items-center gap-3 mb-3">
@@ -517,8 +527,8 @@ export function AdminPage() {
                 <div className="flex items-center gap-3">
                   <Wrench className="size-5 text-zinc-500" />
                   <div>
-                    <p className="text-sm font-medium text-white">Modo mantenimiento</p>
-                    <p className="text-xs text-zinc-500">Deshabilita el acceso público a la web</p>
+                    <p className="text-sm font-medium text-white">{t('admin.stats.maintenance')}</p>
+                    <p className="text-xs text-zinc-500">{t('admin.stats.maintenance_desc')}</p>
                   </div>
                 </div>
                 <button onClick={() => setPasswordModal({ action: 'toggle_maintenance', id: 0 })}
@@ -532,24 +542,24 @@ export function AdminPage() {
                 <div className="flex items-center gap-3">
                   <Database className="size-5 text-zinc-500" />
                   <div>
-                    <p className="text-sm font-medium text-white">Datos de ejemplo</p>
-                    <p className="text-xs text-zinc-500">Inserta posts, testimonios y FAQs de ejemplo (solo si están vacíos)</p>
+                    <p className="text-sm font-medium text-white">{t('admin.stats.seed_label')}</p>
+                    <p className="text-xs text-zinc-500">{t('admin.stats.seed_desc')}</p>
                   </div>
                 </div>
                 <button onClick={async () => {
                   try {
-                    const t = localStorage.getItem('vulnify_token') || ''
+                    const tok = localStorage.getItem('vulnify_token') || ''
                     const res = await fetch(`${BASE}/api/admin/seed`, {
                       method: 'POST',
-                      headers: { 'Authorization': `Bearer ${t}`, 'Content-Type': 'application/json' },
+                      headers: { 'Authorization': `Bearer ${tok}`, 'Content-Type': 'application/json' },
                       body: JSON.stringify({}),
                     })
                     if (!res.ok) throw new Error('Seed failed')
                     const data = await res.json()
-                    alert(`Insertados: ${data.inserted.posts} posts, ${data.inserted.testimonials} testimonios, ${data.inserted.faqs} FAQs`)
-                  } catch { alert('Error al insertar datos') }
+                    alert(t('admin.stats.seed_success', { posts: data.inserted.posts, testimonials: data.inserted.testimonials, faqs: data.inserted.faqs }))
+                  } catch { alert(t('admin.stats.seed_error')) }
                 }} className="text-xs px-4 py-2 rounded-lg bg-white text-black font-medium hover:bg-zinc-200 transition-colors cursor-pointer border-none">
-                  Seed Data
+                  {t('admin.stats.seed_button')}
                 </button>
               </div>
             </div>
@@ -562,24 +572,24 @@ export function AdminPage() {
             <form onSubmit={handleSearch} className="flex gap-3 mb-6">
               <div className="relative flex-1 max-w-md">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-zinc-500" />
-                <input type="text" placeholder="Buscar por nombre o email..." value={searchQuery}
+                <input type="text" placeholder={t('admin.users.search')} value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
               </div>
-              <button type="submit" className="px-4 py-2 text-sm bg-white/10 rounded-lg hover:bg-white/20 transition-colors cursor-pointer border-none text-white">Buscar</button>
+              <button type="submit" className="px-4 py-2 text-sm bg-white/10 rounded-lg hover:bg-white/20 transition-colors cursor-pointer border-none text-white">{t('admin.users.search_button')}</button>
             </form>
             {usersError && <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400 mb-4">{usersError}</div>}
             <div className="rounded-xl border border-white/[0.06] overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-white/[0.06] bg-white/[0.02]">
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">ID</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Nombre</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Email</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Rol</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Verificado</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Creado</th>
-                    <th className="text-right py-3 px-4 text-zinc-500 font-medium">Acciones</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{userCols[0]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{userCols[1]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{userCols[2]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{userCols[3]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{userCols[4]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{userCols[5]}</th>
+                    <th className="text-right py-3 px-4 text-zinc-500 font-medium">{userCols[6]}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -591,13 +601,13 @@ export function AdminPage() {
                       <td className="py-3 px-4">
                         <span className={`text-xs px-2 py-0.5 rounded-full ${u.role === 'admin' ? 'bg-blue-500/20 text-blue-400' : 'bg-zinc-500/20 text-zinc-400'}`}>{u.role}</span>
                       </td>
-                      <td className="py-3 px-4">{u.is_verified ? <span className="text-green-400">Sí</span> : <span className="text-zinc-500">No</span>}</td>
+                      <td className="py-3 px-4">{u.is_verified ? <span className="text-green-400">{t('common.yes')}</span> : <span className="text-zinc-500">{t('common.no')}</span>}</td>
                       <td className="py-3 px-4 text-zinc-500 text-xs">{u.created_at?.slice(0, 10)}</td>
                       <td className="py-3 px-4 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <button onClick={() => setPasswordModal({ action: 'role', id: u.id, extra: u.role })} disabled={userActionLoading === u.id}
                             className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors disabled:opacity-50 cursor-pointer bg-transparent">
-                            {u.role === 'admin' ? 'Quitar admin' : 'Hacer admin'}
+                            {u.role === 'admin' ? t('admin.users.remove_admin') : t('admin.users.make_admin')}
                           </button>
                           {u.id !== user?.id && (
                             <button onClick={() => setPasswordModal({ action: 'delete_user', id: u.id })} disabled={userActionLoading === u.id}
@@ -609,7 +619,7 @@ export function AdminPage() {
                       </td>
                     </tr>
                   ))}
-                  {users.length === 0 && !usersError && <tr><td colSpan={7} className="py-8 text-center text-zinc-500">Sin resultados</td></tr>}
+                  {users.length === 0 && !usersError && <tr><td colSpan={7} className="py-8 text-center text-zinc-500">{t('common.no_results')}</td></tr>}
                 </tbody>
               </table>
             </div>
@@ -630,11 +640,11 @@ export function AdminPage() {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <MessageSquare className="size-5 text-zinc-500" />
-                <span className="text-sm text-zinc-500">{messagesTotal} mensajes</span>
+                <span className="text-sm text-zinc-500">{t('admin.messages.count', { count: messagesTotal })}</span>
               </div>
               <button onClick={() => downloadAdminCSV('/api/admin/messages/export', 'messages.csv')}
                 className="flex items-center gap-2 text-xs bg-white/5 rounded-lg px-3 py-1.5 hover:bg-white/10 transition-colors cursor-pointer border-none text-zinc-400 hover:text-white">
-                CSV
+                {t('admin.messages.export_csv')}
               </button>
             </div>
             <div className="grid md:grid-cols-2 gap-6">
@@ -652,7 +662,7 @@ export function AdminPage() {
                     <div className="text-xs text-zinc-500 truncate">{msg.subject || msg.message?.slice(0, 80)}</div>
                   </div>
                 ))}
-                {messages.length === 0 && <div className="py-8 text-center text-zinc-500 text-sm">Sin mensajes</div>}
+                {messages.length === 0 && <div className="py-8 text-center text-zinc-500 text-sm">{t('admin.messages.empty')}</div>}
               </div>
               <div className="rounded-xl border border-white/[0.06] p-6">
                 {selectedMessage ? (
@@ -664,7 +674,7 @@ export function AdminPage() {
                         {selectedMessage.company && <p className="text-xs text-zinc-500">{selectedMessage.company}</p>}
                       </div>
                       <div className="flex gap-2">
-                        <a href={`mailto:${selectedMessage.email}`} className="text-xs px-3 py-1.5 rounded border border-white/[0.1] text-zinc-400 hover:text-white transition-colors no-underline">Responder</a>
+                        <a href={`mailto:${selectedMessage.email}`} className="text-xs px-3 py-1.5 rounded border border-white/[0.1] text-zinc-400 hover:text-white transition-colors no-underline">{t('admin.messages.reply')}</a>
                         <button onClick={() => setPasswordModal({ action: 'delete_message', id: selectedMessage.id })}
                           className="text-xs px-3 py-1.5 rounded border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer bg-transparent">
                           <Trash2 className="size-3.5" />
@@ -676,7 +686,7 @@ export function AdminPage() {
                     <div className="mt-4 text-xs text-zinc-600">{selectedMessage.created_at?.replace('T', ' ')}</div>
                   </div>
                 ) : (
-                  <div className="text-center text-zinc-500 py-12 text-sm">Selecciona un mensaje para leerlo</div>
+                  <div className="text-center text-zinc-500 py-12 text-sm">{t('admin.messages.select_hint')}</div>
                 )}
               </div>
             </div>
@@ -697,16 +707,16 @@ export function AdminPage() {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <ShoppingCart className="size-5 text-zinc-500" />
-                <span className="text-sm text-zinc-500">{ordersTotal} pedidos</span>
+                <span className="text-sm text-zinc-500">{t('admin.orders.count', { count: ordersTotal })}</span>
               </div>
               <div className="flex items-center gap-2">
                 <button onClick={() => downloadAdminCSV('/api/admin/orders/export', 'orders.csv')}
                   className="flex items-center gap-2 text-xs bg-white/5 rounded-lg px-3 py-1.5 hover:bg-white/10 transition-colors cursor-pointer border-none text-zinc-400 hover:text-white">
-                  CSV
+                  {t('admin.orders.export_csv')}
                 </button>
                 <button onClick={() => { setEditingOrder(null); setOrderForm({ client_name: '', client_email: '', service: '', description: '', amount: 0, status: 'pending' }); setShowOrderForm(true) }}
                   className="flex items-center gap-2 text-sm bg-white/10 rounded-lg px-4 py-2 hover:bg-white/20 transition-colors cursor-pointer border-none text-white">
-                  <Plus className="size-4" /> Nuevo pedido
+                  <Plus className="size-4" /> {t('admin.orders.new')}
                 </button>
             </div>
           </div>
@@ -714,46 +724,46 @@ export function AdminPage() {
             {showOrderForm && (
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => setShowOrderForm(false)}>
                 <div className="bg-zinc-900 border border-white/[0.1] rounded-xl p-6 w-full max-w-md mx-4" onClick={(e) => e.stopPropagation()}>
-                  <h3 className="text-lg font-semibold mb-4">{editingOrder ? 'Editar pedido' : 'Nuevo pedido'}</h3>
+                  <h3 className="text-lg font-semibold mb-4">{editingOrder ? t('admin.orders.edit_title') : t('admin.orders.new_title')}</h3>
                   <form onSubmit={handleOrderSubmit} className="space-y-4">
-                    <input placeholder="Nombre del cliente" value={orderForm.client_name}
+                    <input placeholder={t('admin.orders.customer_name')} value={orderForm.client_name}
                       onChange={(e) => setOrderForm({ ...orderForm, client_name: e.target.value })}
                       className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
-                    <input type="email" placeholder="Email del cliente" value={orderForm.client_email}
+                    <input type="email" placeholder={t('admin.orders.customer_email')} value={orderForm.client_email}
                       onChange={(e) => setOrderForm({ ...orderForm, client_email: e.target.value })}
                       className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
-                    <input placeholder="Servicio (ej: Escaneo Web, Pentest...)" value={orderForm.service}
+                    <input placeholder={t('admin.orders.service')} value={orderForm.service}
                       onChange={(e) => setOrderForm({ ...orderForm, service: e.target.value })}
                       className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
-                    <textarea placeholder="Descripción" value={orderForm.description}
+                    <textarea placeholder={t('admin.orders.description')} value={orderForm.description}
                       onChange={(e) => setOrderForm({ ...orderForm, description: e.target.value })} rows={3}
                       className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
                     <div className="flex gap-4">
                       <div className="flex-1">
-                        <label className="text-xs text-zinc-500 mb-1 block">Monto (€)</label>
+                        <label className="text-xs text-zinc-500 mb-1 block">{t('admin.orders.amount')}</label>
                         <input type="number" step="0.01" value={orderForm.amount}
                           onChange={(e) => setOrderForm({ ...orderForm, amount: parseFloat(e.target.value) || 0 })}
                           className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30" />
                       </div>
                       <div className="flex-1">
-                        <label className="text-xs text-zinc-500 mb-1 block">Estado</label>
+                        <label className="text-xs text-zinc-500 mb-1 block">{t('admin.orders.status')}</label>
                         <select value={orderForm.status}
                           onChange={(e) => setOrderForm({ ...orderForm, status: e.target.value })}
                           className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30">
-                          <option value="pending">Pendiente</option>
-                          <option value="in_progress">En progreso</option>
-                          <option value="completed">Completado</option>
-                          <option value="cancelled">Cancelado</option>
+                          <option value="pending">{statusOptions[0]}</option>
+                          <option value="in_progress">{statusOptions[1]}</option>
+                          <option value="completed">{statusOptions[2]}</option>
+                          <option value="cancelled">{statusOptions[3]}</option>
                         </select>
                       </div>
                     </div>
                     <div className="flex gap-3 pt-2">
                       <button type="submit" className="flex-1 py-2.5 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors cursor-pointer border-none">
-                        {editingOrder ? 'Guardar' : 'Crear pedido'}
+                        {editingOrder ? t('common.save') : t('common.create')}
                       </button>
                       <button type="button" onClick={() => setShowOrderForm(false)}
                         className="px-4 py-2.5 rounded-lg border border-white/[0.1] text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer bg-transparent">
-                        Cancelar
+                        {t('common.cancel')}
                       </button>
                     </div>
                   </form>
@@ -765,14 +775,14 @@ export function AdminPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-white/[0.06] bg-white/[0.02]">
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">ID</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Cliente</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Email</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Servicio</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Monto</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Estado</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Fecha</th>
-                    <th className="text-right py-3 px-4 text-zinc-500 font-medium">Acciones</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{orderCols[0]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{orderCols[1]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{orderCols[2]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{orderCols[3]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{orderCols[4]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{orderCols[5]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{orderCols[6]}</th>
+                    <th className="text-right py-3 px-4 text-zinc-500 font-medium">{orderCols[7]}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -790,10 +800,10 @@ export function AdminPage() {
                           o.status === 'completed' ? 'bg-green-500/20 text-green-400' :
                           'bg-red-500/20 text-red-400'
                         }`}>
-                          {o.status === 'pending' ? 'Pendiente' :
-                           o.status === 'in_progress' ? 'En progreso' :
-                           o.status === 'completed' ? 'Completado' :
-                           o.status === 'cancelled' ? 'Cancelado' : o.status}
+                          {o.status === 'pending' ? statusOptions[0] :
+                           o.status === 'in_progress' ? statusOptions[1] :
+                           o.status === 'completed' ? statusOptions[2] :
+                           o.status === 'cancelled' ? statusOptions[3] : o.status}
                         </span>
                       </td>
                       <td className="py-3 px-4 text-zinc-500 text-xs">{o.created_at?.slice(0, 10)}</td>
@@ -801,18 +811,18 @@ export function AdminPage() {
                         <div className="flex items-center justify-end gap-2">
                           <button onClick={() => { setTimelineOrder(o); adminGetOrderTimeline(o.id).then(setTimeline).catch(() => setTimeline([])) }}
                             className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent flex items-center gap-1">
-                            <History className="size-3" /> Historial
+                            <History className="size-3" /> {t('admin.orders.history')}
                           </button>
                           <button onClick={() => adminGetOrderInvoice(o.id).catch((e: any) => alert(e.message))}
                             className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent flex items-center gap-1">
-                            <FileText className="size-3" /> PDF
+                            <FileText className="size-3" /> {t('admin.orders.pdf')}
                           </button>
                           <button onClick={() => openPhotoGallery(o)}
                             className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent flex items-center gap-1">
-                            <Image className="size-3" /> Fotos
+                            <Image className="size-3" /> {t('admin.orders.photos')}
                           </button>
                           <button onClick={() => handleEditOrder(o)}
-                            className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent">Editar</button>
+                            className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent">{t('common.edit')}</button>
                           <button onClick={() => setPasswordModal({ action: 'delete_order', id: o.id })}
                             className="text-xs px-2 py-1 rounded border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer bg-transparent">
                             <Trash2 className="size-3.5" />
@@ -821,7 +831,7 @@ export function AdminPage() {
                       </td>
                     </tr>
                   ))}
-                  {orders.length === 0 && <tr><td colSpan={8} className="py-8 text-center text-zinc-500">Sin pedidos</td></tr>}
+                  {orders.length === 0 && <tr><td colSpan={8} className="py-8 text-center text-zinc-500">{t('admin.orders.empty')}</td></tr>}
                 </tbody>
               </table>
             </div>
@@ -842,11 +852,11 @@ export function AdminPage() {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <BookOpen className="size-5 text-zinc-500" />
-                <span className="text-sm text-zinc-500">{blogPosts.length} posts</span>
+                <span className="text-sm text-zinc-500">{t('admin.blog.count', { count: blogPosts.length })}</span>
               </div>
               <button onClick={() => { setEditingBlogPost(null); setBlogForm({ title: '', slug: '', tag: '', excerpt: '', content: '', author: '', read_time: '', published: false }); setShowBlogForm(true) }}
                 className="flex items-center gap-2 text-sm bg-white/10 rounded-lg px-4 py-2 hover:bg-white/20 transition-colors cursor-pointer border-none text-white">
-                <Plus className="size-4" /> Nuevo Post
+                <Plus className="size-4" /> {t('admin.blog.new')}
               </button>
             </div>
 
@@ -855,46 +865,46 @@ export function AdminPage() {
             {showBlogForm && (
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => setShowBlogForm(false)}>
                 <div className="bg-zinc-900 border border-white/[0.1] rounded-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-                  <h3 className="text-lg font-semibold mb-4">{editingBlogPost ? 'Editar post' : 'Nuevo post'}</h3>
+                  <h3 className="text-lg font-semibold mb-4">{editingBlogPost ? t('admin.blog.edit_title') : t('admin.blog.new_title')}</h3>
                   <form onSubmit={handleBlogSubmit} className="space-y-4">
-                    <input placeholder="Título" value={blogForm.title}
+                    <input placeholder={t('admin.blog.title')} value={blogForm.title}
                       onChange={(e) => setBlogForm({ ...blogForm, title: e.target.value })}
                       className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
                     <div className="flex gap-4">
-                      <input placeholder="Slug (url)" value={blogForm.slug}
+                      <input placeholder={t('admin.blog.slug')} value={blogForm.slug}
                         onChange={(e) => setBlogForm({ ...blogForm, slug: e.target.value })}
                         className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
-                      <input placeholder="Tag" value={blogForm.tag}
+                      <input placeholder={t('admin.blog.tag')} value={blogForm.tag}
                         onChange={(e) => setBlogForm({ ...blogForm, tag: e.target.value })}
                         className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
                     </div>
                     <div className="flex gap-4">
-                      <input placeholder="Autor" value={blogForm.author}
+                      <input placeholder={t('admin.blog.author')} value={blogForm.author}
                         onChange={(e) => setBlogForm({ ...blogForm, author: e.target.value })}
                         className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
-                      <input placeholder="Tiempo lectura (ej: 5 min)" value={blogForm.read_time}
+                      <input placeholder={t('admin.blog.read_time')} value={blogForm.read_time}
                         onChange={(e) => setBlogForm({ ...blogForm, read_time: e.target.value })}
                         className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
                     </div>
-                    <textarea placeholder="Extracto (resumen breve)" value={blogForm.excerpt}
+                    <textarea placeholder={t('admin.blog.excerpt')} value={blogForm.excerpt}
                       onChange={(e) => setBlogForm({ ...blogForm, excerpt: e.target.value })} rows={2}
                       className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
-                    <textarea placeholder="Contenido (markdown)" value={blogForm.content}
+                    <textarea placeholder={t('admin.blog.content')} value={blogForm.content}
                       onChange={(e) => setBlogForm({ ...blogForm, content: e.target.value })} rows={6}
                       className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30 font-mono" required />
                     <label className="flex items-center gap-3 text-sm text-zinc-400">
                       <input type="checkbox" checked={blogForm.published}
                         onChange={(e) => setBlogForm({ ...blogForm, published: e.target.checked })}
                         className="size-4 rounded border-white/20 bg-white/5 text-white focus:ring-0 cursor-pointer" />
-                      Publicado
+                      {t('admin.blog.published')}
                     </label>
                     <div className="flex gap-3 pt-2">
                       <button type="submit" className="flex-1 py-2.5 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors cursor-pointer border-none">
-                        {editingBlogPost ? 'Guardar' : 'Crear post'}
+                        {editingBlogPost ? t('common.save') : t('common.create')}
                       </button>
                       <button type="button" onClick={() => setShowBlogForm(false)}
                         className="px-4 py-2.5 rounded-lg border border-white/[0.1] text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer bg-transparent">
-                        Cancelar
+                        {t('common.cancel')}
                       </button>
                     </div>
                   </form>
@@ -906,12 +916,12 @@ export function AdminPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-white/[0.06] bg-white/[0.02]">
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">ID</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Título</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Tag</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Estado</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Fecha</th>
-                    <th className="text-right py-3 px-4 text-zinc-500 font-medium">Acciones</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{blogCols[0]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{blogCols[1]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{blogCols[2]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{blogCols[3]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{blogCols[4]}</th>
+                    <th className="text-right py-3 px-4 text-zinc-500 font-medium">{blogCols[5]}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -924,7 +934,7 @@ export function AdminPage() {
                       </td>
                       <td className="py-3 px-4">
                         <span className={`text-xs px-2 py-0.5 rounded-full ${p.published ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
-                          {p.published ? 'Publicado' : 'Borrador'}
+                          {p.published ? t('admin.blog.status_published') : t('admin.blog.status_draft')}
                         </span>
                       </td>
                       <td className="py-3 px-4 text-zinc-500 text-xs">{p.created_at?.slice(0, 10)}</td>
@@ -932,10 +942,10 @@ export function AdminPage() {
                         <div className="flex items-center justify-end gap-2">
                           <button onClick={() => handleTogglePublish(p)}
                             className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent">
-                            {p.published ? 'Archivar' : 'Publicar'}
+                            {p.published ? t('admin.blog.archive') : t('admin.blog.publish')}
                           </button>
                           <button onClick={() => handleEditBlogPost(p)}
-                            className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent">Editar</button>
+                            className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent">{t('common.edit')}</button>
                           <button onClick={() => setPasswordModal({ action: 'delete_blog_post', id: p.id })}
                             className="text-xs px-2 py-1 rounded border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer bg-transparent">
                             <Trash2 className="size-3.5" />
@@ -944,7 +954,7 @@ export function AdminPage() {
                       </td>
                     </tr>
                   ))}
-                  {blogPosts.length === 0 && !blogError && <tr><td colSpan={6} className="py-8 text-center text-zinc-500">Sin posts</td></tr>}
+                  {blogPosts.length === 0 && !blogError && <tr><td colSpan={6} className="py-8 text-center text-zinc-500">{t('admin.blog.empty')}</td></tr>}
                 </tbody>
               </table>
             </div>
@@ -957,11 +967,11 @@ export function AdminPage() {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <Star className="size-5 text-zinc-500" />
-                <span className="text-sm text-zinc-500">{testimonials.length} testimonios</span>
+                <span className="text-sm text-zinc-500">{t('admin.testimonials.count', { count: testimonials.length })}</span>
               </div>
               <button onClick={() => { setEditingTestimonial(null); setTestForm({ name: '', role: '', company: '', content: '', avatar_url: '', rating: 5, featured: false }); setShowTestForm(true) }}
                 className="flex items-center gap-2 text-sm bg-white/10 rounded-lg px-4 py-2 hover:bg-white/20 transition-colors cursor-pointer border-none text-white">
-                <Plus className="size-4" /> Nuevo testimonio
+                <Plus className="size-4" /> {t('admin.testimonials.new')}
               </button>
             </div>
 
@@ -970,28 +980,28 @@ export function AdminPage() {
             {showTestForm && (
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => setShowTestForm(false)}>
                 <div className="bg-zinc-900 border border-white/[0.1] rounded-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-                  <h3 className="text-lg font-semibold mb-4">{editingTestimonial ? 'Editar testimonio' : 'Nuevo testimonio'}</h3>
+                  <h3 className="text-lg font-semibold mb-4">{editingTestimonial ? t('admin.testimonials.edit_title') : t('admin.testimonials.new_title')}</h3>
                   <form onSubmit={handleTestSubmit} className="space-y-4">
                     <div className="flex gap-4">
-                      <input placeholder="Nombre" value={testForm.name}
+                      <input placeholder={t('admin.testimonials.name')} value={testForm.name}
                         onChange={(e) => setTestForm({ ...testForm, name: e.target.value })}
                         className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
-                      <input placeholder="Cargo (ej: CEO)" value={testForm.role}
+                      <input placeholder={t('admin.testimonials.role')} value={testForm.role}
                         onChange={(e) => setTestForm({ ...testForm, role: e.target.value })}
                         className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
                     </div>
-                    <input placeholder="Empresa" value={testForm.company}
+                    <input placeholder={t('admin.testimonials.company')} value={testForm.company}
                       onChange={(e) => setTestForm({ ...testForm, company: e.target.value })}
                       className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
-                    <input placeholder="URL del avatar" value={testForm.avatar_url}
+                    <input placeholder={t('admin.testimonials.avatar_url')} value={testForm.avatar_url}
                       onChange={(e) => setTestForm({ ...testForm, avatar_url: e.target.value })}
                       className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
-                    <textarea placeholder="Contenido del testimonio" value={testForm.content}
+                    <textarea placeholder={t('admin.testimonials.content')} value={testForm.content}
                       onChange={(e) => setTestForm({ ...testForm, content: e.target.value })} rows={4}
                       className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
                     <div className="flex gap-4 items-end">
                       <div>
-                        <label className="text-xs text-zinc-500 mb-1 block">Valoración (1-5)</label>
+                        <label className="text-xs text-zinc-500 mb-1 block">{t('admin.testimonials.rating')}</label>
                         <input type="number" min={1} max={5} value={testForm.rating}
                           onChange={(e) => setTestForm({ ...testForm, rating: parseInt(e.target.value) || 5 })}
                           className="w-20 bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30" />
@@ -1000,16 +1010,16 @@ export function AdminPage() {
                         <input type="checkbox" checked={testForm.featured}
                           onChange={(e) => setTestForm({ ...testForm, featured: e.target.checked })}
                           className="size-4 rounded border-white/20 bg-white/5 text-white focus:ring-0 cursor-pointer" />
-                        Destacado
+                        {t('admin.testimonials.featured')}
                       </label>
                     </div>
                     <div className="flex gap-3 pt-2">
                       <button type="submit" className="flex-1 py-2.5 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors cursor-pointer border-none">
-                        {editingTestimonial ? 'Guardar' : 'Crear testimonio'}
+                        {editingTestimonial ? t('common.save') : t('common.create')}
                       </button>
                       <button type="button" onClick={() => setShowTestForm(false)}
                         className="px-4 py-2.5 rounded-lg border border-white/[0.1] text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer bg-transparent">
-                        Cancelar
+                        {t('common.cancel')}
                       </button>
                     </div>
                   </form>
@@ -1021,31 +1031,31 @@ export function AdminPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-white/[0.06] bg-white/[0.02]">
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">ID</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Nombre</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Empresa</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Valoración</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Destacado</th>
-                    <th className="text-right py-3 px-4 text-zinc-500 font-medium">Acciones</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{testCols[0]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{testCols[1]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{testCols[2]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{testCols[3]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{testCols[4]}</th>
+                    <th className="text-right py-3 px-4 text-zinc-500 font-medium">{testCols[5]}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {testimonials.map((t) => (
-                    <tr key={t.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
-                      <td className="py-3 px-4 text-zinc-400">{t.id}</td>
-                      <td className="py-3 px-4">{t.name}</td>
-                      <td className="py-3 px-4 text-zinc-400">{t.company || '-'}</td>
+                  {testimonials.map((tm) => (
+                    <tr key={tm.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+                      <td className="py-3 px-4 text-zinc-400">{tm.id}</td>
+                      <td className="py-3 px-4">{tm.name}</td>
+                      <td className="py-3 px-4 text-zinc-400">{tm.company || '-'}</td>
                       <td className="py-3 px-4">
-                        <span className="text-yellow-400">{'★'.repeat(t.rating)}{'☆'.repeat(5 - t.rating)}</span>
+                        <span className="text-yellow-400">{'★'.repeat(tm.rating)}{'☆'.repeat(5 - tm.rating)}</span>
                       </td>
                       <td className="py-3 px-4">
-                        {t.featured ? <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-400">Sí</span> : <span className="text-xs text-zinc-500">No</span>}
+                        {tm.featured ? <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-400">{t('common.yes')}</span> : <span className="text-xs text-zinc-500">{t('common.no')}</span>}
                       </td>
                       <td className="py-3 px-4 text-right">
                         <div className="flex items-center justify-end gap-2">
-                          <button onClick={() => handleEditTestimonial(t)}
-                            className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent">Editar</button>
-                          <button onClick={() => setPasswordModal({ action: 'delete_testimonial', id: t.id })}
+                          <button onClick={() => handleEditTestimonial(tm)}
+                            className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent">{t('common.edit')}</button>
+                          <button onClick={() => setPasswordModal({ action: 'delete_testimonial', id: tm.id })}
                             className="text-xs px-2 py-1 rounded border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer bg-transparent">
                             <Trash2 className="size-3.5" />
                           </button>
@@ -1066,11 +1076,11 @@ export function AdminPage() {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <HelpCircle className="size-5 text-zinc-500" />
-                <span className="text-sm text-zinc-500">{faqs.length} FAQs</span>
+                <span className="text-sm text-zinc-500">{t('admin.faq.count', { count: faqs.length })}</span>
               </div>
               <button onClick={() => { setEditingFaq(null); setFaqForm({ question: '', answer: '', category: '', published: false, order: faqs.length + 1 }); setShowFaqForm(true) }}
                 className="flex items-center gap-2 text-sm bg-white/10 rounded-lg px-4 py-2 hover:bg-white/20 transition-colors cursor-pointer border-none text-white">
-                <Plus className="size-4" /> Nueva FAQ
+                <Plus className="size-4" /> {t('admin.faq.new')}
               </button>
             </div>
 
@@ -1079,18 +1089,18 @@ export function AdminPage() {
             {showFaqForm && (
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => setShowFaqForm(false)}>
                 <div className="bg-zinc-900 border border-white/[0.1] rounded-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-                  <h3 className="text-lg font-semibold mb-4">{editingFaq ? 'Editar FAQ' : 'Nueva FAQ'}</h3>
+                  <h3 className="text-lg font-semibold mb-4">{editingFaq ? t('admin.faq.edit_title') : t('admin.faq.new_title')}</h3>
                   <form onSubmit={handleFaqSubmit} className="space-y-4">
-                    <input placeholder="Pregunta" value={faqForm.question}
+                    <input placeholder={t('admin.faq.question')} value={faqForm.question}
                       onChange={(e) => setFaqForm({ ...faqForm, question: e.target.value })}
                       className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
-                    <textarea placeholder="Respuesta" value={faqForm.answer}
+                    <textarea placeholder={t('admin.faq.answer')} value={faqForm.answer}
                       onChange={(e) => setFaqForm({ ...faqForm, answer: e.target.value })} rows={5}
                       className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
                     <div className="flex gap-4 items-end">
                       <div className="flex-1">
-                        <label className="text-xs text-zinc-500 mb-1 block">Categoría</label>
-                        <input placeholder="Categoría" value={faqForm.category}
+                        <label className="text-xs text-zinc-500 mb-1 block">{t('admin.faq.category')}</label>
+                        <input placeholder={t('admin.faq.category')} value={faqForm.category}
                           onChange={(e) => setFaqForm({ ...faqForm, category: e.target.value })}
                           className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
                       </div>
@@ -1098,16 +1108,16 @@ export function AdminPage() {
                         <input type="checkbox" checked={faqForm.published}
                           onChange={(e) => setFaqForm({ ...faqForm, published: e.target.checked })}
                           className="size-4 rounded border-white/20 bg-white/5 text-white focus:ring-0 cursor-pointer" />
-                        Publicado
+                        {t('admin.faq.published')}
                       </label>
                     </div>
                     <div className="flex gap-3 pt-2">
                       <button type="submit" className="flex-1 py-2.5 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors cursor-pointer border-none">
-                        {editingFaq ? 'Guardar' : 'Crear FAQ'}
+                        {editingFaq ? t('common.save') : t('common.create')}
                       </button>
                       <button type="button" onClick={() => setShowFaqForm(false)}
                         className="px-4 py-2.5 rounded-lg border border-white/[0.1] text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer bg-transparent">
-                        Cancelar
+                        {t('common.cancel')}
                       </button>
                     </div>
                   </form>
@@ -1119,11 +1129,11 @@ export function AdminPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-white/[0.06] bg-white/[0.02]">
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Orden</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Pregunta</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Categoría</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Publicado</th>
-                    <th className="text-right py-3 px-4 text-zinc-500 font-medium">Acciones</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{faqCols[0]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{faqCols[1]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{faqCols[2]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{faqCols[3]}</th>
+                    <th className="text-right py-3 px-4 text-zinc-500 font-medium">{faqCols[4]}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1136,23 +1146,23 @@ export function AdminPage() {
                       </td>
                       <td className="py-3 px-4">
                         <span className={`text-xs px-2 py-0.5 rounded-full ${faq.published ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
-                          {faq.published ? 'Sí' : 'No'}
+                          {faq.published ? t('common.yes') : t('common.no')}
                         </span>
                       </td>
                       <td className="py-3 px-4 text-right">
                         <div className="flex items-center justify-end gap-1">
                           <button onClick={() => handleMoveFaq(faq, 'up')}
                             className="text-xs p-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent"
-                            title="Subir">
+                            title={t('admin.faq.move_up')}>
                             <ChevronUp className="size-3.5" />
                           </button>
                           <button onClick={() => handleMoveFaq(faq, 'down')}
                             className="text-xs p-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent"
-                            title="Bajar">
+                            title={t('admin.faq.move_down')}>
                             <ChevronDown className="size-3.5" />
                           </button>
                           <button onClick={() => handleEditFaq(faq)}
-                            className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent ml-1">Editar</button>
+                            className="text-xs px-2 py-1 rounded border border-white/[0.1] text-zinc-400 hover:text-white hover:border-white/30 transition-colors cursor-pointer bg-transparent ml-1">{t('common.edit')}</button>
                           <button onClick={() => setPasswordModal({ action: 'delete_faq', id: faq.id })}
                             className="text-xs px-2 py-1 rounded border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer bg-transparent">
                             <Trash2 className="size-3.5" />
@@ -1178,18 +1188,18 @@ export function AdminPage() {
                 <option value="">Todas las acciones</option>
                 {logActions.map((a) => <option key={a} value={a}>{a}</option>)}
               </select>
-              <span className="text-sm text-zinc-500 self-center">{logsTotal} registros</span>
+              <span className="text-sm text-zinc-500 self-center">{t('admin.activity.count', { count: logsTotal })}</span>
             </div>
             <div className="rounded-xl border border-white/[0.06] overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-white/[0.06] bg-white/[0.02]">
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">ID</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Usuario</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Acción</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">IP</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Detalles</th>
-                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">Fecha</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{logCols[0]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{logCols[1]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{logCols[2]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{logCols[3]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{logCols[4]}</th>
+                    <th className="text-left py-3 px-4 text-zinc-500 font-medium">{logCols[5]}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1228,7 +1238,7 @@ export function AdminPage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => { setTimelineOrder(null); setTimeline([]) }}>
             <div className="bg-zinc-900 border border-white/[0.1] rounded-xl p-6 w-full max-w-lg mx-4 max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Historial — #{timelineOrder.id} {timelineOrder.service}</h3>
+                <h3 className="text-lg font-semibold">{t('admin.orders.history')} — #{timelineOrder.id} {timelineOrder.service}</h3>
                 <button onClick={() => { setTimelineOrder(null); setTimeline([]) }}
                   className="text-zinc-500 hover:text-white transition-colors cursor-pointer bg-transparent border-none text-lg">✕</button>
               </div>
@@ -1236,7 +1246,7 @@ export function AdminPage() {
                 {timeline.map((t: any) => (
                   <div key={t.id} className="rounded-lg bg-white/[0.02] border border-white/[0.04] p-3">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-medium text-zinc-300">{t.field === 'status' ? 'Estado' : t.field === 'amount' ? 'Importe' : t.field === 'service' ? 'Servicio' : t.field}</span>
+                      <span className="text-xs font-medium text-zinc-300">{t.field === 'status' ? t('dashboard.orders.field_status') : t.field === 'amount' ? 'Importe' : t.field === 'service' ? 'Servicio' : t.field}</span>
                       <span className="text-[10px] text-zinc-600">{t.created_at}</span>
                     </div>
                     {t.field === 'status' ? (
@@ -1251,7 +1261,7 @@ export function AdminPage() {
                     <p className="text-[10px] text-zinc-700 mt-1">por {t.changed_by}</p>
                   </div>
                 ))}
-                {timeline.length === 0 && <p className="text-center py-8 text-zinc-500 text-sm">Sin cambios registrados</p>}
+                {timeline.length === 0 && <p className="text-center py-8 text-zinc-500 text-sm">{t('dashboard.orders.timeline_empty')}</p>}
               </div>
             </div>
           </div>
@@ -1262,7 +1272,7 @@ export function AdminPage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => { setPhotoOrder(null); setPhotos([]) }}>
             <div className="bg-zinc-900 border border-white/[0.1] rounded-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Fotos de pedido #{photoOrder.id} — {photoOrder.service}</h3>
+                <h3 className="text-lg font-semibold">{t('admin.orders.photos')} #{photoOrder.id} — {photoOrder.service}</h3>
                 <button onClick={() => { setPhotoOrder(null); setPhotos([]) }}
                   className="text-zinc-500 hover:text-white transition-colors cursor-pointer bg-transparent border-none text-lg">✕</button>
               </div>
@@ -1285,7 +1295,7 @@ export function AdminPage() {
                     <img src={p.image_data} alt={p.caption || 'Foto'} className="w-full h-40 object-cover" />
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <button onClick={() => setPasswordModal({ action: 'delete_photo', id: p.id })}
-                        className="px-3 py-1.5 rounded bg-red-500/80 text-white text-xs cursor-pointer border-none hover:bg-red-500 transition-colors">Eliminar</button>
+                        className="px-3 py-1.5 rounded bg-red-500/80 text-white text-xs cursor-pointer border-none hover:bg-red-500 transition-colors">{t('common.delete')}</button>
                     </div>
                     {p.caption && <div className="p-2 text-xs text-zinc-400">{p.caption}</div>}
                   </div>
@@ -1311,10 +1321,10 @@ export function AdminPage() {
                 <button onClick={() => { const pm = passwordModal; if (pm?.action === 'delete_user') handleDeleteUser(pm.id); else if (pm?.action === 'role') handleToggleRole(pm.id, pm.extra || 'user'); else if (pm?.action === 'delete_message') handleDeleteMessage(pm.id); else if (pm?.action === 'delete_order') handleDeleteOrder(pm.id); else if (pm?.action === 'delete_photo') handleDeletePhoto(pm.id); else if (pm?.action === 'delete_all_photos') handleDeleteAllPhotos(); else if (pm?.action === 'toggle_maintenance') handleToggleMaintenance(); else if (pm?.action === 'delete_blog_post') handleDeleteBlogPost(pm.id); else if (pm?.action === 'delete_testimonial') handleDeleteTestimonial(pm.id); else if (pm?.action === 'delete_faq') handleDeleteFaq(pm.id) }}
                   disabled={!confirmPassword || userActionLoading !== null}
                   className="flex-1 py-2.5 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors disabled:opacity-50 cursor-pointer border-none">
-                  {userActionLoading !== null ? 'Verificando...' : 'Confirmar'}
+                  {userActionLoading !== null ? 'Verificando...' : t('common.confirm')}
                 </button>
                 <button onClick={() => { setPasswordModal(null); setConfirmPassword(''); setPasswordError('') }}
-                  className="px-4 py-2.5 rounded-lg border border-white/[0.1] text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer bg-transparent">Cancelar</button>
+                  className="px-4 py-2.5 rounded-lg border border-white/[0.1] text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer bg-transparent">{t('common.cancel')}</button>
               </div>
             </div>
           </div>

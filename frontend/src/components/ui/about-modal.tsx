@@ -1,14 +1,23 @@
+import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Code, Heart, Target, Zap } from 'lucide-react'
 
-const values = [
-  { icon: Code, title: 'Tecnología con propósito', desc: 'No usamos tecnología por moda. Cada decisión técnica responde a un objetivo de negocio real.' },
-  { icon: Heart, title: 'Diseño centrado en personas', desc: 'Detrás de cada interfaz hay un ser humano. Construimos experiencias que importan.' },
-  { icon: Target, title: 'Resultados medibles', desc: 'Si no se puede medir, no se puede mejorar. Cada proyecto tiene KPIs claros desde el día uno.' },
-  { icon: Zap, title: 'Mejora continua', desc: 'El lanzamiento es solo el principio. Iteramos, optimizamos y evolucionamos contigo.' },
-]
-
 export function AboutModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { t } = useTranslation()
+  const principles = t('about_modal.principles', { returnObjects: true }) as { title: string; desc: string }[]
+  const values = [
+    { icon: Code, title: principles[0]?.title, desc: principles[0]?.desc },
+    { icon: Heart, title: principles[1]?.title, desc: principles[1]?.desc },
+    { icon: Target, title: principles[2]?.title, desc: principles[2]?.desc },
+    { icon: Zap, title: principles[3]?.title, desc: principles[3]?.desc },
+  ]
+
+  const stats = [
+    { label: t('stats.projects'), value: '40+' },
+    { label: t('stats.experience'), value: '6+' },
+    { label: t('stats.clients'), value: '98%' },
+    { label: t('stats.response'), value: '24h' },
+  ]
   return (
     <AnimatePresence>
       {open && (
@@ -35,24 +44,17 @@ export function AboutModal({ open, onClose }: { open: boolean; onClose: () => vo
             </button>
 
             <div className="mb-10">
-              <span className="inline-block text-[11px] tracking-[0.25em] uppercase text-zinc-600 mb-4 font-mono">Sobre nosotros</span>
+              <span className="inline-block text-[11px] tracking-[0.25em] uppercase text-zinc-600 mb-4 font-mono">{t('about_modal.badge')}</span>
               <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight mb-6">
-                Construimos el futuro digital de tu negocio.
+                {t('about_modal.heading')}
               </h2>
               <p className="text-sm text-zinc-400 leading-relaxed max-w-2xl">
-                En Vulnify creemos que la tecnología debería ser invisible. No diseñamos páginas bonitas: creamos ecosistemas digitales 
-                que trabajan para ti. Combinamos desarrollo web, inteligencia artificial y estrategia para convertir tu presencia online 
-                en una máquina de crecimiento.
+                {t('about_modal.body')}
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-4 mb-10">
-              {[
-                { label: 'Proyectos entregados', value: '40+' },
-                { label: 'Años de experiencia', value: '6+' },
-                { label: 'Clientes satisfechos', value: '98%' },
-                { label: 'Respuesta inicial', value: '24h' },
-              ].map((s) => (
+              {stats.map((s) => (
                 <div key={s.label} className="rounded-xl bg-white/[0.02] border border-white/[0.06] p-5 text-center">
                   <div className="text-2xl font-bold text-white mb-1">{s.value}</div>
                   <div className="text-xs text-zinc-600">{s.label}</div>
@@ -61,7 +63,7 @@ export function AboutModal({ open, onClose }: { open: boolean; onClose: () => vo
             </div>
 
             <div className="mb-10">
-              <h3 className="text-sm font-medium text-white mb-6 tracking-wide">Nuestros principios</h3>
+              <h3 className="text-sm font-medium text-white mb-6 tracking-wide">{t('about_modal.principles_heading')}</h3>
               <div className="grid md:grid-cols-2 gap-4">
                 {values.map((v) => (
                   <div key={v.title} className="rounded-xl bg-white/[0.02] border border-white/[0.06] p-5">
@@ -80,10 +82,10 @@ export function AboutModal({ open, onClose }: { open: boolean; onClose: () => vo
                 DR
               </div>
               <div className="flex-1">
-                <div className="text-sm font-medium text-white">Dani Ramirez</div>
-                <div className="text-xs text-zinc-600">CTO & Fundador de Vulnify</div>
+                <div className="text-sm font-medium text-white">{t('about_modal.founder_name')}</div>
+                <div className="text-xs text-zinc-600">{t('about_modal.founder_role')}</div>
                 <p className="text-xs text-zinc-500 mt-2 leading-relaxed">
-                  +6 años construyendo productos digitales. Ex-CTO de startups. Convencido de que la tecnología bien aplicada transforma negocios.
+                  {t('about_modal.founder_bio')}
                 </p>
               </div>
             </div>

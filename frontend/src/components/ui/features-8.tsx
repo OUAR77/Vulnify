@@ -1,7 +1,9 @@
 import { Shield, Users } from 'lucide-react'
 import { BorderBeam } from '@/components/ui/border-beam'
+import { useTranslation } from 'react-i18next'
 
 export function Features() {
+  const { t } = useTranslation()
   return (
     <section className="py-16 md:py-32">
       <div className="mx-auto max-w-3xl lg:max-w-5xl px-6">
@@ -16,7 +18,7 @@ export function Features() {
                   </svg>
                   <span className="mx-auto block w-fit text-5xl font-semibold text-white">100%</span>
                 </div>
-                <h2 className="mt-6 text-center text-3xl font-semibold text-white">Personalizable</h2>
+                <h2 className="mt-6 text-center text-3xl font-semibold text-white">{t('features.customizable')}</h2>
               </div>
             </div>
             <div className="relative col-span-full overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] sm:col-span-3 lg:col-span-2 p-[1px]">
@@ -39,8 +41,8 @@ export function Features() {
                   </svg>
                 </div>
                 <div className="relative z-10 mt-6 space-y-2 text-center">
-                  <h2 className="text-lg font-medium text-white">Seguro por defecto</h2>
-                  <p className="text-sm text-zinc-500">Protegemos tu web con SSL, cifrado y buenas prácticas desde el primer día.</p>
+                  <h2 className="text-lg font-medium text-white">{t('features.secure')}</h2>
+                  <p className="text-sm text-zinc-500">{t('features.secure_desc')}</p>
                 </div>
               </div>
             </div>
@@ -68,8 +70,8 @@ export function Features() {
                   </svg>
                 </div>
                 <div className="relative z-10 mt-14 space-y-2 text-center">
-                  <h2 className="text-lg font-medium text-white">Velocidad extrema</h2>
-                  <p className="text-sm text-zinc-500">Optimizamos cada byte para que tu web cargue en menos de un segundo.</p>
+                  <h2 className="text-lg font-medium text-white">{t('features.speed')}</h2>
+                  <p className="text-sm text-zinc-500">{t('features.speed_desc')}</p>
                 </div>
               </div>
             </div>
@@ -81,8 +83,8 @@ export function Features() {
                     <Shield className="m-auto size-5 text-zinc-400" strokeWidth={1} />
                   </div>
                   <div className="space-y-2">
-                    <h2 className="text-lg font-medium text-white">Tecnología moderna</h2>
-                    <p className="text-sm text-zinc-500">React, Node.js, APIs, bases de datos. Stack actual para negocios que miran al futuro.</p>
+                    <h2 className="text-lg font-medium text-white">{t('features.modern')}</h2>
+                    <p className="text-sm text-zinc-500">{t('features.modern_desc')}</p>
                   </div>
                 </div>
                 <div className="rounded-tl-(--radius) relative -mb-6 -mr-6 mt-6 h-fit border-l border-t border-white/[0.06] p-6 py-6 sm:ml-6">
@@ -111,14 +113,14 @@ export function Features() {
                     <Users className="m-auto size-6 text-zinc-400" strokeWidth={1} />
                   </div>
                   <div className="space-y-2">
-                    <h2 className="text-lg font-medium text-white">Soporte continuo</h2>
-                    <p className="text-sm text-zinc-500">Te acompañamos en cada etapa: desde el diseño hasta el lanzamiento y más allá.</p>
+                    <h2 className="text-lg font-medium text-white">{t('features.support')}</h2>
+                    <p className="text-sm text-zinc-500">{t('features.support_desc')}</p>
                   </div>
                 </div>
                 <div className="before:bg-white/[0.04] relative mt-6 before:absolute before:inset-0 before:mx-auto before:w-px sm:-my-6 sm:-mr-6">
                   <div className="relative flex h-full flex-col justify-center space-y-6 py-6">
                     <div className="relative flex w-[calc(50%+0.875rem)] items-center justify-end gap-2">
-                      <span className="block h-fit rounded border border-white/[0.06] px-2 py-1 text-xs text-zinc-600">Cliente</span>
+                      <span className="block h-fit rounded border border-white/[0.06] px-2 py-1 text-xs text-zinc-600">{t('features.client_label')}</span>
                       <div className="ring-black size-7 ring-4">
                         <img className="size-full rounded-full" src="https://avatars.githubusercontent.com/u/102558960?v=4" alt="" />
                       </div>
@@ -127,10 +129,10 @@ export function Features() {
                       <div className="ring-black size-8 ring-4">
                         <img className="size-full rounded-full" src="https://avatars.githubusercontent.com/u/47919550?v=4" alt="" />
                       </div>
-                      <span className="block h-fit rounded border border-white/[0.06] px-3 py-1 text-xs text-zinc-600">Vulnify</span>
+                      <span className="block h-fit rounded border border-white/[0.06] px-3 py-1 text-xs text-zinc-600">{t('features.vulnify_label')}</span>
                     </div>
                     <div className="relative flex w-[calc(50%+0.875rem)] items-center justify-end gap-2">
-                      <span className="block h-fit rounded border border-white/[0.06] px-2 py-1 text-xs text-zinc-600">Cliente</span>
+                      <span className="block h-fit rounded border border-white/[0.06] px-2 py-1 text-xs text-zinc-600">{t('features.client_label')}</span>
                       <div className="ring-black size-7 ring-4">
                         <img className="size-full rounded-full" src="https://avatars.githubusercontent.com/u/31113941?v=4" alt="" />
                       </div>

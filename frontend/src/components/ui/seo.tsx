@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async"
+import { useTranslation } from 'react-i18next'
 
 interface SEOProps {
   title?: string
@@ -8,8 +9,11 @@ interface SEOProps {
 const SITE = "https://vulnify.es"
 
 export function SEO({ title, description }: SEOProps) {
-  const fullTitle = title ? `${title} · Vulnify` : "Vulnify · Desarrollo Web & IA"
-  const desc = description || "Creamos tu web con inteligencia artificial. Desarrollo web, integraciones IA, APIs y consultoría digital para empresas."
+  const { t } = useTranslation()
+  const defaultTitle = t('seo.default_title')
+  const defaultDescription = t('seo.default_description')
+  const fullTitle = title ? `${title} · Vulnify` : defaultTitle
+  const desc = description || defaultDescription
 
   return (
     <Helmet>

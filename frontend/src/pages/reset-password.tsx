@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { apiResetPassword } from '@/lib/api'
+import { useTranslation } from 'react-i18next'
 
 export function ResetPasswordPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const token = searchParams.get('token') || ''

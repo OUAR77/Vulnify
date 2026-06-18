@@ -14,6 +14,7 @@ import { SEO } from '@/components/ui/seo'
 import { ErrorBoundary } from '@/components/ui/error-boundary'
 import { AuthProvider } from '@/lib/auth-context'
 import { HelmetProvider } from 'react-helmet-async'
+import '@/lib/i18n'
 
 function HomePage() {
   return (

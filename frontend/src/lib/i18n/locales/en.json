@@ -1,0 +1,539 @@
+{
+  "common": {
+    "brand": "VULNIFY",
+    "loading": "Loading...",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "back": "Back",
+    "back_to_website": "Back to website",
+    "search": "Search",
+    "no_results": "No results",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "or": "or"
+  },
+  "nav": {
+    "servicios": "Services",
+    "trabajo": "Work",
+    "proceso": "Process",
+    "contacto": "Contact",
+    "presupuesto": "Quote",
+    "solicitar_presupuesto": "Request a quote",
+    "admin": "Admin",
+    "mi_panel": "My dashboard",
+    "cerrar_sesion": "Log out",
+    "iniciar_sesion": "Log in",
+    "registrarse": "Sign up",
+    "panel_admin": "Admin Panel"
+  },
+  "header": {
+    "menu_aria": "Menu",
+    "quote_button": "Quote"
+  },
+  "floating": {
+    "whatsapp_aria": "WhatsApp",
+    "contact_aria": "Contact"
+  },
+  "footer": {
+    "description": "Web development and artificial intelligence to grow your business.",
+    "copyright": "© {year} Vulnify. All rights reserved.",
+    "email": "hola@vulnify.es",
+    "column_services": "Services",
+    "column_company": "Company",
+    "column_legal": "Legal",
+    "service_web": "Web Development",
+    "service_ia": "AI Integrations",
+    "service_apis": "APIs & Backend",
+    "service_consulting": "Consulting",
+    "company_about": "About us",
+    "company_blog": "Blog",
+    "company_cases": "Case studies",
+    "company_contact": "Contact",
+    "legal_privacy": "Privacy",
+    "legal_terms": "Terms",
+    "legal_cookies": "Cookies"
+  },
+  "cookie_banner": {
+    "text": "We use cookies to improve your experience. By continuing to browse, you accept our",
+    "policy_link": "cookie policy",
+    "accept": "Accept",
+    "reject": "Reject"
+  },
+  "hero": {
+    "label": "01 — Digital Architecture",
+    "words": ["CREATE", "OPTIMIZE", "SCALE"],
+    "subtitle": "We don't build pages. We design digital ecosystems with integrated artificial intelligence so your business can grow.",
+    "cta_audit": "Request a free audit",
+    "cta_whatsapp": "Chat on WhatsApp",
+    "cta_presupuesto": "Request a quote",
+    "cta_conocenos": "About us →"
+  },
+  "stats": {
+    "projects": "Projects delivered",
+    "experience": "Years of experience",
+    "clients": "Satisfied clients",
+    "response": "Initial response"
+  },
+  "problem": {
+    "label": "The Problem",
+    "heading": "Your website isn't working for you. It should be.",
+    "description": "Most websites are static digital brochures. They don't generate leads, don't automate processes, don't adapt to your customers.",
+    "signals_label": "Warning signs",
+    "signals_items": [
+      "No leads in 30 days",
+      "Exhausting manual processes",
+      "Website that doesn't convert"
+    ],
+    "solution_label": "Our solution",
+    "solution_items": [
+      { "title": "Design that converts", "desc": "Ultra-fast interfaces optimized for conversion and SEO." },
+      { "title": "Integrated AI", "desc": "Smart chatbots, automation, and predictive analytics." },
+      { "title": "Continuous growth", "desc": "It's not a finite project. We iterate and scale your digital presence." }
+    ]
+  },
+  "services": {
+    "label": "Services",
+    "heading": "Everything you need to dominate the digital space.",
+    "items": [
+      { "name": "Web Development", "desc": "Corporate websites, online stores and web applications with React, Next.js and responsive design." },
+      { "name": "AI Integrations", "desc": "Smart chatbots, process automation and predictive analytics for your business." },
+      { "name": "APIs & Backend", "desc": "Scalable architecture, robust APIs and admin panels designed to grow." },
+      { "name": "Digital Consulting", "desc": "Tailored technology strategy: from idea to implementation." }
+    ]
+  },
+  "process": {
+    "label": "Process",
+    "heading": "From idea to impact.",
+    "steps": [
+      { "title": "Audit", "desc": "We analyze your business, competition and goals. We define success metrics." },
+      { "title": "Strategy", "desc": "We design the digital architecture: UX, AI, tech stack and roadmap." },
+      { "title": "Build", "desc": "We develop with iterative design. You see progress in real time." },
+      { "title": "Launch", "desc": "Deployment, testing and go-live. We don't stop until it works." }
+    ]
+  },
+  "testimonials": {
+    "label": "Testimonials",
+    "heading": "What our clients say."
+  },
+  "pricing": {
+    "badge_included": "ALL INCLUDED",
+    "badge_no_surprises": "No surprises",
+    "heading": "Tailored pricing",
+    "description": "Every project is unique. We'll send you a transparent, detailed quote with no obligation.",
+    "cta": "Request a quote",
+    "features": [
+      "Custom website with the stack of your choice",
+      "AI integration, chatbots and automation",
+      "UI/UX design optimized for conversion",
+      "Scalable backend, APIs and admin panel",
+      "Technical SEO and performance included",
+      "Ongoing support and maintenance"
+    ],
+    "question": "Shall we talk?",
+    "response_time": "Response within 24h"
+  },
+  "pricing_alt": {
+    "label": "Pricing",
+    "heading": "Transparent investment",
+    "subtitle": "One plan, no surprises",
+    "badge": "SINGLE PLAN",
+    "plan_name": "Tailor-made",
+    "plan_desc": "Custom price based on your project",
+    "features_label": "Everything you need for your web project:"
+  },
+  "faq": {
+    "label": "FAQ",
+    "heading": "Quick answers."
+  },
+  "contact": {
+    "label": "Contact",
+    "heading": "Tell us about your project.",
+    "description": "No obligation. We'll respond within 24 hours with a personalized proposal.",
+    "form": {
+      "name_label": "Full name *",
+      "name_placeholder": "Your name",
+      "email_label": "Email *",
+      "email_placeholder": "you@email.com",
+      "phone_label": "Phone",
+      "phone_placeholder": "+34 600 000 000",
+      "message_label": "Message *",
+      "message_placeholder": "Tell us how we can help you...",
+      "submit": "Send message",
+      "submit_saving": "Sending...",
+      "footnote": "We'll respond within 24h.",
+      "success": "Message sent. We'll respond within 24h.",
+      "error": "Error sending. Please try again."
+    }
+  },
+  "contact_modal": {
+    "heading": "Request a quote",
+    "subtitle": "Tell us about your project and we'll send you a personalized quote within 24h.",
+    "success_title": "Message sent!",
+    "success_subtitle": "We'll respond within 24h."
+  },
+  "final_cta": {
+    "label": "Start today",
+    "heading": "Ready to dominate the digital space?",
+    "description": "Request a free audit of your digital presence and discover how we can help you grow.",
+    "scarcity": "Only 3 projects this month — free audit"
+  },
+  "about_modal": {
+    "badge": "About us",
+    "heading": "We build the digital future of your business.",
+    "body": "At Vulnify we believe technology should be invisible. We don't design pretty pages: we create digital ecosystems that work for you. We combine web development, artificial intelligence and strategy to turn your online presence into a growth machine.",
+    "principles_heading": "Our principles",
+    "principles": [
+      { "title": "Technology with purpose", "desc": "We don't use technology for the sake of trends. Every technical decision responds to a real business goal." },
+      { "title": "Human-centered design", "desc": "Behind every interface there's a human being. We build experiences that matter." },
+      { "title": "Measurable results", "desc": "If it can't be measured, it can't be improved. Every project has clear KPIs from day one." },
+      { "title": "Continuous improvement", "desc": "Launch is just the beginning. We iterate, optimize and evolve with you." }
+    ],
+    "founder_name": "Dani Ramirez",
+    "founder_role": "CTO & Founder of Vulnify",
+    "founder_bio": "+6 years building digital products. Ex-CTO of startups. Convinced that well-applied technology transforms businesses."
+  },
+  "auth": {
+    "heading_login": "Log in",
+    "heading_register": "Create account",
+    "subtitle_login": "Access your dashboard",
+    "subtitle_register": "Sign up to manage your projects",
+    "name_placeholder": "Full name",
+    "email_placeholder": "you@email.com",
+    "password_placeholder": "Password",
+    "login_button": "Log in",
+    "register_button": "Create account",
+    "switch_register": "Don't have an account? Sign up",
+    "switch_login": "Already have an account? Log in",
+    "forgot_password": "Forgot your password?",
+    "show_password": "Show",
+    "hide_password": "Hide",
+    "sidebar_quote": "\"We protect your digital reputation with artificial intelligence.\"",
+    "sidebar_attribution": "~ Vulnify Team"
+  },
+  "forgot_password": {
+    "heading": "Reset password",
+    "subtitle": "We'll send you a link to your email.",
+    "email_placeholder": "you@email.com",
+    "submit": "Send link",
+    "submit_sending": "Sending...",
+    "back": "Back to log in",
+    "success_heading": "Check your email",
+    "success_message": "If the email exists, you'll receive a link to reset your password.",
+    "error": "Error sending request"
+  },
+  "verify_email": {
+    "loading": "Verifying your email...",
+    "success_heading": "Email verified",
+    "success_message": "Email verified successfully",
+    "error_heading": "Error",
+    "error_message": "Error verifying email",
+    "invalid": "Invalid verification link.",
+    "login_button": "Log in",
+    "back_button": "Back"
+  },
+  "dashboard": {
+    "heading": "My dashboard",
+    "back": "Back",
+    "tabs": {
+      "profile": "Profile",
+      "security": "Security",
+      "api_keys": "API Keys",
+      "orders": "Orders",
+      "preferences": "Preferences"
+    },
+    "profile": {
+      "name": "Name",
+      "company": "Company",
+      "bio": "Bio",
+      "save": "Save changes",
+      "saved": "Saved"
+    },
+    "security": {
+      "heading": "Security",
+      "email_heading": "Email verification",
+      "verified": "Verified",
+      "unverified": "Unverified",
+      "verify_instructions": "You'll receive a verification link in your email.",
+      "verify_button": "Verify email",
+      "resend": "Resend",
+      "totp_heading": "Two-step authentication (2FA)",
+      "totp_enabled": "Enabled",
+      "totp_disabled": "Disabled",
+      "totp_scan": "Scan this QR code with Google Authenticator:",
+      "totp_manual": "Or manually:",
+      "totp_placeholder": "000000",
+      "totp_verify": "Enable",
+      "totp_verifying": "Verifying...",
+      "totp_cancel": "Cancel",
+      "totp_disable_instructions": "Enter your 2FA code to disable it:",
+      "totp_disable": "Disable",
+      "totp_disabling": "Disabling...",
+      "totp_setup": "Set up 2FA",
+      "totp_disable_btn": "Disable 2FA"
+    },
+    "api_keys": {
+      "heading": "API Keys",
+      "warning": "Save this key. It won't be shown again.",
+      "copied": "Copied",
+      "placeholder": "API key name",
+      "create": "Create",
+      "empty": "You have no API keys.",
+      "created": "Created:",
+      "confirm_delete": "Delete this API key?"
+    },
+    "orders": {
+      "heading": "My orders",
+      "new_order": "New order",
+      "modal_title": "Request new order",
+      "service_placeholder": "Service (e.g. Web Design, SEO...)",
+      "message_placeholder": "Describe what you need",
+      "budget_placeholder": "Estimated budget (€)",
+      "submit": "Send request",
+      "empty": "You have no orders yet.",
+      "status_pending": "Pending",
+      "status_progress": "In progress",
+      "status_completed": "Completed",
+      "timeline_title": "History — {service}",
+      "field_status": "Status",
+      "timeline_empty": "No changes recorded",
+      "photos_title": "Progress — {service}",
+      "photos_empty": "No progress photos yet"
+    },
+    "preferences": {
+      "heading": "Preferences",
+      "dark_mode": "Dark mode",
+      "dark_mode_sub": "Synced with your account"
+    }
+  },
+  "admin": {
+    "heading": "Admin",
+    "refresh": "Refresh",
+    "tabs": {
+      "stats": "Stats",
+      "users": "Users",
+      "messages": "Messages",
+      "orders": "Orders",
+      "blog": "Blog",
+      "testimonials": "Testimonials",
+      "faq": "FAQ",
+      "activity": "Activity"
+    },
+    "stats": {
+      "users": "Users",
+      "messages": "Messages",
+      "orders": "Orders",
+      "activity": "Activity logs",
+      "maintenance": "Maintenance mode",
+      "maintenance_desc": "Disables public access to the website",
+      "seed_label": "Sample data",
+      "seed_desc": "Insert sample posts, testimonials and FAQs (only if empty)",
+      "seed_button": "Seed Data",
+      "seed_success": "Inserted: {posts} posts, {testimonials} testimonials, {faqs} FAQs",
+      "seed_error": "Error inserting data"
+    },
+    "users": {
+      "search": "Search by name or email...",
+      "search_button": "Search",
+      "columns": ["ID", "Name", "Email", "Role", "Verified", "Created", "Actions"],
+      "make_admin": "Make admin",
+      "remove_admin": "Remove admin"
+    },
+    "messages": {
+      "count": "{count} messages",
+      "export_csv": "CSV",
+      "empty": "No messages",
+      "reply": "Reply",
+      "select_hint": "Select a message to read it"
+    },
+    "orders": {
+      "count": "{count} orders",
+      "export_csv": "CSV",
+      "new": "New order",
+      "edit_title": "Edit order",
+      "new_title": "New order",
+      "customer_name": "Customer name",
+      "customer_email": "Customer email",
+      "service": "Service (e.g. Web Scan, Pentest...)",
+      "description": "Description",
+      "amount": "Amount (€)",
+      "status": "Status",
+      "status_options": ["Pending", "In progress", "Completed", "Canceled"],
+      "columns": ["ID", "Customer", "Email", "Service", "Amount", "Status", "Date", "Actions"],
+      "history": "History",
+      "pdf": "PDF",
+      "photos": "Photos",
+      "empty": "No orders"
+    },
+    "blog": {
+      "count": "{count} posts",
+      "new": "New Post",
+      "edit_title": "Edit post",
+      "new_title": "New post",
+      "title": "Title",
+      "slug": "Slug (url)",
+      "tag": "Tag",
+      "author": "Author",
+      "read_time": "Read time (e.g. 5 min)",
+      "excerpt": "Excerpt (brief summary)",
+      "content": "Content (markdown)",
+      "published": "Published",
+      "columns": ["ID", "Title", "Tag", "Status", "Date", "Actions"],
+      "status_published": "Published",
+      "status_draft": "Draft",
+      "archive": "Archive",
+      "publish": "Publish",
+      "empty": "No posts"
+    },
+    "testimonials": {
+      "count": "{count} testimonials",
+      "new": "New testimonial",
+      "edit_title": "Edit testimonial",
+      "new_title": "New testimonial",
+      "name": "Name",
+      "role": "Role (e.g. CEO)",
+      "company": "Company",
+      "avatar_url": "Avatar URL",
+      "content": "Testimonial content",
+      "rating": "Rating (1-5)",
+      "featured": "Featured",
+      "columns": ["ID", "Name", "Company", "Rating", "Featured", "Actions"]
+    },
+    "faq": {
+      "count": "{count} FAQs",
+      "new": "New FAQ",
+      "edit_title": "Edit FAQ",
+      "new_title": "New FAQ",
+      "question": "Question",
+      "answer": "Answer",
+      "category": "Category",
+      "published": "Published",
+      "columns": ["Order", "Question", "Category", "Published", "Actions"],
+      "move_up": "Move up",
+      "move_down": "Move down"
+    },
+    "activity": {
+      "count": "{count} records",
+      "columns": ["ID", "User", "Action", "IP", "Details", "Date"]
+    }
+  },
+  "not_found": {
+    "title": "404",
+    "description": "The page you're looking for doesn't exist or has been moved.",
+    "go_home": "Go back home",
+    "explore": "Explore"
+  },
+  "blog": {
+    "page_title": "Blog",
+    "page_description": "Resources, guides and articles on web development, AI, SEO and digital marketing.",
+    "back": "← Back to home",
+    "badge": "Blog",
+    "heading": "Resources to grow."
+  },
+  "legal": {
+    "back": "← Back to home",
+    "last_updated": "Last updated:"
+  },
+  "privacidad": {
+    "page_title": "Privacy Policy",
+    "page_description": "Vulnify's Privacy Policy. Learn how we handle your personal data.",
+    "title": "Privacy Policy",
+    "date": "June 1, 2026",
+    "sections": [
+      { "title": "1. Data Controller", "body": "Vulnify (hereinafter \"the company\"), with registered address in Spain, is the data controller for the personal data provided by users through this website." },
+      { "title": "2. Data Collected", "body": "We collect information you provide directly by filling out the contact form: name, email address and phone number. We also collect browsing data through technical and analytical cookies." },
+      { "title": "3. Purpose of Processing", "body": "Your data will be used to: (a) respond to your request for information or quote, (b) send you commercial communications if you have given your consent, and (c) improve our services through browsing analysis." },
+      { "title": "4. Legal Basis", "body": "Processing is based on your explicit consent when submitting the form and, where applicable, on the company's legitimate interest in improving its services." },
+      { "title": "5. Retention", "body": "We will retain your data for as long as necessary to fulfill the purpose for which it was collected, and for the legally established periods." },
+      { "title": "6. Rights", "body": "You have the right to access, rectify, delete, restrict processing, object to processing and request data portability. You can exercise these rights by writing to hola@vulnify.es." }
+    ]
+  },
+  "terminos": {
+    "page_title": "Terms & Conditions",
+    "page_description": "Terms and conditions of use of the Vulnify website.",
+    "title": "Terms & Conditions",
+    "date": "June 1, 2026",
+    "sections": [
+      { "title": "1. Acceptance of Terms", "body": "By accessing and using this website, you accept these terms and conditions. If you do not agree with any of them, we recommend you do not use the site." },
+      { "title": "2. Services", "body": "Vulnify offers web development, artificial intelligence integration, API development and digital consulting services. The specific scope of each service will be defined in the corresponding quote." },
+      { "title": "3. Intellectual Property", "body": "All content on this website (texts, images, logos, code) is owned by Vulnify or used under license. Its reproduction without express authorization is prohibited." },
+      { "title": "4. Limitation of Liability", "body": "Vulnify shall not be liable for damages arising from improper use of the website or interruption of service due to causes beyond its control." },
+      { "title": "5. Modifications", "body": "We reserve the right to modify these terms at any time. Changes will be published on this page." }
+    ]
+  },
+  "cookies": {
+    "page_title": "Cookie Policy",
+    "page_description": "Vulnify's Cookie Policy. Learn how we use cookies.",
+    "title": "Cookie Policy",
+    "date": "June 1, 2026",
+    "sections": [
+      { "title": "1. What are cookies?", "body": "Cookies are small text files that are stored in your browser when you visit a website. They allow us to remember your preferences and improve your browsing experience." },
+      { "title": "2. Types of cookies we use", "items": ["Technical cookies: necessary for the website to function. They do not require consent.", "Analytical cookies: help us understand how users interact with the site, so we can improve it.", "Preference cookies: remember your settings (such as dark mode) to provide you with a personalized experience."] },
+      { "title": "3. Managing cookies", "body": "You can manage cookies from your browser settings. Please note that blocking technical cookies may affect website functionality." },
+      { "title": "4. Third-party cookies", "body": "This website does not use third-party cookies for advertising or external tracking." },
+      { "title": "5. More information", "body": "If you have any questions about our cookie policy, write to us at hola@vulnify.es." }
+    ]
+  },
+  "casos_exito": {
+    "page_title": "Case Studies",
+    "page_description": "Real results from our clients. Discover how Vulnify transforms businesses with technology.",
+    "back": "← Back to home",
+    "badge": "Case studies",
+    "heading": "Results that speak.",
+    "cases": [
+      { "metric": "+300%", "label": "organic leads", "company": "TechFlow", "sector": "SaaS", "desc": "We redesigned their website with conversational AI. They went from 10 to 40 leads/month without spending on ads.", "result": "Organic traffic increased by 180% thanks to technical and content SEO optimization." },
+      { "metric": "20h", "label": "saved per week", "company": "InnovaCorp", "sector": "Consulting", "desc": "We automated their reporting process with a predictive dashboard. Their team reclaimed strategic time.", "result": "85% reduction in time spent on manual reports. The team went from 24h to 4h per week." },
+      { "metric": "2.5x", "label": "conversion", "company": "DataSmart", "sector": "E-commerce", "desc": "We integrated smart recommendations and chatbots. Their average ticket grew 150% in 90 days.", "result": "Conversion rate from 2.1% to 5.3%. The chatbot resolved 40% of queries without human intervention." }
+    ]
+  },
+  "servicios_page": {
+    "back": "← Back to home",
+    "badge": "Services",
+    "cta": "Request a quote",
+    "features_heading": "What's included",
+    "items": {
+      "desarrollo_web": {
+        "title": "Web Development",
+        "desc": "We create corporate websites, online stores and web applications with React, Next.js and responsive design. Every project is optimized for speed, SEO and conversion.",
+        "features": ["Landing pages and corporate websites", "Online stores (e-commerce)", "Progressive web applications (PWA)", "Core Web Vitals optimization", "Responsive and accessible design", "CMS integration"]
+      },
+      "integraciones_ia": {
+        "title": "AI Integrations",
+        "desc": "Smart chatbots, process automation and predictive analytics for your business. Bring artificial intelligence to every corner of your digital operation.",
+        "features": ["Conversational AI chatbots", "Process automation", "Predictive analytics", "Natural language processing", "Smart recommendations", "Virtual assistants"]
+      },
+      "apis_backend": {
+        "title": "APIs & Backend",
+        "desc": "Scalable architecture, robust APIs and admin panels designed to grow. We build the technical backbone of your digital business.",
+        "features": ["RESTful and GraphQL APIs", "Scalable microservices", "SQL and NoSQL databases", "Authentication and authorization", "Automatic documentation", "Monitoring and logging"]
+      },
+      "consultoria": {
+        "title": "Digital Consulting",
+        "desc": "Tailored technology strategy: from idea to implementation. We help you make the right decisions for your business.",
+        "features": ["Technology audit", "Product roadmap", "Tech stack selection", "Software architecture", "Growth strategy", "Training and mentoring"]
+      }
+    }
+  },
+  "features": {
+    "customizable": "Customizable",
+    "customizable_desc": "Every project adapts to your needs. No templates, no limits.",
+    "secure": "Secure by default",
+    "secure_desc": "We protect your website with SSL, encryption and best practices from day one.",
+    "speed": "Extreme speed",
+    "speed_desc": "We optimize every byte so your website loads in under a second.",
+    "modern": "Modern technology",
+    "modern_desc": "React, Node.js, APIs, databases. Modern stack for businesses that look to the future.",
+    "support": "Ongoing support",
+    "support_desc": "We accompany you at every stage: from design to launch and beyond.",
+    "client_label": "Client",
+    "vulnify_label": "Vulnify"
+  },
+  "seo": {
+    "default_title": "Vulnify · Web Development & AI",
+    "default_description": "We create your website with artificial intelligence. Web development, AI integrations, APIs and digital consulting for businesses."
+  }
+}

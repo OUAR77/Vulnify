@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Button } from './button';
 import { HoverBorderGradient } from './hover-border-gradient';
@@ -71,6 +72,7 @@ function FloatingPaths({ position }: { position: number }) {
 }
 
 export function AuthPage({ mode, onSubmit, onSwitchMode, onBack, loading, error }: AuthPageProps) {
+  const { t } = useTranslation();
   const [showPassword, setShowPassword] = React.useState(false);
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
@@ -87,15 +89,15 @@ export function AuthPage({ mode, onSubmit, onSwitchMode, onBack, loading, error 
         <div className="from-background absolute inset-0 z-10 bg-gradient-to-t to-transparent" />
         <div className="z-10 flex items-center gap-2">
           <Grid2x2 className="size-6" />
-          <p className="text-xl font-semibold">Vulnify</p>
+          <p className="text-xl font-semibold">{t('common.brand')}</p>
         </div>
         <div className="z-10 mt-auto">
           <blockquote className="space-y-2">
             <p className="text-xl">
-              &ldquo;Protegemos tu reputación digital con inteligencia artificial.&rdquo;
+              {t('auth.sidebar_quote')}
             </p>
             <footer className="font-mono text-sm font-semibold">
-              ~ Vulnify Team
+              {t('auth.sidebar_attribution')}
             </footer>
           </blockquote>
         </div>
@@ -116,22 +118,22 @@ export function AuthPage({ mode, onSubmit, onSwitchMode, onBack, loading, error 
         {onBack && (
           <button onClick={onBack} className="absolute top-7 left-5 flex items-center gap-2 text-sm text-zinc-500 hover:text-white transition-colors bg-transparent border border-white/[0.08] rounded-lg px-4 py-2 cursor-pointer">
             <ArrowLeft className="size-4" />
-            Volver a la web
+            {t('common.back_to_website')}
           </button>
         )}
         <div className="mx-auto w-full max-w-sm space-y-6">
           <div className="flex items-center gap-2 lg:hidden">
             <Grid2x2 className="size-6" />
-            <p className="text-xl font-semibold">Vulnify</p>
+            <p className="text-xl font-semibold">{t('common.brand')}</p>
           </div>
           <div className="flex flex-col space-y-1">
             <h1 className="text-2xl font-bold tracking-wide">
-              {mode === 'login' ? 'Iniciar sesión' : 'Crear cuenta'}
+              {mode === 'login' ? t('auth.heading_login') : t('auth.heading_register')}
             </h1>
             <p className="text-zinc-500 text-base">
               {mode === 'login'
-                ? 'Accede a tu panel de control'
-                : 'Regístrate para gestionar tus proyectos'}
+                ? t('auth.subtitle_login')
+                : t('auth.subtitle_register')}
             </p>
           </div>
 
@@ -145,7 +147,7 @@ export function AuthPage({ mode, onSubmit, onSwitchMode, onBack, loading, error 
             {mode === 'register' && (
               <div className="relative">
                 <Input
-                  placeholder="Nombre completo"
+                  placeholder={t('auth.name_placeholder')}
                   className="ps-9"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -158,7 +160,7 @@ export function AuthPage({ mode, onSubmit, onSwitchMode, onBack, loading, error 
             )}
             <div className="relative">
               <Input
-                placeholder="tu@email.com"
+                placeholder={t('auth.email_placeholder')}
                 className="ps-9"
                 type="email"
                 value={email}
@@ -171,7 +173,7 @@ export function AuthPage({ mode, onSubmit, onSwitchMode, onBack, loading, error 
             </div>
             <div className="relative">
               <Input
-                placeholder="Contraseña"
+                placeholder={t('auth.password_placeholder')}
                 className="ps-9 pe-9"
                 type={showPassword ? 'text' : 'password'}
                 value={password}
@@ -192,23 +194,23 @@ export function AuthPage({ mode, onSubmit, onSwitchMode, onBack, loading, error 
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
               {loading && <Loader2 className="size-4 me-2 animate-spin" />}
-              {mode === 'login' ? 'Entrar' : 'Crear cuenta'}
+              {mode === 'login' ? t('auth.login_button') : t('auth.register_button')}
             </Button>
           </form>
 
           <div className="text-center text-sm text-zinc-500 pt-2">
             {mode === 'login' ? (
               <span>
-                ¿No tienes cuenta?{' '}
+                {t('auth.switch_register')}{' '}
                 <HoverBorderGradient as="button" onClick={onSwitchMode} className="px-4 py-1.5 text-sm font-medium gap-1.5">
-                  Registrarse <ArrowLeft className="size-3.5 rotate-180" />
+                  <ArrowLeft className="size-3.5 rotate-180" />
                 </HoverBorderGradient>
               </span>
             ) : (
               <span>
-                ¿Ya tienes cuenta?{' '}
+                {t('auth.switch_login')}{' '}
                 <HoverBorderGradient as="button" onClick={onSwitchMode} className="px-4 py-1.5 text-sm font-medium gap-1.5">
-                  Iniciar sesión <ArrowLeft className="size-3.5 rotate-180" />
+                  <ArrowLeft className="size-3.5 rotate-180" />
                 </HoverBorderGradient>
               </span>
             )}

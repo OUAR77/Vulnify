@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Sparkles, Mail, Zap, Shield, Rocket, Cpu } from 'lucide-react';
 import { BorderBeam } from '@/components/ui/border-beam';
@@ -17,16 +18,12 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' as const } },
 };
 
-const features = [
-  { icon: Zap, text: 'Web a medida con el stack que prefieras' },
-  { icon: Sparkles, text: 'Integración de IA, chatbots y automatización' },
-  { icon: Shield, text: 'Diseño UI/UX optimizado para conversión' },
-  { icon: Cpu, text: 'Backend escalable, APIs y panel admin' },
-  { icon: Rocket, text: 'SEO técnico y rendimiento incluidos' },
-  { icon: Mail, text: 'Soporte continuo y mantenimiento' },
-];
+const featureIcons = [Zap, Sparkles, Shield, Cpu, Rocket, Mail];
 
 export function BentoPricing() {
+  const { t } = useTranslation();
+  const features = t('pricing.features', { returnObjects: true }) as string[];
+
   return (
     <motion.div
       initial="hidden"
@@ -49,28 +46,28 @@ export function BentoPricing() {
                 <div className="flex items-center gap-3">
                   <span className="inline-flex items-center rounded-full border border-white/[0.06] bg-white/[0.03] px-3 py-1 text-xs font-medium text-zinc-400">
                     <Sparkles className="mr-1.5 size-3 text-zinc-400" />
-                    TODO INCLUIDO
+                    {t('pricing.badge_included')}
                   </span>
                   <span className="inline-flex items-center rounded-full border border-white/[0.06] bg-white/[0.03] px-3 py-1 text-xs font-medium text-zinc-500">
-                    Sin sorpresas
+                    {t('pricing.badge_no_surprises')}
                   </span>
                 </div>
                 <h3 className="mt-5 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                  Precio <span className="text-zinc-400">a medida</span>
+                  {t('pricing.heading')}
                 </h3>
                 <p className="mt-2 text-sm text-zinc-500 max-w-md">
-                  Cada proyecto es único. Te enviamos un presupuesto transparente y detallado sin compromiso.
+                  {t('pricing.description')}
                 </p>
               </div>
               <HoverBorderGradient as="button" onClick={() => window.dispatchEvent(new CustomEvent('open-contact'))} className="flex items-center gap-2 px-6 py-3 text-sm font-medium">
-                Solicitar presupuesto
+                {t('pricing.cta')}
                 <Mail className="size-4" />
               </HoverBorderGradient>
             </motion.div>
 
             <motion.div variants={itemVariants} className="mt-8 grid gap-3 sm:grid-cols-2">
-              {features.map((f, i) => {
-                const Icon = f.icon;
+              {features.map((text, i) => {
+                const Icon = featureIcons[i] || Zap;
                 return (
                   <div
                     key={i}
@@ -80,7 +77,7 @@ export function BentoPricing() {
                       <Icon className="size-4" />
                     </div>
                     <span className="text-sm leading-snug text-zinc-500 group-hover:text-zinc-300 transition-colors">
-                      {f.text}
+                      {text}
                     </span>
                   </div>
                 );
@@ -93,8 +90,8 @@ export function BentoPricing() {
                   <Mail className="size-5 text-zinc-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-white">¿Hablamos?</p>
-                  <p className="text-xs text-zinc-500">Respuesta en menos de 24h</p>
+                  <p className="text-sm font-medium text-white">{t('pricing.question')}</p>
+                  <p className="text-xs text-zinc-500">{t('pricing.response_time')}</p>
                 </div>
               </div>
               <a
