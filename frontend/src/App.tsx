@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { SiteLayout } from '@/components/ui/site-layout'
 import { FloatingPathsEffect, HomeContent } from '@/components/ui/home-content'
 import { BlogPage, PrivacidadPage, TerminosPage, CookiesPage, CasosExitoPage, ServicioPage } from '@/pages/pages'
+import { PortfolioPage } from '@/pages/portfolio'
 import { LoginPage, RegisterPage } from '@/pages/auth'
 import { ForgotPasswordPage } from '@/pages/forgot-password'
 import { ResetPasswordPage } from '@/pages/reset-password'
@@ -53,7 +54,8 @@ function App() {
               <Route path="/casos-de-exito" element={<CasosExitoPage />} />
               <Route path="/contacto" element={<HomePage />} />
               <Route path="/servicios/:slug" element={<ServicioPage />} />
-              <Route path="/sobre-nosotros" element={<HomePage />} />
+               <Route path="/sobre-nosotros" element={<HomePage />} />
+               <Route path="/portfolio" element={<PortfolioPage />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

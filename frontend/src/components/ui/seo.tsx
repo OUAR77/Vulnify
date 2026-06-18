@@ -9,6 +9,40 @@ interface SEOProps {
 
 const SITE = "https://vulnify.es"
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${SITE}/#organization`,
+      name: "Vulnify",
+      url: SITE,
+      logo: `${SITE}/logo.png`,
+      description: "Agencia de desarrollo web e inteligencia artificial",
+      email: "hola@vulnify.es",
+      foundingDate: "2024",
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE}/#website`,
+      url: SITE,
+      name: "Vulnify · Desarrollo Web & IA",
+      publisher: { "@id": `${SITE}/#organization` },
+      inLanguage: "es",
+    },
+    {
+      "@type": "LocalBusiness",
+      "@id": `${SITE}/#localbusiness`,
+      name: "Vulnify",
+      description: "Agencia de desarrollo web e inteligencia artificial",
+      url: SITE,
+      email: "hola@vulnify.es",
+      areaServed: "ES",
+      priceRange: "€€",
+    },
+  ],
+}
+
 export function SEO({ title, description, image }: SEOProps) {
   const { t } = useTranslation()
   const defaultTitle = t('seo.default_title')
@@ -27,6 +61,7 @@ export function SEO({ title, description, image }: SEOProps) {
       <meta name="twitter:card" content="summary_large_image" />
       {image && <meta property="og:image" content={image} />}
       {image && <meta name="twitter:image" content={image} />}
+      <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
     </Helmet>
   )
 }

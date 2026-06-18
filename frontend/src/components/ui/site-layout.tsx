@@ -7,6 +7,7 @@ import { HoverBorderGradient } from '@/components/ui/hover-border-gradient'
 import { MenuToggleIcon } from '@/components/ui/menu-toggle-icon'
 import { AboutModal } from '@/components/ui/about-modal'
 import { ContactModal } from '@/components/ui/contact-modal'
+import { ChatWidget } from '@/components/ui/chat-widget'
 import { useAuth } from '@/lib/auth-context'
 import { useTranslation } from 'react-i18next'
 
@@ -352,6 +353,7 @@ export function SiteLayout() {
                 { label: t('footer.company_about'), to: '/sobre-nosotros', isAbout: true },
                 { label: t('footer.company_blog'), to: '/blog' },
                 { label: t('footer.company_cases'), to: '/casos-de-exito' },
+                { label: t('footer.company_portfolio'), to: '/portfolio' },
                 { label: t('footer.company_contact'), to: '/contacto' },
               ]},
               { title: t('footer.column_legal'), links: [
@@ -399,6 +401,7 @@ export function SiteLayout() {
       <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
       <CookieBanner />
       <AboutModal open={aboutOpen} onClose={() => setAboutOpen(false)} />
+      <ChatWidget />
     </div>
   )
 }
