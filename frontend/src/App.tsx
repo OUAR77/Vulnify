@@ -10,6 +10,7 @@ import { DashboardPage } from '@/components/ui/dashboard-page'
 import { AdminPage } from '@/components/ui/admin-page'
 import { VerifyEmailPage } from '@/components/ui/verify-email-page'
 import { NotFound } from '@/components/ui/not-found-2'
+import { BlogDetailPage } from '@/components/ui/blog-detail'
 import { SEO } from '@/components/ui/seo'
 import { ErrorBoundary } from '@/components/ui/error-boundary'
 import { AuthProvider } from '@/lib/auth-context'
@@ -45,6 +46,7 @@ function App() {
             <Route element={<SiteLayout />}>
               <Route path="/" element={<HomePage />} />
               <Route path="/blog" element={<BlogPage />} />
+              <Route path="/blog/:slug" element={<BlogDetailPage />} />
               <Route path="/privacidad" element={<PrivacidadPage />} />
               <Route path="/terminos" element={<TerminosPage />} />
               <Route path="/cookies" element={<CookiesPage />} />

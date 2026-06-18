@@ -6,11 +6,12 @@ import { SEO } from '@/components/ui/seo'
 import { getBlogPosts, type BlogPost } from '@/lib/api'
 
 export function BlogPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [posts, setPosts] = useState<BlogPost[]>([])
   useEffect(() => {
     getBlogPosts().then(setPosts).catch(() => {})
   }, [])
+  const loc = i18n.language === 'en' ? 'en-US' : 'es-ES'
 
   return (
     <>
@@ -26,18 +27,18 @@ export function BlogPage() {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post) => (
-              <div key={post.id} className="group p-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500 relative overflow-hidden">
+              <Link key={post.id} to={`/blog/${post.slug}`} className="group block p-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500 no-underline">
                 <span className="text-[10px] tracking-[0.2em] uppercase text-zinc-600 bg-white/[0.03] px-2.5 py-1 rounded-md border border-white/[0.04] inline-block mb-4">
                   {post.tag}
                 </span>
                 <h2 className="text-base font-semibold text-white mb-2 leading-snug">{post.title}</h2>
                 <p className="text-sm text-zinc-500 leading-relaxed mb-4">{post.excerpt}</p>
                 <div className="flex items-center gap-3 text-xs text-zinc-700 mt-auto">
-                  <span>{new Date(post.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                  <span>{new Date(post.created_at).toLocaleDateString(loc, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                   <span className="w-1 h-1 rounded-full bg-zinc-700/50" />
                   <span>{post.read_time}</span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
