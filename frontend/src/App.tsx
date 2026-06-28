@@ -21,6 +21,7 @@ const AdminPage = lazy(() => import('@/components/ui/admin-page').then(m => ({ d
 const VerifyEmailPage = lazy(() => import('@/components/ui/verify-email-page').then(m => ({ default: m.VerifyEmailPage })))
 const NotFound = lazy(() => import('@/components/ui/not-found-2').then(m => ({ default: m.NotFound })))
 const BlogDetailPage = lazy(() => import('@/components/ui/blog-detail').then(m => ({ default: m.BlogDetailPage })))
+const DemoExtractProperty = lazy(() => import('@/components/ui/demo-extract-property').then(m => ({ default: m.DemoExtractProperty })))
 
 function HomePage() {
   return (
@@ -64,6 +65,7 @@ function App() {
               <Route path="/servicios/:slug" element={<ServicioPage />} />
                <Route path="/sobre-nosotros" element={<HomePage />} />
                <Route path="/portfolio" element={<SuspenseWrapper><PortfolioPage /></SuspenseWrapper>} />
+               <Route path="/demo/extraer-propiedad" element={<SuspenseWrapper><DemoExtractProperty /></SuspenseWrapper>} />
             </Route>
             <Route path="*" element={<SuspenseWrapper><NotFound /></SuspenseWrapper>} />
           </Routes>
