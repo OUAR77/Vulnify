@@ -234,6 +234,7 @@ export function SiteLayout() {
   ]
 
   return (
+    <>
     <div className="relative bg-black text-zinc-300 antialiased selection:bg-zinc-500/30 selection:text-white min-h-screen">
       <ScrollProgress />
 
@@ -401,7 +402,8 @@ export function SiteLayout() {
       <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
       <CookieBanner />
       <AboutModal open={aboutOpen} onClose={() => setAboutOpen(false)} />
-      <ChatWidget />
     </div>
+      <ChatWidget />
+    </>
   )
 }

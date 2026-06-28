@@ -65,7 +65,7 @@ export function ChatWidget() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 z-50 size-14 rounded-full bg-gradient-to-br from-zinc-200 to-white text-black flex items-center justify-center shadow-lg hover:scale-110 transition-all cursor-pointer"
+          className="fixed bottom-6 right-6 z-[100] size-14 rounded-full bg-gradient-to-br from-zinc-200 to-white text-black flex items-center justify-center shadow-lg hover:scale-110 transition-all cursor-pointer"
           aria-label="Abrir chat"
         >
           <MessageCircle className="size-5" />
@@ -82,7 +82,7 @@ export function ChatWidget() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-24 right-6 z-50 w-[360px] max-w-[calc(100vw-48px)] bg-[#0a0a0a] border border-white/[0.08] rounded-2xl shadow-2xl overflow-hidden"
+            className="fixed bottom-24 right-6 z-[100] w-[360px] max-w-[calc(100vw-48px)] bg-[#0a0a0a] border border-white/[0.08] rounded-2xl shadow-2xl overflow-hidden"
           >
             <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06] bg-gradient-to-r from-zinc-900 to-black">
               <div className="flex items-center gap-3">
