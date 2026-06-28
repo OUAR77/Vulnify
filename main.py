@@ -18,7 +18,8 @@ from modules.routers.chat import router as chat_router
 from modules.routers.blog import router as blog_router
 from modules.routers.testimonials import router as testimonials_router
 from modules.routers.faqs import router as faqs_router
-from modules.routers.property_extract import router as property_extract_routerfrom models.user import User
+from modules.routers.property_extract import router as property_extract_router
+from models.user import User
 from models.message import Message
 
 os.makedirs("uploads", exist_ok=True)
