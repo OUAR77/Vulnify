@@ -63,19 +63,16 @@ export function ChatWidget() {
   return (
     <>
       {!open && (
-        <motion.button
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
+        <button
           onClick={() => setOpen(true)}
           className="fixed bottom-6 right-6 z-50 size-14 rounded-full bg-gradient-to-br from-zinc-200 to-white text-black flex items-center justify-center shadow-lg hover:scale-110 transition-all cursor-pointer"
-          whileHover={{ rotate: -8 }}
           aria-label="Abrir chat"
         >
           <MessageCircle className="size-5" />
           <span className="absolute -top-1 -right-1 size-4 rounded-full bg-emerald-500 flex items-center justify-center">
             <Sparkles className="size-2.5 text-white" />
           </span>
-        </motion.button>
+        </button>
       )}
 
       <AnimatePresence>
