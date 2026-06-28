@@ -58,6 +58,8 @@ export function SEO({ title, description, image }: SEOProps) {
       <meta property="og:description" content={desc} />
       <meta property="og:url" content={SITE} />
       <meta property="og:type" content="website" />
+      <meta property="og:locale" content="es_ES" />
+      <meta property="og:site_name" content="Vulnify" />
       <meta name="twitter:card" content="summary_large_image" />
       {image && <meta property="og:image" content={image} />}
       {image && <meta name="twitter:image" content={image} />}
