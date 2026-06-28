@@ -123,7 +123,7 @@ export function HomeContent() {
     { number: '24h', label: t('stats.response') },
   ]
 
-  const serviceIcons = [Globe, Bot, Code, Cpu]
+  const serviceIcons = [Globe, Bot, Code, Cpu, Zap]
   const services = t('services.items', { returnObjects: true }) as { name: string; desc: string }[]
 
   const steps = t('process.steps', { returnObjects: true }) as { title: string; desc: string }[]
