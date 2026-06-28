@@ -19,6 +19,11 @@ const services = [
     desc: "Te asesoramos en la estrategia digital de tu empresa, desde la tecnología hasta la implementación.",
     icon: "04",
   },
+  {
+    title: "Automatización Inmobiliaria",
+    desc: "Extraemos datos de fichas de propiedades, DNI, nóminas y contratos con IA. Tu equipo deja de picar datos y se dedica a vender.",
+    icon: "05",
+  },
 ]
 
 export function ServicesSection() {

@@ -104,7 +104,8 @@
       { "name": "Web Development", "desc": "Corporate websites, online stores and web applications with React, Next.js and responsive design." },
       { "name": "AI Integrations", "desc": "Smart chatbots, process automation and predictive analytics for your business." },
       { "name": "APIs & Backend", "desc": "Scalable architecture, robust APIs and admin panels designed to grow." },
-      { "name": "Digital Consulting", "desc": "Tailored technology strategy: from idea to implementation." }
+      { "name": "Digital Consulting", "desc": "Tailored technology strategy: from idea to implementation." },
+      { "name": "Real Estate Automation", "desc": "Extract property listing data, IDs, payrolls and contracts with AI. Your team stops typing and starts selling." }
     ]
   },
   "process": {
@@ -533,6 +534,11 @@
         "title": "Digital Consulting",
         "desc": "Tailored technology strategy: from idea to implementation. We help you make the right decisions for your business.",
         "features": ["Technology audit", "Product roadmap", "Tech stack selection", "Software architecture", "Growth strategy", "Training and mentoring"]
+      },
+      "automatizacion_inmobiliaria": {
+        "title": "Real Estate Automation",
+        "desc": "Extract property listing data, IDs, payrolls and contracts with AI. Your team stops manual data entry and focuses on closing deals.",
+        "features": ["AI-powered property data extraction", "OCR for IDs, payrolls and contracts", "Google Sheets integration", "Automatic ad generation", "Tracking dashboard", "API to connect with your CRM"]
       }
     }
   },

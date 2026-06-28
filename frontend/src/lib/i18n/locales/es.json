@@ -104,7 +104,8 @@
       { "name": "Desarrollo Web", "desc": "Páginas corporativas, tiendas online y aplicaciones web con React, Next.js y diseño responsive." },
       { "name": "Integraciones IA", "desc": "Chatbots inteligentes, automatización de procesos y análisis predictivo para tu negocio." },
       { "name": "APIs & Backend", "desc": "Arquitectura escalable, APIs robustas y paneles de administración diseñados para crecer." },
-      { "name": "Consultoría Digital", "desc": "Estrategia tecnológica personalizada: desde la idea hasta la implementación." }
+      { "name": "Consultoría Digital", "desc": "Estrategia tecnológica personalizada: desde la idea hasta la implementación." },
+      { "name": "Automatización Inmobiliaria", "desc": "Extraemos datos de fichas de propiedades, DNI, nóminas y contratos con IA. Tu equipo deja de picar datos y se dedica a vender." }
     ]
   },
   "process": {
@@ -533,6 +534,11 @@
         "title": "Consultoría Digital",
         "desc": "Estrategia tecnológica personalizada: desde la idea hasta la implementación. Te ayudamos a tomar las decisiones correctas para tu negocio.",
         "features": ["Auditoría tecnológica", "Roadmap de producto", "Selección de stack técnico", "Arquitectura de software", "Estrategia de crecimiento", "Formación y mentoring"]
+      },
+      "automatizacion_inmobiliaria": {
+        "title": "Automatización Inmobiliaria",
+        "desc": "Extraemos datos de fichas de propiedades, DNI, nóminas y contratos con IA. Tu equipo deja de picar datos manualmente y se dedica a cerrar ventas.",
+        "features": ["Extracción IA de fichas de propiedades", "OCR de DNI, nóminas y contratos", "Integración con Google Sheets", "Generación automática de anuncios", "Dashboard de seguimiento", "API para conectar con tu CRM"]
       }
     }
   },
