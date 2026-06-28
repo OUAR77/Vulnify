@@ -238,10 +238,7 @@ export function SiteLayout() {
     <div className="relative bg-black text-zinc-300 antialiased selection:bg-zinc-500/30 selection:text-white min-h-screen">
       <ScrollProgress />
 
-      <motion.nav
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: [0.25, 0.1, 0.1, 1] }}
+      <nav
         className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-5 transition-all duration-500 ${
           scrolled ? 'bg-[#050505]/90 backdrop-blur-2xl' : ''
         }`}
@@ -270,7 +267,7 @@ export function SiteLayout() {
         <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-white/80 p-2" aria-label={t('header.menu_aria')}>
           <MenuToggleIcon open={menuOpen} className="size-5" duration={500} />
         </button>
-      </motion.nav>
+      </nav>
 
       <AnimatePresence>
         {menuOpen && (
