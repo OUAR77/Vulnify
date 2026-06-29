@@ -117,7 +117,7 @@ export function AdminPage() {
   const [purchases, setPurchases] = useState<PurchaseData[]>([])
   const [purchasesError, setPurchasesError] = useState('')
   const [showPurchaseForm, setShowPurchaseForm] = useState(false)
-  const [purchaseForm, setPurchaseForm] = useState({ product_id: 0, buyer_email: '', buyer_name: '', interval: 'one_time', amount: 0 })
+  const [purchaseForm, setPurchaseForm] = useState({ product_id: 0, buyer_email: '', buyer_name: '', interval: 'one_time', amount: 0, expires_in_days: '' })
   const [purchaseFormLoading, setPurchaseFormLoading] = useState(false)
   const [purchaseFormResult, setPurchaseFormResult] = useState('')
 
@@ -1353,9 +1353,10 @@ export function AdminPage() {
                         buyer_name: purchaseForm.buyer_name,
                         interval: purchaseForm.interval,
                         amount: purchaseForm.amount,
+                        expires_in_days: purchaseForm.expires_in_days ? Number(purchaseForm.expires_in_days) : undefined,
                       })
                       setPurchaseFormResult(`Token generado: ${r.token}`)
-                      setPurchaseForm({ product_id: products[0]?.id || 0, buyer_email: '', buyer_name: '', interval: 'one_time', amount: 0 })
+                      setPurchaseForm({ product_id: products[0]?.id || 0, buyer_email: '', buyer_name: '', interval: 'one_time', amount: 0, expires_in_days: '' })
                       loadPurchases()
                     } catch (e: any) {
                       setPurchaseFormResult(`Error: ${e.message}`)
@@ -1385,11 +1386,24 @@ export function AdminPage() {
                     </div>
                     <div>
                       <label className="text-xs text-zinc-500 mb-1 block">Modalidad</label>
-                      <select value={purchaseForm.interval} onChange={(e) => setPurchaseForm({ ...purchaseForm, interval: e.target.value })}
+                      <select value={purchaseForm.interval} onChange={(e) => {
+                        const v = e.target.value
+                        setPurchaseForm({
+                          ...purchaseForm,
+                          interval: v,
+                          expires_in_days: v === 'monthly' ? '30' : '',
+                        })
+                      }}
                         className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30">
                         <option value="one_time">Pago único</option>
                         <option value="monthly">Suscripción mensual</option>
                       </select>
+                    </div>
+                    <div>
+                      <label className="text-xs text-zinc-500 mb-1 block">Caducidad (días)</label>
+                      <input type="number" min="0" placeholder="Vacío = sin caducidad" value={purchaseForm.expires_in_days}
+                        onChange={(e) => setPurchaseForm({ ...purchaseForm, expires_in_days: e.target.value })}
+                        className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
                     </div>
                     <div>
                       <label className="text-xs text-zinc-500 mb-1 block">Importe (€)</label>

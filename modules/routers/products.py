@@ -257,6 +257,7 @@ def admin_create_purchase(data: dict, admin: User = Depends(require_admin), db: 
     buyer_email = data.get("buyer_email", "")
     buyer_name = data.get("buyer_name", "")
     interval = data.get("interval", "one_time")
+    expires_in_days = data.get("expires_in_days")
     if not product_id or not buyer_email:
         raise HTTPException(status_code=400, detail="product_id y buyer_email son requeridos")
     product = db.query(Product).filter(Product.id == product_id).first()
@@ -273,7 +274,9 @@ def admin_create_purchase(data: dict, admin: User = Depends(require_admin), db: 
         token=token,
         status="completed",
     )
-    if interval != "one_time":
+    if expires_in_days is not None and expires_in_days > 0:
+        purchase.expires_at = datetime.now(timezone.utc) + timedelta(days=expires_in_days)
+    elif interval != "one_time":
         purchase.expires_at = datetime.now(timezone.utc) + timedelta(days=30)
     db.add(purchase)
     db.commit()

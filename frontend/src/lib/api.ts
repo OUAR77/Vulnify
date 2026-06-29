@@ -660,7 +660,7 @@ export async function adminGetPurchases(): Promise<PurchaseData[]> {
   return apiGet('/api/admin/purchases')
 }
 
-export async function adminCreatePurchase(data: { product_id: number; buyer_email: string; buyer_name?: string; interval?: string; amount?: number }): Promise<{ ok: boolean; id: number; token: string }> {
+export async function adminCreatePurchase(data: { product_id: number; buyer_email: string; buyer_name?: string; interval?: string; amount?: number; expires_in_days?: number }): Promise<{ ok: boolean; id: number; token: string }> {
   return apiPost('/api/admin/purchases', data)
 }
 
