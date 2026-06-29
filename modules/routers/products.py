@@ -251,6 +251,36 @@ def admin_list_purchases(admin: User = Depends(require_admin), db: Session = Dep
     } for p in purchases]
 
 
+@router.post("/api/admin/purchases")
+def admin_create_purchase(data: dict, admin: User = Depends(require_admin), db: Session = Depends(get_db)):
+    product_id = data.get("product_id")
+    buyer_email = data.get("buyer_email", "")
+    buyer_name = data.get("buyer_name", "")
+    interval = data.get("interval", "one_time")
+    if not product_id or not buyer_email:
+        raise HTTPException(status_code=400, detail="product_id y buyer_email son requeridos")
+    product = db.query(Product).filter(Product.id == product_id).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Producto no encontrado")
+    amount = data.get("amount", 0)
+    token = secrets.token_urlsafe(32)
+    purchase = Purchase(
+        product_id=product_id,
+        buyer_email=buyer_email,
+        buyer_name=buyer_name,
+        amount=amount,
+        interval=interval,
+        token=token,
+        status="completed",
+    )
+    if interval != "one_time":
+        purchase.expires_at = datetime.now(timezone.utc) + timedelta(days=30)
+    db.add(purchase)
+    db.commit()
+    db.refresh(purchase)
+    return {"ok": True, "id": purchase.id, "token": token}
+
+
 @router.post("/api/admin/purchases/{purchase_id}/regenerate-token")
 def admin_regenerate_token(purchase_id: int, admin: User = Depends(require_admin), db: Session = Depends(get_db)):
     purchase = db.query(Purchase).filter(Purchase.id == purchase_id).first()

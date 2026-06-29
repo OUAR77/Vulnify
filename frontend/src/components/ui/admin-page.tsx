@@ -15,7 +15,7 @@ import {
   getTestimonials, adminCreateTestimonial, adminUpdateTestimonial, adminDeleteTestimonial,
   getFAQs, adminCreateFAQ, adminUpdateFAQ, adminDeleteFAQ,
   adminGetProducts, adminCreateProduct, adminUpdateProduct, adminDeleteProduct,
-  adminGetPurchases, adminRegenerateToken,
+  adminGetPurchases, adminCreatePurchase, adminRegenerateToken,
   type AdminStats, type AdminUser, type ActivityLog,
   type ContactMessage, type Order, type OrderPhoto,
   type BlogPost, type TestimonialData, type FAQData,
@@ -116,6 +116,10 @@ export function AdminPage() {
   // Purchases
   const [purchases, setPurchases] = useState<PurchaseData[]>([])
   const [purchasesError, setPurchasesError] = useState('')
+  const [showPurchaseForm, setShowPurchaseForm] = useState(false)
+  const [purchaseForm, setPurchaseForm] = useState({ product_id: 0, buyer_email: '', buyer_name: '', interval: 'one_time', amount: 0 })
+  const [purchaseFormLoading, setPurchaseFormLoading] = useState(false)
+  const [purchaseFormResult, setPurchaseFormResult] = useState('')
 
   const [tab, setTab] = useState<'stats' | 'users' | 'logs' | 'messages' | 'orders' | 'blog' | 'testimonios' | 'faq' | 'products' | 'purchases'>('stats')
 
@@ -1267,9 +1271,15 @@ export function AdminPage() {
                 <Key className="size-5 text-zinc-500" />
                 <span className="text-sm text-zinc-500">{t('admin.purchases.count', { count: purchases.length })}</span>
               </div>
-              <button onClick={loadPurchases} className="flex items-center gap-2 text-sm bg-white/10 rounded-lg px-4 py-2 hover:bg-white/20 transition-colors cursor-pointer border-none text-white">
-                <RefreshCw className="size-4" /> {t('admin.refresh')}
-              </button>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setShowPurchaseForm(true)}
+                  className="flex items-center gap-2 text-sm bg-white/10 rounded-lg px-4 py-2 hover:bg-white/20 transition-colors cursor-pointer border-none text-white">
+                  <Plus className="size-4" /> Generar token
+                </button>
+                <button onClick={loadPurchases} className="flex items-center gap-2 text-sm bg-white/10 rounded-lg px-4 py-2 hover:bg-white/20 transition-colors cursor-pointer border-none text-white">
+                  <RefreshCw className="size-4" /> {t('admin.refresh')}
+                </button>
+              </div>
             </div>
             {purchasesError && <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400 mb-6">{purchasesError}</div>}
             <div className="overflow-x-auto rounded-xl bg-white/[0.02] border border-white/[0.06]">
@@ -1322,6 +1332,85 @@ export function AdminPage() {
                 </tbody>
               </table>
             </div>
+
+            {showPurchaseForm && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => { setShowPurchaseForm(false); setPurchaseFormResult('') }}>
+                <div className="bg-zinc-900 border border-white/[0.1] rounded-xl p-6 w-full max-w-lg mx-4" onClick={(e) => e.stopPropagation()}>
+                  <h3 className="text-lg font-semibold mb-4">Generar token de acceso</h3>
+                  {purchaseFormResult && (
+                    <div className="mb-4 p-3 rounded-lg text-sm break-all" style={purchaseFormResult.startsWith('Error') ? { background: 'rgba(220,38,38,0.1)', border: '1px solid rgba(220,38,38,0.2)', color: '#f87171' } : { background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', color: '#4ade80' }}>
+                      {purchaseFormResult}
+                    </div>
+                  )}
+                  <form onSubmit={async (e) => {
+                    e.preventDefault()
+                    setPurchaseFormLoading(true)
+                    setPurchaseFormResult('')
+                    try {
+                      const r = await adminCreatePurchase({
+                        product_id: purchaseForm.product_id,
+                        buyer_email: purchaseForm.buyer_email,
+                        buyer_name: purchaseForm.buyer_name,
+                        interval: purchaseForm.interval,
+                        amount: purchaseForm.amount,
+                      })
+                      setPurchaseFormResult(`Token generado: ${r.token}`)
+                      setPurchaseForm({ product_id: products[0]?.id || 0, buyer_email: '', buyer_name: '', interval: 'one_time', amount: 0 })
+                      loadPurchases()
+                    } catch (e: any) {
+                      setPurchaseFormResult(`Error: ${e.message}`)
+                    } finally {
+                      setPurchaseFormLoading(false)
+                    }
+                  }} className="space-y-4">
+                    <div>
+                      <label className="text-xs text-zinc-500 mb-1 block">Producto</label>
+                      <select value={purchaseForm.product_id} onChange={(e) => setPurchaseForm({ ...purchaseForm, product_id: Number(e.target.value) })}
+                        className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30" required>
+                        <option value={0} disabled>Seleccionar producto</option>
+                        {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-xs text-zinc-500 mb-1 block">Email del comprador</label>
+                      <input type="email" placeholder="cliente@ejemplo.com" value={purchaseForm.buyer_email}
+                        onChange={(e) => setPurchaseForm({ ...purchaseForm, buyer_email: e.target.value })}
+                        className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
+                    </div>
+                    <div>
+                      <label className="text-xs text-zinc-500 mb-1 block">Nombre del comprador</label>
+                      <input type="text" placeholder="Nombre" value={purchaseForm.buyer_name}
+                        onChange={(e) => setPurchaseForm({ ...purchaseForm, buyer_name: e.target.value })}
+                        className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
+                    </div>
+                    <div>
+                      <label className="text-xs text-zinc-500 mb-1 block">Modalidad</label>
+                      <select value={purchaseForm.interval} onChange={(e) => setPurchaseForm({ ...purchaseForm, interval: e.target.value })}
+                        className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30">
+                        <option value="one_time">Pago único</option>
+                        <option value="monthly">Suscripción mensual</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-xs text-zinc-500 mb-1 block">Importe (€)</label>
+                      <input type="number" step="0.01" min="0" placeholder="0" value={purchaseForm.amount}
+                        onChange={(e) => setPurchaseForm({ ...purchaseForm, amount: Number(e.target.value) })}
+                        className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
+                    </div>
+                    <div className="flex gap-3 pt-2">
+                      <button type="submit" disabled={purchaseFormLoading}
+                        className="flex-1 bg-white/10 rounded-lg py-2.5 text-sm font-medium hover:bg-white/20 transition-colors cursor-pointer border-none text-white disabled:opacity-50">
+                        {purchaseFormLoading ? 'Generando...' : 'Generar token'}
+                      </button>
+                      <button type="button" onClick={() => { setShowPurchaseForm(false); setPurchaseFormResult('') }}
+                        className="px-4 py-2.5 text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer border-none bg-transparent">
+                        Cancelar
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
