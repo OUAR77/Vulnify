@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { Bot, FileText, LogOut, Sparkles, ArrowLeft } from 'lucide-react'
+import { Bot, FileText, LogOut, Sparkles, ArrowLeft, Download } from 'lucide-react'
 
 const BASE = import.meta.env.VITE_API_URL || ''
 
@@ -57,6 +57,25 @@ export function AppDashboardPage() {
   const handleLogout = () => {
     localStorage.removeItem('app_session_token')
     navigate('/app')
+  }
+
+  const handleDownloadPdf = async () => {
+    if (!result) return
+    try {
+      const res = await fetch(`${BASE}/api/app/generate-pdf`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ prompt: prompt.trim(), document_type: docType }),
+      })
+      if (!res.ok) throw new Error('Error')
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url; a.download = 'documento.pdf'; a.click()
+      URL.revokeObjectURL(url)
+    } catch (e: any) {
+      alert(e.message)
+    }
   }
 
   const copyToClipboard = () => {
@@ -125,10 +144,16 @@ export function AppDashboardPage() {
                 <Sparkles className="size-5 text-zinc-500" />
                 <span className="text-sm font-medium">{t('app.result_title')}</span>
               </div>
-              <button onClick={copyToClipboard}
-                className="text-xs text-zinc-500 hover:text-white transition-colors bg-transparent border border-white/[0.06] rounded-lg px-3 py-1.5 cursor-pointer">
-                {t('app.copy')}
-              </button>
+              <div className="flex gap-2">
+                <button onClick={handleDownloadPdf}
+                  className="text-xs text-zinc-500 hover:text-white transition-colors bg-transparent border border-white/[0.06] rounded-lg px-3 py-1.5 cursor-pointer flex items-center gap-1.5">
+                  <Download className="size-3.5" /> PDF
+                </button>
+                <button onClick={copyToClipboard}
+                  className="text-xs text-zinc-500 hover:text-white transition-colors bg-transparent border border-white/[0.06] rounded-lg px-3 py-1.5 cursor-pointer">
+                  {t('app.copy')}
+                </button>
+              </div>
             </div>
             <div className="whitespace-pre-wrap text-sm text-zinc-300 leading-relaxed font-mono bg-black/40 rounded-lg p-4 max-h-[600px] overflow-y-auto">
               {result}

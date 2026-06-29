@@ -1,8 +1,10 @@
 import logging
 import json
 import re
+import io
 from datetime import datetime, timezone, timedelta
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
 from pydantic import BaseModel
@@ -84,33 +86,66 @@ def app_me(user: dict = Depends(get_app_user)):
     }
 
 
-@router.post("/generate")
-async def app_generate(body: GenerateRequest, user: dict = Depends(get_app_user)):
-    product = user["product"]
+async def _generate_doc(document_type: str, prompt_text: str) -> str:
     if not settings.GROQ_API_KEY:
         raise HTTPException(status_code=502, detail="GROQ_API_KEY no configurada")
+    import httpx
+    prompt = f"Genera un documento de tipo '{document_type}' con las siguientes instrucciones:\n\n{prompt_text}"
+    async with httpx.AsyncClient(timeout=60) as client:
+        resp = await client.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {settings.GROQ_API_KEY}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": "llama-3.3-70b-versatile",
+                "messages": [
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": prompt},
+                ],
+                "temperature": 0.3,
+            },
+        )
+        data = resp.json()
+        return data.get("choices", [{}])[0].get("message", {}).get("content", "")
+
+
+@router.post("/generate")
+async def app_generate(body: GenerateRequest, user: dict = Depends(get_app_user)):
     try:
-        import httpx
-        prompt = f"Genera un documento de tipo '{body.document_type}' con las siguientes instrucciones:\n\n{body.prompt}"
-        async with httpx.AsyncClient(timeout=60) as client:
-            resp = await client.post(
-                "https://api.groq.com/openai/v1/chat/completions",
-                headers={
-                    "Authorization": f"Bearer {settings.GROQ_API_KEY}",
-                    "Content-Type": "application/json",
-                },
-                json={
-                    "model": "llama-3.3-70b-versatile",
-                    "messages": [
-                        {"role": "system", "content": SYSTEM_PROMPT},
-                        {"role": "user", "content": prompt},
-                    ],
-                    "temperature": 0.3,
-                },
-            )
-            data = resp.json()
-            content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
-            return {"ok": True, "document": content}
+        content = await _generate_doc(body.document_type, body.prompt)
+        return {"ok": True, "document": content}
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error("App generate error: %s", e)
         raise HTTPException(status_code=502, detail="Error al generar documento")
+
+
+@router.post("/generate-pdf")
+async def app_generate_pdf(body: GenerateRequest, user: dict = Depends(get_app_user)):
+    try:
+        content = await _generate_doc(body.document_type, body.prompt)
+        html = f"""<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+body {{ font-family: 'DejaVu Sans', sans-serif; padding: 2.5cm; line-height: 1.6; color: #111; }}
+h1 {{ font-size: 22pt; margin-bottom: 1cm; }}
+p {{ margin-bottom: 0.5cm; }}
+</style></head><body><div>{content.replace(chr(10), '<br>')}</div></body></html>"""
+        try:
+            from weasyprint import HTML
+            pdf_bytes = HTML(string=html).write_pdf()
+        except Exception:
+            import markdown
+            html_body = markdown.markdown(content)
+            html = f"""<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+body {{ font-family: 'DejaVu Sans', sans-serif; padding: 2.5cm; line-height: 1.6; color: #111; }}
+</style></head><body>{html_body}</body></html>"""
+            from weasyprint import HTML
+            pdf_bytes = HTML(string=html).write_pdf()
+        return StreamingResponse(io.BytesIO(pdf_bytes), media_type="application/pdf", headers={"Content-Disposition": "attachment; filename=documento.pdf"})
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error("App generate-pdf error: %s", e)
+        raise HTTPException(status_code=502, detail="Error al generar PDF")
