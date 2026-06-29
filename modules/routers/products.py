@@ -57,19 +57,18 @@ def product_checkout(
         raise HTTPException(status_code=404, detail="Producto no encontrado")
 
     price = product.price_one_time if interval == "one_time" else product.price_monthly
-    if not price or price <= 0:
+
+    price_id = product.stripe_price_id_one_time if interval == "one_time" else product.stripe_price_id_monthly
+
+    if not price or price < 0:
         raise HTTPException(status_code=400, detail="Precio no configurado para esta modalidad")
 
-    if not settings.STRIPE_SECRET_KEY:
+    if not settings.STRIPE_SECRET_KEY or not price_id or price == 0:
         token = create_purchase_token(product, buyer_email, buyer_name, price, interval, db)
-        return {"checkout_url": None, "token": token, "free": True}
+        return {"checkout_url": None, "token": token, "free": bool(not price)}
 
     import stripe
     stripe.api_key = settings.STRIPE_SECRET_KEY
-
-    price_id = product.stripe_price_id_one_time if interval == "one_time" else product.stripe_price_id_monthly
-    if not price_id:
-        raise HTTPException(status_code=400, detail="Producto sin precio en Stripe")
 
     try:
         session = stripe.checkout.Session.create(
