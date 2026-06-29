@@ -13,7 +13,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from jose import JWTError, jwt
 from config import limiter, settings
 from database import Base, engine
-from modules.routers import auth_router, plans_router, admin_router, messages_router, orders_router, user_orders_router, products_router
+from modules.routers import auth_router, plans_router, admin_router, messages_router, orders_router, user_orders_router, products_router, app_router
 from modules.routers.chat import router as chat_router
 from modules.routers.blog import router as blog_router
 from modules.routers.testimonials import router as testimonials_router
@@ -166,6 +166,7 @@ app.include_router(faqs_router)
 app.include_router(chat_router)
 app.include_router(property_extract_router)
 app.include_router(products_router)
+app.include_router(app_router)
 
 @app.exception_handler(404)
 async def not_found(request: Request, exc):

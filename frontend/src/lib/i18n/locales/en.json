@@ -473,6 +473,26 @@
     "expired": "This access has expired",
     "invalid_token": "Invalid access token"
   },
+  "app": {
+    "login_title": "Access your product",
+    "login_desc": "Enter the token you received with your purchase to access the content.",
+    "token_label": "Access token",
+    "token_placeholder": "Paste your token here...",
+    "login_button": "Sign in",
+    "dashboard_title": "Dashboard",
+    "generator_title": "Generate document",
+    "doc_type": "Document type",
+    "type_general": "General",
+    "type_contract": "Contract",
+    "type_invoice": "Invoice",
+    "type_report": "Report",
+    "type_letter": "Letter",
+    "prompt_label": "Describe the document you need",
+    "prompt_placeholder": "E.g.: A lease contract for an apartment in Madrid, 1 year term, 900€ rent...",
+    "generate": "Generate with AI",
+    "result_title": "Generated document",
+    "copy": "Copy"
+  },
   "checkout": {
     "success_title": "Payment completed!",
     "success_desc": "You'll receive an email with your access link within minutes.",

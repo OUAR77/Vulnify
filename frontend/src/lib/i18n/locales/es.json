@@ -473,6 +473,26 @@
     "expired": "Este acceso ha expirado",
     "invalid_token": "Token de acceso inválido"
   },
+  "app": {
+    "login_title": "Accede a tu producto",
+    "login_desc": "Introduce el token que recibiste en tu compra para acceder al contenido.",
+    "token_label": "Token de acceso",
+    "token_placeholder": "Pega tu token aquí...",
+    "login_button": "Acceder",
+    "dashboard_title": "Panel de control",
+    "generator_title": "Generar documento",
+    "doc_type": "Tipo de documento",
+    "type_general": "General",
+    "type_contract": "Contrato",
+    "type_invoice": "Factura",
+    "type_report": "Informe",
+    "type_letter": "Carta",
+    "prompt_label": "Describe el documento que necesitas",
+    "prompt_placeholder": "Ej: Un contrato de arrendamiento para un piso en Madrid, con duración de 1 año, renta de 900€...",
+    "generate": "Generar con IA",
+    "result_title": "Documento generado",
+    "copy": "Copiar"
+  },
   "checkout": {
     "success_title": "¡Pago completado!",
     "success_desc": "Recibirás un email con tu enlace de acceso en los próximos minutos.",
