@@ -4,7 +4,7 @@ import es from './locales/es.json'
 import en from './locales/en.json'
 
 const saved = localStorage.getItem('vulnify_lang')
-const lang = saved || navigator.language.startsWith('en') ? 'en' : 'es'
+const lang = saved ? saved : (navigator.language.startsWith('en') ? 'en' : 'es')
 
 i18n.use(initReactI18next).init({
   resources: { es: { translation: es }, en: { translation: en } },
