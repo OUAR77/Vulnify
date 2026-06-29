@@ -50,8 +50,8 @@ class LoginRequest(BaseModel):
 
 
 class GenerateRequest(BaseModel):
-    prompt: str
     document_type: str = "general"
+    fields: dict[str, str] = {}
 
 
 @router.post("/login")
@@ -86,11 +86,54 @@ def app_me(user: dict = Depends(get_app_user)):
     }
 
 
-async def _generate_doc(document_type: str, prompt_text: str) -> str:
+FIELD_LABELS: dict[str, str] = {
+    "tenant_name": "Nombre del inquilino",
+    "landlord_name": "Nombre del arrendador",
+    "property_address": "Dirección de la propiedad",
+    "rent_amount": "Monto del alquiler",
+    "duration": "Duración del contrato",
+    "start_date": "Fecha de inicio",
+    "city": "Ciudad",
+    "company_name": "Nombre de la empresa",
+    "client_name": "Nombre del cliente",
+    "invoice_number": "Número de factura",
+    "amount": "Monto/Cantidad",
+    "concept": "Concepto",
+    "date": "Fecha",
+    "title": "Título del informe",
+    "author": "Autor",
+    "summary": "Resumen/Contenido",
+    "recipient_name": "Nombre del destinatario",
+    "sender_name": "Nombre del remitente",
+    "subject": "Asunto",
+    "prompt": "Instrucciones adicionales",
+}
+
+
+async def _generate_doc(document_type: str, fields: dict[str, str]) -> str:
     if not settings.GROQ_API_KEY:
         raise HTTPException(status_code=502, detail="GROQ_API_KEY no configurada")
-    import httpx
-    prompt = f"Genera un documento de tipo '{document_type}' con las siguientes instrucciones:\n\n{prompt_text}"
+
+    type_names = {
+        "contract": "contrato",
+        "invoice": "factura",
+        "report": "informe",
+        "letter": "carta",
+        "general": "documento",
+    }
+    type_name = type_names.get(document_type, "documento")
+
+    field_lines = []
+    for key, value in fields.items():
+        if value.strip():
+            label = FIELD_LABELS.get(key, key)
+            field_lines.append(f"- {label}: {value}")
+
+    if not field_lines:
+        prompt = f"Genera un {type_name} profesional."
+    else:
+        fields_text = chr(10).join(field_lines)
+        prompt = f"Genera un {type_name} profesional con los siguientes datos:\n\n{fields_text}\n\nGenera el documento completo y detallado."
     async with httpx.AsyncClient(timeout=60) as client:
         resp = await client.post(
             "https://api.groq.com/openai/v1/chat/completions",
@@ -114,7 +157,7 @@ async def _generate_doc(document_type: str, prompt_text: str) -> str:
 @router.post("/generate")
 async def app_generate(body: GenerateRequest, user: dict = Depends(get_app_user)):
     try:
-        content = await _generate_doc(body.document_type, body.prompt)
+        content = await _generate_doc(body.document_type, body.fields)
         return {"ok": True, "document": content}
     except HTTPException:
         raise
@@ -126,7 +169,7 @@ async def app_generate(body: GenerateRequest, user: dict = Depends(get_app_user)
 @router.post("/generate-pdf")
 async def app_generate_pdf(body: GenerateRequest, user: dict = Depends(get_app_user)):
     try:
-        content = await _generate_doc(body.document_type, body.prompt)
+        content = await _generate_doc(body.document_type, body.fields)
         html = f"""<!DOCTYPE html><html><head><meta charset="utf-8"><style>
 body {{ font-family: 'DejaVu Sans', sans-serif; padding: 2.5cm; line-height: 1.6; color: #111; }}
 h1 {{ font-size: 22pt; margin-bottom: 1cm; }}

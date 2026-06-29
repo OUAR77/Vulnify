@@ -1,16 +1,50 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { Bot, FileText, LogOut, Sparkles, ArrowLeft, Download } from 'lucide-react'
 
 const BASE = import.meta.env.VITE_API_URL || ''
 
+const FIELDS_BY_TYPE: Record<string, { key: string; labelKey: string; type: string }[]> = {
+  general: [
+    { key: 'prompt', labelKey: 'app.prompt_label', type: 'textarea' },
+  ],
+  contract: [
+    { key: 'tenant_name', labelKey: 'app.field_tenant_name', type: 'text' },
+    { key: 'landlord_name', labelKey: 'app.field_landlord_name', type: 'text' },
+    { key: 'property_address', labelKey: 'app.field_property_address', type: 'text' },
+    { key: 'rent_amount', labelKey: 'app.field_rent_amount', type: 'text' },
+    { key: 'duration', labelKey: 'app.field_duration', type: 'text' },
+    { key: 'city', labelKey: 'app.field_city', type: 'text' },
+  ],
+  invoice: [
+    { key: 'company_name', labelKey: 'app.field_company_name', type: 'text' },
+    { key: 'client_name', labelKey: 'app.field_client_name', type: 'text' },
+    { key: 'amount', labelKey: 'app.field_amount', type: 'text' },
+    { key: 'concept', labelKey: 'app.field_concept', type: 'text' },
+    { key: 'date', labelKey: 'app.field_date', type: 'text' },
+  ],
+  report: [
+    { key: 'title', labelKey: 'app.field_title', type: 'text' },
+    { key: 'author', labelKey: 'app.field_author', type: 'text' },
+    { key: 'date', labelKey: 'app.field_date', type: 'text' },
+    { key: 'summary', labelKey: 'app.field_summary', type: 'textarea' },
+  ],
+  letter: [
+    { key: 'recipient_name', labelKey: 'app.field_recipient_name', type: 'text' },
+    { key: 'sender_name', labelKey: 'app.field_sender_name', type: 'text' },
+    { key: 'subject', labelKey: 'app.field_subject', type: 'text' },
+    { key: 'city', labelKey: 'app.field_city', type: 'text' },
+    { key: 'date', labelKey: 'app.field_date', type: 'text' },
+  ],
+}
+
 export function AppDashboardPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [productName, setProductName] = useState('')
-  const [prompt, setPrompt] = useState('')
   const [docType, setDocType] = useState('general')
+  const [fields, setFields] = useState<Record<string, string>>({})
   const [result, setResult] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -32,9 +66,24 @@ export function AppDashboardPage() {
       .catch(() => { localStorage.removeItem('app_session_token'); navigate('/app') })
   }, [token, navigate])
 
+  const currentFields = useMemo(() => FIELDS_BY_TYPE[docType] || FIELDS_BY_TYPE.general, [docType])
+
+  const handleTypeChange = (newType: string) => {
+    setDocType(newType)
+    setFields({})
+    setResult('')
+    setError('')
+  }
+
+  const setField = (key: string, value: string) => {
+    setFields(prev => ({ ...prev, [key]: value }))
+  }
+
+  const hasAnyValue = currentFields.some(f => fields[f.key]?.trim())
+
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!prompt.trim()) return
+    if (!hasAnyValue) return
     setLoading(true)
     setError('')
     setResult('')
@@ -42,7 +91,7 @@ export function AppDashboardPage() {
       const res = await fetch(`${BASE}/api/app/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ prompt: prompt.trim(), document_type: docType }),
+        body: JSON.stringify({ document_type: docType, fields }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.detail || 'Error')
@@ -65,7 +114,7 @@ export function AppDashboardPage() {
       const res = await fetch(`${BASE}/api/app/generate-pdf`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ prompt: prompt.trim(), document_type: docType }),
+        body: JSON.stringify({ document_type: docType, fields }),
       })
       if (!res.ok) throw new Error('Error')
       const blob = await res.blob()
@@ -114,7 +163,7 @@ export function AppDashboardPage() {
           </div>
           <div className="mb-4">
             <label className="text-xs text-zinc-500 mb-1.5 block">{t('app.doc_type')}</label>
-            <select value={docType} onChange={(e) => setDocType(e.target.value)}
+            <select value={docType} onChange={(e) => handleTypeChange(e.target.value)}
               className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30">
               <option value="general">{t('app.type_general')}</option>
               <option value="contract">{t('app.type_contract')}</option>
@@ -123,14 +172,22 @@ export function AppDashboardPage() {
               <option value="letter">{t('app.type_letter')}</option>
             </select>
           </div>
-          <div className="mb-4">
-            <label className="text-xs text-zinc-500 mb-1.5 block">{t('app.prompt_label')}</label>
-            <textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} rows={5}
-              placeholder={t('app.prompt_placeholder')}
-              className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/20" />
-          </div>
+
+          {currentFields.map((f) => (
+            <div key={f.key} className="mb-4">
+              <label className="text-xs text-zinc-500 mb-1.5 block">{t(f.labelKey)}</label>
+              {f.type === 'textarea' ? (
+                <textarea value={fields[f.key] || ''} onChange={(e) => setField(f.key, e.target.value)} rows={4}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/20" />
+              ) : (
+                <input type="text" value={fields[f.key] || ''} onChange={(e) => setField(f.key, e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/20" />
+              )}
+            </div>
+          ))}
+
           {error && <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg p-3 mb-4">{error}</div>}
-          <button type="submit" disabled={!prompt.trim() || loading}
+          <button type="submit" disabled={!hasAnyValue || loading}
             className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-white text-black text-sm font-medium hover:bg-zinc-200 transition-colors disabled:opacity-50 cursor-pointer border-none">
             {loading ? t('common.loading') : <><Sparkles className="size-4" /> {t('app.generate')}</>}
           </button>
