@@ -11,12 +11,20 @@ const FIELDS_BY_TYPE: Record<string, { key: string; labelKey: string; type: stri
     { key: 'prompt', labelKey: 'app.prompt_label', type: 'textarea' },
   ],
   contract: [
-    { key: 'tenant_name', labelKey: 'app.field_tenant_name', type: 'text' },
-    { key: 'landlord_name', labelKey: 'app.field_landlord_name', type: 'text' },
-    { key: 'property_address', labelKey: 'app.field_property_address', type: 'text' },
-    { key: 'rent_amount', labelKey: 'app.field_rent_amount', type: 'text' },
+    { key: 'party_a', labelKey: 'app.field_party_a', type: 'text' },
+    { key: 'party_b', labelKey: 'app.field_party_b', type: 'text' },
+    { key: 'contract_subject', labelKey: 'app.field_contract_subject', type: 'text' },
+    { key: 'amount', labelKey: 'app.field_amount', type: 'text' },
     { key: 'duration', labelKey: 'app.field_duration', type: 'text' },
     { key: 'city', labelKey: 'app.field_city', type: 'text' },
+    { key: 'start_date', labelKey: 'app.field_start_date', type: 'text' },
+  ],
+  quote: [
+    { key: 'company_name', labelKey: 'app.field_company_name', type: 'text' },
+    { key: 'client_name', labelKey: 'app.field_client_name', type: 'text' },
+    { key: 'service_description', labelKey: 'app.field_service_description', type: 'textarea' },
+    { key: 'amount', labelKey: 'app.field_amount', type: 'text' },
+    { key: 'valid_until', labelKey: 'app.field_valid_until', type: 'text' },
   ],
   invoice: [
     { key: 'company_name', labelKey: 'app.field_company_name', type: 'text' },
@@ -213,6 +221,7 @@ export function AppDashboardPage() {
               <option value="general">{t('app.type_general')}</option>
               <option value="contract">{t('app.type_contract')}</option>
               <option value="invoice">{t('app.type_invoice')}</option>
+              <option value="quote">{t('app.type_quote')}</option>
               <option value="report">{t('app.type_report')}</option>
               <option value="letter">{t('app.type_letter')}</option>
             </select>

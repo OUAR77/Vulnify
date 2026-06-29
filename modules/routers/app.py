@@ -88,11 +88,10 @@ def app_me(user: dict = Depends(get_app_user)):
 
 
 FIELD_LABELS: dict[str, str] = {
-    "tenant_name": "Nombre del inquilino",
-    "landlord_name": "Nombre del arrendador",
-    "property_address": "Dirección de la propiedad",
-    "rent_amount": "Monto del alquiler",
-    "duration": "Duración del contrato",
+    "party_a": "Parte A (contratante)",
+    "party_b": "Parte B (contratado)",
+    "contract_subject": "Objeto del contrato",
+    "duration": "Duración",
     "start_date": "Fecha de inicio",
     "city": "Ciudad",
     "company_name": "Nombre de la empresa",
@@ -101,12 +100,14 @@ FIELD_LABELS: dict[str, str] = {
     "amount": "Monto/Cantidad",
     "concept": "Concepto",
     "date": "Fecha",
-    "title": "Título del informe",
+    "title": "Título",
     "author": "Autor",
     "summary": "Resumen/Contenido",
     "recipient_name": "Nombre del destinatario",
     "sender_name": "Nombre del remitente",
     "subject": "Asunto",
+    "service_description": "Descripción del servicio",
+    "valid_until": "Validez",
     "prompt": "Instrucciones adicionales",
 }
 
@@ -120,6 +121,7 @@ async def _generate_doc(document_type: str, fields: dict[str, str]) -> str:
         "invoice": "factura",
         "report": "informe",
         "letter": "carta",
+        "quote": "presupuesto",
         "general": "documento",
     }
     type_name = type_names.get(document_type, "documento")
