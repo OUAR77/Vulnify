@@ -8,3 +8,5 @@ from models.order_log import OrderLog
 from models.blog_post import BlogPost
 from models.testimonial import Testimonial
 from models.faq import FAQ
+from models.product import Product
+from models.purchase import Purchase

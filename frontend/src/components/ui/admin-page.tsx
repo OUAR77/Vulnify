@@ -14,15 +14,18 @@ import {
   adminGetAllPosts, adminCreatePost, adminUpdatePost, adminDeletePost,
   getTestimonials, adminCreateTestimonial, adminUpdateTestimonial, adminDeleteTestimonial,
   getFAQs, adminCreateFAQ, adminUpdateFAQ, adminDeleteFAQ,
+  adminGetProducts, adminCreateProduct, adminUpdateProduct, adminDeleteProduct,
+  adminGetPurchases, adminRegenerateToken,
   type AdminStats, type AdminUser, type ActivityLog,
   type ContactMessage, type Order, type OrderPhoto,
   type BlogPost, type TestimonialData, type FAQData,
+  type ProductData, type PurchaseData,
 } from '@/lib/api'
 import {
   Users, ShieldAlert, Activity, Search, Trash2, ArrowLeft, LogOut,
   LayoutDashboard, RefreshCw, Plus, MessageSquare, ShoppingCart, Image,
   History, FileText, Wrench, BookOpen, Star, HelpCircle,
-  ChevronUp, ChevronDown, Database,
+  ChevronUp, ChevronDown, Database, Tags, Key,
 } from 'lucide-react'
 
 export function AdminPage() {
@@ -103,7 +106,18 @@ export function AdminPage() {
   const [faqForm, setFaqForm] = useState({ question: '', answer: '', category: '', published: false, order: 0 })
   const [editingFaq, setEditingFaq] = useState<FAQData | null>(null)
 
-  const [tab, setTab] = useState<'stats' | 'users' | 'logs' | 'messages' | 'orders' | 'blog' | 'testimonios' | 'faq'>('stats')
+  // Products
+  const [products, setProducts] = useState<ProductData[]>([])
+  const [productsError, setProductsError] = useState('')
+  const [showProductForm, setShowProductForm] = useState(false)
+  const [productForm, setProductForm] = useState({ name: '', slug: '', description: '', price_one_time: '', price_monthly: '', stripe_price_id_one_time: '', stripe_price_id_monthly: '', file_url: '', active: true })
+  const [editingProduct, setEditingProduct] = useState<ProductData | null>(null)
+
+  // Purchases
+  const [purchases, setPurchases] = useState<PurchaseData[]>([])
+  const [purchasesError, setPurchasesError] = useState('')
+
+  const [tab, setTab] = useState<'stats' | 'users' | 'logs' | 'messages' | 'orders' | 'blog' | 'testimonios' | 'faq' | 'products' | 'purchases'>('stats')
 
   const loadStats = useCallback(async () => {
     try { setStatsError(''); setStats(await adminGetStats()) }
@@ -168,11 +182,25 @@ export function AdminPage() {
     } catch (e: any) { setFaqError(e.message) }
   }, [])
 
+  const loadProducts = useCallback(async () => {
+    try {
+      setProductsError('')
+      setProducts(await adminGetProducts())
+    } catch (e: any) { setProductsError(e.message) }
+  }, [])
+
+  const loadPurchases = useCallback(async () => {
+    try {
+      setPurchasesError('')
+      setPurchases(await adminGetPurchases())
+    } catch (e: any) { setPurchasesError(e.message) }
+  }, [])
+
   useEffect(() => {
     if (!isAuthenticated) { navigate('/login'); return }
     if (!isAdmin) { navigate('/dashboard'); return }
     loadStats(); loadUsers(1); loadLogs(1); loadLogActions(); loadMessages(1); loadOrders(1)
-    loadBlogPosts(); loadTestimonials(); loadFAQs()
+    loadBlogPosts(); loadTestimonials(); loadFAQs(); loadProducts(); loadPurchases()
     getMaintenance().then(r => setMaintenanceMode(r.maintenance_mode)).catch(() => {})
   }, [isAuthenticated, isAdmin])
 
@@ -209,6 +237,8 @@ export function AdminPage() {
     loadBlogPosts()
     loadTestimonials()
     loadFAQs()
+    loadProducts()
+    loadPurchases()
   }
 
   const handleMarkRead = async (msg: ContactMessage) => {
@@ -429,6 +459,38 @@ export function AdminPage() {
     setPasswordModal(null); setConfirmPassword(''); setPasswordError('')
   }
 
+  const handleProductSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      const data = {
+        name: productForm.name,
+        slug: productForm.slug || productForm.name.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, ''),
+        description: productForm.description,
+        price_one_time: productForm.price_one_time ? parseFloat(productForm.price_one_time) : null,
+        price_monthly: productForm.price_monthly ? parseFloat(productForm.price_monthly) : null,
+        stripe_price_id_one_time: productForm.stripe_price_id_one_time,
+        stripe_price_id_monthly: productForm.stripe_price_id_monthly,
+        file_url: productForm.file_url,
+        active: productForm.active,
+      }
+      if (editingProduct) {
+        await adminUpdateProduct(editingProduct.id, data)
+      } else {
+        await adminCreateProduct(data)
+      }
+      setShowProductForm(false); loadProducts()
+    } catch (e: any) { alert(e.message) }
+  }
+
+  const handleDeleteProduct = async (id: number) => {
+    if (!confirmPassword) return
+    try {
+      await adminDeleteProduct(id)
+      loadProducts(); loadPurchases()
+    } catch (e: any) { setPasswordError(e.message); return }
+    setPasswordModal(null); setConfirmPassword(''); setPasswordError('')
+  }
+
   const handleMoveFaq = async (faq: FAQData, direction: 'up' | 'down') => {
     const sorted = [...faqs].sort((a, b) => a.order - b.order)
     const idx = sorted.findIndex(f => f.id === faq.id)
@@ -489,6 +551,8 @@ export function AdminPage() {
             ['orders', t('admin.tabs.orders')],
             ['blog', t('admin.tabs.blog')],
             ['testimonios', t('admin.tabs.testimonials')],
+            ['products', t('admin.tabs.products')],
+            ['purchases', t('admin.tabs.purchases')],
             ['faq', t('admin.tabs.faq')],
             ['logs', t('admin.tabs.activity')],
           ] as const).map(([key, label]) => (
@@ -1070,6 +1134,197 @@ export function AdminPage() {
           </div>
         )}
 
+        {/* Products Tab */}
+        {tab === 'products' && (
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <Tags className="size-5 text-zinc-500" />
+                <span className="text-sm text-zinc-500">{t('admin.products.count', { count: products.length })}</span>
+              </div>
+              <button onClick={() => { setEditingProduct(null); setProductForm({ name: '', slug: '', description: '', price_one_time: '', price_monthly: '', stripe_price_id_one_time: '', stripe_price_id_monthly: '', file_url: '', active: true }); setShowProductForm(true) }}
+                className="flex items-center gap-2 text-sm bg-white/10 rounded-lg px-4 py-2 hover:bg-white/20 transition-colors cursor-pointer border-none text-white">
+                <Plus className="size-4" /> {t('admin.products.add')}
+              </button>
+            </div>
+            {productsError && <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400 mb-6">{productsError}</div>}
+            <div className="overflow-x-auto rounded-xl bg-white/[0.02] border border-white/[0.06]">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-white/[0.06] text-left text-zinc-500">
+                    <th className="p-4 font-medium">ID</th>
+                    <th className="p-4 font-medium">{t('admin.products.name')}</th>
+                    <th className="p-4 font-medium">{t('admin.products.price_one_time')}</th>
+                    <th className="p-4 font-medium">{t('admin.products.price_monthly')}</th>
+                    <th className="p-4 font-medium">{t('admin.products.active')}</th>
+                    <th className="p-4 font-medium">{t('admin.products.actions')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {products.map((p) => (
+                    <tr key={p.id} className="border-b border-white/[0.06] hover:bg-white/[0.02]">
+                      <td className="p-4 text-zinc-400">{p.id}</td>
+                      <td className="p-4 text-white font-medium">{p.name}</td>
+                      <td className="p-4 text-zinc-300">{p.price_one_time ? `${p.price_one_time}€` : '-'}</td>
+                      <td className="p-4 text-zinc-300">{p.price_monthly ? `${p.price_monthly}€/mo` : '-'}</td>
+                      <td className="p-4">{p.active ? <span className="text-green-400">{t('admin.yes')}</span> : <span className="text-red-400">{t('admin.no')}</span>}</td>
+                      <td className="p-4">
+                        <div className="flex gap-2">
+                          <button onClick={() => { setEditingProduct(p); setProductForm({ name: p.name, slug: p.slug, description: p.description, price_one_time: p.price_one_time?.toString() || '', price_monthly: p.price_monthly?.toString() || '', stripe_price_id_one_time: p.stripe_price_id_one_time || '', stripe_price_id_monthly: p.stripe_price_id_monthly || '', file_url: p.file_url || '', active: p.active ?? true }); setShowProductForm(true) }}
+                            className="text-xs bg-blue-500/20 text-blue-400 px-3 py-1 rounded-md hover:bg-blue-500/30 transition-colors cursor-pointer border-none">
+                            {t('common.edit')}
+                          </button>
+                          <button onClick={() => setPasswordModal({ action: 'delete_product', id: p.id })}
+                            className="text-xs bg-red-500/20 text-red-400 px-3 py-1 rounded-md hover:bg-red-500/30 transition-colors cursor-pointer border-none">
+                            {t('common.delete')}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {showProductForm && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => setShowProductForm(false)}>
+                <div className="bg-zinc-900 border border-white/[0.1] rounded-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                  <h3 className="text-lg font-semibold mb-4">{editingProduct ? t('admin.products.edit_title') : t('admin.products.new_title')}</h3>
+                  <form onSubmit={handleProductSubmit} className="space-y-4">
+                    <div className="flex gap-3">
+                      <div className="flex-1">
+                        <label className="text-xs text-zinc-500 mb-1 block">{t('admin.products.name')}</label>
+                        <input value={productForm.name} onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
+                          className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" required />
+                      </div>
+                      <div className="flex-1">
+                        <label className="text-xs text-zinc-500 mb-1 block">{t('admin.products.slug')}</label>
+                        <input value={productForm.slug} onChange={(e) => setProductForm({ ...productForm, slug: e.target.value })}
+                          className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs text-zinc-500 mb-1 block">{t('admin.products.description')}</label>
+                      <textarea value={productForm.description} onChange={(e) => setProductForm({ ...productForm, description: e.target.value })} rows={3}
+                        className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="flex-1">
+                        <label className="text-xs text-zinc-500 mb-1 block">{t('admin.products.price_one_time')}</label>
+                        <input type="number" step="0.01" value={productForm.price_one_time} onChange={(e) => setProductForm({ ...productForm, price_one_time: e.target.value })}
+                          className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
+                      </div>
+                      <div className="flex-1">
+                        <label className="text-xs text-zinc-500 mb-1 block">{t('admin.products.price_monthly')}</label>
+                        <input type="number" step="0.01" value={productForm.price_monthly} onChange={(e) => setProductForm({ ...productForm, price_monthly: e.target.value })}
+                          className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="flex-1">
+                        <label className="text-xs text-zinc-500 mb-1 block">Stripe Price ID (one-time)</label>
+                        <input value={productForm.stripe_price_id_one_time} onChange={(e) => setProductForm({ ...productForm, stripe_price_id_one_time: e.target.value })}
+                          className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
+                      </div>
+                      <div className="flex-1">
+                        <label className="text-xs text-zinc-500 mb-1 block">Stripe Price ID (monthly)</label>
+                        <input value={productForm.stripe_price_id_monthly} onChange={(e) => setProductForm({ ...productForm, stripe_price_id_monthly: e.target.value })}
+                          className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs text-zinc-500 mb-1 block">{t('admin.products.file_url')}</label>
+                      <input value={productForm.file_url} onChange={(e) => setProductForm({ ...productForm, file_url: e.target.value })}
+                        className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30" />
+                    </div>
+                    <label className="flex items-center gap-3 text-sm text-zinc-400">
+                      <input type="checkbox" checked={productForm.active}
+                        onChange={(e) => setProductForm({ ...productForm, active: e.target.checked })}
+                        className="size-4 rounded border-white/20 bg-white/5 text-white focus:ring-0 cursor-pointer" />
+                      {t('admin.products.active')}
+                    </label>
+                    <div className="flex gap-3 pt-2">
+                      <button type="submit" className="flex-1 py-2.5 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors cursor-pointer border-none">
+                        {editingProduct ? t('common.save') : t('common.create')}
+                      </button>
+                      <button type="button" onClick={() => setShowProductForm(false)}
+                        className="px-4 py-2.5 rounded-lg border border-white/[0.1] text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer bg-transparent">
+                        {t('common.cancel')}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Purchases Tab */}
+        {tab === 'purchases' && (
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <Key className="size-5 text-zinc-500" />
+                <span className="text-sm text-zinc-500">{t('admin.purchases.count', { count: purchases.length })}</span>
+              </div>
+              <button onClick={loadPurchases} className="flex items-center gap-2 text-sm bg-white/10 rounded-lg px-4 py-2 hover:bg-white/20 transition-colors cursor-pointer border-none text-white">
+                <RefreshCw className="size-4" /> {t('admin.refresh')}
+              </button>
+            </div>
+            {purchasesError && <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400 mb-6">{purchasesError}</div>}
+            <div className="overflow-x-auto rounded-xl bg-white/[0.02] border border-white/[0.06]">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-white/[0.06] text-left text-zinc-500">
+                    <th className="p-4 font-medium">ID</th>
+                    <th className="p-4 font-medium">{t('admin.purchases.product')}</th>
+                    <th className="p-4 font-medium">{t('admin.purchases.buyer')}</th>
+                    <th className="p-4 font-medium">{t('admin.purchases.amount')}</th>
+                    <th className="p-4 font-medium">{t('admin.purchases.token')}</th>
+                    <th className="p-4 font-medium">{t('admin.purchases.status')}</th>
+                    <th className="p-4 font-medium">{t('admin.purchases.date')}</th>
+                    <th className="p-4 font-medium">{t('admin.purchases.actions')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {purchases.map((p) => {
+                    const prod = products.find(x => x.id === p.product_id)
+                    return (
+                      <tr key={p.id} className="border-b border-white/[0.06] hover:bg-white/[0.02]">
+                        <td className="p-4 text-zinc-400">{p.id}</td>
+                        <td className="p-4 text-white font-medium">{prod?.name || `#${p.product_id}`}</td>
+                        <td className="p-4">
+                          <div className="text-white">{p.buyer_name}</div>
+                          <div className="text-zinc-500 text-xs">{p.buyer_email}</div>
+                        </td>
+                        <td className="p-4 text-zinc-300">{p.amount ? `${p.amount}€` : '-'}</td>
+                        <td className="p-4">
+                          <code className="text-xs bg-black/40 px-2 py-1 rounded text-zinc-400 break-all max-w-[120px] inline-block truncate">{p.token}</code>
+                        </td>
+                        <td className="p-4">
+                          <span className={`text-xs px-2 py-1 rounded ${p.status === 'completed' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                            {p.status}
+                          </span>
+                        </td>
+                        <td className="p-4 text-zinc-400 text-xs">{p.created_at}</td>
+                        <td className="p-4">
+                          <button onClick={async () => {
+                            try { const r = await adminRegenerateToken(p.id); alert(`Token regenerado: ${r.token}`); loadPurchases() }
+                            catch (e: any) { alert(e.message) }
+                          }}
+                            className="text-xs bg-zinc-500/20 text-zinc-400 px-3 py-1 rounded-md hover:bg-zinc-500/30 transition-colors cursor-pointer border-none">
+                            {t('admin.purchases.regenerate')}
+                          </button>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
         {/* FAQ Tab */}
         {tab === 'faq' && (
           <div>
@@ -1316,9 +1571,9 @@ export function AdminPage() {
               <input type="password" placeholder="Tu contraseña" value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30 placeholder:text-white/30 mb-4" autoFocus
-                onKeyDown={(e) => { if (e.key === 'Enter') { const pm = passwordModal; if (pm?.action === 'delete_user') handleDeleteUser(pm.id); else if (pm?.action === 'role') handleToggleRole(pm.id, pm.extra || 'user'); else if (pm?.action === 'delete_message') handleDeleteMessage(pm.id); else if (pm?.action === 'delete_order') handleDeleteOrder(pm.id); else if (pm?.action === 'delete_photo') handleDeletePhoto(pm.id); else if (pm?.action === 'delete_all_photos') handleDeleteAllPhotos(); else if (pm?.action === 'toggle_maintenance') handleToggleMaintenance(); else if (pm?.action === 'delete_blog_post') handleDeleteBlogPost(pm.id); else if (pm?.action === 'delete_testimonial') handleDeleteTestimonial(pm.id); else if (pm?.action === 'delete_faq') handleDeleteFaq(pm.id) } }} />
+                onKeyDown={(e) => { if (e.key === 'Enter') { const pm = passwordModal; if (pm?.action === 'delete_user') handleDeleteUser(pm.id); else if (pm?.action === 'role') handleToggleRole(pm.id, pm.extra || 'user'); else if (pm?.action === 'delete_message') handleDeleteMessage(pm.id); else if (pm?.action === 'delete_order') handleDeleteOrder(pm.id); else if (pm?.action === 'delete_photo') handleDeletePhoto(pm.id); else if (pm?.action === 'delete_all_photos') handleDeleteAllPhotos(); else if (pm?.action === 'toggle_maintenance') handleToggleMaintenance(); else if (pm?.action === 'delete_blog_post') handleDeleteBlogPost(pm.id); else if (pm?.action === 'delete_testimonial') handleDeleteTestimonial(pm.id); else if (pm?.action === 'delete_faq') handleDeleteFaq(pm.id); else if (pm?.action === 'delete_product') handleDeleteProduct(pm.id) } }} />
               <div className="flex gap-3">
-                <button onClick={() => { const pm = passwordModal; if (pm?.action === 'delete_user') handleDeleteUser(pm.id); else if (pm?.action === 'role') handleToggleRole(pm.id, pm.extra || 'user'); else if (pm?.action === 'delete_message') handleDeleteMessage(pm.id); else if (pm?.action === 'delete_order') handleDeleteOrder(pm.id); else if (pm?.action === 'delete_photo') handleDeletePhoto(pm.id); else if (pm?.action === 'delete_all_photos') handleDeleteAllPhotos(); else if (pm?.action === 'toggle_maintenance') handleToggleMaintenance(); else if (pm?.action === 'delete_blog_post') handleDeleteBlogPost(pm.id); else if (pm?.action === 'delete_testimonial') handleDeleteTestimonial(pm.id); else if (pm?.action === 'delete_faq') handleDeleteFaq(pm.id) }}
+                <button onClick={() => { const pm = passwordModal; if (pm?.action === 'delete_user') handleDeleteUser(pm.id); else if (pm?.action === 'role') handleToggleRole(pm.id, pm.extra || 'user'); else if (pm?.action === 'delete_message') handleDeleteMessage(pm.id); else if (pm?.action === 'delete_order') handleDeleteOrder(pm.id); else if (pm?.action === 'delete_photo') handleDeletePhoto(pm.id); else if (pm?.action === 'delete_all_photos') handleDeleteAllPhotos(); else if (pm?.action === 'toggle_maintenance') handleToggleMaintenance(); else if (pm?.action === 'delete_blog_post') handleDeleteBlogPost(pm.id); else if (pm?.action === 'delete_testimonial') handleDeleteTestimonial(pm.id); else if (pm?.action === 'delete_faq') handleDeleteFaq(pm.id); else if (pm?.action === 'delete_product') handleDeleteProduct(pm.id) }}
                   disabled={!confirmPassword || userActionLoading !== null}
                   className="flex-1 py-2.5 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors disabled:opacity-50 cursor-pointer border-none">
                   {userActionLoading !== null ? 'Verificando...' : t('common.confirm')}

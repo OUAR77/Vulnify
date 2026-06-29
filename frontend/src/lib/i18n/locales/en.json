@@ -24,6 +24,7 @@
     "contacto": "Contact",
     "presupuesto": "Quote",
     "solicitar_presupuesto": "Request a quote",
+    "productos": "Products",
     "admin": "Admin",
     "mi_panel": "My dashboard",
     "cerrar_sesion": "Log out",
@@ -323,7 +324,9 @@
       "blog": "Blog",
       "testimonials": "Testimonials",
       "faq": "FAQ",
-      "activity": "Activity"
+      "activity": "Activity",
+      "products": "Products",
+      "purchases": "Purchases"
     },
     "stats": {
       "users": "Users",
@@ -421,7 +424,62 @@
     "activity": {
       "count": "{count} records",
       "columns": ["ID", "User", "Action", "IP", "Details", "Date"]
+    },
+    "products": {
+      "count": "{count} products",
+      "add": "New product",
+      "edit_title": "Edit product",
+      "new_title": "New product",
+      "name": "Name",
+      "slug": "Slug",
+      "description": "Description",
+      "price_one_time": "One-time price (€)",
+      "price_monthly": "Monthly price (€/mo)",
+      "active": "Active",
+      "file_url": "File URL",
+      "actions": "Actions"
+    },
+    "purchases": {
+      "count": "{count} purchases",
+      "product": "Product",
+      "buyer": "Buyer",
+      "amount": "Amount",
+      "token": "Token",
+      "status": "Status",
+      "date": "Date",
+      "actions": "Actions",
+      "regenerate": "Regenerate token"
     }
+  },
+  "products": {
+    "badge": "Products",
+    "heading": "Digital products.",
+    "subtitle": "Ready-to-download solutions. One-time payment or monthly subscription.",
+    "view": "View product",
+    "one_time": "one-time",
+    "back": "← Back to products",
+    "empty": "Coming soon",
+    "not_found": "Product not found",
+    "checkout_title": "Complete purchase",
+    "email": "Email",
+    "name": "Name",
+    "total": "Total",
+    "buy": "Buy now",
+    "access_success": "Access granted!",
+    "access_error": "Access error",
+    "you_own": "You have access to:",
+    "purchased_on": "Purchased on",
+    "browse": "Browse products",
+    "expired": "This access has expired",
+    "invalid_token": "Invalid access token"
+  },
+  "checkout": {
+    "success_title": "Payment completed!",
+    "success_desc": "You'll receive an email with your access link within minutes.",
+    "success_email": "If you don't see it, check your spam folder.",
+    "error_title": "Payment error",
+    "error_desc": "There was a problem processing your payment. Please try again.",
+    "browse": "Browse products"
   },
   "not_found": {
     "title": "404",

@@ -256,6 +256,10 @@ export function SiteLayout() {
               <span className="absolute -bottom-1 left-0 w-0 h-px bg-white/40 group-hover:w-full transition-all duration-300" />
             </button>
           ))}
+          <Link to="/productos" className="text-sm text-zinc-500 hover:text-white transition-colors no-underline relative group">
+            {t('nav.productos')}
+            <span className="absolute -bottom-1 left-0 w-0 h-px bg-white/40 group-hover:w-full transition-all duration-300" />
+          </Link>
           <LangSwitcher />
           <div className="w-px h-5 bg-white/[0.06]" />
           <ThemeToggle isDark={isDark} onToggle={() => setIsDark(!isDark)} />

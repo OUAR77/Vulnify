@@ -609,3 +609,57 @@ export async function adminReorderFAQs(token: string, order: Record<number, numb
   })
   if (!res.ok) throw new Error('Error al reordenar FAQs')
 }
+
+// Products
+export interface ProductData {
+  id: number; name: string; slug: string; description: string
+  price_one_time: number | null; price_monthly: number | null
+  stripe_price_id_one_time?: string; stripe_price_id_monthly?: string
+  file_url?: string; active?: boolean; created_at?: string
+}
+
+export interface PurchaseData {
+  id: number; product_id: number; buyer_email: string; buyer_name: string
+  amount: number | null; interval: string; token: string
+  status: string; created_at: string; expires_at: string | null
+}
+
+export async function getProducts(): Promise<ProductData[]> {
+  const res = await fetch(`${BASE}/api/products`)
+  if (!res.ok) throw new Error('Error al cargar productos')
+  return res.json()
+}
+
+export async function getProduct(slug: string): Promise<ProductData> {
+  const res = await fetch(`${BASE}/api/products/${slug}`)
+  if (!res.ok) throw new Error('Producto no encontrado')
+  return res.json()
+}
+
+export async function productCheckout(data: { product_id: number; interval: string; buyer_email: string; buyer_name: string }): Promise<{ checkout_url: string | null; session_id?: string; token?: string; free?: boolean }> {
+  return apiPost('/api/products/checkout', data)
+}
+
+export async function adminGetProducts(): Promise<ProductData[]> {
+  return apiGet('/api/admin/products')
+}
+
+export async function adminCreateProduct(data: Partial<ProductData>): Promise<{ ok: boolean; id: number }> {
+  return apiPost('/api/admin/products', data)
+}
+
+export async function adminUpdateProduct(id: number, data: Partial<ProductData>): Promise<{ ok: boolean }> {
+  return apiPut(`/api/admin/products/${id}`, data)
+}
+
+export async function adminDeleteProduct(id: number): Promise<{ ok: boolean }> {
+  return apiDelete(`/api/admin/products/${id}`)
+}
+
+export async function adminGetPurchases(): Promise<PurchaseData[]> {
+  return apiGet('/api/admin/purchases')
+}
+
+export async function adminRegenerateToken(purchaseId: number): Promise<{ ok: boolean; token: string }> {
+  return apiPost(`/api/admin/purchases/${purchaseId}/regenerate-token`, {})
+}
