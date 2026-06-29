@@ -12,6 +12,7 @@ from modules.auth import require_admin, require_admin_totp, verify_password
 from models.blog_post import BlogPost
 from models.testimonial import Testimonial
 from models.faq import FAQ
+from models.product import Product
 from modules.activity_logger import log_activity, get_client_ip
 from config import limiter
 
@@ -171,10 +172,10 @@ def set_maintenance(
     log_activity("admin.maintenance", admin.id, admin.email, {"maintenance_mode": enabled})
     return {"ok": True, "maintenance_mode": enabled}
 
-@router.post("/seed", description="Insert sample blog posts, testimonials, and FAQs")
-@limiter.limit("1/minute")
+@router.post("/seed", description="Insert sample data: blog posts, testimonials, FAQs, and products")
+@limiter.limit("2/minute")
 def seed_data(request: Request, admin: User = Depends(require_admin), db: Session = Depends(get_db)):
-    count = {"posts": 0, "testimonials": 0, "faqs": 0}
+    count = {"posts": 0, "testimonials": 0, "faqs": 0, "products": 0}
 
     if db.query(BlogPost).count() == 0:
         posts = [
@@ -1011,6 +1012,108 @@ Tailwind CSS v4 es un salto generacional. La desaparición del archivo de config
         ]
         db.add_all(faqs)
         count["faqs"] = len(faqs)
+
+    if db.query(Product).count() == 0:
+        products = [
+            Product(
+                name="Generador de Documentos IA",
+                slug="generador-documentos-ia",
+                description="Tu asistente para crear contratos, facturas, presupuestos, informes y cartas profesionales con inteligencia artificial. Incluye editor, descarga en PDF y plantillas personalizables.",
+                price_one_time=49.0,
+                price_monthly=9.0,
+                active=True,
+            ),
+            Product(
+                name="Kit RGPD Completo",
+                slug="kit-rgpd-completo",
+                description="Plantillas legales para cumplir con la normativa de protección de datos: políticas de privacidad, consentimientos, DPO, registro de actividades y más. Adaptado a la LOPDGDD española.",
+                price_one_time=29.0,
+                price_monthly=None,
+                active=True,
+            ),
+            Product(
+                name="Pack Contratos Profesionales",
+                slug="pack-contratos-profesionales",
+                description="10 plantillas de contratos listos para usar: prestación de servicios, confidencialidad, arrendamiento, laboral, compraventa, colaboración, y más. Formato Word y PDF.",
+                price_one_time=39.0,
+                price_monthly=None,
+                active=True,
+            ),
+            Product(
+                name="Chatbot IA White-Label",
+                slug="chatbot-ia-white-label",
+                description="Asistente inteligente listo para integrar en tu web con tu propia marca. Responde preguntas, captura leads y deriva a soporte humano. Sin límite de conversaciones.",
+                price_one_time=149.0,
+                price_monthly=19.0,
+                active=True,
+            ),
+            Product(
+                name="SEO Analyzer",
+                slug="seo-analyzer",
+                description="Analiza cualquier URL y obtén un informe completo de SEO técnico: Core Web Vitals, estructura HTML, meta tags, datos estructurados, rendimiento y recomendaciones accionables.",
+                price_one_time=19.0,
+                price_monthly=None,
+                active=True,
+            ),
+            Product(
+                name="Generador de Blog con IA",
+                slug="generador-blog-ia",
+                description="Crea artículos optimizados para SEO con inteligencia artificial. Elige tema, tono y extensión. Incluye keywords, meta description y estructura lista para publicar.",
+                price_one_time=24.0,
+                price_monthly=7.0,
+                active=True,
+            ),
+            Product(
+                name="Plantilla Web Next.js + Tailwind",
+                slug="plantilla-web-nextjs-tailwind",
+                description="Plantilla profesional lista para desplegar con Next.js, Tailwind CSS v4 y TypeScript. Incluye blog, SEO, modo oscuro, y panel de admin. Ahorra semanas de desarrollo.",
+                price_one_time=79.0,
+                price_monthly=None,
+                active=True,
+            ),
+            Product(
+                name="Script Automatización OCR",
+                slug="script-automatizacion-ocr",
+                description="Script Python para extraer texto de documentos, facturas y DNI usando IA. Incluye integración con Google Sheets y API REST. Ideal para automatizar procesos administrativos.",
+                price_one_time=59.0,
+                price_monthly=None,
+                active=True,
+            ),
+            Product(
+                name="Curso: Crea tu Web con IA",
+                slug="curso-crea-web-ia",
+                description="Aprende a crear tu propia web profesional usando herramientas de IA. 10 lecciones en vídeo, guías paso a paso y plantillas incluidas. Sin conocimientos previos necesarios.",
+                price_one_time=47.0,
+                price_monthly=None,
+                active=True,
+            ),
+            Product(
+                name="Curso: ChatGPT para Empresas",
+                slug="curso-chatgpt-empresas",
+                description="Domina ChatGPT y la IA generativa para tu negocio: automatización de tareas, redacción comercial, análisis de datos, atención al cliente y más. 8 módulos con ejercicios prácticos.",
+                price_one_time=37.0,
+                price_monthly=None,
+                active=True,
+            ),
+            Product(
+                name="Soporte Técnico Recurrente",
+                slug="soporte-tecnico-recurrente",
+                description="Plan mensual de soporte técnico con 5 horas de dedicación. Ideal para mantener tu web actualizada, resolver incidencias y realizar mejoras continuas. Respuesta en 24h.",
+                price_one_time=None,
+                price_monthly=49.0,
+                active=True,
+            ),
+            Product(
+                name="Tokens API Inteligencia Artificial",
+                slug="tokens-api-inteligencia-artificial",
+                description="500.000 tokens mensuales para usar en tus propias integraciones con IA. Compatible con GPT-4, Claude y Llama. Incluye documentación y acceso a nuestra API proxy.",
+                price_one_time=None,
+                price_monthly=29.0,
+                active=True,
+            ),
+        ]
+        db.add_all(products)
+        count["products"] = len(products)
 
     db.commit()
     return {"ok": True, "inserted": count}

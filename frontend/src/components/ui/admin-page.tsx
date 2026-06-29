@@ -624,7 +624,7 @@ export function AdminPage() {
                     })
                     if (!res.ok) throw new Error('Seed failed')
                     const data = await res.json()
-                    alert(t('admin.stats.seed_success', { posts: data.inserted.posts, testimonials: data.inserted.testimonials, faqs: data.inserted.faqs }))
+                    alert(t('admin.stats.seed_success', { posts: data.inserted.posts, testimonials: data.inserted.testimonials, faqs: data.inserted.faqs, products: data.inserted.products }))
                   } catch { alert(t('admin.stats.seed_error')) }
                 }} className="text-xs px-4 py-2 rounded-lg bg-white text-black font-medium hover:bg-zinc-200 transition-colors cursor-pointer border-none">
                   {t('admin.stats.seed_button')}

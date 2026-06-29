@@ -338,7 +338,7 @@
       "seed_label": "Datos de ejemplo",
       "seed_desc": "Inserta posts, testimonios y FAQs de ejemplo (solo si están vacíos)",
       "seed_button": "Seed Data",
-      "seed_success": "Insertados: {posts} posts, {testimonials} testimonios, {faqs} FAQs",
+      "seed_success": "Insertados: {posts} posts, {testimonials} testimonios, {faqs} FAQs, {products} productos",
       "seed_error": "Error al insertar datos"
     },
     "users": {
