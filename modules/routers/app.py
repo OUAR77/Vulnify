@@ -2,6 +2,7 @@ import logging
 import json
 import re
 import io
+import httpx
 from datetime import datetime, timezone, timedelta
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
