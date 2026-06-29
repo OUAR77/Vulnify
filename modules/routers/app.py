@@ -52,6 +52,7 @@ class LoginRequest(BaseModel):
 class GenerateRequest(BaseModel):
     document_type: str = "general"
     fields: dict[str, str] = {}
+    logo: str = ""
 
 
 @router.post("/login")
@@ -170,11 +171,14 @@ async def app_generate(body: GenerateRequest, user: dict = Depends(get_app_user)
 async def app_generate_pdf(body: GenerateRequest, user: dict = Depends(get_app_user)):
     try:
         content = await _generate_doc(body.document_type, body.fields)
+        logo_html = ""
+        if body.logo:
+            logo_html = f'<div style="text-align:center;margin-bottom:1.5cm"><img src="{body.logo}" style="max-height:80px;max-width:200px" /></div>'
         html = f"""<!DOCTYPE html><html><head><meta charset="utf-8"><style>
 body {{ font-family: 'DejaVu Sans', sans-serif; padding: 2.5cm; line-height: 1.6; color: #111; }}
 h1 {{ font-size: 22pt; margin-bottom: 1cm; }}
 p {{ margin-bottom: 0.5cm; }}
-</style></head><body><div>{content.replace(chr(10), '<br>')}</div></body></html>"""
+</style></head><body>{logo_html}<div>{content.replace(chr(10), '<br>')}</div></body></html>"""
         try:
             from weasyprint import HTML
             pdf_bytes = HTML(string=html).write_pdf()
@@ -183,7 +187,7 @@ p {{ margin-bottom: 0.5cm; }}
             html_body = markdown.markdown(content)
             html = f"""<!DOCTYPE html><html><head><meta charset="utf-8"><style>
 body {{ font-family: 'DejaVu Sans', sans-serif; padding: 2.5cm; line-height: 1.6; color: #111; }}
-</style></head><body>{html_body}</body></html>"""
+</style></head><body>{logo_html}{html_body}</body></html>"""
             from weasyprint import HTML
             pdf_bytes = HTML(string=html).write_pdf()
         return StreamingResponse(io.BytesIO(pdf_bytes), media_type="application/pdf", headers={"Content-Disposition": "attachment; filename=documento.pdf"})

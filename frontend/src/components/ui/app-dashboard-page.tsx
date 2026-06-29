@@ -1,9 +1,10 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { Bot, FileText, LogOut, Sparkles, ArrowLeft, Download } from 'lucide-react'
+import { Bot, FileText, LogOut, Sparkles, ArrowLeft, Download, Image, X } from 'lucide-react'
 
 const BASE = import.meta.env.VITE_API_URL || ''
+const LOGO_KEY = 'app_company_logo'
 
 const FIELDS_BY_TYPE: Record<string, { key: string; labelKey: string; type: string }[]> = {
   general: [
@@ -49,8 +50,28 @@ export function AppDashboardPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [loaded, setLoaded] = useState(false)
+  const [logo, setLogo] = useState(() => localStorage.getItem(LOGO_KEY) || '')
+  const logoInputRef = useRef<HTMLInputElement>(null)
 
   const token = localStorage.getItem('app_session_token')
+
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => {
+      const dataUrl = reader.result as string
+      setLogo(dataUrl)
+      localStorage.setItem(LOGO_KEY, dataUrl)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  const handleRemoveLogo = () => {
+    setLogo('')
+    localStorage.removeItem(LOGO_KEY)
+    if (logoInputRef.current) logoInputRef.current.value = ''
+  }
 
   useEffect(() => {
     if (!token) { navigate('/app'); return }
@@ -114,7 +135,7 @@ export function AppDashboardPage() {
       const res = await fetch(`${BASE}/api/app/generate-pdf`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ document_type: docType, fields }),
+        body: JSON.stringify({ document_type: docType, fields, logo }),
       })
       if (!res.ok) throw new Error('Error')
       const blob = await res.blob()
@@ -153,6 +174,29 @@ export function AppDashboardPage() {
               <LogOut className="size-4" /> {t('nav.cerrar_sesion')}
             </button>
           </div>
+        </div>
+
+        {/* Logo */}
+        <div className="rounded-xl bg-white/[0.02] border border-white/[0.06] p-4 mb-4 flex items-center gap-4">
+          <div className="flex items-center gap-2 shrink-0">
+            <Image className="size-4 text-zinc-500" />
+            <span className="text-xs text-zinc-500">Logo empresa</span>
+          </div>
+          {logo ? (
+            <div className="flex items-center gap-3">
+              <img src={logo} alt="Logo" className="max-h-10 max-w-32 rounded object-contain" />
+              <button type="button" onClick={handleRemoveLogo}
+                className="text-zinc-500 hover:text-red-400 transition-colors cursor-pointer bg-transparent border-none p-1">
+                <X className="size-4" />
+              </button>
+            </div>
+          ) : (
+            <button type="button" onClick={() => logoInputRef.current?.click()}
+              className="text-xs text-zinc-500 hover:text-white transition-colors bg-transparent border border-white/[0.06] rounded-lg px-3 py-1.5 cursor-pointer">
+              Añadir logo
+            </button>
+          )}
+          <input type="file" accept="image/*" ref={logoInputRef} className="hidden" onChange={handleLogoUpload} />
         </div>
 
         {/* Generator */}
