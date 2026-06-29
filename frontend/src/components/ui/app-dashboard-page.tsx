@@ -208,7 +208,8 @@ export function AppDashboardPage() {
           <div className="mb-4">
             <label className="text-xs text-zinc-500 mb-1.5 block">{t('app.doc_type')}</label>
             <select value={docType} onChange={(e) => handleTypeChange(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30">
+              className="w-full bg-zinc-800 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-white/30"
+              style={{ colorScheme: 'dark' }}>
               <option value="general">{t('app.type_general')}</option>
               <option value="contract">{t('app.type_contract')}</option>
               <option value="invoice">{t('app.type_invoice')}</option>
