@@ -41,7 +41,7 @@
     "contact_aria": "Contacto"
   },
   "footer": {
-    "description": "Desarrollo web e inteligencia artificial para impulsar tu negocio.",
+    "description": "Productos digitales, desarrollo web e inteligencia artificial para impulsar tu negocio.",
     "copyright": "© {year} Vulnify. Todos los derechos reservados.",
     "email": "hola@vulnify.es",
     "column_services": "Servicios",
@@ -49,6 +49,7 @@
     "column_legal": "Legal",
     "service_web": "Desarrollo Web",
     "service_ia": "Integraciones IA",
+    "service_products": "Productos Digitales",
     "service_apis": "APIs & Backend",
     "service_consulting": "Consultoría",
     "company_about": "Sobre nosotros",
@@ -67,9 +68,9 @@
     "reject": "Rechazar"
   },
   "hero": {
-    "label": "01 — Arquitectura Digital",
+    "label": "01 — Ecosistema Digital con IA",
     "words": ["CREAR", "OPTIMIZAR", "ESCALAR"],
-    "subtitle": "No construimos páginas. Diseñamos ecosistemas digitales con inteligencia artificial integrada para que tu negocio crezca.",
+    "subtitle": "No hacemos páginas web. Creamos herramientas digitales con inteligencia artificial: chatbots, generadores de documentos, automatizaciones y productos digitales que transforman tu negocio.",
     "cta_audit": "Solicitar auditoría gratis",
     "cta_whatsapp": "Escribir por WhatsApp",
     "cta_presupuesto": "Solicitar presupuesto",
@@ -83,19 +84,20 @@
   },
   "problem": {
     "label": "El Problema",
-    "heading": "Tu web no está trabajando para ti. Debería.",
-    "description": "La mayoría de las webs son folletos digitales estáticos. No generan leads, no automatizan procesos, no se adaptan a tus clientes.",
+    "heading": "Tus herramientas digitales no están trabajando para ti.",
+    "description": "La mayoría de los negocios usan webs estáticas, procesos manuales y herramientas genéricas que no se adaptan a sus necesidades. No generan leads, no automatizan tareas, no escalan.",
     "signals_label": "Señales de alerta",
     "signals_items": [
-      "Sin leads en 30 días",
-      "Procesos manuales que agotan",
-      "Web que no convierte"
+      "Sigues haciendo facturas y contratos manualmente",
+      "Tu web no genera leads ni automatiza nada",
+      "Pierdes horas en tareas que podría hacer una IA",
+      "Usas herramientas genéricas que no se adaptan a ti"
     ],
     "solution_label": "Nuestra solución",
     "solution_items": [
-      { "title": "Diseño que convierte", "desc": "Interfaces ultrarrápidas optimizadas para conversión y SEO." },
-      { "title": "IA integrada", "desc": "Chatbots inteligentes, automatización y análisis predictivo." },
-      { "title": "Crecimiento continuo", "desc": "No es un proyecto finito. Iteramos y escalamos tu presencia digital." }
+      { "title": "Productos IA listos para usar", "desc": "Chatbots, generador de documentos, análisis automatizado. Actívalos en minutos." },
+      { "title": "Desarrollo a medida", "desc": "Webs, APIs y automatizaciones diseñadas específicamente para tu negocio." },
+      { "title": "Automatización inteligente", "desc": "Procesos que funcionan solos: reporting, extracción de datos, atención al cliente." }
     ]
   },
   "services": {
@@ -104,9 +106,9 @@
     "items": [
       { "name": "Desarrollo Web", "desc": "Páginas corporativas, tiendas online y aplicaciones web con React, Next.js y diseño responsive." },
       { "name": "Integraciones IA", "desc": "Chatbots inteligentes, automatización de procesos y análisis predictivo para tu negocio." },
+      { "name": "Productos Digitales", "desc": "Generador de documentos, chatbot white-label, plantillas y herramientas IA listas para descargar." },
       { "name": "APIs & Backend", "desc": "Arquitectura escalable, APIs robustas y paneles de administración diseñados para crecer." },
-      { "name": "Consultoría Digital", "desc": "Estrategia tecnológica personalizada: desde la idea hasta la implementación." },
-      { "name": "Automatización Inmobiliaria", "desc": "Extraemos datos de fichas de propiedades, DNI, nóminas y contratos con IA. Tu equipo deja de picar datos y se dedica a vender." }
+      { "name": "Consultoría Digital", "desc": "Estrategia tecnológica personalizada: desde la idea hasta la implementación." }
     ]
   },
   "process": {
@@ -135,7 +137,8 @@
       "Diseño UI/UX optimizado para conversión",
       "Backend escalable, APIs y panel admin",
       "SEO técnico y rendimiento incluidos",
-      "Soporte continuo y mantenimiento"
+      "Soporte continuo y mantenimiento",
+      "Acceso a productos digitales y herramientas IA"
     ],
     "question": "¿Hablamos?",
     "response_time": "Respuesta en menos de 24h"
@@ -147,7 +150,7 @@
     "badge": "PLAN ÚNICO",
     "plan_name": "A medida",
     "plan_desc": "Precio personalizado según tu proyecto",
-    "features_label": "Todo lo que necesitas para tu proyecto web:"
+    "features_label": "Todo lo que necesitas para tu proyecto digital:"
   },
   "faq": {
     "label": "FAQ",
@@ -156,7 +159,7 @@
   "contact": {
     "label": "Contacto",
     "heading": "Cuéntanos tu proyecto.",
-    "description": "Sin compromiso. Te respondemos en menos de 24 horas con una propuesta personalizada.",
+    "description": "Cuéntanos tu proyecto. Sin compromiso. Te respondemos en menos de 24h con una propuesta personalizada.",
     "form": {
       "name_label": "Nombre completo *",
       "name_placeholder": "Tu nombre",
@@ -175,20 +178,20 @@
   },
   "contact_modal": {
     "heading": "Solicitar presupuesto",
-    "subtitle": "Cuéntanos tu proyecto y te enviaremos un presupuesto personalizado en 24h.",
+    "subtitle": "Cuéntanos tu proyecto y te enviamos un presupuesto personalizado en 24h.",
     "success_title": "¡Mensaje enviado!",
     "success_subtitle": "Te responderemos en menos de 24h."
   },
   "final_cta": {
     "label": "Empieza hoy",
     "heading": "¿Listo para dominar el espacio digital?",
-    "description": "Solicita una auditoría gratuita de tu presencia digital y descubre cómo podemos ayudarte a crecer.",
+    "description": "Solicita una auditoría gratuita de tu presencia digital y descubre cómo podemos ayudarte a crecer con herramientas IA y productos digitales.",
     "scarcity": "Solo 3 proyectos este mes — auditoría gratuita"
   },
   "about_modal": {
     "badge": "Sobre nosotros",
     "heading": "Construimos el futuro digital de tu negocio.",
-    "body": "En Vulnify creemos que la tecnología debería ser invisible. No diseñamos páginas bonitas: creamos ecosistemas digitales que trabajan para ti. Combinamos desarrollo web, inteligencia artificial y estrategia para convertir tu presencia online en una máquina de crecimiento.",
+    "body": "En Vulnify creamos herramientas digitales que funcionan para ti. No hacemos páginas bonitas: diseñamos ecosistemas digitales con inteligencia artificial, productos listos para usar y automatizaciones que transforman tu negocio. Combinamos desarrollo web, inteligencia artificial y productos digitales para convertir tu presencia online en una máquina de crecimiento.",
     "principles_heading": "Nuestros principios",
     "principles": [
       { "title": "Tecnología con propósito", "desc": "No usamos tecnología por moda. Cada decisión técnica responde a un objetivo de negocio real." },
@@ -657,10 +660,10 @@
         "desc": "Estrategia tecnológica personalizada: desde la idea hasta la implementación. Te ayudamos a tomar las decisiones correctas para tu negocio.",
         "features": ["Auditoría tecnológica", "Roadmap de producto", "Selección de stack técnico", "Arquitectura de software", "Estrategia de crecimiento", "Formación y mentoring"]
       },
-      "automatizacion_inmobiliaria": {
-        "title": "Automatización Inmobiliaria",
-        "desc": "Extraemos datos de fichas de propiedades, DNI, nóminas y contratos con IA. Tu equipo deja de picar datos manualmente y se dedica a cerrar ventas.",
-        "features": ["Extracción IA de fichas de propiedades", "OCR de DNI, nóminas y contratos", "Integración con Google Sheets", "Generación automática de anuncios", "Dashboard de seguimiento", "API para conectar con tu CRM"]
+      "productos_digitales": {
+        "title": "Productos Digitales",
+        "desc": "Herramientas IA listas para usar: generador de documentos, chatbot white-label, plantillas y mucho más. Descárgalos y úsalos al instante.",
+        "features": ["Generador de documentos con IA", "Chatbot IA white-label", "Plantillas de contratos y RGPD", "Cursos de IA para empresas", "Suscripción mensual con soporte", "Tokens API para integraciones"]
       }
     }
   },
@@ -679,7 +682,7 @@
     "vulnify_label": "Vulnify"
   },
   "seo": {
-    "default_title": "Vulnify · Desarrollo Web & IA",
-    "default_description": "Creamos tu web con inteligencia artificial. Desarrollo web, integraciones IA, APIs y consultoría digital para empresas."
+    "default_title": "Vulnify · Productos Digitales, Desarrollo Web e IA",
+    "default_description": "Creamos herramientas digitales con inteligencia artificial: chatbots, generador de documentos, automatizaciones, desarrollo web y productos digitales para tu negocio."
   }
 }

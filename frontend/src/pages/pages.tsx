@@ -343,9 +343,9 @@ function ServicioContent() {
             <button onClick={() => window.dispatchEvent(new CustomEvent('open-contact'))} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-black text-sm font-medium hover:bg-zinc-200 transition-colors cursor-pointer">
               {t('servicios_page.cta')} <ArrowUpRight className="size-4" />
             </button>
-            {slugKey === 'automatizacion_inmobiliaria' && (
-              <Link to="/demo/extraer-propiedad" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-white/[0.15] text-white text-sm font-medium hover:bg-white/5 transition-colors mt-3 no-underline">
-                Probar demo <ArrowUpRight className="size-4" />
+            {slugKey === 'productos_digitales' && (
+              <Link to="/productos" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-white/[0.15] text-white text-sm font-medium hover:bg-white/5 transition-colors mt-3 no-underline">
+                Ver productos <ArrowUpRight className="size-4" />
               </Link>
             )}
           </div>

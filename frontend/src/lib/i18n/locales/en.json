@@ -41,7 +41,7 @@
     "contact_aria": "Contact"
   },
   "footer": {
-    "description": "Web development and artificial intelligence to grow your business.",
+    "description": "Digital products, web development and artificial intelligence to grow your business.",
     "copyright": "© {year} Vulnify. All rights reserved.",
     "email": "hola@vulnify.es",
     "column_services": "Services",
@@ -49,6 +49,7 @@
     "column_legal": "Legal",
     "service_web": "Web Development",
     "service_ia": "AI Integrations",
+    "service_products": "Digital Products",
     "service_apis": "APIs & Backend",
     "service_consulting": "Consulting",
     "company_about": "About us",
@@ -67,9 +68,9 @@
     "reject": "Reject"
   },
   "hero": {
-    "label": "01 — Digital Architecture",
+    "label": "01 — Digital Ecosystem with AI",
     "words": ["CREATE", "OPTIMIZE", "SCALE"],
-    "subtitle": "We don't build pages. We design digital ecosystems with integrated artificial intelligence so your business can grow.",
+    "subtitle": "We don't build websites. We create AI-powered digital tools: chatbots, document generators, automations, and digital products that transform your business.",
     "cta_audit": "Request a free audit",
     "cta_whatsapp": "Chat on WhatsApp",
     "cta_presupuesto": "Request a quote",
@@ -83,19 +84,20 @@
   },
   "problem": {
     "label": "The Problem",
-    "heading": "Your website isn't working for you. It should be.",
-    "description": "Most websites are static digital brochures. They don't generate leads, don't automate processes, don't adapt to your customers.",
+    "heading": "Your digital tools aren't working for you.",
+    "description": "Most businesses use static websites, manual processes, and generic tools that don't fit their needs. They don't generate leads, don't automate tasks, don't scale.",
     "signals_label": "Warning signs",
     "signals_items": [
-      "No leads in 30 days",
-      "Exhausting manual processes",
-      "Website that doesn't convert"
+      "Still creating invoices and contracts manually",
+      "Your website doesn't generate leads or automate anything",
+      "Wasting hours on tasks AI could handle",
+      "Using generic tools that don't adapt to you"
     ],
     "solution_label": "Our solution",
     "solution_items": [
-      { "title": "Design that converts", "desc": "Ultra-fast interfaces optimized for conversion and SEO." },
-      { "title": "Integrated AI", "desc": "Smart chatbots, automation, and predictive analytics." },
-      { "title": "Continuous growth", "desc": "It's not a finite project. We iterate and scale your digital presence." }
+      { "title": "Ready-to-use AI Products", "desc": "Chatbots, document generator, automated analysis. Activate them in minutes." },
+      { "title": "Custom Development", "desc": "Websites, APIs and automations designed specifically for your business." },
+      { "title": "Smart Automation", "desc": "Processes that run themselves: reporting, data extraction, customer support." }
     ]
   },
   "services": {
@@ -104,9 +106,9 @@
     "items": [
       { "name": "Web Development", "desc": "Corporate websites, online stores and web applications with React, Next.js and responsive design." },
       { "name": "AI Integrations", "desc": "Smart chatbots, process automation and predictive analytics for your business." },
+      { "name": "Digital Products", "desc": "Document generator, white-label chatbot, templates and AI tools ready to download and use." },
       { "name": "APIs & Backend", "desc": "Scalable architecture, robust APIs and admin panels designed to grow." },
-      { "name": "Digital Consulting", "desc": "Tailored technology strategy: from idea to implementation." },
-      { "name": "Real Estate Automation", "desc": "Extract property listing data, IDs, payrolls and contracts with AI. Your team stops typing and starts selling." }
+      { "name": "Digital Consulting", "desc": "Tailored technology strategy: from idea to implementation." }
     ]
   },
   "process": {
@@ -135,7 +137,8 @@
       "UI/UX design optimized for conversion",
       "Scalable backend, APIs and admin panel",
       "Technical SEO and performance included",
-      "Ongoing support and maintenance"
+      "Ongoing support and maintenance",
+      "Access to digital products and AI tools"
     ],
     "question": "Shall we talk?",
     "response_time": "Response within 24h"
@@ -147,7 +150,7 @@
     "badge": "SINGLE PLAN",
     "plan_name": "Tailor-made",
     "plan_desc": "Custom price based on your project",
-    "features_label": "Everything you need for your web project:"
+    "features_label": "Everything you need for your digital project:"
   },
   "faq": {
     "label": "FAQ",
@@ -156,7 +159,7 @@
   "contact": {
     "label": "Contact",
     "heading": "Tell us about your project.",
-    "description": "No obligation. We'll respond within 24 hours with a personalized proposal.",
+    "description": "Tell us about your project. No obligation. We'll get back to you within 24h with a personalized proposal.",
     "form": {
       "name_label": "Full name *",
       "name_placeholder": "Your name",
@@ -182,13 +185,13 @@
   "final_cta": {
     "label": "Start today",
     "heading": "Ready to dominate the digital space?",
-    "description": "Request a free audit of your digital presence and discover how we can help you grow.",
+    "description": "Request a free audit of your digital presence and discover how we can help you grow with AI tools and digital products.",
     "scarcity": "Only 3 projects this month — free audit"
   },
   "about_modal": {
     "badge": "About us",
     "heading": "We build the digital future of your business.",
-    "body": "At Vulnify we believe technology should be invisible. We don't design pretty pages: we create digital ecosystems that work for you. We combine web development, artificial intelligence and strategy to turn your online presence into a growth machine.",
+    "body": "At Vulnify we create digital tools that work for you. We don't build pretty pages: we design AI-powered digital ecosystems, ready-to-use products and automations that transform your business. We combine web development, artificial intelligence and digital products to turn your online presence into a growth machine.",
     "principles_heading": "Our principles",
     "principles": [
       { "title": "Technology with purpose", "desc": "We don't use technology for the sake of trends. Every technical decision responds to a real business goal." },
@@ -657,10 +660,10 @@
         "desc": "Tailored technology strategy: from idea to implementation. We help you make the right decisions for your business.",
         "features": ["Technology audit", "Product roadmap", "Tech stack selection", "Software architecture", "Growth strategy", "Training and mentoring"]
       },
-      "automatizacion_inmobiliaria": {
-        "title": "Real Estate Automation",
-        "desc": "Extract property listing data, IDs, payrolls and contracts with AI. Your team stops manual data entry and focuses on closing deals.",
-        "features": ["AI-powered property data extraction", "OCR for IDs, payrolls and contracts", "Google Sheets integration", "Automatic ad generation", "Tracking dashboard", "API to connect with your CRM"]
+      "productos_digitales": {
+        "title": "Digital Products",
+        "desc": "Ready-to-use AI tools: document generator, white-label chatbot, templates and more. Download and use instantly.",
+        "features": ["AI document generator", "White-label chatbot", "Contract and GDPR templates", "AI courses for business", "Monthly subscription with support", "API tokens for integrations"]
       }
     }
   },
@@ -679,7 +682,7 @@
     "vulnify_label": "Vulnify"
   },
   "seo": {
-    "default_title": "Vulnify · Web Development & AI",
-    "default_description": "We create your website with artificial intelligence. Web development, AI integrations, APIs and digital consulting for businesses."
+    "default_title": "Vulnify · Digital Products, Web Development & AI",
+    "default_description": "We create AI-powered digital tools: chatbots, document generator, automations, web development and digital products for your business."
   }
 }

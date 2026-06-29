@@ -348,6 +348,7 @@ export function SiteLayout() {
               { title: t('footer.column_services'), links: [
                 { label: t('footer.service_web'), to: '/servicios/desarrollo-web' },
                 { label: t('footer.service_ia'), to: '/servicios/integraciones-ia' },
+                { label: t('footer.service_products'), to: '/servicios/productos-digitales' },
                 { label: t('footer.service_apis'), to: '/servicios/apis-backend' },
                 { label: t('footer.service_consulting'), to: '/servicios/consultoria' },
               ]},

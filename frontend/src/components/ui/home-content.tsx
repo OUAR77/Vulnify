@@ -317,10 +317,10 @@ export function HomeContent() {
           </div>
           <div className="space-y-3">
             {(faqs.length > 0 ? faqs : [
-              { id: 0, question: '¿Cuánto tiempo lleva desarrollar una web?', answer: 'Depende de la complejidad. Una web corporativa puede estar lista en 2-3 semanas. Proyectos con IA integrada suelen requerir 4-6 semanas.', category: 'General', order: 0, published: true },
-              { id: 1, question: '¿Necesito tener claro todo antes de empezar?', answer: 'No. Te guiamos desde la idea. Nuestro proceso incluye una fase de auditoría y estrategia donde definimos juntos el alcance.', category: 'General', order: 0, published: true },
-              { id: 2, question: '¿Ofrecen mantenimiento después del lanzamiento?', answer: 'Sí. Todos nuestros proyectos incluyen soporte post-lanzamiento y planes de mantenimiento continuo para mantener tu web actualizada.', category: 'General', order: 0, published: true },
-              { id: 3, question: '¿Cómo integran la inteligencia artificial?', answer: 'Desde chatbots personalizados hasta automatización de procesos y análisis predictivo. Evaluamos tu caso y proponemos la solución óptima.', category: 'General', order: 0, published: true },
+              { id: 0, question: '¿Cuánto cuesta un proyecto con IA?', answer: 'Depende del alcance. Un chatbot puede estar operativo desde 149€. Un proyecto completo de desarrollo web con IA desde 2.500€. También vendemos productos digitales listos para usar desde 19€.', category: 'General', order: 0, published: true },
+              { id: 1, question: '¿Qué productos digitales ofrecéis?', answer: 'Generador de documentos con IA, chatbot white-label, pack de contratos, kit RGPD, SEO analyzer, cursos de IA y más. Todos listos para descargar y usar al instante.', category: 'General', order: 0, published: true },
+              { id: 2, question: '¿Ofrecéis suscripciones mensuales?', answer: 'Sí. Tenemos planes de suscripción para el generador de documentos, chatbot IA, tokens API y soporte técnico recurrente. Todos con acceso inmediato.', category: 'General', order: 0, published: true },
+              { id: 3, question: '¿Cómo integráis la inteligencia artificial?', answer: 'Desde chatbots personalizados hasta generación de documentos, automatización de procesos y análisis predictivo. Evaluamos tu caso y proponemos la solución óptima.', category: 'General', order: 0, published: true },
             ]).map((item) => (
               <FAQItem key={item.id} question={item.question} answer={item.answer} />
             ))}
